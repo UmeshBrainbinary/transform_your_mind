@@ -3,6 +3,7 @@ class ImageConstant {
   static String imagePath = 'assets/images';
   static String iconPath = 'assets/icons';
   static String gifPath = 'assets/gif';
+  static String backgroundPath = 'assets/background';
 
   /// audio
   static String audioPath = 'assets/audio/audio.mp3';
@@ -11,8 +12,8 @@ class ImageConstant {
   static String audioPath3 = 'assets/audio/3.mp3';
   static String audioPath4 = 'assets/audio/4.mp3';
   static String audioPath5 = 'assets/audio/5.mp3';
-  static String bgAudio1 = 'assets/audio/bg_audio1.mpeg';
-  static String bgAudio2 = 'assets/audio/bg_audio2.mpeg';
+  static String bgAudio1 = 'assets/audio/bg_audio1.mp3';
+  static String bgAudio2 = 'assets/audio/bg_audio2.mp3';
 
   static String iconDashboardPath = '$iconPath/dashboard';
   static String iconExplorePath = '$iconPath/explore';
@@ -249,6 +250,7 @@ class ImageConstant {
   static String chooseBackEn = "$imagePath/choose_background_en.png";
   static String chooseBackGe = "$imagePath/choose_background_ge.png";
   static String chooseBack = "$imagePath/choose_background.png";
+  static String box = "$imagePath/box.png";
   static String breathInhale = "$lottie/breath_inhale.json";
   static String settingArrowRight = "$iconPath/setting_arrow_right.svg";
   static String check = "$iconPath/check.svg";
@@ -262,5 +264,16 @@ class ImageConstant {
   static String micAnimation = "$lottie/mic_animation.json";
   static String animation = "$lottie/animation.json";
   static String celebration = "$gifPath/celebration.gif";
+
+
+
+  static String image1 = "$backgroundPath/image1.png";
+  static String image2 = "$backgroundPath/image2.png";
+  static String image3 = "$backgroundPath/image3.png";
+  static String image4 = "$backgroundPath/image4.png";
+  static String image5 = "$backgroundPath/image5.png";
+  static String image6 = "$backgroundPath/image6.png";
+  static String image7 = "$backgroundPath/image7.png";
+  static String image8 = "$backgroundPath/image8.png";
 
 }

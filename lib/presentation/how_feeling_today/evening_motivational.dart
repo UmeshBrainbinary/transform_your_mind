@@ -28,6 +28,16 @@ class EveningMotivational extends StatelessWidget {
           : ColorConstant.backGround,
       appBar: CustomAppBar(
         title: "eveningQuestions".tr,
+        action: Row(
+          children: [
+            InkWell(
+                onTap: (){
+                  feelController.skip(context);
+                },
+                child: Text("skip".tr,style:  Style.nunRegular(fontSize: 16), )),
+            const SizedBox(width: 20,),
+          ],
+        ),
         showBack: true,
       ),
       body: GetBuilder<HowFeelingEveningController>(builder: (controller) {

@@ -71,7 +71,7 @@ class LoginController extends GetxController {
       http.StreamedResponse response = await request.send();
 
       if (response.statusCode == 200) {
-        showSnackBarSuccess(context, "Login successfully");
+        showSnackBarSuccess(context, "Login successfully".tr);
         await PrefService.setValue(PrefKey.isLoginOrRegister, true);
         await PrefService.setValue(PrefKey.isRemember, rememberMe.value);
         await PrefService.setValue(PrefKey.email, emailController.text);
@@ -103,7 +103,7 @@ class LoginController extends GetxController {
         final responseBody = await response.stream.bytesToString();
         commonModel = commonModelFromJson(responseBody);
 
-        showSnackBarError(context, "Invalid credential");
+        showSnackBarError(context, "Invalid credential".tr);
       } else {
         loader.value = false;
 

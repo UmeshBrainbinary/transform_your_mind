@@ -31,6 +31,16 @@ class EveningSleep extends StatelessWidget {
           : ColorConstant.backGround,
       appBar:  CustomAppBar(
         title: "MorningQuestions".tr,
+        action: Row(
+          children: [
+            InkWell(
+                onTap: (){
+                  c.skip( context);
+                },
+                child: Text("skip".tr,style:  Style.nunRegular(fontSize: 16), )),
+            const SizedBox(width: 20,),
+          ],
+        ),
         showBack: true,
       ),
       body: Padding(

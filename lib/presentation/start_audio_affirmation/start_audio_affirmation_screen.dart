@@ -73,6 +73,7 @@ class _StartAudioAffirmationScreenState
   int selectedHour = 0;
   int selectedMinute = 0;
   int selectedSeconds = 0;
+  int index = 0;
   List<bool> like = [];
   bool _isScrolling = true;
   AffirmationController affirmationController =
@@ -1003,8 +1004,8 @@ double value =  0;
                               ),
                             ),
                             GestureDetector(
-                              onTap: () {
-                                Navigator.push(context, MaterialPageRoute(
+                              onTap: () async {
+                              index =  await Navigator.push(context, MaterialPageRoute(
                                   builder: (context) {
                                     return const AudioList();
                                   },
@@ -1139,11 +1140,12 @@ double value =  0;
   void _setAlarm(id) async {
     DateTime alarmTime = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day,
         selectedHour,selectedMinute,selectedSeconds);
-   File filePath =  await downloadAudioFile(widget.data![0].audioFile ?? 'assets/audio/audio.mp3');
+  // File filePath =  await downloadAudioFile(widget.data![0].audioFile ?? 'assets/audio/audio.mp3');
     final alarmSettings = AlarmSettings(
         id: id,
         dateTime: alarmTime,
-        assetAudioPath: filePath.path !=""?filePath.path: 'assets/audio/audio.mp3',
+      //  assetAudioPath: filePath.path !=""?filePath.path: 'assets/audio/audio.mp3',
+        assetAudioPath:  index ==1?ImageConstant.bgAudio2:ImageConstant.bgAudio1,
         loopAudio: true,
         vibrate: true,
         volume: 0.8,

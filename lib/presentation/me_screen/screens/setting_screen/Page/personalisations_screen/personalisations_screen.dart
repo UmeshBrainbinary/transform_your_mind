@@ -144,41 +144,61 @@ class _PersonalizationScreenScreenState
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           height > 820
-                              ? Dimens.d200.spaceHeight
+                              ? Dimens.d180.spaceHeight
                               : Platform.isIOS
-                                  ? Dimens.d155.spaceHeight
-                                  : Dimens.d120.spaceHeight,
-                          Text(
-                            checkInternetCheck
-                                ? currentLanguage == 'en-US' ||
-                                        currentLanguage == ""
-                                    ? controller
-                                        .getScreenModel.data?.first.quote??""
-                                    : controller
-                                        .getScreenModel.data?.first.gQuote??""
-                                : "".tr,
-                            textAlign: TextAlign.center,
-                            style: Style.nunitoSemiBold(
-                                fontSize: 24, color: ColorConstant.white),
-                          ),
-                          Dimens.d40.spaceHeight,
-                          Align(
-                              alignment: Alignment.topRight,
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 30),
-                                child: Text(
+                                  ? Dimens.d135.spaceHeight
+                                  : Dimens.d100.spaceHeight,
+                        Container(
+                          decoration:BoxDecoration(
+            image :DecorationImage(
+            image :AssetImage(ImageConstant.box),
+              fit: BoxFit.fill
+            )
+            ),
+                          alignment:Alignment.center,
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Dimens.d20.spaceHeight,
+                                Text(
                                   checkInternetCheck
                                       ? currentLanguage == 'en-US' ||
-                                              currentLanguage == ""
-                                          ? controller.getScreenModel.data
-                                                  ?.first.authorName ??
-                                          "":controller.getScreenModel.data?.first
-                                      .gAuthorName??""
-                                      : "Norman Vincent Peale",
-                                  style: Style.nunRegular(
-                                      fontSize: 12, color: ColorConstant.white),
+                                      currentLanguage == ""
+                                      ? controller
+                                      .getScreenModel.data?.first.quote??""
+                                      : controller
+                                      .getScreenModel.data?.first.gQuote??""
+                                      : "".tr,
+                                  textAlign: TextAlign.center,
+                                  style: Style.nunitoSemiBold(
+                                      fontSize: 24, color: ColorConstant.white),
                                 ),
-                              )),
+                                Dimens.d40.spaceHeight,
+                                Align(
+                                    alignment: Alignment.topRight,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(right: 30),
+                                      child: Text(
+                                        checkInternetCheck
+                                            ? currentLanguage == 'en-US' ||
+                                            currentLanguage == ""
+                                            ? controller.getScreenModel.data
+                                            ?.first.authorName ??
+                                            "":controller.getScreenModel.data?.first
+                                            .gAuthorName??""
+                                            : "Norman Vincent Peale",
+                                        style: Style.nunRegular(
+                                            fontSize: 12, color: ColorConstant.white),
+                                      ),
+                                    )),
+
+                              ],
+                            ),
+                          ),
+                        ),
                           Dimens.d100.spaceHeight,
                           Obx(
                             () => GestureDetector(

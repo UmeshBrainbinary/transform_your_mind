@@ -87,19 +87,20 @@ class _BreathScreenState extends State<BreathScreen>
           _startAnimationSequence();
         } else {
           await breathController.pause();
-
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return NoticeHowYouFeelScreen(
-                notice: widget.skip, setting: widget.setting);
-          })).then((value) {
-            setState(() {
-              playCount = 0;
-              _timer;
-              isPlaying = false;
-              _lottieController.reset();
-              _lottieController.stop();
+          if (alreadySkipped == false) {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return NoticeHowYouFeelScreen(
+                  notice: widget.skip, setting: widget.setting);
+            })).then((value) {
+              setState(() {
+                playCount = 0;
+                _timer;
+                isPlaying = false;
+                _lottieController.reset();
+                _lottieController.stop();
+              });
             });
-          });
+          }
         }
       }
     });
@@ -133,19 +134,20 @@ class _BreathScreenState extends State<BreathScreen>
             _startAnimationSequence();
           } else {
             await breathController.pause();
-
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return NoticeHowYouFeelScreen(
-                  notice: widget.skip, setting: widget.setting);
-            })).then((value) {
-              setState(() {
-                playCount = 0;
-                _timer;
-                isPlaying = false;
-                _lottieController.reset();
-                _lottieController.stop();
-              });
-            });
+if(alreadySkipped == false) {
+  Navigator.push(context, MaterialPageRoute(builder: (context) {
+    return NoticeHowYouFeelScreen(
+        notice: widget.skip, setting: widget.setting);
+  })).then((value) {
+    setState(() {
+      playCount = 0;
+      _timer;
+      isPlaying = false;
+      _lottieController.reset();
+      _lottieController.stop();
+    });
+  });
+}
           }
         }
       });
@@ -160,7 +162,7 @@ class _BreathScreenState extends State<BreathScreen>
       showSnackBarError(context, "CouldLaunch".tr);
     }
   }
-
+bool alreadySkipped = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -179,7 +181,10 @@ class _BreathScreenState extends State<BreathScreen>
             ? GestureDetector(
                 onTap: () async {
                   await breathController.pause();
+setState(() {
+alreadySkipped =true;
 
+});
                   Get.toNamed(AppRoutes.selectYourFocusPage);
                 },
                 child: Padding(

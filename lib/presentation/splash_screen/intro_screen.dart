@@ -193,7 +193,7 @@ class _IntroScreenState extends State<IntroScreen> {
             child: TextButton(
               onPressed: _onSkip,
               child:  Text(
-                'Skip',
+                'skip'.tr,
                 style: Style.nunMedium(
                     fontSize: Dimens.d16,color: ColorConstant.black),
               ),

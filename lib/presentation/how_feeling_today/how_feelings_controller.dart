@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:transform_your_mind/core/common_api/common_api.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/how_feeling_today_screen.dart';
 import 'package:transform_your_mind/presentation/how_feeling_today/motivational_questions.dart';
 import 'package:transform_your_mind/presentation/how_feeling_today/sleep_questions.dart';
 import 'package:transform_your_mind/presentation/how_feeling_today/stress_questions.dart';
@@ -402,15 +403,46 @@ print(moodData);
 
         http.StreamedResponse response = await request.send();
         if (response.statusCode == 200 || response.statusCode == 201) {
-          if (setting == "mood") {
+//           if (setting == "mood") {
+//             updateApi(context,pKey: "eveningMotivationQuestions");
+//
+//             Get.to(() => StressQuestions());
+//           } else if (setting == "stress") {
+//             updateApi(context,pKey: "eveningMotivationQuestions");
+//
+//             Get.to(() => SleepQuestions());
+//           } else if (setting == "sleep") {
+//             updateApi(context,pKey: "eveningMotivationQuestions");
+//
+//             Get.to(() => MotivationalQuestions());
+//           } else {
+//             updateApi(context,pKey: "eveningMotivationQuestions");
+//             Get.offAll(() => const DashBoardScreen());
+//
+//
+// /*
+//             if((PrefService.getBool(PrefKey.isFreeUser) == false && PrefService.getBool(PrefKey.isSubscribed) == false))
+//             {
+//               Get.offAll(() =>  SubscriptionScreen(skip: false,));
+//
+//             }
+//             else
+//             {
+//
+//               Get.offAll(() => const DashBoardScreen());
+//             }*/
+//           }
+
+
+          if (setting == "sleep") {
+            updateApi(context,pKey: "eveningMotivationQuestions");
+
+            Get.to(() => const HowFeelingTodayScreen());
+          } else if (setting == "mood") {
             updateApi(context,pKey: "eveningMotivationQuestions");
 
             Get.to(() => StressQuestions());
           } else if (setting == "stress") {
-            updateApi(context,pKey: "eveningMotivationQuestions");
-
-            Get.to(() => SleepQuestions());
-          } else if (setting == "sleep") {
             updateApi(context,pKey: "eveningMotivationQuestions");
 
             Get.to(() => MotivationalQuestions());
@@ -431,6 +463,85 @@ print(moodData);
               Get.offAll(() => const DashBoardScreen());
             }*/
           }
+        }
+        else {
+          debugPrint(response.reasonPhrase);
+        }
+      } catch (e) {
+        debugPrint(e.toString());
+      }
+    }
+  setQuestionsSkip( BuildContext context,) async {
+    try {
+      var moodData = {};
+
+        moodData = {
+          "created_by": PrefService.getString(PrefKey.userId),
+        };
+
+print(moodData);
+
+      var headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+      };
+
+      var request = http.Request(
+            'POST', Uri.parse(EndPoints.morningQuestions));
+        request.body = json.encode(moodData);
+        request.headers.addAll(headers);
+
+
+        http.StreamedResponse response = await request.send();
+        if (response.statusCode == 200 || response.statusCode == 201) {
+//           if (setting == "mood") {
+//             updateApi(context,pKey: "eveningMotivationQuestions");
+//
+//             Get.to(() => StressQuestions());
+//           } else if (setting == "stress") {
+//             updateApi(context,pKey: "eveningMotivationQuestions");
+//
+//             Get.to(() => SleepQuestions());
+//           } else if (setting == "sleep") {
+//             updateApi(context,pKey: "eveningMotivationQuestions");
+//
+//             Get.to(() => MotivationalQuestions());
+//           } else {
+//             updateApi(context,pKey: "eveningMotivationQuestions");
+//             Get.offAll(() => const DashBoardScreen());
+//
+//
+// /*
+//             if((PrefService.getBool(PrefKey.isFreeUser) == false && PrefService.getBool(PrefKey.isSubscribed) == false))
+//             {
+//               Get.offAll(() =>  SubscriptionScreen(skip: false,));
+//
+//             }
+//             else
+//             {
+//
+//               Get.offAll(() => const DashBoardScreen());
+//             }*/
+//           }
+
+
+
+            updateApi(context,pKey: "eveningMotivationQuestions");
+            Get.offAll(() => const DashBoardScreen());
+
+
+/*
+            if((PrefService.getBool(PrefKey.isFreeUser) == false && PrefService.getBool(PrefKey.isSubscribed) == false))
+            {
+              Get.offAll(() =>  SubscriptionScreen(skip: false,));
+
+            }
+            else
+            {
+
+              Get.offAll(() => const DashBoardScreen());
+            }*/
+
         }
         else {
           debugPrint(response.reasonPhrase);

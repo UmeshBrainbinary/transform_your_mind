@@ -4,10 +4,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
+import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/core/utils/validation_functions.dart';
@@ -242,8 +244,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       !registerController.isDropGender.value;
                                 },
                                 validator: (value) {
-                                  if (value == null ||
-                                      (!isText(value, isRequired: true))) {
+                                  if (value == null || value ==''
+                                      // ||
+                                      // (!isText(value, isRequired: true))
+                                  ) {
                                     return "theGenderFieldIsRequired".tr;
                                   }
                                   return null;
@@ -407,6 +411,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   datePicker(context,) async {
     FocusScope.of(context).unfocus();
     picked = await  showDatePicker(
+
       builder: (context, child) {
         TextStyle customTextStyle = Style.nunMedium(fontSize: 15,color: Colors.black);
         TextStyle editedTextStyle = customTextStyle.copyWith(color: Colors.red); // Define the edited text style
@@ -415,6 +420,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
         return Theme(
           data: ThemeData.light().copyWith(focusColor: ColorConstant.themeColor,
+
               colorScheme:  ColorScheme.light(
                 primary: ColorConstant.themeColor,
                 onPrimary: Colors.white,
@@ -456,7 +462,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       },
 
       context: context,
-      firstDate: DateTime(1970),
+      //locale :PrefService.getString(PrefKey.language) == "de-DE"? const Locale('de', 'DE') :const Locale('en', 'US'),
+      firstDate: DateTime(1901),
       lastDate: DateTime.now(),
       currentDate: DateTime.now(),
       initialDate: DateTime.now(),

@@ -723,7 +723,13 @@
   "Very well, I'm satisfied": "Very well, I'm satisfied",
   "Well, but it was challenging":"Well, but it was challenging",
   "It wasn't easy, but I gave my best": "It wasn't easy, but I gave my best",
-  "I gained valuable experience":"I gained valuable experience"
+  "I gained valuable experience":"I gained valuable experience",
+  "Login successfully": "Login successfully",
+  "Invalid credential": "Invalid credential",
+
+
+
+  "Hey": "Hey"
 
 }
 

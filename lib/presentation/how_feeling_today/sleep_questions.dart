@@ -29,6 +29,16 @@ class SleepQuestions extends StatelessWidget {
       appBar:  CustomAppBar(
         title: "MorningQuestions".tr,
         showBack: true,
+        action: Row(
+          children: [
+            InkWell(
+                onTap: (){
+                  c.setQuestionsSkip( context);
+                },
+                child: Text("skip".tr,style:  Style.nunRegular(fontSize: 16), )),
+            const SizedBox(width: 20,),
+          ],
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 22),

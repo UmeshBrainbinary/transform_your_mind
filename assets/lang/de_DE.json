@@ -53,7 +53,7 @@
   "forgotP": "Passwort vergessen",
   "verification": "Überprüfung",
   "enterVerification": "Bestätigungscode eingeben.",
-  "notReceiveCode": "Wenn Sie keinen Code erhalten haben, erneut senden",
+  "notReceiveCode": "Keinen Code erhalten? Einfach nochmal senden.",
   "resend": "erneut senden",
   "send": "Senden",
   "verify": "Verifizieren",
@@ -179,7 +179,7 @@
   "exploreTransformRituals": "Transform Rituale erkunden",
   "selectCategory": "Kategorie auswählen",
   "affirmationData": "Affirmationsdaten",
-  "skip": "Überspringen",
+  "skip": "Skip",
   "emptyDescription": "Bitte geben Sie eine Beschreibung ein",
   "emptyTitle": "Bitte geben Sie einen Titel ein",
   "addGratitude": "Dankbarkeit hinzufügen",
@@ -731,7 +731,14 @@
   "Very well, I'm satisfied": "Sehr gut, ich bin zufrieden",
   "Well, but it was challenging":"Gut, aber es war herausfordernd",
   "It wasn't easy, but I gave my best": "Es war nicht einfach, aber ich habe mein Bestes gegeben",
-  "I gained valuable experience":"Ich habe wertvolle Erfahrungen gesammelt"
+  "I gained valuable experience":"Ich habe wertvolle Erfahrungen gesammelt",
+  "Login successfully": "Anmeldung erfolgreich",
+  "Invalid credential": "Ungültige Anmeldeinformationen",
+
+
+
+
+  "Hey": "Hey"
 }
 
 

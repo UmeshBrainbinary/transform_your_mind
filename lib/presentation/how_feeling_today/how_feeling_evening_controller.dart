@@ -415,4 +415,47 @@ class HowFeelingEveningController extends GetxController {
       debugPrint(e.toString());
     }
   }
+  skip( BuildContext context) async {
+    try {
+      var moodData = {};
+
+        moodData = {
+          "created_by": PrefService.getString(PrefKey.userId),
+        };
+
+
+      print(moodData);
+
+      var headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+      };
+
+      var request = http.Request('POST', Uri.parse(EndPoints.eveningQuestions));
+      request.body = json.encode(moodData);
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response = await request.send();
+      if (response.statusCode == 200 || response.statusCode == 201) {
+
+          Get.offAll(() => const DashBoardScreen());
+
+        /*  if((PrefService.getBool(PrefKey.isFreeUser) == false && PrefService.getBool(PrefKey.isSubscribed) == false))
+          {
+            Get.offAll(() =>  SubscriptionScreen(skip: true,));
+
+          }
+          else
+          {
+
+            Get.offAll(() => const DashBoardScreen());
+          }*/
+
+      } else {
+        debugPrint(response.reasonPhrase);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
 }

@@ -58,7 +58,7 @@ class _WelcomeScreenState extends State<WelcomeHomeScreen>
   @override
   void initState() {
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 200),
+      duration: const Duration(milliseconds: 100),
       vsync: this,
     );
 
@@ -91,7 +91,12 @@ class _WelcomeScreenState extends State<WelcomeHomeScreen>
     setState(() {
     });
   }
-
+  @override
+  void dispose() {
+    _controller.dispose();
+    _lottieController.dispose();
+    super.dispose();
+  }
   bool _isLongPressed = false;
 
   int startTimer = 0;
@@ -108,7 +113,7 @@ class _WelcomeScreenState extends State<WelcomeHomeScreen>
       _showText = true;
       _stopE = false;
     });
-    Future.delayed(const Duration(seconds: 5)).then(
+    Future.delayed(const Duration(seconds: 1)).then(
       (value) async {
         if (_isLongPressed) {
           _controller.forward();
@@ -116,7 +121,7 @@ class _WelcomeScreenState extends State<WelcomeHomeScreen>
           await welcomeHomeController.pause();
           await welcomeHomeController.audioPlayer.stop();
           await updateApi(context,pKey: "welcomeScreen");
-           Future.delayed(const Duration(seconds: 1)).then((value) {
+           Future.delayed(const Duration(seconds: 30)).then((value) {
             return Get.offAll(MotivationalMessageScreen(
               skip: true,
               date: DateFormat('d MMMM yyyy').format(DateTime.now()),

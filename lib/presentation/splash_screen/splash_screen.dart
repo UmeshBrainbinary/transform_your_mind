@@ -43,7 +43,8 @@ class _SplashScreenState extends State<SplashScreen> {
   GetUserModel getUserModel = GetUserModel();
 
   void _setGreetingBasedOnTime() {
-     greeting = _getGreetingBasedOnTime();
+
+      greeting = _getGreetingBasedOnTime();
     setState(() {});
   }
 
@@ -190,11 +191,11 @@ Future.delayed(const Duration(seconds: 1)).then((value) {
 
   setScreens() async {
     if (getUserModel.data?.morningMoodQuestions == false && greeting == "goodMorning") {
-      Get.offAll(() => const HowFeelingTodayScreen());
+      Get.offAll(() =>  SleepQuestions());
     } else if (getUserModel.data?.morningSleepQuestions  == false && greeting == "goodMorning") {
       Get.offAll(() => StressQuestions());
     } else if (getUserModel.data?.morningStressQuestions == false && greeting == "goodMorning") {
-      Get.offAll(() => SleepQuestions());
+      Get.offAll(() => const HowFeelingTodayScreen());
     } else if (getUserModel.data?.morningMotivationQuestions  == false && greeting == "goodMorning") {
       Get.offAll(() => MotivationalQuestions());
     } else if (getUserModel.data?.eveningMoodQuestions == false && greeting == "goodEvening") {

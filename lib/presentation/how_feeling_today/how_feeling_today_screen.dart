@@ -35,6 +35,16 @@ class _HowFeelingTodayScreenState extends State<HowFeelingTodayScreen> {
           : ColorConstant.backGround,
       appBar: CustomAppBar(
         title: "MorningQuestions".tr,
+        action: Row(
+          children: [
+            InkWell(
+                onTap: (){
+                  f.setQuestionsSkip( context);
+                },
+                child: Text("skip".tr,style:  Style.nunRegular(fontSize: 16), )),
+            const SizedBox(width: 20,),
+          ],
+        ),
         showBack: true,
       ),
       body: GetBuilder<HowFeelingsController>(builder: (controller) {

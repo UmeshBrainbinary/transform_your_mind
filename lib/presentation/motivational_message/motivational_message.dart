@@ -260,7 +260,22 @@ class _MotivationalMessageScreenState extends State<MotivationalMessageScreen> {
                 Stack(
                   children: [
                     GetBuilder<MotivationalController>(
-                      builder: (controller) => CachedNetworkImage(
+                      builder: (controller) =>
+                          Container(
+                            height: Get.height,
+                            width: Get.width,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.circular(
+                                10.0,
+                              ),
+                              image: DecorationImage(
+                                image: AssetImage(motivationalController.themeList[chooseImage]),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                       /*   CachedNetworkImage(
                         height: Get.height,
                         width: Get.width,
                         imageUrl: motivationalController.themeList[chooseImage],
@@ -287,7 +302,7 @@ class _MotivationalMessageScreenState extends State<MotivationalMessageScreen> {
                           isShowLoader: false,
                           borderRadius: 8.0,
                         ),
-                      ),
+                      ),*/
                     ),
                     BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
@@ -454,7 +469,7 @@ class _MotivationalMessageScreenState extends State<MotivationalMessageScreen> {
                                           ?.morningMoodQuestions ??
                                       false == false &&
                                           greeting == "goodMorning") {
-                                    Get.offAll(() => const HowFeelingTodayScreen());
+                                    Get.offAll(() =>  SleepQuestions());
                                   } else if (loginController.getUserModel.data
                                           ?.morningSleepQuestions ??
                                       false == false &&
@@ -464,7 +479,7 @@ class _MotivationalMessageScreenState extends State<MotivationalMessageScreen> {
                                           ?.morningStressQuestions ??
                                       false == false &&
                                           greeting == "goodMorning") {
-                                    Get.offAll(() => SleepQuestions());
+                                    Get.offAll(() => const HowFeelingTodayScreen());
                                   } else if (loginController.getUserModel.data
                                           ?.morningMotivationQuestions ??
                                       false == false &&
@@ -935,9 +950,11 @@ class _MotivationalMessageScreenState extends State<MotivationalMessageScreen> {
                                   ),
                                   margin:
                                       const EdgeInsets.symmetric(horizontal: 8.0),
-                                  child: CachedNetworkImage(
+                                  child:
+                                /*  CachedNetworkImage(
                                     height: 160,
                                     width: 100,
+
                                     imageUrl:
                                         motivationalController.themeList[index],
                                     imageBuilder: (context, imageProvider) =>
@@ -964,6 +981,22 @@ class _MotivationalMessageScreenState extends State<MotivationalMessageScreen> {
                                       width: Get.width,
                                       isShowLoader: false,
                                       borderRadius: 8.0,
+                                    ),
+                                  ),*/
+                                  Container(
+                                    height: 160,
+                                    width: 100,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(
+                                        10.0,
+                                      ),
+                                      image: DecorationImage(
+                                        image: AssetImage(
+                                            motivationalController.themeList[index]
+                                        ),
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
                                 ),

@@ -99,21 +99,23 @@ class _LoginPreviewViewState extends State<LoginPreviewView> {
                     value: _isChecked,
                     onChanged: _toggleCheckbox,
                   ),*/
-                  StyledText(textAlign: TextAlign.center,
-                    text: '<bold>${"iAgreeThe".tr}</bold><red>${"t&m".tr}</red>\n<bold>${"ofThe".tr}</bold><red>${"privacyPolicy".tr}</red>',
-                    tags: {
-                      'bold': StyledTextTag(style:Style.gothamMedium(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black,
-                          height: 1.5),),
+                  SizedBox(
+                    child: StyledText(textAlign: TextAlign.center,
+                      text: '<bold>${"iAgreeThe".tr}</bold><red>${"t&m".tr}</red>\n<bold>${"ofThe".tr}</bold><red>${"privacyPolicy".tr}</red>',
+                      tags: {
+                        'bold': StyledTextTag(style:Style.gothamMedium(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                            height: 1.5),),
 
-                      'red': StyledTextTag(style: Style.gothamMedium(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w400,
-                          color: ColorConstant.themeColor)),
-                     // 'privacyPolicy': StyledTextTag(style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
-                    },
+                        'red': StyledTextTag(style: Style.gothamMedium(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                            color: ColorConstant.themeColor)),
+                       // 'privacyPolicy': StyledTextTag(style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+                      },
+                    ),
                   )
                 ],
               ),

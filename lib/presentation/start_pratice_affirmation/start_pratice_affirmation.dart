@@ -271,7 +271,7 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
       loader == false;
     });
   }
-
+int index =0;
   bool showBottom = false;
   late List<AlarmSettings> alarms;
 
@@ -281,7 +281,7 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
     final alarmSettings = AlarmSettings(
         id: id,
         dateTime: alarmTime,
-        assetAudioPath: 'assets/audio/audio.mp3',
+        assetAudioPath:   index ==1?ImageConstant.bgAudio2:ImageConstant.bgAudio1,
         loopAudio: true,
         vibrate: true,
         volume: 0.2,
@@ -1356,12 +1356,13 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {
-                              Navigator.push(context, MaterialPageRoute(
+                            onTap: () async {
+                             index  =await Navigator.push(context, MaterialPageRoute(
                                 builder: (context) {
                                   return const AudioList();
                                 },
                               ));
+
                             },
                             child: Container(
                               margin:
