@@ -81,14 +81,14 @@ class _CustomAppBarState extends State<CustomAppBar>
               Get.back();
             },
         child: Container(
-          height: Dimens.d20,
-          width: Dimens.d20,
+          height: Dimens.d15,
+          width: Dimens.d15,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(Dimens.d5),
+            borderRadius: BorderRadius.circular(Dimens.d10),
             color: ColorConstant.white
           ),
-          child: Image.asset(ImageConstant.backArrow),
+          child: Image.asset(ImageConstant.backArrow, scale: Dimens.d4),
         ),
       );
 

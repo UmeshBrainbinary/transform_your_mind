@@ -6,6 +6,7 @@ import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
+import 'package:transform_your_mind/core/utils/string_constant.dart';
 import 'package:transform_your_mind/presentation/auth/login_screen/login_controller.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
@@ -14,7 +15,6 @@ class LoginScreen extends StatelessWidget {
    LoginScreen({super.key});
 
    final LoginController loginController = Get.put(LoginController());
-
 
 
   @override
@@ -27,7 +27,6 @@ class LoginScreen extends StatelessWidget {
       body: SafeArea(
           child: Stack(
             children: [
-
 
             Positioned(
               top: Dimens.d70.h,
@@ -51,11 +50,12 @@ class LoginScreen extends StatelessWidget {
                                 children: [
                                   Dimens.d10.h.spaceHeight,
                                   CommonTextField(
-                                    labelText: "Email",
-                                    hintText: "Enter Email",
+                                    labelText: StringConstant.email,
+                                    hintText: StringConstant.enterEmail,
                                     controller: loginController.emailController,
                                     focusNode: FocusNode(),
-                                    prefixIcon: ImageConstant.email,
+
+                                    prefixIcon: Image.asset(ImageConstant.email, scale: Dimens.d4),
                                     keyboardType: TextInputType.emailAddress,
                                   ),
                                   Dimens.d16.h.spaceHeight,
@@ -63,20 +63,21 @@ class LoginScreen extends StatelessWidget {
                                     valueListenable: loginController.securePass,
                                     builder: (context, value, child) {
                                       return CommonTextField(
-                                        labelText: "Password",
-                                        hintText: "Enter Password",
+                                        labelText: StringConstant.password,
+                                        hintText: StringConstant.enterPassword,
                                         controller: loginController.passwordController,
                                         focusNode: FocusNode(),
-                                        prefixIcon: ImageConstant.lock,
-                                         suffixIcon: value ? ImageConstant.eyeOpen : ImageConstant.eyeClose ,
+
+                                        prefixIcon: Image.asset(ImageConstant.lock, scale: Dimens.d4),
+                                         suffixIcon: value ? Image.asset(ImageConstant.eyeOpen, scale: Dimens.d4) : Image.asset(ImageConstant.eyeClose, scale: Dimens.d4) ,
                                          isSecure: value,
-                                         suffixTap: () => loginController.securePass.value =
-                                         !loginController.securePass.value,
+                                         suffixTap: () => loginController.securePass.value = !loginController.securePass.value,
                                         textInputAction: TextInputAction.done,
                                       );
                                     },
                                   ),
                                   Dimens.d8.h.spaceHeight,
+
                                   // _getRememberMeWidget,
                                   // Dimens.d8.h.spaceHeight,
                                   // Row(
@@ -210,4 +211,52 @@ class LoginScreen extends StatelessWidget {
       ),
     );
   }
+
+   // Widget get _getRememberMeWidget => GestureDetector(
+   //   onTap: () => loginController.rememberMe.value = !loginController.rememberMe.value,
+   //   child: Padding(
+   //     padding: const EdgeInsets.symmetric(vertical: Dimens.d8),
+   //     child: Row(
+   //       children: [
+   //         ValueListenableBuilder(
+   //           valueListenable: loginController.rememberMe,
+   //           builder: (context, value, child) {
+   //             return Container(
+   //               height: Dimens.d20,
+   //               width: Dimens.d20,
+   //               decoration: BoxDecoration(
+   //                 border: Border.all(
+   //                     color: loginController.rememberMe.value
+   //                         ? themeManager.colorThemed5
+   //                         : AppColors.unSelectedCheckBox,
+   //                     width: Dimens.d1),
+   //                 borderRadius:
+   //                 const BorderRadius.all(Radius.circular(Dimens.d6)),
+   //               ),
+   //               child: Checkbox(
+   //                 value: value,
+   //                 checkColor: themeManager.colorThemed5,
+   //                 activeColor:
+   //                 themeManager.colorThemed5.withOpacity(Dimens.d0_05),
+   //                 onChanged: (value) {
+   //                   rememberMe.value = !rememberMe.value;
+   //                 },
+   //                 shape: const RoundedRectangleBorder(
+   //                   borderRadius:
+   //                   BorderRadius.all(Radius.circular(Dimens.d6)),
+   //                 ),
+   //               ),
+   //             );
+   //           },
+   //         ),
+   //         Dimens.d8.spaceWidth,
+   //         Text(
+   //           i10n.rememberMe,
+   //           style: Style.workSansRegular(color: themeManager.colorThemed7),
+   //         )
+   //       ],
+   //     ),
+   //   ),
+   // );
+
 }

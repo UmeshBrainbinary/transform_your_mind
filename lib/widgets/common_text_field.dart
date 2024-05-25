@@ -11,9 +11,9 @@ class CommonTextField extends StatefulWidget {
   final String? labelText;
   final TextEditingController controller;
   final FocusNode focusNode;
-  final String? prefixIcon;
+  final Widget? prefixIcon;
   final String? prefixLottieIcon;
-  final String? suffixIcon;
+  final Widget? suffixIcon;
   final String? suffixLottieIcon;
   final String? suffixLottieIcon2;
   final bool isAutoFocus;
@@ -175,38 +175,41 @@ class _CommonTextFieldState extends State<CommonTextField>
                     ? Dimens.d0
                     : Dimens.d10,
           ),
-          suffixIcon:
-          widget.showMultipleSuffix
-              ? Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _iconButton(widget.suffixIcon, widget.suffixTap2,
-                            widget.suffixLottieIcon2,
-                            multiIcon: true) ??
-                        const SizedBox.shrink(),
-                    _iconButton(widget.suffixIcon, widget.suffixTap,
-                            widget.suffixLottieIcon,
-                            multiIcon: true) ??
-                        const SizedBox.shrink(),
-                  ],
-                )
-              : (widget.suffixIcon != null || widget.suffixLottieIcon != null)
-                  ? _iconButton(widget.suffixIcon, widget.suffixTap,
-                      widget.suffixLottieIcon)
-                  : null,
-          prefixIcon: (widget.prefixIcon != null ||
-                  widget.prefixLottieIcon != null)
-              ? Container(
-                  transform:
-                      widget.transform ?? Matrix4.translationValues(0, 0, 0),
-                  child: _iconButton(widget.prefixIcon, widget.prefixTap,
-                      widget.prefixLottieIcon,
-                      heightFactor: widget.heightFactor),
-                )
-              : null,
+          prefixIcon: widget.prefixIcon,
+          suffixIcon: widget.suffixIcon,
+
+          // widget.showMultipleSuffix
+          //     ? Row(
+          //         mainAxisSize: MainAxisSize.min,
+          //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //         children: [
+          //           _iconButton(widget.suffixIcon, widget.suffixTap2,
+          //                   widget.suffixLottieIcon2,
+          //                   multiIcon: true) ??
+          //               const SizedBox.shrink(),
+          //           _iconButton(widget.suffixIcon, widget.suffixTap,
+          //                   widget.suffixLottieIcon,
+          //                   multiIcon: true) ??
+          //               const SizedBox.shrink(),
+          //         ],
+          //       )
+          //     : (widget.suffixIcon != null || widget.suffixLottieIcon != null)
+          //         ? _iconButton(widget.suffixIcon, widget.suffixTap,
+          //             widget.suffixLottieIcon)
+          //         : null,
+          // prefixIcon: (widget.prefixIcon != null ||
+          //         widget.prefixLottieIcon != null)
+          //     ? Container(
+          //         transform:
+          //             widget.transform ?? Matrix4.translationValues(0, 0, 0),
+          //         child: _iconButton(widget.prefixIcon, widget.prefixTap,
+          //             widget.prefixLottieIcon,
+          //             heightFactor: widget.heightFactor),
+          //       )
+          //     : null,
           prefix: widget.prefix,
-          suffix: widget.suffix),
+          suffix: widget.suffix
+      ),
       onSubmitted: (_) {
         if (widget.nextFocusNode != null) {
           if (FocusScope.of(context).canRequestFocus) {

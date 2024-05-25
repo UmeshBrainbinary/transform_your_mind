@@ -7,5 +7,6 @@ class LoginController extends GetxController{
   TextEditingController passwordController = TextEditingController();
 
   ValueNotifier<bool> securePass = ValueNotifier(true);
+  ValueNotifier<bool> rememberMe = ValueNotifier(false);
 
 }

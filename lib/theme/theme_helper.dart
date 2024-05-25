@@ -14,7 +14,7 @@ class AppTheme {
         textStyle: TextStyle(fontSize: 16.0),
       ),
     ),
-    backgroundColor: Colors.white,
+    //backgroundColor: Colors.white,
 
     scaffoldBackgroundColor: ColorConstant.backGround,
     textTheme: TextTheme(
@@ -27,7 +27,7 @@ class AppTheme {
     brightness: Brightness.dark,
     primaryColor: Colors.black,
     hintColor: Colors.tealAccent,
-    backgroundColor: Colors.black,
+    //backgroundColor: Colors.black,
     scaffoldBackgroundColor: Colors.black,
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
