@@ -23,5 +23,19 @@ class StringConstant {
 
   ///Forgot
   static String forgotP = "Forgot Password".tr;
+  static String verification = "Verification".tr;
+  static String enterVerification = "Enter verification code.".tr;
+  static String notReceiveCode = "If you didn’t receive a code, Resend".tr;
+  static String send = "Send".tr;
+  static String verify = "Verify".tr;
+  static String newPassword = "New Password".tr;
+  static String submit = "Submit".tr;
+  static String ok = "Ok".tr;
+  static String passwordChanged = "Password Changed!".tr;
+  static String yourPassword = "Your password has been changed successfully.".tr;
+  static String confirmPassword = "Confirm Password".tr;
+  static String enterNewPasswordHint = "Enter New password".tr;
+  static String enterConfirmPasswordHint = "Enter confirm password".tr;
+  static String enterNewPassword = "Enter new password and confirm password.".tr;
   static String forgotInstructions = "Enter the email address associated with your account.".tr;
 }
