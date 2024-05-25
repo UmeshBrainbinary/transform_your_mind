@@ -8,6 +8,8 @@ import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/string_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/auth/forgot_password_screen/forgot_controller.dart';
+import 'package:transform_your_mind/routes/app_routes.dart';
+import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
@@ -58,7 +60,6 @@ class ForgotPasswordScreen extends StatelessWidget {
                                         color: ColorConstant.color716B6B)),
                               ),
                               Dimens.d41.spaceHeight,
-
                               CommonTextField(
                                 labelText: StringConstant.email,
                                 hintText: StringConstant.enterEmail,
@@ -69,7 +70,11 @@ class ForgotPasswordScreen extends StatelessWidget {
                                 keyboardType: TextInputType.emailAddress,
                               ),
                               Dimens.d100.spaceHeight,
-
+                              CommonElevatedButton(title: StringConstant.send, onTap: () {
+                                Get.toNamed(
+                                  AppRoutes.verificationsScreen,
+                                );
+                              },)
                             ],
                           ),
                         ),
