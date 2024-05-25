@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
@@ -9,6 +10,7 @@ import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/string_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/auth/login_screen/login_controller.dart';
+import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
@@ -78,122 +80,49 @@ class LoginScreen extends StatelessWidget {
                                   ),
                                   Dimens.d8.h.spaceHeight,
 
-                                  _getRememberMeWidget,
+                                  _getRememberMeForgotPasswordWidget,
                                   Dimens.d8.h.spaceHeight,
-                                  // Row(
-                                  //   children: [
-                                  //     const Spacer(),
-                                  //     Padding(
-                                  //       padding: Dimens.d8.paddingVertical,
-                                  //       child: RichText(
-                                  //         text: TextSpan(
-                                  //           text: i10n.forgotPasswordQue,
-                                  //           style: Style.mockinacRegular(
-                                  //             fontSize: Dimens.d14,
-                                  //             color:
-                                  //             themeManager.colorThemed7,
-                                  //           ),
-                                  //           recognizer: TapGestureRecognizer()
-                                  //             ..onTap = () =>
-                                  //                 Navigator.pushNamed(
-                                  //                     context,
-                                  //                     ForgotPasswordPage
-                                  //                         .forgotPassword),
-                                  //         ),
-                                  //       ),
-                                  //     ),
-                                  //   ],
-                                  // ),
-                                  // Dimens.d24.h.spaceHeight,
-                                  //
-                                  // BlocBuilder<LoginBloc, LoginState>(
-                                  //   bloc: loginBloc,
-                                  //   builder: (context, state) {
-                                  //     return (_isLoading)
-                                  //         ? const LoadingButton()
-                                  //         : CommonElevatedButton(
-                                  //       title: i10n.login,
-                                  //       onTap: _doLogin,
-                                  //     );
-                                  //   },
-                                  // ),
-                                  // Dimens.d30.h.spaceHeight,
-                                  // Row(
-                                  //   children: [
-                                  //     const Expanded(child: DividerWidget()),
-                                  //     Padding(
-                                  //       padding:
-                                  //       const EdgeInsets.all(Dimens.d8),
-                                  //       child: Text(
-                                  //         i10n.or,
-                                  //         style: Style.mockinacRegular(
-                                  //           color: themeManager.colorThemed7,
-                                  //         ),
-                                  //       ),
-                                  //     ),
-                                  //     const Expanded(child: DividerWidget()),
-                                  //   ],
-                                  // ),
-                                  // Dimens.d30.h.spaceHeight,
-                                  // Row(
-                                  //   mainAxisAlignment:
-                                  //   MainAxisAlignment.center,
-                                  //   children: [
-                                  //     if (Platform.isIOS &&
-                                  //         _isiOSSignInAvailable)
-                                  //       LoginWithIconButton(
-                                  //         icon: AppAssets.icApple,
-                                  //         onTap: () {
-                                  //           _appleSigIn();
-                                  //         },
-                                  //       ),
-                                  //     Dimens.d16.spaceWidth,
-                                  //     LoginWithIconButton(
-                                  //       icon: AppAssets.icGoogle,
-                                  //       onTap: () {
-                                  //         _googleSignInOut();
-                                  //       },
-                                  //     ),
-                                  //     Dimens.d16.spaceWidth,
-                                  //     LoginWithIconButton(
-                                  //       icon: AppAssets.icFacebook,
-                                  //       onTap: () {
-                                  //         _faceBookSignIn();
-                                  //       },
-                                  //     ),
-                                  //   ],
-                                  // ),
-                                  // Dimens.d24.h.spaceHeight,
-                                  // const Spacer(),
-                                  // RichText(
-                                  //   text: TextSpan(
-                                  //     children: [
-                                  //       TextSpan(
-                                  //         text: i10n.newToTheApp,
-                                  //         style: Style.mockinacLight(
-                                  //           color: themeManager.colorThemed7,
-                                  //         ),
-                                  //       ),
-                                  //       const WidgetSpan(
-                                  //         child: Padding(
-                                  //             padding:
-                                  //             EdgeInsets.all(Dimens.d4)),
-                                  //       ),
-                                  //       TextSpan(
-                                  //         text: i10n.register,
-                                  //         style: Style.mockinacLight(
-                                  //           color: themeManager.colorThemed5,
-                                  //         ),
-                                  //         recognizer: TapGestureRecognizer()
-                                  //           ..onTap = () {
-                                  //             Navigator.pushReplacementNamed(
-                                  //                 context,
-                                  //                 RegisterPage.register);
-                                  //           },
-                                  //       ),
-                                  //     ],
-                                  //   ),
-                                  // ),
+
+                                  Dimens.d24.h.spaceHeight,
+
+                                  (loginController.loader.value)
+                                          ? const LoadingButton()
+                                          : CommonElevatedButton(
+                                        title: StringConstant.login,
+                                        onTap: (){},
+                                      ),
+
+
+                                   Dimens.d30.h.spaceHeight,
+
+
+                                  RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: "${StringConstant.doNotHaveAnAccount} ?",
+                                          style: Style.montserratRegular(
+
+                                          ),
+                                        ),
+                                        const WidgetSpan(
+                                          child: Padding(
+                                              padding:
+                                              EdgeInsets.all(Dimens.d4)),
+                                        ),
+                                        TextSpan(
+                                          text: StringConstant.register,
+                                          style: Style.montserratSemiBold(
+                                            color: ColorConstant.themeColor,
+                                          ),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () {
+                                              /// go to register screen
+                                            },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
 
                                 ],
                               ),
@@ -212,7 +141,7 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-   Widget get _getRememberMeWidget => GestureDetector(
+   Widget get _getRememberMeForgotPasswordWidget => GestureDetector(
      onTap: () => loginController.rememberMe.value = !loginController.rememberMe.value,
      child: Padding(
        padding: const EdgeInsets.symmetric(vertical: Dimens.d8),
@@ -254,7 +183,7 @@ class LoginScreen extends StatelessWidget {
            Spacer(),
            Text(
              "${StringConstant.forgotPassword} ?",
-             style: Style.montserratRegular(color: ColorConstant.themeColor, fontWeight: FontWeight.w300),
+             style: Style.montserratMedium(color: ColorConstant.themeColor),
            ),
          ],
        ),

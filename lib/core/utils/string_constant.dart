@@ -9,4 +9,7 @@ class StringConstant {
   static String enterPassword = "Enter password".tr;
   static String rememberMe = "Remember Me".tr;
   static String forgotPassword = "Forgot Password".tr;
+  static String login = "Login".tr;
+  static String doNotHaveAnAccount = "Don’t have an account".tr;
+  static String register = "Register".tr;
 }

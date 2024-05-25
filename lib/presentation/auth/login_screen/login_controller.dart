@@ -9,4 +9,6 @@ class LoginController extends GetxController{
   ValueNotifier<bool> securePass = ValueNotifier(true);
   ValueNotifier<bool> rememberMe = ValueNotifier(false);
 
+  RxBool loader = false.obs;
+
 }
