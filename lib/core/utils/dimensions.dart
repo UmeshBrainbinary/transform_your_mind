@@ -68,6 +68,7 @@ class Dimens {
   static const double d28 = 28;
   static const double d29 = 29;
   static const double d30 = 30;
+  static const double d31 = 30;
   static const double d32 = 32;
   static const double d32_5 = 32.5;
   static const double d33 = 33;
@@ -93,6 +94,7 @@ class Dimens {
   static const double d56 = 56;
   static const double d57 = 57;
   static const double d60 = 60;
+  static const double d61 = 61;
   static const double d62 = 62;
   static const double d63 = 63;
   static const double d64 = 64;
