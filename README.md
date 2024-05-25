@@ -5,6 +5,7 @@ A new Flutter project.
 ## Getting Started
 
 flutter sdk: 3.19.6 
+flutter sdk: 3.22.1 -> rk
 
 This project is a starting point for a Flutter application.
 
