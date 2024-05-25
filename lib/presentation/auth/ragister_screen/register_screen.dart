@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -11,9 +12,11 @@ import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/core/utils/validation_functions.dart';
 import 'package:transform_your_mind/presentation/auth/ragister_screen/register_controller.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
+import 'package:transform_your_mind/widgets/add_image.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
+import 'package:transform_your_mind/widgets/image_picker_action_sheet.dart';
 
 class RegisterScreen extends StatelessWidget {
    RegisterScreen({super.key});
@@ -27,7 +30,7 @@ class RegisterScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: ColorConstant.backGround,
       appBar: CustomAppBar(
-        title: StringConstant.login,
+        title: StringConstant.register,
       ),
       body: SafeArea(
           child: Stack(
@@ -37,11 +40,12 @@ class RegisterScreen extends StatelessWidget {
                 top: Dimens.d70.h,
                 right: null,
                 left:  0,
-                child: Transform.scale(
-
+                child: Transform.rotate(
+                  angle: 3.14,
                   child: Image.asset(ImageConstant.bgStar, height: Dimens.d274.h),
                 ),
               ),
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
                 child: LayoutBuilder(
@@ -59,6 +63,46 @@ class RegisterScreen extends StatelessWidget {
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
                                     Dimens.d100.h.spaceHeight,
+                                    ValueListenableBuilder(
+                                      valueListenable: registerController.imageFile,
+                                      builder: (context, value, child) {
+                                        return GestureDetector(
+                                          onTap: () async {
+                                            await showImagePickerActionSheet(context)
+                                                ?.then((value) async {
+                                              if (value != null) {
+
+                                                registerController.imageFile.value = value;
+                                              }
+                                            });
+                                          },
+                                          child: Container(
+                                            height: 30,
+                                            width: 80,
+                                            decoration: BoxDecoration(
+                                              color: ColorConstant.themeColor
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    Dimens.d16.h.spaceHeight,
+                                    CommonTextField(
+                                        labelText: StringConstant.name,
+                                        hintText: StringConstant.enterName,
+                                        controller: registerController.nameController,
+                                        focusNode: FocusNode(),
+                                        prefixIcon: SvgPicture.asset(ImageConstant.user, height: Dimens.d5, width: Dimens.d5),
+                                        keyboardType: TextInputType.emailAddress,
+                                        validator: (value) {
+                                          if (value == null ||
+                                              (!isText(value, isRequired: true))) {
+                                            return StringConstant.theNameFieldIsRequired;
+                                          }
+                                          return null;
+                                        }
+                                    ),
+                                    Dimens.d16.h.spaceHeight,
                                     CommonTextField(
                                         labelText: StringConstant.email,
                                         hintText: StringConstant.enterEmail,
@@ -74,7 +118,7 @@ class RegisterScreen extends StatelessWidget {
                                           return null;
                                         }
                                     ),
-                                    Dimens.d24.h.spaceHeight,
+                                    Dimens.d16.h.spaceHeight,
                                     ValueListenableBuilder(
                                       valueListenable: registerController.securePass,
                                       builder: (context, value, child) {
@@ -114,7 +158,7 @@ class RegisterScreen extends StatelessWidget {
                                           () =>  (registerController.loader.value)
                                           ? const LoadingButton()
                                           : CommonElevatedButton(
-                                        title: StringConstant.login,
+                                        title: StringConstant.register,
                                         onTap: () async{
 
                                           FocusScope.of(context).unfocus();

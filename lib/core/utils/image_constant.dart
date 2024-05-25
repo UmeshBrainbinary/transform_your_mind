@@ -15,6 +15,6 @@ class ImageConstant {
  static String eyeOpen = '$iconPath/eyeOpen.png';
  static String backArrow = '$iconPath/backArrow.png';
  static String passwordCheck = '$iconPath/password_check.svg';
-
+ static String user = '$iconPath/user.svg';
 
 }
