@@ -5,6 +5,8 @@ import 'package:transform_your_mind/presentation/auth/forgot_password_screen/for
 import 'package:transform_your_mind/presentation/auth/login_screen/binding/login_binding.dart';
 import 'package:transform_your_mind/presentation/auth/login_screen/login_controller.dart';
 import 'package:transform_your_mind/presentation/auth/login_screen/login_screen.dart';
+import 'package:transform_your_mind/presentation/auth/ragister_screen/binding/register_binding.dart';
+import 'package:transform_your_mind/presentation/auth/ragister_screen/register_screen.dart';
 import 'package:transform_your_mind/presentation/splash_screen/binding/splash_binding.dart';
 import 'package:transform_your_mind/presentation/splash_screen/splash_screen.dart';
 
@@ -13,7 +15,7 @@ class AppRoutes {
 
   static const String splashScreen = '/splash_screen';
 
-  static const String addPhotosScreen = '/add_photos_screen';
+  static const String registerScreen = '/register_screen';
 
   static const String successPopupScreen = '/success_popup_screen';
 
@@ -52,7 +54,14 @@ class AppRoutes {
     ),
 
 
-
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: registerScreen,
+      page: () => RegisterScreen(),
+      bindings: [
+        RegisterBinding(),
+      ],
+    ),
 
     GetPage(
       transition: Transition.rightToLeft,

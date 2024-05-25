@@ -22,6 +22,8 @@ class StringConstant {
 
 
 
+
+
   ///Forgot
   static String forgotP = "Forgot Password".tr;
   static String forgotInstructions = "Enter the email address associated with your account.".tr;

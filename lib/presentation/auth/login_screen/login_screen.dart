@@ -11,6 +11,7 @@ import 'package:transform_your_mind/core/utils/string_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/core/utils/validation_functions.dart';
 import 'package:transform_your_mind/presentation/auth/login_screen/login_controller.dart';
+import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
@@ -27,7 +28,7 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: ColorConstant.backGround,
       appBar: CustomAppBar(
-        title: "Login",
+        title: StringConstant.login,
       ),
       body: SafeArea(
           child: Stack(
@@ -106,11 +107,8 @@ class LoginScreen extends StatelessWidget {
                                      },
                                    ),
                                    Dimens.d20.h.spaceHeight,
-
                                    _getRememberMeForgotPasswordWidget,
-
                                    Dimens.d80.h.spaceHeight,
-
                                    Obx(
                                          () =>  (loginController.loader.value)
                                          ? const LoadingButton()
@@ -129,11 +127,7 @@ class LoginScreen extends StatelessWidget {
                                        },
                                      ),
                                    ),
-
-
                                    Dimens.d30.h.spaceHeight,
-
-
                                    RichText(
                                      text: TextSpan(
                                        children: [
@@ -155,7 +149,9 @@ class LoginScreen extends StatelessWidget {
                                            ),
                                            recognizer: TapGestureRecognizer()
                                              ..onTap = () {
-                                               /// go to register screen
+                                               Get.toNamed(
+                                                 AppRoutes.registerScreen,
+                                               );
                                              },
                                          ),
                                        ],

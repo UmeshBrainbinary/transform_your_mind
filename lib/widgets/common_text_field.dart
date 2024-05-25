@@ -155,7 +155,7 @@ class _CommonTextFieldState extends State<CommonTextField>
       validator: widget.validator,
       enabled: widget.enabled,
       style: widget.textStyle ??
-          Style.montserratMedium(),
+          Style.montserratMedium(fontSize: Dimens.d12),
 
       decoration: InputDecoration(
           alignLabelWithHint: true,
