@@ -7,11 +7,13 @@ class ColorConstant {
   static const hintText = Color(0XFF545454);
   static const backGround = Color(0XFFE8F4F8);
   static const transparent = Colors.transparent;
+  static const themeColor = Color(0XFF769AA3);
 
-  static const color769aa3 = Color(0XFF769aa3);
   static const colorbfd0d4 = Color(0XFFbfd0d4);
   static const colorebebeb = Color(0XFFebebeb);
   static const color4f4f4f = Color(0XFF4f4f4f);
+  static const color545454 = Color(0XFF545454);
+
 
 
 

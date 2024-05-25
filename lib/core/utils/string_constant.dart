@@ -7,4 +7,5 @@ class StringConstant {
   static  String enterEmail = "Enter email".tr;
   static String password = "Password".tr;
   static String enterPassword = "Enter password".tr;
+  static String rememberMe = "Remember Me".tr;
 }

@@ -4,6 +4,7 @@ final Map<String, String> enUs = {
   "Email": "Email",
   "Enter Email": "Enter Email",
   "Password": "Password",
-  "Enter password": "Enter password"
+  "Enter password": "Enter password",
+  "Remember Me": "Remember Me",
 
 };

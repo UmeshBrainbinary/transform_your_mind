@@ -7,6 +7,7 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/string_constant.dart';
+import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/auth/login_screen/login_controller.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
@@ -67,7 +68,6 @@ class LoginScreen extends StatelessWidget {
                                         hintText: StringConstant.enterPassword,
                                         controller: loginController.passwordController,
                                         focusNode: FocusNode(),
-
                                         prefixIcon: Image.asset(ImageConstant.lock, scale: Dimens.d4),
                                          suffixIcon: value ? Image.asset(ImageConstant.eyeOpen, scale: Dimens.d4) : Image.asset(ImageConstant.eyeClose, scale: Dimens.d4) ,
                                          isSecure: value,
@@ -78,8 +78,8 @@ class LoginScreen extends StatelessWidget {
                                   ),
                                   Dimens.d8.h.spaceHeight,
 
-                                  // _getRememberMeWidget,
-                                  // Dimens.d8.h.spaceHeight,
+                                  _getRememberMeWidget,
+                                  Dimens.d8.h.spaceHeight,
                                   // Row(
                                   //   children: [
                                   //     const Spacer(),
@@ -212,51 +212,50 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-   // Widget get _getRememberMeWidget => GestureDetector(
-   //   onTap: () => loginController.rememberMe.value = !loginController.rememberMe.value,
-   //   child: Padding(
-   //     padding: const EdgeInsets.symmetric(vertical: Dimens.d8),
-   //     child: Row(
-   //       children: [
-   //         ValueListenableBuilder(
-   //           valueListenable: loginController.rememberMe,
-   //           builder: (context, value, child) {
-   //             return Container(
-   //               height: Dimens.d20,
-   //               width: Dimens.d20,
-   //               decoration: BoxDecoration(
-   //                 border: Border.all(
-   //                     color: loginController.rememberMe.value
-   //                         ? themeManager.colorThemed5
-   //                         : AppColors.unSelectedCheckBox,
-   //                     width: Dimens.d1),
-   //                 borderRadius:
-   //                 const BorderRadius.all(Radius.circular(Dimens.d6)),
-   //               ),
-   //               child: Checkbox(
-   //                 value: value,
-   //                 checkColor: themeManager.colorThemed5,
-   //                 activeColor:
-   //                 themeManager.colorThemed5.withOpacity(Dimens.d0_05),
-   //                 onChanged: (value) {
-   //                   rememberMe.value = !rememberMe.value;
-   //                 },
-   //                 shape: const RoundedRectangleBorder(
-   //                   borderRadius:
-   //                   BorderRadius.all(Radius.circular(Dimens.d6)),
-   //                 ),
-   //               ),
-   //             );
-   //           },
-   //         ),
-   //         Dimens.d8.spaceWidth,
-   //         Text(
-   //           i10n.rememberMe,
-   //           style: Style.workSansRegular(color: themeManager.colorThemed7),
-   //         )
-   //       ],
-   //     ),
-   //   ),
-   // );
+   Widget get _getRememberMeWidget => GestureDetector(
+     onTap: () => loginController.rememberMe.value = !loginController.rememberMe.value,
+     child: Padding(
+       padding: const EdgeInsets.symmetric(vertical: Dimens.d8),
+       child: Row(
+         children: [
+           ValueListenableBuilder(
+             valueListenable: loginController.rememberMe,
+             builder: (context, value, child) {
+               return Container(
+                 height: Dimens.d20,
+                 width: Dimens.d20,
+                 decoration: BoxDecoration(
+                   border: Border.all(
+                       color: loginController.rememberMe.value
+                           ? ColorConstant.themeColor
+                           : ColorConstant.color545454,
+                       width: Dimens.d1),
+                   borderRadius:
+                   const BorderRadius.all(Radius.circular(Dimens.d6)),
+                 ),
+                 child: Checkbox(
+                   value: value,
+                   checkColor: ColorConstant.themeColor,
+                   activeColor: ColorConstant.themeColor.withOpacity(Dimens.d0_05),
+                   onChanged: (value) {
+                     loginController.rememberMe.value = !loginController.rememberMe.value;
+                   },
+                   shape: const RoundedRectangleBorder(
+                     borderRadius:
+                     BorderRadius.all(Radius.circular(Dimens.d6)),
+                   ),
+                 ),
+               );
+             },
+           ),
+           Dimens.d8.spaceWidth,
+           Text(
+             StringConstant.rememberMe,
+             style: Style.montserratRegular(color: ColorConstant.color545454),
+           )
+         ],
+       ),
+     ),
+   );
 
 }
