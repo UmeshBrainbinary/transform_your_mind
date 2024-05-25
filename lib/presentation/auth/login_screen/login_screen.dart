@@ -221,29 +221,27 @@ class LoginScreen extends StatelessWidget {
            ValueListenableBuilder(
              valueListenable: loginController.rememberMe,
              builder: (context, value, child) {
-               return Container(
-                 height: Dimens.d20,
-                 width: Dimens.d20,
-                 decoration: BoxDecoration(
-                   border: Border.all(
-                       color: loginController.rememberMe.value
-                           ? ColorConstant.themeColor
-                           : ColorConstant.color545454,
-                       width: Dimens.d1),
-                   borderRadius:
-                   const BorderRadius.all(Radius.circular(Dimens.d6)),
-                 ),
-                 child: Checkbox(
-                   value: value,
-                   checkColor: ColorConstant.themeColor,
-                   activeColor: ColorConstant.themeColor.withOpacity(Dimens.d0_05),
-                   onChanged: (value) {
-                     loginController.rememberMe.value = !loginController.rememberMe.value;
-                   },
-                   shape: const RoundedRectangleBorder(
+               return GestureDetector(
+                 onTap: (){
+                   loginController.rememberMe.value = !loginController.rememberMe.value;
+                 },
+                 child: Container(
+                   height: Dimens.d20,
+                   width: Dimens.d20,
+                   alignment: Alignment.center,
+                   decoration: BoxDecoration(
+                     border: Border.all(
+                         color: loginController.rememberMe.value
+                             ? ColorConstant.themeColor
+                             : ColorConstant.color545454,
+                         width: Dimens.d1),
                      borderRadius:
-                     BorderRadius.all(Radius.circular(Dimens.d6)),
+                     const BorderRadius.all(Radius.circular(Dimens.d3)),
+                     color: ColorConstant.white
                    ),
+                   child: loginController.rememberMe.value  ? Icon(Icons.check, color: ColorConstant.themeColor, size: Dimens.d12) : SizedBox(),
+
+
                  ),
                );
              },
@@ -251,7 +249,7 @@ class LoginScreen extends StatelessWidget {
            Dimens.d8.spaceWidth,
            Text(
              StringConstant.rememberMe,
-             style: Style.montserratRegular(color: ColorConstant.color545454),
+             style: Style.montserratRegular(color: ColorConstant.color545454, fontWeight: FontWeight.w200),
            )
          ],
        ),
