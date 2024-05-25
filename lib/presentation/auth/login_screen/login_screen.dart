@@ -77,7 +77,7 @@ class LoginScreen extends StatelessWidget {
                                            onTap: (){
                                              loginController.securePass.value = !loginController.securePass.value;
                                            },
-                                             child: Image.asset(ImageConstant.eyeClose, scale: Dimens.d3))
+                                             child: Image.asset(ImageConstant.eyeClose, scale: Dimens.d5))
 
                                              : GestureDetector(
                                            onTap: (){
