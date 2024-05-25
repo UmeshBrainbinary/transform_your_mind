@@ -57,7 +57,7 @@ class _CustomAppBarState extends State<CustomAppBar>
       centerTitle: widget.centerTitle,
       title: Text(widget.title,
           style: widget.titleStyle ??
-              Style.cormorantGaramondMedium(fontSize: Dimens.d20)),
+              Style.cormorantGaramondBold(fontSize: Dimens.d30)),
       backgroundColor: ColorConstant.transparent,
       leading: widget.leading ?? _getLeading(),
       automaticallyImplyLeading: false,
@@ -76,13 +76,21 @@ class _CustomAppBarState extends State<CustomAppBar>
             Get.back();
           },
       child: Container(
-        height: 43.v,
-        width: 43.h,
-        margin: EdgeInsets.only(left: 21.h,top: 10.h,bottom: 10.h),
+        height: 48.v,
+        width: 48.h,
+        margin: EdgeInsets.only(left: 21.h,top: 15.h,bottom: 10.h),
         alignment: Alignment.center,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(Dimens.d5),
-            color: ColorConstant.white),
+            color: ColorConstant.white,
+            boxShadow: [
+              BoxShadow(
+                color: ColorConstant.color8BA4E5.withOpacity(0.25),
+                blurRadius: 10.0,
+                spreadRadius: 2.0,
+              ),
+            ]
+        ),
         child: Center(child: Image.asset(ImageConstant.backArrow, height: 25.h,width: 25.h,)),
       ),
     );

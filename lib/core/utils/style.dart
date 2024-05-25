@@ -94,7 +94,7 @@ class Style {
 
   static TextStyle cormorantGaramondBold({
     Color color = ColorConstant.black,
-    FontWeight fontWeight = FontWeight.w700,
+    FontWeight fontWeight = FontWeight.bold,
     FontStyle fontStyle = FontStyle.normal,
     double? fontSize,
     double? height,

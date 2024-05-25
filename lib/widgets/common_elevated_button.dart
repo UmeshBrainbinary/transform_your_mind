@@ -81,7 +81,7 @@ class _CommonElevatedButtonState extends State<CommonElevatedButton> {
                 widget.title,
                 textAlign: TextAlign.center,
                 style: widget.textStyle ??
-                    Style.cormorantGaramondSemiBold(color: ColorConstant.white),
+                    Style.cormorantGaramondBold(fontSize: Dimens.d23, color: ColorConstant.white),
               ),
             ],
           ),
@@ -99,7 +99,7 @@ class LoadingButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: Dimens.d46.h,
+      height: Dimens.d48.h,
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: ColorConstant.transparent,

@@ -51,7 +51,7 @@ class LoginScreen extends StatelessWidget {
                               child: Column(
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  Dimens.d10.h.spaceHeight,
+                                  Dimens.d100.h.spaceHeight,
                                   CommonTextField(
                                     labelText: StringConstant.email,
                                     hintText: StringConstant.enterEmail,
@@ -61,7 +61,7 @@ class LoginScreen extends StatelessWidget {
                                     prefixIcon: Image.asset(ImageConstant.email, scale: Dimens.d4),
                                     keyboardType: TextInputType.emailAddress,
                                   ),
-                                  Dimens.d16.h.spaceHeight,
+                                  Dimens.d24.h.spaceHeight,
                                   ValueListenableBuilder(
                                     valueListenable: loginController.securePass,
                                     builder: (context, value, child) {
@@ -69,28 +69,43 @@ class LoginScreen extends StatelessWidget {
                                         labelText: StringConstant.password,
                                         hintText: StringConstant.enterPassword,
                                         controller: loginController.passwordController,
+
                                         focusNode: FocusNode(),
                                         prefixIcon: Image.asset(ImageConstant.lock, scale: Dimens.d4),
-                                         suffixIcon: value ? Image.asset(ImageConstant.eyeOpen, scale: Dimens.d4) : Image.asset(ImageConstant.eyeClose, scale: Dimens.d4) ,
+                                         suffixIcon: loginController.securePass.value
+                                             ? GestureDetector(
+                                           onTap: (){
+                                             loginController.securePass.value = !loginController.securePass.value;
+                                           },
+                                             child: Image.asset(ImageConstant.eyeClose, scale: Dimens.d3))
+
+                                             : GestureDetector(
+                                           onTap: (){
+                                             loginController.securePass.value = !loginController.securePass.value;
+                                           },
+                                             child:   Image.asset(ImageConstant.eyeOpen, scale: Dimens.d4)),
                                          isSecure: value,
-                                         suffixTap: () => loginController.securePass.value = !loginController.securePass.value,
+                                         //suffixTap: () => loginController.securePass.value = !loginController.securePass.value,
                                         textInputAction: TextInputAction.done,
                                       );
                                     },
                                   ),
-                                  Dimens.d8.h.spaceHeight,
+                                  Dimens.d20.h.spaceHeight,
 
                                   _getRememberMeForgotPasswordWidget,
-                                  Dimens.d8.h.spaceHeight,
 
-                                  Dimens.d24.h.spaceHeight,
+                                  Dimens.d80.h.spaceHeight,
 
-                                  (loginController.loader.value)
-                                          ? const LoadingButton()
-                                          : CommonElevatedButton(
-                                        title: StringConstant.login,
-                                        onTap: (){},
-                                      ),
+                                 Obx(
+                                     () =>  (loginController.loader.value)
+                                         ? const LoadingButton()
+                                         : CommonElevatedButton(
+                                       title: StringConstant.login,
+                                       onTap: (){
+
+                                       },
+                                     ),
+                                 ),
 
 
                                    Dimens.d30.h.spaceHeight,

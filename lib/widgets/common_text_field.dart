@@ -44,6 +44,7 @@ class CommonTextField extends StatefulWidget {
   final Matrix4? transform;
   final ValueChanged<String>? onChanged;
 
+
   const CommonTextField(
       {Key? key,
       required this.hintText,
@@ -81,7 +82,9 @@ class CommonTextField extends StatefulWidget {
       this.filledColor = Colors.white,
       this.suffixTap2,
       this.heightFactor = 2.1,
-      this.transform})
+      this.transform,
+
+      })
       : super(key: key);
 
   @override
