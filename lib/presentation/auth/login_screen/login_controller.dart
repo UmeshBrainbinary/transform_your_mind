@@ -11,4 +11,6 @@ class LoginController extends GetxController{
 
   RxBool loader = false.obs;
 
+
+
 }

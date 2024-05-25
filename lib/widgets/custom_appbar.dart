@@ -76,8 +76,8 @@ class _CustomAppBarState extends State<CustomAppBar>
             Get.back();
           },
       child: Container(
-        height: 48.v,
-        width: 48.h,
+        height: Dimens.d50,
+        width: Dimens.d50,
         margin: EdgeInsets.only(left: 21.h,top: 15.h,bottom: 10.h),
         alignment: Alignment.center,
         decoration: BoxDecoration(

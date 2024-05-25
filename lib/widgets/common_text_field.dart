@@ -43,6 +43,7 @@ class CommonTextField extends StatefulWidget {
   final Color? filledColor;
   final Matrix4? transform;
   final ValueChanged<String>? onChanged;
+  final FormFieldValidator<String>? validator;
 
 
   const CommonTextField(
@@ -83,7 +84,7 @@ class CommonTextField extends StatefulWidget {
       this.suffixTap2,
       this.heightFactor = 2.1,
       this.transform,
-
+      this.validator,
       })
       : super(key: key);
 
@@ -126,7 +127,7 @@ class _CommonTextFieldState extends State<CommonTextField>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(widget.labelText!,
-              style: widget.labelStyle ?? Style.montserratRegular(fontSize: 14,fontWeight: FontWeight.w500,)),
+              style: widget.labelStyle ?? Style.montserratMedium(fontSize: 14)),
           Dimens.d10.spaceHeight,
           _textField()
         ],
@@ -137,7 +138,7 @@ class _CommonTextFieldState extends State<CommonTextField>
   }
 
   Widget _textField() {
-    return TextField(
+    return TextFormField(
       focusNode: widget.focusNode,
       controller: widget.controller,
       autofocus: widget.isAutoFocus,
@@ -151,9 +152,11 @@ class _CommonTextFieldState extends State<CommonTextField>
           : TextCapitalization.sentences,
       textAlignVertical: TextAlignVertical.center,
       expands: false,
+      validator: widget.validator,
       enabled: widget.enabled,
       style: widget.textStyle ??
-          Style.montserratRegular(),
+          Style.montserratMedium(),
+
       decoration: InputDecoration(
           alignLabelWithHint: true,
           isDense: true,
@@ -181,7 +184,6 @@ class _CommonTextFieldState extends State<CommonTextField>
           ),
           prefixIcon: widget.prefixIcon,
           suffixIcon: widget.suffixIcon,
-
           // widget.showMultipleSuffix
           //     ? Row(
           //         mainAxisSize: MainAxisSize.min,
@@ -212,15 +214,11 @@ class _CommonTextFieldState extends State<CommonTextField>
           //       )
           //     : null,
           prefix: widget.prefix,
-          suffix: widget.suffix
+          suffix: widget.suffix,
+
+        errorStyle: Style.montserratRegular(color: ColorConstant.colorFF0000, fontSize: Dimens.d12),
       ),
-      onSubmitted: (_) {
-        if (widget.nextFocusNode != null) {
-          if (FocusScope.of(context).canRequestFocus) {
-            FocusScope.of(context).requestFocus(widget.nextFocusNode);
-          }
-        }
-      },
+
       onTap: widget.onTap,
       readOnly: widget.readOnly,
       minLines: widget.minLines,
@@ -228,6 +226,7 @@ class _CommonTextFieldState extends State<CommonTextField>
       maxLength: widget.maxLength,
       maxLengthEnforcement: MaxLengthEnforcement.enforced,
       onChanged: widget.onChanged,
+
     );
   }
 

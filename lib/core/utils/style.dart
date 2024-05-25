@@ -40,7 +40,7 @@ class Style {
 
   static TextStyle montserratMedium({
     Color color = ColorConstant.black,
-    FontWeight fontWeight = FontWeight.w500,
+    FontWeight fontWeight = FontWeight.w600,
     FontStyle fontStyle = FontStyle.normal,
     double? fontSize,
     double? height,
