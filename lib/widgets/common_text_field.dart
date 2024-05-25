@@ -161,8 +161,7 @@ class _CommonTextFieldState extends State<CommonTextField>
           hintStyle: widget.hintStyle ??
               Style.montserratRegular(
                 color: ColorConstant.hintText,
-                fontWeight: FontWeight.w100
-               fontSize: 12
+                fontWeight: FontWeight.w100,fontSize: Dimens.d12
               ),
           border: OutlineInputBorder(
             borderSide: BorderSide.none,
