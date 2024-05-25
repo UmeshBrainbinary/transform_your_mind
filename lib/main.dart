@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
+import 'package:transform_your_mind/localization/app_translation.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/theme/theme_helper.dart';
@@ -13,6 +14,7 @@ import 'localization/app_localization.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await AppTranslations.loadTranslations(); // Ensure translations are loaded
 
   await PrefService.init();
 
@@ -22,6 +24,12 @@ Future<void> main() async {
     runApp(MyApp());
   });
 
+
+ //var locale = const Locale('es', 'ES');
+ //Get.updateLocale(locale);
+  
+ //var locale = const Locale('en', 'US');
+ //Get.updateLocale(locale);
 }
 
 class MyApp extends StatefulWidget {
@@ -47,14 +55,13 @@ class _MyAppState extends State<MyApp> {
     return  Obx(
       () =>
        GetMaterialApp(
-
-        debugShowCheckedModeBanner: false,
+         debugShowCheckedModeBanner: false,
         // theme: ThemeData.light(),
         // darkTheme: ThemeData.dark(),
         theme: !themeController.isDarkMode.value ? AppTheme.darkTheme : AppTheme.lightTheme,
-        translations: AppLocalization(),
-        locale: Get.deviceLocale,
-        fallbackLocale: Locale('en', 'US'),
+         translations: AppTranslations(),
+         locale: Locale('en', 'US'),
+         fallbackLocale: Locale('en', 'US'),
         title: 'Transform Your Mind',
         initialBinding: InitialBindings(),
         initialRoute: AppRoutes.initialRoute,
