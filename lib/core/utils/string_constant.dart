@@ -8,4 +8,5 @@ class StringConstant {
   static String password = "Password".tr;
   static String enterPassword = "Enter password".tr;
   static String rememberMe = "Remember Me".tr;
+  static String forgotPassword = "Forgot Password".tr;
 }
