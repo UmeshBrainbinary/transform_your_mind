@@ -67,6 +67,8 @@ flutter:
     - assets/
     - assets/images/
     - assets/icons/
+    - assets/icons/explore/
+    - assets/icons/dashboard/
     - assets/lang/
   fonts:
     - family: Montserrat-bold
