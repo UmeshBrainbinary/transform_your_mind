@@ -5,8 +5,8 @@ import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
-
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
@@ -55,10 +55,9 @@ class _CustomAppBarState extends State<CustomAppBar>
   Widget build(BuildContext context) {
     return AppBar(
       centerTitle: widget.centerTitle,
-
       title: Text(widget.title,
-          style:
-              widget.titleStyle ?? Style.cormorantGaramondMedium(fontSize: Dimens.d25)),
+          style: widget.titleStyle ??
+              Style.cormorantGaramondMedium(fontSize: Dimens.d20)),
       backgroundColor: ColorConstant.transparent,
       leading: widget.leading ?? _getLeading(),
       automaticallyImplyLeading: false,
@@ -67,32 +66,26 @@ class _CustomAppBarState extends State<CustomAppBar>
       ],
       elevation: 0,
       systemOverlayStyle: SystemUiOverlayStyle.dark,
-
     );
   }
 
   Widget _getLeading() {
-
-
-      return InkWell(
-        borderRadius: Dimens.d28.radiusAll,
-        onTap: widget.onTap ??
-            () {
-              Get.back();
-            },
-        child: Container(
-          height: Dimens.d15,
-          width: Dimens.d15,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(Dimens.d10),
-            color: ColorConstant.white
-          ),
-          child: Image.asset(ImageConstant.backArrow, scale: Dimens.d4),
-        ),
-      );
-
-
+    return InkWell(
+      onTap: widget.onTap ??
+          () {
+            Get.back();
+          },
+      child: Container(
+        height: 43.v,
+        width: 43.h,
+        margin: EdgeInsets.only(left: 21.h,top: 10.h,bottom: 10.h),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(Dimens.d5),
+            color: ColorConstant.white),
+        child: Center(child: Image.asset(ImageConstant.backArrow, height: 25.h,width: 25.h,)),
+      ),
+    );
   }
 
   Widget _getAction() {

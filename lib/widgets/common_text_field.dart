@@ -123,7 +123,7 @@ class _CommonTextFieldState extends State<CommonTextField>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(widget.labelText!,
-              style: widget.labelStyle ?? Style.montserratRegular(fontWeight: FontWeight.w600)),
+              style: widget.labelStyle ?? Style.montserratRegular(fontSize: 14,fontWeight: FontWeight.w500,)),
           Dimens.d10.spaceHeight,
           _textField()
         ],
@@ -162,6 +162,7 @@ class _CommonTextFieldState extends State<CommonTextField>
               Style.montserratRegular(
                 color: ColorConstant.hintText,
                 fontWeight: FontWeight.w100
+               fontSize: 12
               ),
           border: OutlineInputBorder(
             borderSide: BorderSide.none,

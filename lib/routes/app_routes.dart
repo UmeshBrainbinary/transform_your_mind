@@ -1,5 +1,7 @@
 
 import 'package:get/get.dart';
+import 'package:transform_your_mind/presentation/auth/forgot_password_screen/binding/forgot_binding.dart';
+import 'package:transform_your_mind/presentation/auth/forgot_password_screen/forgot_password_screen.dart';
 import 'package:transform_your_mind/presentation/auth/login_screen/binding/login_binding.dart';
 import 'package:transform_your_mind/presentation/auth/login_screen/login_controller.dart';
 import 'package:transform_your_mind/presentation/auth/login_screen/login_screen.dart';
@@ -16,6 +18,7 @@ class AppRoutes {
   static const String successPopupScreen = '/success_popup_screen';
 
   static const String appNavigationScreen = '/app_navigation_screen';
+  static const String forgotScreen = '/forgotScreen';
 
   static const String initialRoute = '/initialRoute';
 
@@ -45,6 +48,18 @@ class AppRoutes {
       page: () => LoginScreen(),
       bindings: [
         LoginBinding(),
+      ],
+    ),
+
+
+
+
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: forgotScreen,
+      page: () => ForgotPasswordScreen(),
+      bindings: [
+        ForgotBinding(),
       ],
     ),
 

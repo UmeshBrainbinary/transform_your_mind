@@ -12,4 +12,16 @@ class StringConstant {
   static String login = "Login".tr;
   static String doNotHaveAnAccount = "Don’t have an account".tr;
   static String register = "Register".tr;
+
+
+
+
+
+
+
+
+
+  ///Forgot
+  static String forgotP = "Forgot Password".tr;
+  static String forgotInstructions = "Enter the email address associated with your account.".tr;
 }
