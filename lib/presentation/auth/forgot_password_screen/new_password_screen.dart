@@ -113,8 +113,7 @@ class NewPasswordScreen extends StatelessWidget {
           ),
           actions: <Widget>[
             Dimens.d27.spaceHeight,
-            Center(child: SvgPicture.asset(ImageConstant.passwordCheck,height: Dimens.d100,
-            width: Dimens.d100,)),
+            Center(child: SvgPicture.asset(ImageConstant.passwordCheck,height: Dimens.d100, width: Dimens.d100,)),
             Dimens.d8.spaceHeight,
 
             Center(

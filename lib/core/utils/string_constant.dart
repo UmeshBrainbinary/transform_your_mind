@@ -16,10 +16,11 @@ class StringConstant {
   static String thePasswordFieldIsRequired = "The password field is required";
 
 
-
-
-
-
+  /// REGISTER
+  static String name = "Name".tr;
+  static String enterName = "Enter name".tr;
+  static String theNameFieldIsRequired = "The name field is required.";
+  static String addProfileImage = "Add Profile Image";
 
 
 

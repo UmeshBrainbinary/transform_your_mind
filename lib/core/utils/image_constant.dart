@@ -7,6 +7,7 @@ class ImageConstant {
   /// images
   static String splashLogo = '$imagePath/splashLogo.png';
   static String bgStar = '$imagePath/bgStar.png';
+  static String userPlaceHolder = '$imagePath/userPlaceHolder.svg';
 
    /// icons
  static String email = '$iconPath/email.png';
@@ -15,6 +16,9 @@ class ImageConstant {
  static String eyeOpen = '$iconPath/eyeOpen.png';
  static String backArrow = '$iconPath/backArrow.png';
  static String passwordCheck = '$iconPath/password_check.svg';
-
+ static String user = '$iconPath/user.svg';
+ static String calendar = '$iconPath/calendar.svg';
+  static String gender = '$iconPath/gender.svg';
+  static String downArrow = '$iconPath/downArrow.svg';
 
 }

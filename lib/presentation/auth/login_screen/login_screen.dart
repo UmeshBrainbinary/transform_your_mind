@@ -216,9 +216,16 @@ class LoginScreen extends StatelessWidget {
              style: Style.montserratRegular(color: ColorConstant.color545454, fontWeight: FontWeight.w100),
            ),
            Spacer(),
-           Text(
-             "${StringConstant.forgotPassword} ?",
-             style: Style.montserratMedium(color: ColorConstant.themeColor),
+           InkWell(
+             onTap: (){
+               Get.toNamed(
+                 AppRoutes.forgotScreen,
+               );
+             },
+             child: Text(
+               "${StringConstant.forgotPassword} ?",
+               style: Style.montserratMedium(color: ColorConstant.themeColor),
+             ),
            ),
          ],
        ),
