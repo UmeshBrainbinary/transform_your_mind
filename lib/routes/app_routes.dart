@@ -9,8 +9,18 @@ import 'package:transform_your_mind/presentation/auth/login_screen/login_control
 import 'package:transform_your_mind/presentation/auth/login_screen/login_screen.dart';
 import 'package:transform_your_mind/presentation/auth/ragister_screen/binding/register_binding.dart';
 import 'package:transform_your_mind/presentation/auth/ragister_screen/register_screen.dart';
+import 'package:transform_your_mind/presentation/dash_board_screen/binding/dash_board_binding.dart';
+import 'package:transform_your_mind/presentation/dash_board_screen/dash_board_screen.dart';
+import 'package:transform_your_mind/presentation/explore_screen/binding/explore_binding.dart';
+import 'package:transform_your_mind/presentation/explore_screen/explore_screen.dart';
+import 'package:transform_your_mind/presentation/home_screen/binding/home_binding.dart';
+import 'package:transform_your_mind/presentation/home_screen/home_screen.dart';
+import 'package:transform_your_mind/presentation/me_screen/binding/me_binding.dart';
+import 'package:transform_your_mind/presentation/me_screen/me_screen.dart';
 import 'package:transform_your_mind/presentation/splash_screen/binding/splash_binding.dart';
 import 'package:transform_your_mind/presentation/splash_screen/splash_screen.dart';
+import 'package:transform_your_mind/presentation/tools_screen/binding/tools_binding.dart';
+import 'package:transform_your_mind/presentation/tools_screen/tools_screen.dart';
 
 class AppRoutes {
   static const String loginScreen = '/login_screen';
@@ -25,6 +35,11 @@ class AppRoutes {
   static const String forgotScreen = '/forgotScreen';
   static const String verificationsScreen = '/verificationsScreen';
   static const String newPasswordScreen = '/newPasswordScreen';
+  static const String dashBoardScreen = '/dashBoardScreen';
+  static const String meScreen = '/meScreen';
+  static const String homeScreen = '/homeScreen';
+  static const String exploreScreen = '/exploreScreen';
+  static const String toolsScreen = '/toolsScreen';
 
   static const String initialRoute = '/initialRoute';
 
@@ -90,6 +105,45 @@ class AppRoutes {
       page: () => NewPasswordScreen(),
       bindings: [
         ForgotBinding(),
+      ],
+    ),
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: dashBoardScreen,
+      page: () => const DashBoardScreen(),
+      bindings: [
+        DashBoardBinding(),
+      ],
+    ),
+   GetPage(
+      transition: Transition.rightToLeft,
+      name: meScreen,
+      page: () => const MeScreen(),
+      bindings: [
+        MeBinding(),
+      ],
+    ),
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: homeScreen,
+      page: () => const HomeScreen(),
+      bindings: [
+        HomeBinding(),
+      ],
+    ),
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: exploreScreen,
+      page: () => const ExploreScreen(),
+      bindings: [
+        ExploreBinding(),
+      ],
+    ),  GetPage(
+      transition: Transition.rightToLeft,
+      name: toolsScreen,
+      page: () => const ToolsScreen(),
+      bindings: [
+        ToolsBinding(),
       ],
     ),
 
