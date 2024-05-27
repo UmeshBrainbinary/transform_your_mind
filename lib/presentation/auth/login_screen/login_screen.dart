@@ -122,7 +122,7 @@ class LoginScreen extends StatelessWidget {
                                          FocusScope.of(context).unfocus();
 
                                          if (_formKey.currentState!.validate()) {
-
+                                            Get.toNamed(AppRoutes.dashBoardScreen);
                                            //await controller.loginWithEmailAndPassword();
 
                                          }
@@ -206,7 +206,7 @@ class LoginScreen extends StatelessWidget {
                      const BorderRadius.all(Radius.circular(Dimens.d3)),
                      color: ColorConstant.white
                    ),
-                   child: loginController.rememberMe.value  ? Icon(Icons.check, color: ColorConstant.themeColor, size: Dimens.d12) : SizedBox(),
+                   child: loginController.rememberMe.value  ? const Icon(Icons.check, color: ColorConstant.themeColor, size: Dimens.d12) : const SizedBox(),
 
 
                  ),
@@ -218,7 +218,7 @@ class LoginScreen extends StatelessWidget {
              StringConstant.rememberMe,
              style: Style.montserratRegular(color: ColorConstant.color545454, fontWeight: FontWeight.w100),
            ),
-           Spacer(),
+           const Spacer(),
            InkWell(
              onTap: (){
                Get.toNamed(
