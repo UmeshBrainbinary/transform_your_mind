@@ -24,12 +24,12 @@ Future<void> main() async {
     runApp(MyApp());
   });
 
-
+/// localization on tap
  //var locale = const Locale('es', 'ES');
  //Get.updateLocale(locale);
   
- //var locale = const Locale('en', 'US');
- //Get.updateLocale(locale);
+ var locale = const Locale('en', 'US');
+ Get.updateLocale(locale);
 }
 
 class MyApp extends StatefulWidget {

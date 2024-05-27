@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
+import 'package:transform_your_mind/core/utils/date_time.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
@@ -11,8 +12,8 @@ import 'package:transform_your_mind/core/utils/string_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/core/utils/validation_functions.dart';
 import 'package:transform_your_mind/presentation/auth/ragister_screen/register_controller.dart';
-import 'package:transform_your_mind/routes/app_routes.dart';
-import 'package:transform_your_mind/widgets/add_image.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
+import 'package:transform_your_mind/presentation/auth/ragister_screen/widget/add_image.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
@@ -37,7 +38,7 @@ class RegisterScreen extends StatelessWidget {
             children: [
 
               Positioned(
-                top: Dimens.d70.h,
+                top: Dimens.d200.h,
                 right: null,
                 left:  0,
                 child: Transform.rotate(
@@ -62,11 +63,12 @@ class RegisterScreen extends StatelessWidget {
                                 child: Column(
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
-                                    Dimens.d100.h.spaceHeight,
+                                    Dimens.d30.h.spaceHeight,
+
                                     ValueListenableBuilder(
                                       valueListenable: registerController.imageFile,
                                       builder: (context, value, child) {
-                                        return GestureDetector(
+                                        return AddImageWidget(
                                           onTap: () async {
                                             await showImagePickerActionSheet(context)
                                                 ?.then((value) async {
@@ -76,14 +78,21 @@ class RegisterScreen extends StatelessWidget {
                                               }
                                             });
                                           },
-                                          child: Container(
-                                            height: 30,
-                                            width: 80,
-                                            decoration: BoxDecoration(
-                                              color: ColorConstant.themeColor
-                                            ),
-                                          ),
+                                          onDeleteTap: () async {
+
+                                            registerController.imageFile = ValueNotifier(null);
+                                            if (registerController.image != null) {
+                                              registerController.urlImage = null;
+                                              //_isImageRemoved = true;
+                                            }
+
+                                          },
+                                          image: registerController.imageFile.value,
+                                          imageURL: registerController.urlImage,
                                         );
+
+
+
                                       },
                                     ),
                                     Dimens.d16.h.spaceHeight,
@@ -145,13 +154,84 @@ class RegisterScreen extends StatelessWidget {
                                               onTap: (){
                                                 registerController.securePass.value = !registerController.securePass.value;
                                               },
-                                              child:   Image.asset(ImageConstant.eyeOpen, scale: Dimens.d4)),
+                                              child:   Image.asset(ImageConstant.eyeOpen, scale: Dimens.d6)),
                                           isSecure: value,
                                           //suffixTap: () => loginController.securePass.value = !loginController.securePass.value,
                                           textInputAction: TextInputAction.done,
                                         );
                                       },
                                     ),
+                                    Dimens.d16.h.spaceHeight,
+                                    CommonTextField(
+                                        labelText: "dateOfBirth".tr,
+                                        hintText: "DD/MM/YYYY",
+                                        controller: registerController.dobController,
+                                        focusNode: FocusNode(),
+                                        prefixIcon: SvgPicture.asset(ImageConstant.calendar, height: Dimens.d5, width: Dimens.d5),
+                                        readOnly: true,
+                                        onTap: () => picker.DatePicker.showDatePicker(context,
+                                            showTitleActions: true,
+                                            minTime: DateTime(1900, 3, 5),
+                                            maxTime: DateTime.now()
+                                                .subtract(const Duration(days: 1)),
+                                            theme: picker.DatePickerTheme(
+                                                doneStyle: Style.montserratSemiBold(
+                                                    color: ColorConstant.white),
+                                                cancelStyle: Style.montserratSemiBold(
+                                                    color: ColorConstant.white),
+                                                itemStyle: Style.montserratSemiBold(
+                                                    color: ColorConstant.white),
+                                                backgroundColor: ColorConstant.themeColor),
+                                            onChanged: (date) {}, onConfirm: (date) {
+                                              registerController.dobController.text =
+                                                  DateTimeUtils.formatDate(date);
+                                              registerController.selectedDob = date;
+                                            },
+                                            currentTime: registerController.selectedDob ??
+                                                DateTime.now().subtract(const Duration(days: 1)),
+                                            locale: picker.LocaleType.en),
+                                        validator: (value) {
+                                          if (value == null ||
+                                              (!isText(value, isRequired: true))) {
+                                            return StringConstant.theEmailFieldIsRequired;
+                                          }
+                                          return null;
+                                        }
+                                    ),
+
+                                    Dimens.d16.h.spaceHeight,
+                                    CommonTextField(
+                                        labelText: "gender".tr,
+                                        hintText: "selectGender".tr,
+                                        controller: registerController.genderController,
+                                        focusNode: FocusNode(),
+                                        prefixIcon: SvgPicture.asset(ImageConstant.gender, height: Dimens.d5, width: Dimens.d5),
+                                        readOnly: true,
+                                        suffixIcon: SvgPicture.asset(ImageConstant.downArrow, height: Dimens.d5, width: Dimens.d5),
+                                        onTap: (){
+                                          registerController.isDropGender.value = !registerController.isDropGender.value;
+                                        },
+                                        validator: (value) {
+                                          if (value == null ||
+                                              (!isText(value, isRequired: true))) {
+                                            return StringConstant.theEmailFieldIsRequired;
+                                          }
+                                          return null;
+                                        }
+                                    ),
+
+                                    Obx(
+                                        () => registerController.isDropGender.value
+                                            ? Container(
+                                             height: Dimens.d200,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(Dimens.d10),
+                                            ),
+                                        ) : SizedBox(),
+                                    ),
+
+
+
 
                                     Dimens.d80.h.spaceHeight,
                                     Obx(
@@ -177,7 +257,7 @@ class RegisterScreen extends StatelessWidget {
                                       text: TextSpan(
                                         children: [
                                           TextSpan(
-                                            text: "${StringConstant.doNotHaveAnAccount} ?",
+                                            text: "alreadyHaveAnAccount".tr,
                                             style: Style.montserratRegular(
 
                                             ),
@@ -188,20 +268,22 @@ class RegisterScreen extends StatelessWidget {
                                                 EdgeInsets.all(Dimens.d4)),
                                           ),
                                           TextSpan(
-                                            text: StringConstant.register,
+                                            text: StringConstant.login,
                                             style: Style.montserratSemiBold(
                                               color: ColorConstant.themeColor,
                                             ),
                                             recognizer: TapGestureRecognizer()
                                               ..onTap = () {
-                                                Get.toNamed(
-                                                  AppRoutes.registerScreen,
-                                                );
+                                                // Get.toNamed(
+                                                //   AppRoutes.loginScreen,
+                                                // );
+                                                Get.back();
                                               },
                                           ),
                                         ],
                                       ),
                                     ),
+                                    Dimens.d80.h.spaceHeight,
                                   ],
                                 ),
                               ),

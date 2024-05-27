@@ -1,4 +1,9 @@
 {
   "hello": "Hello",
-  "welcome": "Welcome"
+  "welcome": "Welcome",
+  "addProfileImage": "Add Profile Image",
+  "alreadyHaveAnAccount" : "Already have an account ?",
+  "dateOfBirth": "Date Of Birth",
+  "gender" : "Gender",
+  "selectGender": "Select gender"
 }

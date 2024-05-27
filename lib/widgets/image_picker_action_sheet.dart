@@ -30,7 +30,7 @@ Future<XFile?>? showImagePickerActionSheet(BuildContext context) async {
           color: ColorConstant.white,
           child: CupertinoActionSheetAction(
             onPressed: () async {
-           Get.back();
+
 
            Navigator.pop(context, ImageSource.gallery);
 
