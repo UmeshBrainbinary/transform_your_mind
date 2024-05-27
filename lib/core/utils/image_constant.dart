@@ -41,6 +41,12 @@ class ImageConstant {
   static String downloadCircle = '$iconExplorePath/download_circle.svg';
   static String staticImage = '$imagePath/staticImage.svg';
 
+  /// NOW PLAYING
+  static String bgImagePlaying = '$imagePath/bgImagePlaying.png';
+  static String share = '$iconExplorePath/share.svg';
+  static String bookmark = '$iconExplorePath/bookmark.svg';
+
+
 
 
 }

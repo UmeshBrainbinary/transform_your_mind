@@ -241,6 +241,7 @@ class RegisterScreen extends StatelessWidget {
                                             children: List.generate(registerController.genderList.length, (index) =>
                                                 GestureDetector(
                                                   onTap: (){
+                                                    registerController.isDropGender.value = false;
                                                     registerController.genderController.text = registerController.genderList[index];
                                                     registerController.genderList.refresh();
                                                   },
