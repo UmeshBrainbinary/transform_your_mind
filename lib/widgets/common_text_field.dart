@@ -147,9 +147,9 @@ class _CommonTextFieldState extends State<CommonTextField>
       inputFormatters: widget.inputFormatters ?? [],
       textInputAction: widget.textInputAction ?? TextInputAction.next,
       keyboardType: widget.keyboardType ?? TextInputType.text,
-      textCapitalization: widget.isSecure
-          ? TextCapitalization.none
-          : TextCapitalization.sentences,
+      // textCapitalization: widget.isSecure
+      //     ? TextCapitalization.none
+      //     : TextCapitalization.sentences,
       textAlignVertical: TextAlignVertical.center,
       expands: false,
       validator: widget.validator,

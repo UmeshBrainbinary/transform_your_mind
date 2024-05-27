@@ -8,6 +8,7 @@ import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/string_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/core/utils/validation_functions.dart';
 import 'package:transform_your_mind/presentation/auth/forgot_password_screen/forgot_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
@@ -16,6 +17,7 @@ import 'package:transform_your_mind/widgets/custom_appbar.dart';
 class NewPasswordScreen extends StatelessWidget {
   NewPasswordScreen({super.key});
 
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   ForgotController forgotController = Get.put(ForgotController());
 
   @override
@@ -42,51 +44,107 @@ class NewPasswordScreen extends StatelessWidget {
                 return Stack(
                   children: [
                     SingleChildScrollView(
-                      child: ConstrainedBox(
-                        constraints:
-                            BoxConstraints(minHeight: constraint.maxHeight),
-                        child: IntrinsicHeight(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Dimens.d25.spaceHeight,
-                              Text(
-                                  textAlign: TextAlign.center,
-                                  StringConstant.enterNewPassword,
-                                  style: Style.montserratRegular(
-                                      fontSize: Dimens.d14,
-                                      fontWeight: FontWeight.w400,
-                                      color: ColorConstant.color716B6B)),
-                              Dimens.d50.spaceHeight,
-                              CommonTextField(
-                                labelText: StringConstant.newPassword,
-                                hintText: StringConstant.enterNewPasswordHint,
-                                controller: forgotController.newPController,
-                                focusNode: FocusNode(),
-                                prefixIcon: Image.asset(ImageConstant.email,
-                                    scale: Dimens.d4),
-                                keyboardType: TextInputType.emailAddress,
-                              ),
-                              Dimens.d23.spaceHeight,
-                              CommonTextField(
-                                labelText: StringConstant.confirmPassword,
-                                hintText:
-                                    StringConstant.enterConfirmPasswordHint,
-                                controller: forgotController.confirmPController,
-                                focusNode: FocusNode(),
-                                prefixIcon: Image.asset(ImageConstant.email,
-                                    scale: Dimens.d4),
-                                keyboardType: TextInputType.emailAddress,
-                              ),
-                              Dimens.d120.spaceHeight,
-                              CommonElevatedButton(
-                                title: StringConstant.submit,
-                                onTap: () {
-                                  _showAlertDialog(context);
-                                  /*Get.toNamed(AppRoutes.newPasswordScreen);*/
-                                },
-                              )
-                            ],
+                      child: Form(
+                        key: _formKey,
+                        child: ConstrainedBox(
+                          constraints:
+                          BoxConstraints(minHeight: constraint.maxHeight),
+                          child: IntrinsicHeight(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Dimens.d25.spaceHeight,
+                                Text(
+                                    textAlign: TextAlign.center,
+                                    StringConstant.enterNewPassword,
+                                    style: Style.montserratRegular(
+                                        fontSize: Dimens.d14,
+                                        fontWeight: FontWeight.w400,
+                                        color: ColorConstant.color716B6B)),
+                                Dimens.d50.spaceHeight,
+
+                                ValueListenableBuilder(
+                                  valueListenable: forgotController.securePass,
+                                  builder: (context, value, child) {
+                                    return CommonTextField(
+                                      labelText: StringConstant.password,
+                                      hintText: StringConstant.enterPassword,
+                                      controller: forgotController.newPController,
+                                      validator: (value) {
+                                        if (value == "") {
+                                          return "thePasswordFieldIsRequired".tr;
+                                        } else if(value != ""||(!isValidPassword(value, isRequired: true))){
+                                          return "pleaseEnterValidPassword".tr;
+                                        }
+                                        return null;
+                                      },
+                                      focusNode: FocusNode(),
+                                      prefixIcon: Image.asset(ImageConstant.lock, scale: Dimens.d4),
+                                      suffixIcon: forgotController.securePass.value
+                                          ? GestureDetector(
+                                          onTap: (){
+                                            forgotController.securePass.value = !forgotController.securePass.value;
+                                          },
+                                          child: Image.asset(ImageConstant.eyeClose, scale: Dimens.d5))
+
+                                          : GestureDetector(
+                                          onTap: (){
+                                            forgotController.securePass.value = !forgotController.securePass.value;
+                                          },
+                                          child:   Image.asset(ImageConstant.eyeOpen, scale: Dimens.d4)),
+                                      isSecure: value,
+                                      textInputAction: TextInputAction.done,
+                                    );
+                                  },
+                                ),
+                                Dimens.d23.spaceHeight,
+                                ValueListenableBuilder(
+                                  valueListenable: forgotController.securePass2,
+                                  builder: (context, value, child) {
+                                    return CommonTextField(
+                                      labelText: StringConstant.password,
+                                      hintText: StringConstant.enterPassword,
+                                      controller: forgotController.confirmPController,
+                                      validator: (value) {
+                                        if (value == "") {
+                                          return "thePasswordFieldIsRequired".tr;
+                                        } else if(value != ""||(!isValidPassword(value, isRequired: true))){
+                                          return "pleaseEnterValidPassword".tr;
+                                        }
+                                        return null;
+                                      },
+                                      focusNode: FocusNode(),
+                                      prefixIcon: Image.asset(ImageConstant.lock, scale: Dimens.d4),
+                                      suffixIcon: forgotController.securePass2.value
+                                          ? GestureDetector(
+                                          onTap: (){
+                                            forgotController.securePass2.value = !forgotController.securePass2.value;
+                                          },
+                                          child: Image.asset(ImageConstant.eyeClose, scale: Dimens.d5))
+
+                                          : GestureDetector(
+                                          onTap: (){
+                                            forgotController.securePass2.value = !forgotController.securePass2.value;
+                                          },
+                                          child:   Image.asset(ImageConstant.eyeOpen, scale: Dimens.d4)),
+                                      isSecure: value,
+                                      textInputAction: TextInputAction.done,
+                                    );
+                                  },
+                                ),
+                                Dimens.d120.spaceHeight,
+                                CommonElevatedButton(
+                                  title: StringConstant.submit,
+                                  onTap: () {
+                                    if (_formKey.currentState!.validate()) {
+                                     _showAlertDialog(context);
+                                    }
+
+
+                                  },
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),

@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:image_picker/image_picker.dart';
 
 class RegisterController extends GetxController{
@@ -23,5 +25,12 @@ class RegisterController extends GetxController{
   String? image = '';
   String? urlImage;
   File? selectedImage;
+
+
+  RxList genderList = [
+    "male".tr,
+    "female".tr,
+    "other".tr
+  ].obs;
 
 }

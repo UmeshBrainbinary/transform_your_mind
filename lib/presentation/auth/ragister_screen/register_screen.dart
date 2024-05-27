@@ -64,7 +64,6 @@ class RegisterScreen extends StatelessWidget {
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
                                     Dimens.d30.h.spaceHeight,
-
                                     ValueListenableBuilder(
                                       valueListenable: registerController.imageFile,
                                       builder: (context, value, child) {
@@ -73,7 +72,6 @@ class RegisterScreen extends StatelessWidget {
                                             await showImagePickerActionSheet(context)
                                                 ?.then((value) async {
                                               if (value != null) {
-
                                                 registerController.imageFile.value = value;
                                               }
                                             });
@@ -95,13 +93,16 @@ class RegisterScreen extends StatelessWidget {
 
                                       },
                                     ),
-                                    Dimens.d16.h.spaceHeight,
+                                    Dimens.d30.h.spaceHeight,
                                     CommonTextField(
                                         labelText: StringConstant.name,
                                         hintText: StringConstant.enterName,
                                         controller: registerController.nameController,
                                         focusNode: FocusNode(),
-                                        prefixIcon: SvgPicture.asset(ImageConstant.user, height: Dimens.d5, width: Dimens.d5),
+                                        prefixIcon: Transform.scale(
+                                           scale: 0.5,
+                                          child: SvgPicture.asset(ImageConstant.user),
+                                        ),
                                         keyboardType: TextInputType.emailAddress,
                                         validator: (value) {
                                           if (value == null ||
@@ -120,9 +121,10 @@ class RegisterScreen extends StatelessWidget {
                                         prefixIcon: Image.asset(ImageConstant.email, scale: Dimens.d4),
                                         keyboardType: TextInputType.emailAddress,
                                         validator: (value) {
-                                          if (value == null ||
-                                              (!isValidEmail(value, isRequired: true))) {
-                                            return StringConstant.theEmailFieldIsRequired;
+                                          if(value == ""){
+                                            return "theEmailFieldIsRequired".tr;
+                                          } else if (value != ""||(!isValidEmail(value, isRequired: true))) {
+                                            return "pleaseEnterValidEmail".tr;
                                           }
                                           return null;
                                         }
@@ -136,8 +138,10 @@ class RegisterScreen extends StatelessWidget {
                                           hintText: StringConstant.enterPassword,
                                           controller: registerController.passwordController,
                                           validator: (value) {
-                                            if (value == null || (!isValidPassword(value, isRequired: true))) {
-                                              return StringConstant.thePasswordFieldIsRequired;
+                                            if (value == "") {
+                                              return "thePasswordFieldIsRequired".tr;
+                                            } else if(value != ""||(!isValidPassword(value, isRequired: true))){
+                                              return "pleaseEnterValidPassword".tr;
                                             }
                                             return null;
                                           },
@@ -167,7 +171,9 @@ class RegisterScreen extends StatelessWidget {
                                         hintText: "DD/MM/YYYY",
                                         controller: registerController.dobController,
                                         focusNode: FocusNode(),
-                                        prefixIcon: SvgPicture.asset(ImageConstant.calendar, height: Dimens.d5, width: Dimens.d5),
+                                        prefixIcon: Transform.scale(
+                                            scale: 0.5,
+                                            child: SvgPicture.asset(ImageConstant.calendar, height: Dimens.d5, width: Dimens.d5)),
                                         readOnly: true,
                                         onTap: () => picker.DatePicker.showDatePicker(context,
                                             showTitleActions: true,
@@ -193,45 +199,68 @@ class RegisterScreen extends StatelessWidget {
                                         validator: (value) {
                                           if (value == null ||
                                               (!isText(value, isRequired: true))) {
-                                            return StringConstant.theEmailFieldIsRequired;
+                                            return "theDateOfBirthFieldIsRequired".tr;
                                           }
                                           return null;
                                         }
                                     ),
-
                                     Dimens.d16.h.spaceHeight,
                                     CommonTextField(
                                         labelText: "gender".tr,
                                         hintText: "selectGender".tr,
                                         controller: registerController.genderController,
                                         focusNode: FocusNode(),
-                                        prefixIcon: SvgPicture.asset(ImageConstant.gender, height: Dimens.d5, width: Dimens.d5),
+                                        prefixIcon: Transform.scale(
+                                            scale: 0.5,
+                                            child: SvgPicture.asset(ImageConstant.gender, height: Dimens.d5, width: Dimens.d5)),
                                         readOnly: true,
-                                        suffixIcon: SvgPicture.asset(ImageConstant.downArrow, height: Dimens.d5, width: Dimens.d5),
+                                        suffixIcon: Transform.scale(
+                                            scale: 0.5,
+                                            child: SvgPicture.asset(ImageConstant.downArrow, height: Dimens.d5, width: Dimens.d5)),
                                         onTap: (){
                                           registerController.isDropGender.value = !registerController.isDropGender.value;
                                         },
                                         validator: (value) {
                                           if (value == null ||
                                               (!isText(value, isRequired: true))) {
-                                            return StringConstant.theEmailFieldIsRequired;
+                                            return "theGenderFieldIsRequired".tr;
                                           }
                                           return null;
                                         }
                                     ),
-
+                                    Dimens.d5.h.spaceHeight,
                                     Obx(
                                         () => registerController.isDropGender.value
                                             ? Container(
-                                             height: Dimens.d200,
+                                            width: Get.width,
                                             decoration: BoxDecoration(
                                               borderRadius: BorderRadius.circular(Dimens.d10),
+                                              color: ColorConstant.white,
                                             ),
+                                          child: Column(
+                                            children: List.generate(registerController.genderList.length, (index) =>
+                                                GestureDetector(
+                                                  onTap: (){
+                                                    registerController.genderController.text = registerController.genderList[index];
+                                                    registerController.genderList.refresh();
+                                                  },
+                                                  child: Container(
+                                                                                                height: Dimens.d45,
+                                                    width: Get.width,
+                                                                                                padding: EdgeInsets.only(left: Dimens.d10, top: Dimens.d12),
+                                                                                                decoration: BoxDecoration(
+                                                  color: registerController.genderController.text == registerController.genderList[index] ? ColorConstant.themeColor : ColorConstant.white,
+                                                  borderRadius: index==0  ? BorderRadius.only(topLeft: Radius.circular(Dimens.d10), topRight: Radius.circular(Dimens.d10)) : index==2 ? BorderRadius.only(bottomLeft: Radius.circular(Dimens.d10), bottomRight: Radius.circular(Dimens.d10))   : BorderRadius.circular(Dimens.d0),
+                                                                                                ),
+                                                                                                child: Text(registerController.genderList[index], style: Style.montserratMedium(
+                                                                                                    color: registerController.genderController.text == registerController.genderList[index] ? ColorConstant.white : ColorConstant.black
+                                                                                                  ),
+                                                                                              ),
+                                                )),
+                                          )
+                                          ),
                                         ) : SizedBox(),
                                     ),
-
-
-
 
                                     Dimens.d80.h.spaceHeight,
                                     Obx(

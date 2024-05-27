@@ -65,9 +65,10 @@ class LoginScreen extends StatelessWidget {
                                        prefixIcon: Image.asset(ImageConstant.email, scale: Dimens.d4),
                                        keyboardType: TextInputType.emailAddress,
                                        validator: (value) {
-                                         if (value == null ||
-                                             (!isValidEmail(value, isRequired: true))) {
-                                           return StringConstant.theEmailFieldIsRequired;
+                                         if(value == ""){
+                                           return "theEmailFieldIsRequired".tr;
+                                         } else if (value != ""||(!isValidEmail(value, isRequired: true))) {
+                                           return "pleaseEnterValidEmail".tr;
                                          }
                                          return null;
                                        }
@@ -81,8 +82,10 @@ class LoginScreen extends StatelessWidget {
                                          hintText: StringConstant.enterPassword,
                                          controller: loginController.passwordController,
                                          validator: (value) {
-                                           if (value == null || (!isValidPassword(value, isRequired: true))) {
-                                             return StringConstant.thePasswordFieldIsRequired;
+                                           if (value == "") {
+                                             return "thePasswordFieldIsRequired".tr;
+                                           } else if(value != ""||(!isValidPassword(value, isRequired: true))){
+                                             return "pleaseEnterValidPassword".tr;
                                            }
                                            return null;
                                          },

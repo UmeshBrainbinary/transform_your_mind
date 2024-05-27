@@ -8,6 +8,7 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/string_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/core/utils/toast_message.dart';
 import 'package:transform_your_mind/presentation/auth/forgot_password_screen/forgot_controller.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_helper.dart';
@@ -105,7 +106,13 @@ class VerificationsScreen extends StatelessWidget {
                                   ),
                                   Dimens.d83.spaceHeight,
                                   CommonElevatedButton(title: StringConstant.verify, onTap: () {
-                                    Get.toNamed(AppRoutes.newPasswordScreen);
+
+                                    if(forgotController.otpController.text.isNotEmpty){
+                                      Get.toNamed(AppRoutes.newPasswordScreen);
+                                    } else{
+                                      print("OTP empty");
+                                    }
+
                                   },)
                                 ],
                               ),

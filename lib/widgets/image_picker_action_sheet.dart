@@ -23,7 +23,7 @@ Future<XFile?>? showImagePickerActionSheet(BuildContext context) async {
             onPressed: () async {
               Navigator.pop(context, ImageSource.camera);
             },
-            child: Text("takePhoto", style: Style.montserratRegular()),
+            child: Text("takePhoto".tr, style: Style.montserratRegular()),
           ),
         ),
         Container(
@@ -36,7 +36,7 @@ Future<XFile?>? showImagePickerActionSheet(BuildContext context) async {
 
               //ignore: use_build_context_synchronously
             },
-            child: Text("chooseFromLibrary", style: Style.montserratRegular()),
+            child: Text("chooseFromLibrary".tr, style: Style.montserratRegular()),
           ),
         ),
       ],
@@ -50,7 +50,7 @@ Future<XFile?>? showImagePickerActionSheet(BuildContext context) async {
           onPressed: () {
             Navigator.pop(context);
           },
-          child: Text("cancel"),
+          child: Text("cancel".tr, style: Style.montserratRegular(color: ColorConstant.colorFF0000)),
         ),
       ),
     ),

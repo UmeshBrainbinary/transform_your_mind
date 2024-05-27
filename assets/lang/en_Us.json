@@ -5,5 +5,17 @@
   "alreadyHaveAnAccount" : "Already have an account ?",
   "dateOfBirth": "Date Of Birth",
   "gender" : "Gender",
-  "selectGender": "Select gender"
+  "selectGender": "Select gender",
+  "male": "Male",
+  "female": "Female",
+  "other": "Other",
+  "takePhoto": "Take photo",
+  "chooseFromLibrary" : "Choose from library",
+  "cancel": "Cancel",
+  "pleaseEnterValidEmail": "Please enter valid email",
+  "pleaseEnterValidPassword": "Please enter strong password",
+  "theEmailFieldIsRequired": "The email field is required.",
+  "thePasswordFieldIsRequired": "The password field is required",
+  "theDateOfBirthFieldIsRequired" : "The date of birth field is required.",
+  "theGenderFieldIsRequired" : "The gender field is required."
 }

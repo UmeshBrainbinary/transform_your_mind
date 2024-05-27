@@ -8,5 +8,7 @@ class ForgotController extends GetxController{
   TextEditingController newPController = TextEditingController();
   TextEditingController confirmPController = TextEditingController();
 
+  ValueNotifier<bool> securePass = ValueNotifier(true);
+  ValueNotifier<bool> securePass2 = ValueNotifier(true);
 
 }

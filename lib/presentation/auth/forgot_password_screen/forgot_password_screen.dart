@@ -7,6 +7,7 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/string_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/core/utils/validation_functions.dart';
 import 'package:transform_your_mind/presentation/auth/forgot_password_screen/forgot_controller.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
@@ -16,6 +17,7 @@ import 'package:transform_your_mind/widgets/custom_appbar.dart';
 class ForgotPasswordScreen extends StatelessWidget {
   ForgotPasswordScreen({super.key});
 
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final ForgotController forgotController = Get.put(ForgotController());
 
   @override
@@ -41,44 +43,62 @@ class ForgotPasswordScreen extends StatelessWidget {
                 return Stack(
                   children: [
                     SingleChildScrollView(
-                      child: ConstrainedBox(
-                        constraints:
-                            BoxConstraints(minHeight: constraint.maxHeight),
-                        child: IntrinsicHeight(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Dimens.d34.spaceHeight,
-                              SizedBox(
-                                width: Dimens.d296,
-                                child: Text(
-                                    textAlign: TextAlign.center,
-                                    StringConstant.forgotInstructions,
-                                    style: Style.montserratRegular(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                        color: ColorConstant.color716B6B)),
-                              ),
-                              Dimens.d41.spaceHeight,
-                              CommonTextField(
-                                labelText: StringConstant.email,
-                                hintText: StringConstant.enterEmail,
-                                controller: forgotController.emailController,
-                                focusNode: FocusNode(),
-                                prefixIcon: Image.asset(ImageConstant.email,
-                                    scale: Dimens.d4),
-                                keyboardType: TextInputType.emailAddress,
-                              ),
-                              Dimens.d100.spaceHeight,
-                              CommonElevatedButton(title: StringConstant.send, onTap: () {
-                                Get.toNamed(
-                                  AppRoutes.verificationsScreen,
-                                );
-                              },)
-                            ],
+                      child: Form(
+                        key: _formKey,
+                        child: ConstrainedBox(
+                          constraints:
+                          BoxConstraints(minHeight: constraint.maxHeight),
+                          child: IntrinsicHeight(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Dimens.d34.spaceHeight,
+                                SizedBox(
+                                  width: Dimens.d296,
+                                  child: Text(
+                                      textAlign: TextAlign.center,
+                                      StringConstant.forgotInstructions,
+                                      style: Style.montserratRegular(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400,
+                                          color: ColorConstant.color716B6B)),
+                                ),
+                                Dimens.d41.spaceHeight,
+                                CommonTextField(
+                                    labelText: StringConstant.email,
+                                    hintText: StringConstant.enterEmail,
+                                    controller: forgotController.emailController,
+                                    focusNode: FocusNode(),
+                                    prefixIcon: Image.asset(ImageConstant.email,
+                                        scale: Dimens.d4),
+                                    keyboardType: TextInputType.emailAddress,
+                                    validator: (value) {
+                                      if(value == ""){
+                                        return "theEmailFieldIsRequired".tr;
+                                      } else if (value != ""||(!isValidEmail(value, isRequired: true))) {
+                                        return "pleaseEnterValidEmail".tr;
+                                      }
+                                      return null;
+                                    }
+                                ),
+                                Dimens.d100.spaceHeight,
+                                CommonElevatedButton(title: StringConstant.send,
+                                  onTap: () {
+                                    FocusScope.of(context).unfocus();
+
+                                    if (_formKey.currentState!.validate()) {
+                                      Get.toNamed(
+                                        AppRoutes.verificationsScreen,
+                                      );
+                                    }
+
+
+                                  },)
+                              ],
+                            ),
                           ),
                         ),
-                      ),
+                      )
                     ),
                   ],
                 );
