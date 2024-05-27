@@ -17,5 +17,8 @@
   "theEmailFieldIsRequired": "The email field is required.",
   "thePasswordFieldIsRequired": "The password field is required",
   "theDateOfBirthFieldIsRequired" : "The date of birth field is required.",
-  "theGenderFieldIsRequired" : "The gender field is required."
+  "theGenderFieldIsRequired" : "The gender field is required.",
+  "explore": "Explore",
+  "rituals": "Rituals",
+  "startNow": "Start Now"
 }

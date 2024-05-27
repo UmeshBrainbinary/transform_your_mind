@@ -17,6 +17,8 @@ import 'package:transform_your_mind/presentation/home_screen/binding/home_bindin
 import 'package:transform_your_mind/presentation/home_screen/home_screen.dart';
 import 'package:transform_your_mind/presentation/me_screen/binding/me_binding.dart';
 import 'package:transform_your_mind/presentation/me_screen/me_screen.dart';
+import 'package:transform_your_mind/presentation/now_playing_screen/binding/now_playing_binding.dart';
+import 'package:transform_your_mind/presentation/now_playing_screen/now_playing_screen.dart';
 import 'package:transform_your_mind/presentation/splash_screen/binding/splash_binding.dart';
 import 'package:transform_your_mind/presentation/splash_screen/splash_screen.dart';
 import 'package:transform_your_mind/presentation/tools_screen/binding/tools_binding.dart';
@@ -24,13 +26,9 @@ import 'package:transform_your_mind/presentation/tools_screen/tools_screen.dart'
 
 class AppRoutes {
   static const String loginScreen = '/login_screen';
-
   static const String splashScreen = '/splash_screen';
-
   static const String registerScreen = '/register_screen';
-
   static const String successPopupScreen = '/success_popup_screen';
-
   static const String appNavigationScreen = '/app_navigation_screen';
   static const String forgotScreen = '/forgotScreen';
   static const String verificationsScreen = '/verificationsScreen';
@@ -40,8 +38,8 @@ class AppRoutes {
   static const String homeScreen = '/homeScreen';
   static const String exploreScreen = '/exploreScreen';
   static const String toolsScreen = '/toolsScreen';
-
   static const String initialRoute = '/initialRoute';
+  static const String nowPlayingScreen = '/now_playing_screen';
 
   static List<GetPage> pages = [
 
@@ -63,14 +61,6 @@ class AppRoutes {
       ],
     ),
 
-    GetPage(
-      transition: Transition.rightToLeft,
-      name: initialRoute,
-      page: () => LoginScreen(),
-      bindings: [
-        LoginBinding(),
-      ],
-    ),
 
 
     GetPage(
@@ -134,11 +124,12 @@ class AppRoutes {
     GetPage(
       transition: Transition.rightToLeft,
       name: exploreScreen,
-      page: () => const ExploreScreen(),
+      page: () =>  ExploreScreen(),
       bindings: [
         ExploreBinding(),
       ],
-    ),  GetPage(
+    ),
+    GetPage(
       transition: Transition.rightToLeft,
       name: toolsScreen,
       page: () => const ToolsScreen(),
@@ -146,7 +137,33 @@ class AppRoutes {
         ToolsBinding(),
       ],
     ),
-
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: nowPlayingScreen,
+      page: () => const NowPlayingScreen(),
+      bindings: [
+        NowPlayingBinding(),
+      ],
+    ),
+    ///--------------
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: initialRoute,
+      page: () => const DashBoardScreen(),
+      bindings: [
+        DashBoardBinding(),
+      ],
+    ),
+    ///
+    // GetPage(
+    //   transition: Transition.rightToLeft,
+    //   name: initialRoute,
+    //   page: () => LoginScreen(),
+    //   bindings: [
+    //     LoginBinding(),
+    //   ],
+    // ),
+    ///
     // GetPage(
     //   transition: Transition.rightToLeft,
     //   name: initialRoute,

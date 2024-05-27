@@ -3,12 +3,14 @@ class ImageConstant {
   static String imagePath = 'assets/images';
   static String iconPath = 'assets/icons';
   static String iconDashboardPath = 'assets/icons/dashboard';
-
+  static String iconExplorePath = 'assets/icons/explore';
 
   /// images
   static String splashLogo = '$imagePath/splashLogo.png';
   static String bgStar = '$imagePath/bgStar.png';
   static String userPlaceHolder = '$imagePath/userPlaceHolder.svg';
+  static String bgVector = '$imagePath/bgVector.svg';
+
 
    /// icons
  static String email = '$iconPath/email.png';
@@ -27,6 +29,18 @@ class ImageConstant {
   static String homeSelected = '$iconDashboardPath/home_deselected.svg';
   static String meSelected = '$iconDashboardPath/me_deselected.svg';
   static String toolsSelected = '$iconDashboardPath/tools_deselected.svg';
+
+  ///Explore
+  static String upArrow = '$iconExplorePath/upArrow.svg';
+  static String download = '$iconExplorePath/download.svg';
+  static String information = '$iconExplorePath/information.svg';
+  static String ellipseRituals = '$iconExplorePath/ellipseRituals.svg';
+  static String notification = '$iconExplorePath/notification.svg';
+  static String ritualsRight = '$iconExplorePath/ritualsRight.svg';
+  static String play = '$iconExplorePath/play.svg';
+  static String downloadCircle = '$iconExplorePath/download_circle.svg';
+  static String staticImage = '$imagePath/staticImage.svg';
+
 
 
 }

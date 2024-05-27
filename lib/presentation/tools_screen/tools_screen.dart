@@ -8,7 +8,7 @@ class ToolsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: ColorConstant.backGround,
+
         body: Column(children: [
           Text("Tools  Screen",style: TextStyle(color: Colors.black),)
       

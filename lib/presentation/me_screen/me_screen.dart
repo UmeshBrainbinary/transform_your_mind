@@ -8,7 +8,7 @@ class MeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: ColorConstant.backGround,
+
         body: Column(children: [
           Text("Me Screen",style: TextStyle(color: Colors.black),)
       

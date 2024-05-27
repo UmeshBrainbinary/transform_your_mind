@@ -18,7 +18,7 @@ class DashBoardScreen extends StatefulWidget {
 
 class _DashBoardScreenState extends State<DashBoardScreen> {
 
-  int _selectedIndex = 1;
+  int _selectedIndex = 2;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -30,13 +30,14 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   final List<Widget> pages = [
     const HomeScreen(),
     const ToolsScreen(),
-    const ExploreScreen(),
+     ExploreScreen(),
     const MeScreen(),
   ];
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
             boxShadow: [
@@ -139,7 +140,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             ),
           ),
         ),
-        backgroundColor: ColorConstant.backGround,
+        backgroundColor: ColorConstant.white,
         body: Column(
           children: [
             Expanded(

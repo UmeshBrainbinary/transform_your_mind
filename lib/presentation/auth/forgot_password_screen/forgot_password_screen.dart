@@ -75,7 +75,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                                     validator: (value) {
                                       if(value == ""){
                                         return "theEmailFieldIsRequired".tr;
-                                      } else if (value != ""||(!isValidEmail(value, isRequired: true))) {
+                                      } else if (!isValidEmail(value, isRequired: true)) {
                                         return "pleaseEnterValidEmail".tr;
                                       }
                                       return null;

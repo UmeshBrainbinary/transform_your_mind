@@ -73,7 +73,7 @@ class NewPasswordScreen extends StatelessWidget {
                                       validator: (value) {
                                         if (value == "") {
                                           return "thePasswordFieldIsRequired".tr;
-                                        } else if(value != ""||(!isValidPassword(value, isRequired: true))){
+                                        } else if(!isValidPassword(value, isRequired: true)){
                                           return "pleaseEnterValidPassword".tr;
                                         }
                                         return null;
@@ -108,7 +108,7 @@ class NewPasswordScreen extends StatelessWidget {
                                       validator: (value) {
                                         if (value == "") {
                                           return "thePasswordFieldIsRequired".tr;
-                                        } else if(value != ""||(!isValidPassword(value, isRequired: true))){
+                                        } else if(!isValidPassword(value, isRequired: true)){
                                           return "pleaseEnterValidPassword".tr;
                                         }
                                         return null;
