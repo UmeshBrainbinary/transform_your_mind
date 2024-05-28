@@ -25,7 +25,7 @@ class NewPasswordScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: ColorConstant.backGround,
       appBar: CustomAppBar(
-        title: StringConstant.newPassword,
+        title: "newPassword".tr,
       ),
       body: SafeArea(
           child: Stack(
@@ -56,7 +56,7 @@ class NewPasswordScreen extends StatelessWidget {
                                 Dimens.d25.spaceHeight,
                                 Text(
                                     textAlign: TextAlign.center,
-                                    StringConstant.enterNewPassword,
+                                    "enterNewPassword".tr,
                                     style: Style.montserratRegular(
                                         fontSize: Dimens.d14,
                                         fontWeight: FontWeight.w400,
@@ -67,8 +67,8 @@ class NewPasswordScreen extends StatelessWidget {
                                   valueListenable: forgotController.securePass,
                                   builder: (context, value, child) {
                                     return CommonTextField(
-                                      labelText: StringConstant.password,
-                                      hintText: StringConstant.enterPassword,
+                                      labelText: "password".tr,
+                                      hintText: "enterPassword".tr,
                                       controller: forgotController.newPController,
                                       validator: (value) {
                                         if (value == "") {
@@ -102,8 +102,8 @@ class NewPasswordScreen extends StatelessWidget {
                                   valueListenable: forgotController.securePass2,
                                   builder: (context, value, child) {
                                     return CommonTextField(
-                                      labelText: StringConstant.password,
-                                      hintText: StringConstant.enterPassword,
+                                      labelText: "password".tr,
+                                      hintText: "enterPassword".tr,
                                       controller: forgotController.confirmPController,
                                       validator: (value) {
                                         if (value == "") {
@@ -134,7 +134,7 @@ class NewPasswordScreen extends StatelessWidget {
                                 ),
                                 Dimens.d120.spaceHeight,
                                 CommonElevatedButton(
-                                  title: StringConstant.submit,
+                                  title: "submit".tr,
                                   onTap: () {
                                     if (_formKey.currentState!.validate()) {
                                      _showAlertDialog(context);
@@ -175,7 +175,7 @@ class NewPasswordScreen extends StatelessWidget {
             Dimens.d8.spaceHeight,
 
             Center(
-              child: Text(StringConstant.passwordChanged,
+              child: Text("passwordChanged".tr,
                   textAlign: TextAlign.center,
                   style: Style.cormorantGaramondBold(
                       fontSize: Dimens.d22,
@@ -186,7 +186,7 @@ class NewPasswordScreen extends StatelessWidget {
             Center(
               child: Text(
                   textAlign: TextAlign.center,
-                  StringConstant.yourPassword,
+                 "yourPassword".tr,
                   style: Style.montserratRegular(
                       fontSize: Dimens.d12,
                       fontWeight: FontWeight.w400,
@@ -195,7 +195,7 @@ class NewPasswordScreen extends StatelessWidget {
             Dimens.d31.spaceHeight,
             Padding(
               padding:   EdgeInsets.symmetric(horizontal: Dimens.d70.h),
-              child: CommonElevatedButton(title: StringConstant.ok, onTap: () {
+              child: CommonElevatedButton(title: "ok".tr, onTap: () {
                 Get.back();
               },),
             )

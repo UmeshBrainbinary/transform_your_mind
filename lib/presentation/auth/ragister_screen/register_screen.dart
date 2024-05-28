@@ -32,7 +32,7 @@ class RegisterScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: ColorConstant.backGround,
       appBar: CustomAppBar(
-        title: StringConstant.register,
+        title: "register".tr,
       ),
       body: SafeArea(
           child: Stack(
@@ -96,8 +96,8 @@ class RegisterScreen extends StatelessWidget {
                                     ),
                                     Dimens.d30.h.spaceHeight,
                                     CommonTextField(
-                                        labelText: StringConstant.name,
-                                        hintText: StringConstant.enterName,
+                                        labelText: "name".tr,
+                                        hintText: "enterName".tr,
                                         controller: registerController.nameController,
                                         focusNode: FocusNode(),
                                         prefixIcon: Transform.scale(
@@ -108,15 +108,15 @@ class RegisterScreen extends StatelessWidget {
                                         validator: (value) {
                                           if (value == null ||
                                               (!isText(value, isRequired: true))) {
-                                            return StringConstant.theNameFieldIsRequired;
+                                            return "theNameFieldIsRequired".tr;
                                           }
                                           return null;
                                         }
                                     ),
                                     Dimens.d16.h.spaceHeight,
                                     CommonTextField(
-                                        labelText: StringConstant.email,
-                                        hintText: StringConstant.enterEmail,
+                                        labelText: "email".tr,
+                                        hintText: "enterEmail".tr,
                                         controller: registerController.emailController,
                                         focusNode: FocusNode(),
                                         prefixIcon: Image.asset(ImageConstant.email, scale: Dimens.d4),
@@ -135,8 +135,8 @@ class RegisterScreen extends StatelessWidget {
                                       valueListenable: registerController.securePass,
                                       builder: (context, value, child) {
                                         return CommonTextField(
-                                          labelText: StringConstant.password,
-                                          hintText: StringConstant.enterPassword,
+                                          labelText: "password".tr,
+                                          hintText: "enterPassword".tr,
                                           controller: registerController.passwordController,
                                           validator: (value) {
                                             if (value == "") {
@@ -269,7 +269,7 @@ class RegisterScreen extends StatelessWidget {
                                           () =>  (registerController.loader.value)
                                           ? const LoadingButton()
                                           : CommonElevatedButton(
-                                        title: StringConstant.register,
+                                        title: "register".tr,
                                         onTap: () async{
 
                                           FocusScope.of(context).unfocus();
@@ -300,7 +300,7 @@ class RegisterScreen extends StatelessWidget {
                                                 EdgeInsets.all(Dimens.d4)),
                                           ),
                                           TextSpan(
-                                            text: StringConstant.login,
+                                            text: "login".tr,
                                             style: Style.montserratSemiBold(
                                               color: ColorConstant.themeColor,
                                             ),
