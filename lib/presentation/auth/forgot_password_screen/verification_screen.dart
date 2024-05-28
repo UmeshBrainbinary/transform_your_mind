@@ -25,7 +25,7 @@ class VerificationsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: ColorConstant.backGround,
       appBar: CustomAppBar(
-        title: StringConstant.verification,
+        title: "verification".tr,
       ),
       body: SafeArea(
           child: Stack(
@@ -55,7 +55,7 @@ class VerificationsScreen extends StatelessWidget {
                                     width: Dimens.d296,
                                     child: Text(
                                         textAlign: TextAlign.center,
-                                        StringConstant.enterVerification,
+                                       "enterVerification".tr,
                                         style: Style.montserratRegular(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w400,
@@ -98,14 +98,14 @@ class VerificationsScreen extends StatelessWidget {
                                     width: Dimens.d296,
                                     child: Text(
                                         textAlign: TextAlign.center,
-                                        StringConstant.notReceiveCode,
+                                        "notReceiveCode".tr,
                                         style: Style.montserratRegular(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w400,
                                             color: ColorConstant.color716B6B)),
                                   ),
                                   Dimens.d83.spaceHeight,
-                                  CommonElevatedButton(title: StringConstant.verify, onTap: () {
+                                  CommonElevatedButton(title: "verify".tr, onTap: () {
 
                                     FocusScope.of(context).unfocus();
 

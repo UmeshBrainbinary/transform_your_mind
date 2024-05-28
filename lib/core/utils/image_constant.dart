@@ -10,14 +10,16 @@ class ImageConstant {
   static String iconMePath = '$iconPath/me';
 
   static String imageExplorePath = '$imagePath/explore';
-
-
+  static String iconHomePath = 'assets/icons/home';
+  static String lottie = 'assets/lottie';
+  static String quickAccessIcon = 'assets/quick_access';
 
   /// images
   static String splashLogo = '$imagePath/splashLogo.png';
   static String bgStar = '$imagePath/bgStar.png';
   static String userPlaceHolder = '$imagePath/userPlaceHolder.svg';
   static String bgVector = '$imagePath/bgVector.svg';
+  static String imgTransformLight = '$imagePath/img_transform_light.png';
 
 
    /// icons
@@ -49,6 +51,8 @@ class ImageConstant {
   static String downloadCircle = '$iconExplorePath/download_circle.svg';
   static String staticImage = '$imagePath/staticImage.svg';
 
+
+
   /// NOW PLAYING
   static String bgImagePlaying = '$imagePath/bgImagePlaying.png';
   static String share = '$iconExplorePath/share.svg';
@@ -74,6 +78,32 @@ class ImageConstant {
   static String settingsSubscription = '$iconMePath/settings_subscription.svg';
 
 
+ /// lottie file - home
+  static String homeScreenMeshLottie = '$lottie/mesh_transform_feather.json';
+  static String homeInfoLottie = '$lottie/lottie_info_transform.json';
 
-
+  static String icAddRounded = '$iconHomePath/ic_add_rounded.svg';
+  static  String icShareWhite = "$iconHomePath/ic_share_white.svg";
+  static  String icAddImage = "$iconHomePath/ic_add_image.svg";
+  static  String icAdd = "$iconHomePath/ic_add.svg";
+  static  String icCleanse = "$iconHomePath/cleanse_star.svg";
+  static  String icCleanseToday = "$iconHomePath/ic_todays_cleanse.svg";
+  static  String icClose = "$iconHomePath/ic_close.svg";
+  static  String icDelete = "$iconHomePath/ic_delete_white.svg";
+  static  String icPencil = "$iconHomePath/ic_pencil.svg";
+  static  String imgRitualSelected= "$imagePath/img_selected_ritual.png";
+  static  String imgRitualUnSelected= "$imagePath/img_unselected_ritual.png";
+  static  String icUpArrow = "$iconHomePath/ic_up_arrow.svg";
+  static  String journalIcon = "$iconPath/ic_journal_selected.svg";
+  static  String transformPodIcon = "$iconPath/ic_pod_selected.svg";
+  static  String ritualIcon = "$iconPath/ic_rituals_selected.svg";
+  static  String menueIcon = "$iconPath/ic_menu_icon_for_tools.svg";
+  //lottie
+  static  String lottieCircle = "$lottie/lottie_circle.json";
+  static  String lottieSquare = "$lottie/lottie_square.json";
+  static  String lottieSquircle = "$lottie/lottie_squircle.json";
+  static  String lottieHexagon = "$lottie/lottie_hexagon.json";
+  static  String lottieStarOcean = "$lottie/lottie_star_shape_ocean.json";
+  static  String lottieArrowLef = "$lottie/lottie_arrow_lef.json";
+  static  String lockHome = "$iconHomePath/ic_lock_icon.png";
 }

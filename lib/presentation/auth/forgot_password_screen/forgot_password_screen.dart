@@ -4,8 +4,6 @@ import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
-import 'package:transform_your_mind/core/utils/size_utils.dart';
-import 'package:transform_your_mind/core/utils/string_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/core/utils/toast_message.dart';
 import 'package:transform_your_mind/core/utils/validation_functions.dart';
@@ -26,7 +24,8 @@ class ForgotPasswordScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: ColorConstant.backGround,
       appBar: CustomAppBar(
-        title: StringConstant.forgotP,
+        title: "forgotP".tr,
+
       ),
       body: SafeArea(
           child: Stack(
@@ -58,7 +57,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                                   width: Dimens.d296,
                                   child: Text(
                                       textAlign: TextAlign.center,
-                                      StringConstant.forgotInstructions,
+                                      "forgotInstructions".tr,
                                       style: Style.montserratRegular(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w400,
@@ -66,8 +65,8 @@ class ForgotPasswordScreen extends StatelessWidget {
                                 ),
                                 Dimens.d41.spaceHeight,
                                 CommonTextField(
-                                    labelText: StringConstant.email,
-                                    hintText: StringConstant.enterEmail,
+                                    labelText: "email".tr,
+                                    hintText: "enterEmail".tr,
                                     controller: forgotController.emailController,
                                     focusNode: FocusNode(),
                                     prefixIcon: Image.asset(ImageConstant.email,
@@ -83,7 +82,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                                     }
                                 ),
                                 Dimens.d100.spaceHeight,
-                                CommonElevatedButton(title: StringConstant.send,
+                                CommonElevatedButton(title:"send".tr,
                                   onTap: () {
                                     FocusScope.of(context).unfocus();
 

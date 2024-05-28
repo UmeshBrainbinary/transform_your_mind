@@ -70,7 +70,7 @@ class ExploreScreen extends StatelessWidget {
           children: [
 
             Align(
-              alignment: Alignment(1,0),
+              alignment: const Alignment(1,0),
               child: SvgPicture.asset(ImageConstant.bgVector, height: Dimens.d230.h),
             ),
             Padding(
@@ -84,11 +84,11 @@ class ExploreScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           Dimens.d30.h.spaceHeight,
-                          HomeAppBar(
+                          HomeAppBar(back: false,
                             title: "explore".tr,
                           ),
                           Dimens.d30.h.spaceHeight,
-                          ShoorahRitualsButton(),
+                          const TransFormRitualsButton(),
                           Dimens.d20.h.spaceHeight,
                          Expanded(
                              child: GridView.builder(
@@ -122,7 +122,7 @@ class ExploreScreen extends StatelessWidget {
                                              Align(
                                                alignment: Alignment.topRight,
                                                child: Padding(
-                                                 padding: EdgeInsets.only(right: 10, top: 10),
+                                                 padding: const EdgeInsets.only(right: 10, top: 10),
                                                  child: SvgPicture.asset(ImageConstant.play),
                                                ),
                                              )
@@ -198,8 +198,8 @@ class ExploreScreen extends StatelessWidget {
    }
 }
 
-class ShoorahRitualsButton extends StatelessWidget {
-  const ShoorahRitualsButton({
+class TransFormRitualsButton extends StatelessWidget {
+  const TransFormRitualsButton({
     super.key,
   });
 

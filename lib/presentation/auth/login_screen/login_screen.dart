@@ -30,7 +30,7 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: ColorConstant.backGround,
       appBar: CustomAppBar(
-        title: StringConstant.login,
+        title: "login".tr,
       ),
       body: SafeArea(
           child: Stack(
@@ -60,8 +60,8 @@ class LoginScreen extends StatelessWidget {
                                  children: [
                                    Dimens.d100.h.spaceHeight,
                                    CommonTextField(
-                                       labelText: StringConstant.email,
-                                       hintText: StringConstant.enterEmail,
+                                       labelText: "email".tr,
+                                       hintText: "enterEmail".tr,
                                        controller: loginController.emailController,
                                        focusNode: FocusNode(),
                                        prefixIcon: Image.asset(ImageConstant.email, scale: Dimens.d4),
@@ -81,8 +81,8 @@ class LoginScreen extends StatelessWidget {
                                      valueListenable: loginController.securePass,
                                      builder: (context, value, child) {
                                        return CommonTextField(
-                                         labelText: StringConstant.password,
-                                         hintText: StringConstant.enterPassword,
+                                         labelText:"password".tr,
+                                         hintText: "enterPassword".tr,
                                          controller: loginController.passwordController,
                                          onChanged: (value){
                                            _formKey.currentState!.validate();
@@ -122,7 +122,7 @@ class LoginScreen extends StatelessWidget {
                                          () =>  (loginController.loader.value)
                                          ? const LoadingButton()
                                          : CommonElevatedButton(
-                                       title: StringConstant.login,
+                                       title: "login".tr,
                                        onTap: () async{
 
                                          loginController.loader.value = true;
@@ -154,7 +154,7 @@ class LoginScreen extends StatelessWidget {
                                      text: TextSpan(
                                        children: [
                                          TextSpan(
-                                           text: "${StringConstant.doNotHaveAnAccount} ?",
+                                           text: "${"doNotHaveAnAccount".tr} ?",
                                            style: Style.montserratRegular(
 
                                            ),
@@ -165,7 +165,7 @@ class LoginScreen extends StatelessWidget {
                                                EdgeInsets.all(Dimens.d4)),
                                          ),
                                          TextSpan(
-                                           text: StringConstant.register,
+                                           text: "register".tr,
                                            style: Style.montserratSemiBold(
                                              color: ColorConstant.themeColor,
                                            ),
@@ -234,7 +234,7 @@ class LoginScreen extends StatelessWidget {
            ),
            Dimens.d8.spaceWidth,
            Text(
-             StringConstant.rememberMe,
+             "rememberMe".tr,
              style: Style.montserratRegular(color: ColorConstant.color545454, fontWeight: FontWeight.w100),
            ),
            const Spacer(),
@@ -245,7 +245,7 @@ class LoginScreen extends StatelessWidget {
                );
              },
              child: Text(
-               "${StringConstant.forgotPassword} ?",
+               "${"forgotPassword".tr} ?",
                style: Style.montserratMedium(color: ColorConstant.themeColor),
              ),
            ),
