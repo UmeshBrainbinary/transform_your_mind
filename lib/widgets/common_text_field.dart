@@ -44,6 +44,7 @@ class CommonTextField extends StatefulWidget {
   final Matrix4? transform;
   final ValueChanged<String>? onChanged;
   final FormFieldValidator<String>? validator;
+  final bool? autovalidateMode;
 
 
   const CommonTextField(
@@ -85,6 +86,7 @@ class CommonTextField extends StatefulWidget {
       this.heightFactor = 2.1,
       this.transform,
       this.validator,
+        this.autovalidateMode,
       })
       : super(key: key);
 
@@ -139,13 +141,11 @@ class _CommonTextFieldState extends State<CommonTextField>
 
   Widget _textField() {
     return TextFormField(
-      focusNode: widget.focusNode,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       controller: widget.controller,
-      autofocus: widget.isAutoFocus,
-      autocorrect: false,
       obscureText: widget.isSecure,
       inputFormatters: widget.inputFormatters ?? [],
-      textInputAction: widget.textInputAction ?? TextInputAction.next,
+      textInputAction: widget.textInputAction ?? TextInputAction.done,
       keyboardType: widget.keyboardType ?? TextInputType.text,
       // textCapitalization: widget.isSecure
       //     ? TextCapitalization.none
@@ -217,6 +217,8 @@ class _CommonTextFieldState extends State<CommonTextField>
           suffix: widget.suffix,
 
         errorStyle: Style.montserratRegular(color: ColorConstant.colorFF0000, fontSize: Dimens.d12),
+        errorMaxLines: 2,
+
       ),
 
       onTap: widget.onTap,

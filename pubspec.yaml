@@ -44,6 +44,10 @@ dependencies:
   image_picker: ^1.1.1
   flutter_datetime_picker_plus: ^2.2.0
   intl: ^0.19.0
+  just_audio: 0.9.35
+  audio_service: ^0.18.12
+  audio_video_progress_bar: ^0.5.0
+  assets_audio_player: ^3.1.1
   lottie: ^3.1.2
   auto_size_text: ^3.0.0
   get_it: ^7.7.0
@@ -80,7 +84,7 @@ flutter:
     - assets/lang/
     - assets/lottie/
     - assets/icons/home/
-
+    - assets/icons/me/
   fonts:
     - family: Montserrat-bold
       fonts:

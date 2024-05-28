@@ -107,10 +107,12 @@ class VerificationsScreen extends StatelessWidget {
                                   Dimens.d83.spaceHeight,
                                   CommonElevatedButton(title: "verify".tr, onTap: () {
 
+                                    FocusScope.of(context).unfocus();
+
                                     if(forgotController.otpController.text.isNotEmpty){
                                       Get.toNamed(AppRoutes.newPasswordScreen);
                                     } else{
-                                      print("OTP empty");
+                                      errorToast("pleaseEnterVerificationCode".tr);
                                     }
 
                                   },)

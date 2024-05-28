@@ -8,6 +8,7 @@ class ColorConstant {
   static const backGround = Color(0XFFE8F4F8);
   static const transparent = Colors.transparent;
   static const themeColor = Color(0XFF769AA3);
+  static const grey = Colors.grey;
 
   static const colorbfd0d4 = Color(0XFFbfd0d4);
   static const colorebebeb = Color(0XFFebebeb);

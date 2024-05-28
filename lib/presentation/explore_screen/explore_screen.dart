@@ -8,7 +8,9 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/explore_screen/explore_controller.dart';
+import 'package:transform_your_mind/presentation/explore_screen/screen/now_playing_screen/now_playing_screen.dart';
 import 'package:transform_your_mind/presentation/explore_screen/widget/home_app_bar.dart';
+
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/custom_image_view.dart';
@@ -26,25 +28,38 @@ class ExploreScreen extends StatelessWidget {
         floatingActionButton: ValueListenableBuilder(
           valueListenable: exploreController.showScrollTop,
           builder: (context, value, child) {
-            return Container(
-              height: Dimens.d60,
-              width: Dimens.d60,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: ColorConstant.colorBFD0D4,
-              ),
-              padding: const EdgeInsets.all(4.0),
+            return InkWell(
+              onTap: (){
+                exploreController.scrollController.animateTo(
+                  0,
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.fastOutSlowIn,
+                );
+
+
+                  exploreController.isScrollingOrNot.value = false;
+
+              },
               child: Container(
-                decoration: const BoxDecoration(
+                height: Dimens.d60,
+                width: Dimens.d60,
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: ColorConstant.themeColor,
+                  color: ColorConstant.colorBFD0D4,
                 ),
-                child: Transform.scale(
-                  scale: 0.35,
-                  child: SvgPicture.asset(
-                    ImageConstant.upArrow,
-                    height: Dimens.d20.h,
-                    color: ColorConstant.white,
+                padding: const EdgeInsets.all(4.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: ColorConstant.themeColor,
+                  ),
+                  child: Transform.scale(
+                    scale: 0.35,
+                    child: SvgPicture.asset(
+                      ImageConstant.upArrow,
+                      height: Dimens.d20.h,
+                      color: ColorConstant.white,
+                    ),
                   ),
                 ),
               ),
@@ -77,6 +92,7 @@ class ExploreScreen extends StatelessWidget {
                           Dimens.d20.h.spaceHeight,
                          Expanded(
                              child: GridView.builder(
+                               controller: exploreController.scrollController,
                                  padding: const EdgeInsets.only(bottom: Dimens.d20),
                                  physics: const BouncingScrollPhysics(),
                                  gridDelegate:
@@ -90,7 +106,7 @@ class ExploreScreen extends StatelessWidget {
                                  itemBuilder: (context, index){
                                    return GestureDetector(
                                      onTap: (){
-                                       Get.toNamed(AppRoutes.nowPlayingScreen);
+                                       _onTileClick(index, context);
                                      },
                                      child: Column(
                                        children: [
@@ -162,6 +178,24 @@ class ExploreScreen extends StatelessWidget {
       ),
     );
   }
+
+   void _onTileClick(int index, BuildContext context) {
+     showModalBottomSheet(
+       context: context,
+       isScrollControlled: true,
+       backgroundColor: ColorConstant.white,
+       shape: const RoundedRectangleBorder(
+         borderRadius: BorderRadius.vertical(
+           top: Radius.circular(
+             Dimens.d24,
+           ),
+         ),
+       ),
+       builder: (BuildContext context) {
+         return NowPlayingScreen();
+       },
+     );
+   }
 }
 
 class TransFormRitualsButton extends StatelessWidget {
