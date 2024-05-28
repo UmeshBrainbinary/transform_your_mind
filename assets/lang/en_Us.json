@@ -68,5 +68,8 @@
   "forgotInstructions": "Enter the email address associated with your account.",
   "name": "Name",
   "enterName": "Enter Name",
-  "theNameFieldIsRequired": "The name field is required."
+  "theNameFieldIsRequired": "The name field is required.",
+  "editProfile": "Edit Profile",
+  "changePassword": "Change Password"
+
 }

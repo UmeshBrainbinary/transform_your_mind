@@ -77,6 +77,9 @@ class ImageConstant {
   static String settingsReview = '$iconMePath/settings_review.svg';
   static String settingsSubscription = '$iconMePath/settings_subscription.svg';
 
+  static String edit = '$iconMePath/edit.png';
+
+
 
  /// lottie file - home
   static String homeScreenMeshLottie = '$lottie/mesh_transform_feather.json';
