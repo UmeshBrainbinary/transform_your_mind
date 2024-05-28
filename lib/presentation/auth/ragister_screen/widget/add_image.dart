@@ -21,15 +21,16 @@ class AddImageWidget extends StatefulWidget {
   final VoidCallback onDeleteTap;
   final String? imageURL;
   final bool hideDelete;
+  final String? title;
 
   const AddImageWidget(
-      {Key? key,
+      {super.key,
       this.image,
       required this.onTap,
       required this.onDeleteTap,
       this.imageURL,
-      this.hideDelete = false})
-      : super(key: key);
+      this.hideDelete = false,
+      this.title});
 
   @override
   State<AddImageWidget> createState() => _AddImageWidgetState();
@@ -127,7 +128,7 @@ class _AddImageWidgetState extends State<AddImageWidget> {
           ),
           Dimens.d10.spaceHeight,
           CommonElevatedButton(
-            title: 'addProfileImage'.tr,
+            title: widget.title??'addProfileImage'.tr,
             onTap: widget.onTap,
             width: Dimens.d200,
             textStyle: Style.montserratMedium(color: ColorConstant.white, fontSize: Dimens.d14),

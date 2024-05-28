@@ -52,7 +52,7 @@ class _CommonElevatedButtonState extends State<CommonElevatedButton> {
         borderRadius: Dimens.d26.radiusAll,
         child: Container(
           height: widget.height ?? Dimens.d46.h,
-          width:  widget.title=="Listen & Grow!"?Dimens.d133.v:widget.width,
+          width:  widget.width,
           padding: widget.contentPadding ??
               const EdgeInsets.symmetric(
                 horizontal: Dimens.d18,
@@ -71,12 +71,7 @@ class _CommonElevatedButtonState extends State<CommonElevatedButton> {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // (widget.prefixIcon?.isNotEmpty ?? false)
-              //     ? Padding(
-              //         padding: const EdgeInsets.only(right: Dimens.d7),
-              //         child: SvgPicture.asset(AppAssets.icShareWhite),
-              //       )
-              //     : const Offstage(),
+
               Text(
                 widget.title,
                 textAlign: TextAlign.center,

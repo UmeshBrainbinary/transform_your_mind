@@ -64,7 +64,7 @@ class _MyAppState extends State<MyApp> {
          fallbackLocale: Locale('en', 'US'),
         title: 'Transform Your Mind',
         initialBinding: InitialBindings(),
-        initialRoute: AppRoutes.initialRoute,
+        initialRoute: AppRoutes.dashBoardScreen,
         getPages: AppRoutes.pages,
 
 

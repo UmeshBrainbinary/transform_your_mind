@@ -15,12 +15,18 @@ import 'package:transform_your_mind/presentation/explore_screen/binding/explore_
 import 'package:transform_your_mind/presentation/explore_screen/explore_screen.dart';
 import 'package:transform_your_mind/presentation/home_screen/binding/home_binding.dart';
 import 'package:transform_your_mind/presentation/home_screen/home_screen.dart';
+import 'package:transform_your_mind/presentation/journal_screen/binding/journal_binding.dart';
+import 'package:transform_your_mind/presentation/journal_screen/journal_screen.dart';
 import 'package:transform_your_mind/presentation/me_screen/binding/me_binding.dart';
 import 'package:transform_your_mind/presentation/me_screen/me_screen.dart';
 import 'package:transform_your_mind/presentation/now_playing_screen/binding/now_playing_binding.dart';
 import 'package:transform_your_mind/presentation/now_playing_screen/now_playing_screen.dart';
 import 'package:transform_your_mind/presentation/splash_screen/binding/splash_binding.dart';
 import 'package:transform_your_mind/presentation/splash_screen/splash_screen.dart';
+import 'package:transform_your_mind/presentation/today_cleanse_screen/binding/cleanse_binding.dart';
+import 'package:transform_your_mind/presentation/today_cleanse_screen/today_cleanse_screen.dart';
+import 'package:transform_your_mind/presentation/today_gratitude_screen/binding/gratitude_binding.dart';
+import 'package:transform_your_mind/presentation/today_gratitude_screen/gratitude_screen.dart';
 import 'package:transform_your_mind/presentation/tools_screen/binding/tools_binding.dart';
 import 'package:transform_your_mind/presentation/tools_screen/tools_screen.dart';
 
@@ -40,6 +46,9 @@ class AppRoutes {
   static const String toolsScreen = '/toolsScreen';
   static const String initialRoute = '/initialRoute';
   static const String nowPlayingScreen = '/now_playing_screen';
+  static const String gratitudeScreen = '/gratitudeScreen';
+  static const String todayCleanseScreen = '/todayCleanseScreen';
+  static const String journalScreen = '/journalScreen';
 
   static List<GetPage> pages = [
 
@@ -161,6 +170,32 @@ class AppRoutes {
       page: () => LoginScreen(),
       bindings: [
         LoginBinding(),
+      ],
+    ),
+
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: gratitudeScreen,
+      page: () => const GratitudeScreen(),
+      bindings: [
+        GratitudeBinding(),
+      ],
+    ),
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: todayCleanseScreen,
+      page: () => const TodayCleanseScreen(),
+      bindings: [
+        CleanseBinding(),
+      ],
+    ),
+
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: journalScreen,
+      page: () => const JournalScreen(),
+      bindings: [
+        JournalBinding(),
       ],
     ),
     ///
