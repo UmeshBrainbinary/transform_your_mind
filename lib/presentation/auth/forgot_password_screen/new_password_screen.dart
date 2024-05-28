@@ -67,7 +67,7 @@ class NewPasswordScreen extends StatelessWidget {
                                   valueListenable: forgotController.securePass,
                                   builder: (context, value, child) {
                                     return CommonTextField(
-                                      labelText: StringConstant.password,
+                                      labelText: "newPassword".tr,
                                       hintText: StringConstant.enterPassword,
                                       controller: forgotController.newPController,
                                       validator: (value) {
@@ -102,12 +102,14 @@ class NewPasswordScreen extends StatelessWidget {
                                   valueListenable: forgotController.securePass2,
                                   builder: (context, value, child) {
                                     return CommonTextField(
-                                      labelText: StringConstant.password,
+                                      labelText: "confirmPassword".tr,
                                       hintText: StringConstant.enterPassword,
                                       controller: forgotController.confirmPController,
                                       validator: (value) {
                                         if (value == "") {
                                           return "thePasswordFieldIsRequired".tr;
+                                        } else if(value != forgotController.newPController.text){
+                                           return "passwordsDoNotMatch".tr;
                                         } else if(!isValidPassword(value, isRequired: true)){
                                           return "pleaseEnterValidPassword".tr;
                                         }
@@ -136,6 +138,10 @@ class NewPasswordScreen extends StatelessWidget {
                                 CommonElevatedButton(
                                   title: StringConstant.submit,
                                   onTap: () {
+
+
+                                    FocusScope.of(context).unfocus();
+
                                     if (_formKey.currentState!.validate()) {
                                      _showAlertDialog(context);
                                     }

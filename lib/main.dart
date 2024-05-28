@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
+import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/localization/app_translation.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
@@ -64,7 +65,7 @@ class _MyAppState extends State<MyApp> {
          fallbackLocale: Locale('en', 'US'),
         title: 'Transform Your Mind',
         initialBinding: InitialBindings(),
-        initialRoute: AppRoutes.initialRoute,
+        initialRoute: PrefService.getBool(PrefKey.isLoginOrRegister) == true ? AppRoutes.dashBoardScreen : AppRoutes.loginScreen, //AppRoutes.initialRoute
         getPages: AppRoutes.pages,
 
 

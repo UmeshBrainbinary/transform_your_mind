@@ -2,10 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:transform_your_mind/core/app_export.dart';
+import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/string_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
@@ -64,9 +66,7 @@ class LoginScreen extends StatelessWidget {
                                        focusNode: FocusNode(),
                                        prefixIcon: Image.asset(ImageConstant.email, scale: Dimens.d4),
                                        keyboardType: TextInputType.emailAddress,
-                                       onChanged: (value){
-                                         _formKey.currentState!.validate();
-                                       },
+
                                        validator: (value) {
                                          if(value == ""){
                                            return "theEmailFieldIsRequired".tr;
@@ -125,13 +125,26 @@ class LoginScreen extends StatelessWidget {
                                        title: StringConstant.login,
                                        onTap: () async{
 
+                                         loginController.loader.value = true;
+
                                          FocusScope.of(context).unfocus();
 
                                          if (_formKey.currentState!.validate()) {
+
+                                           await PrefService.setValue(PrefKey.isLoginOrRegister, true);
+                                           await PrefService.setValue(PrefKey.isRemember, loginController.rememberMe.value);
+                                           await PrefService.setValue(PrefKey.email, loginController.emailController.text);
+                                           await PrefService.setValue(PrefKey.password, loginController.passwordController.text);
+
                                             Get.toNamed(AppRoutes.dashBoardScreen);
-                                           //await controller.loginWithEmailAndPassword();
+
+                                           loginController.emailController.clear();
+                                           loginController.passwordController.clear();
+                                           loginController.rememberMe.value = false;
 
                                          }
+
+                                         loginController.loader.value = false;
 
                                        },
                                      ),
@@ -240,5 +253,7 @@ class LoginScreen extends StatelessWidget {
        ),
      ),
    );
+
+
 
 }

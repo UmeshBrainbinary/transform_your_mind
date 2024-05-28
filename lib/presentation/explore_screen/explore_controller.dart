@@ -6,4 +6,21 @@ class ExploreController extends GetxController{
   final List exploreList = [
 
   ];
+
+  ScrollController scrollController = ScrollController();
+  RxBool isScrollingOrNot = false.obs;
+
+  @override
+  void onInit() {
+    // isScrollingOrNot.value = true;
+    //
+    // if (scrollController.offset <=
+    //     scrollController.position.minScrollExtent &&
+    //     !scrollController.position.outOfRange) {
+    //   // If scrolled to the top, set _isScrollingOrNot to false
+    //   isScrollingOrNot.value = false;
+    // }
+    super.onInit();
+  }
+
 }

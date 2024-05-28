@@ -57,7 +57,7 @@ class _CustomAppBarState extends State<CustomAppBar>
       centerTitle: widget.centerTitle,
       title: Text(widget.title,
           style: widget.titleStyle ??
-              Style.cormorantGaramondBold(fontSize: Dimens.d30)),
+              Style.cormorantGaramondBold(fontSize: Dimens.d20)),
       backgroundColor: ColorConstant.transparent,
       leading: widget.leading ?? _getLeading(),
       automaticallyImplyLeading: false,
@@ -74,6 +74,7 @@ class _CustomAppBarState extends State<CustomAppBar>
       onTap: widget.onTap ??
           () {
             Get.back();
+            FocusScope.of(context).unfocus();
           },
       child: Container(
         height: Dimens.d50,

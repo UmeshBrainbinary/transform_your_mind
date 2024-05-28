@@ -2,8 +2,16 @@ class ImageConstant {
 
   static String imagePath = 'assets/images';
   static String iconPath = 'assets/icons';
-  static String iconDashboardPath = 'assets/icons/dashboard';
-  static String iconExplorePath = 'assets/icons/explore';
+
+  ///------------
+
+  static String iconDashboardPath = '$iconPath/dashboard';
+  static String iconExplorePath = '$iconPath/explore';
+  static String iconMePath = '$iconPath/me';
+
+  static String imageExplorePath = '$imagePath/explore';
+
+
 
   /// images
   static String splashLogo = '$imagePath/splashLogo.png';
@@ -45,6 +53,25 @@ class ImageConstant {
   static String bgImagePlaying = '$imagePath/bgImagePlaying.png';
   static String share = '$iconExplorePath/share.svg';
   static String bookmark = '$iconExplorePath/bookmark.svg';
+  static String loudSpeaker = '$iconExplorePath/loud_speaker.svg';
+  static String curveBottomImg = '$imageExplorePath/curveBottomImg.png';
+  static String musicBars = '$iconExplorePath/musicBars.svg';
+  static String secondIcon = '$iconExplorePath/secondIcon.svg';
+  static String pause = '$iconExplorePath/pause.svg';
+  static String playbackSpeed = '$iconExplorePath/ic_playback_speed.svg';
+  static String audio15second = '$iconExplorePath/audio15second.png';
+  static String audio15second2 = '$iconExplorePath/audio15second2.png';
+
+
+  /// ME
+
+  static String settingsAccount = '$iconMePath/settings_account.svg';
+  static String settingsDelete = '$iconMePath/settings_delete.svg';
+  static String settingsLegals = '$iconMePath/settings_legals.svg';
+  static String settingsNotification = '$iconMePath/settings_notification.svg';
+  static String settingsPersonalization = '$iconMePath/settings_personalization.svg';
+  static String settingsReview = '$iconMePath/settings_review.svg';
+  static String settingsSubscription = '$iconMePath/settings_subscription.svg';
 
 
 

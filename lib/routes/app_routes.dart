@@ -17,8 +17,11 @@ import 'package:transform_your_mind/presentation/home_screen/binding/home_bindin
 import 'package:transform_your_mind/presentation/home_screen/home_screen.dart';
 import 'package:transform_your_mind/presentation/me_screen/binding/me_binding.dart';
 import 'package:transform_your_mind/presentation/me_screen/me_screen.dart';
-import 'package:transform_your_mind/presentation/now_playing_screen/binding/now_playing_binding.dart';
-import 'package:transform_your_mind/presentation/now_playing_screen/now_playing_screen.dart';
+import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/account_screen/account_screen.dart';
+import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/account_screen/binding/account_binding.dart';
+import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/binding/setting_binding.dart';
+import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/setting_screen.dart';
+
 import 'package:transform_your_mind/presentation/splash_screen/binding/splash_binding.dart';
 import 'package:transform_your_mind/presentation/splash_screen/splash_screen.dart';
 import 'package:transform_your_mind/presentation/tools_screen/binding/tools_binding.dart';
@@ -40,6 +43,8 @@ class AppRoutes {
   static const String toolsScreen = '/toolsScreen';
   static const String initialRoute = '/initialRoute';
   static const String nowPlayingScreen = '/now_playing_screen';
+  static const String settingScreen = '/setting_screen';
+  static const String accountScreen = '/account_screen';
 
   static List<GetPage> pages = [
 
@@ -139,12 +144,28 @@ class AppRoutes {
     ),
     GetPage(
       transition: Transition.rightToLeft,
-      name: nowPlayingScreen,
-      page: () => const NowPlayingScreen(),
+      name: settingScreen,
+      page: () =>  SettingScreen(),
       bindings: [
-        NowPlayingBinding(),
+        SettingBinding(),
       ],
     ),
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: accountScreen,
+      page: () =>  AccountScreen(),
+      bindings: [
+        AccountBinding(),
+      ],
+    ),
+    // GetPage(
+    //   transition: Transition.rightToLeft,
+    //   name: nowPlayingScreen,
+    //   page: () => const NowPlayingScreen(),
+    //   bindings: [
+    //     NowPlayingBinding(),
+    //   ],
+    // ),
     ///--------------
     // GetPage(
     //   transition: Transition.rightToLeft,
@@ -155,14 +176,14 @@ class AppRoutes {
     //   ],
     // ),
     ///
-    GetPage(
-      transition: Transition.rightToLeft,
-      name: initialRoute,
-      page: () => LoginScreen(),
-      bindings: [
-        LoginBinding(),
-      ],
-    ),
+    // GetPage(
+    //   transition: Transition.rightToLeft,
+    //   name: initialRoute,
+    //   page: () => LoginScreen(),
+    //   bindings: [
+    //     LoginBinding(),
+    //   ],
+    // ),
     ///
     // GetPage(
     //   transition: Transition.rightToLeft,

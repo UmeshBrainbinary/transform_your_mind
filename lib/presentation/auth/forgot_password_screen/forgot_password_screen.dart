@@ -7,6 +7,7 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/string_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/core/utils/toast_message.dart';
 import 'package:transform_your_mind/core/utils/validation_functions.dart';
 import 'package:transform_your_mind/presentation/auth/forgot_password_screen/forgot_controller.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
@@ -87,9 +88,23 @@ class ForgotPasswordScreen extends StatelessWidget {
                                     FocusScope.of(context).unfocus();
 
                                     if (_formKey.currentState!.validate()) {
-                                      Get.toNamed(
-                                        AppRoutes.verificationsScreen,
+
+                                      Get.snackbar(
+                                        'Success',
+                                        "OTP has been sent to your registerd email, if not found please check your junk folder.".tr,
+                                        colorText: Colors.white,
+                                        backgroundColor: Colors.black.withOpacity(0.3),
+                                        snackPosition: SnackPosition.TOP,
+                                        duration: Duration(seconds: 1)
                                       );
+
+
+                                        Get.toNamed(
+                                          AppRoutes.verificationsScreen,
+                                        );
+
+
+
                                     }
 
 

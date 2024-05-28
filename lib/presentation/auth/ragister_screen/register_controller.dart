@@ -15,7 +15,6 @@ class RegisterController extends GetxController{
   TextEditingController genderController = TextEditingController();
 
   ValueNotifier<bool> securePass = ValueNotifier(true);
-  ValueNotifier<bool> rememberMe = ValueNotifier(false);
   ValueNotifier<XFile?> imageFile = ValueNotifier(null);
 
   DateTime? selectedDob;
