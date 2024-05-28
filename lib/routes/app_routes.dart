@@ -146,23 +146,23 @@ class AppRoutes {
       ],
     ),
     ///--------------
-    GetPage(
-      transition: Transition.rightToLeft,
-      name: initialRoute,
-      page: () => const DashBoardScreen(),
-      bindings: [
-        DashBoardBinding(),
-      ],
-    ),
-    ///
     // GetPage(
     //   transition: Transition.rightToLeft,
     //   name: initialRoute,
-    //   page: () => LoginScreen(),
+    //   page: () => const DashBoardScreen(),
     //   bindings: [
-    //     LoginBinding(),
+    //     DashBoardBinding(),
     //   ],
     // ),
+    ///
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: initialRoute,
+      page: () => LoginScreen(),
+      bindings: [
+        LoginBinding(),
+      ],
+    ),
     ///
     // GetPage(
     //   transition: Transition.rightToLeft,

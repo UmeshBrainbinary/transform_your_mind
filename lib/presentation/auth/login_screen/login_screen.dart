@@ -64,6 +64,9 @@ class LoginScreen extends StatelessWidget {
                                        focusNode: FocusNode(),
                                        prefixIcon: Image.asset(ImageConstant.email, scale: Dimens.d4),
                                        keyboardType: TextInputType.emailAddress,
+                                       onChanged: (value){
+                                         _formKey.currentState!.validate();
+                                       },
                                        validator: (value) {
                                          if(value == ""){
                                            return "theEmailFieldIsRequired".tr;
@@ -81,6 +84,9 @@ class LoginScreen extends StatelessWidget {
                                          labelText: StringConstant.password,
                                          hintText: StringConstant.enterPassword,
                                          controller: loginController.passwordController,
+                                         onChanged: (value){
+                                           _formKey.currentState!.validate();
+                                         },
                                          validator: (value) {
                                            if (value == "") {
                                              return "thePasswordFieldIsRequired".tr;

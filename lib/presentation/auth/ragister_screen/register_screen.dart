@@ -14,6 +14,7 @@ import 'package:transform_your_mind/core/utils/validation_functions.dart';
 import 'package:transform_your_mind/presentation/auth/ragister_screen/register_controller.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
 import 'package:transform_your_mind/presentation/auth/ragister_screen/widget/add_image.dart';
+import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
@@ -273,9 +274,10 @@ class RegisterScreen extends StatelessWidget {
 
                                           FocusScope.of(context).unfocus();
 
-                                          if (_formKey.currentState!.validate()) {
+                                          if (_formKey.currentState!.validate() && registerController.imageFile != null) {
 
                                             //await controller.loginWithEmailAndPassword();
+                                            Get.toNamed(AppRoutes.dashBoardScreen);
 
                                           }
 
