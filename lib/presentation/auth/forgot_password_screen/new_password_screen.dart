@@ -103,7 +103,7 @@ class NewPasswordScreen extends StatelessWidget {
                                   builder: (context, value, child) {
                                     return CommonTextField(
                                       labelText: "confirmPassword".tr,
-                                      hintText: StringConstant.enterPassword,
+                                      hintText: "confirmPassword",
                                       controller: forgotController.confirmPController,
                                       validator: (value) {
                                         if (value == "") {
