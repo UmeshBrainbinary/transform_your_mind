@@ -3,6 +3,12 @@ class ImageConstant {
   static String imagePath = 'assets/images';
   static String iconPath = 'assets/icons';
 
+  /// audio
+  static String audioPath = 'assets/audio/audio.mp3';
+
+
+
+
   ///------------
 
   static String iconDashboardPath = '$iconPath/dashboard';

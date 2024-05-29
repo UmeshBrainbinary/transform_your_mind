@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -9,12 +10,13 @@ import 'package:transform_your_mind/core/utils/audio_manager/audio_player_manage
 import 'package:transform_your_mind/core/utils/audio_manager/seek_bar.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
+import 'package:transform_your_mind/core/utils/duration_formatter.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
-import 'package:audio_session/audio_session.dart';
+
 
 class NowPlayingScreen extends StatefulWidget {
   const NowPlayingScreen({super.key});
@@ -30,7 +32,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
 
   final _player = AudioPlayer();
 
-
+  List<AudioSpeed> audioSpeedList = AudioSpeed.getAudioSpeedList();
+  int currentAudioSpeedIndex = 0;
   Duration position = Duration.zero;
   Duration seekbarDuration = Duration.zero;
   Duration _totalAudioDuration = const Duration();
@@ -45,7 +48,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
   int timeStart = 0;
   Random randomNumberGenerator = Random();
   late int randomNumberForSelectingLottie;
-  bool _isBookmarked = false;
+  double _opacityOfSpeedText = 0.0;
+  Timer? _opacityOfSpeedTimer;
   final ValueNotifier<double> _slideValue = ValueNotifier(40.0);
 
 
@@ -361,14 +365,10 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                           Expanded(
                             child: GestureDetector(
                               onTap: () {
-                                // if (!_isAudioLoading.value) {
-                                //   _forwardTapHandler();
-                                // }
-                                // if (_audioPlayerManager
-                                //     .audioPlayer.playing) {
-                                //   _audioNotificationServiceHandler
-                                //       .handleAudioPlayerControllerForNotification();
-                                // }
+                                if (!_isAudioLoading.value) {
+                                  _forwardTapHandler();
+                                }
+
                               },
                               child: Image.asset(
                                ImageConstant.audio15second2,
@@ -402,64 +402,59 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                                           ),
                                         ),
                                         onTap: () {
-                                          // developer.log(
-                                          //     "current Speed value ${audioSpeedList[currentAudioSpeedIndex].speed}");
-                                          // if (audioSpeedList.length - 1 ==
-                                          //     currentAudioSpeedIndex) {
-                                          //   currentAudioSpeedIndex = 0;
-                                          //   _audioPlayerManager
-                                          //       .setAudioSpeed(
-                                          //       audioSpeedList[
-                                          //       currentAudioSpeedIndex]);
-                                          // } else {
-                                          //   currentAudioSpeedIndex++;
-                                          //   _audioPlayerManager
-                                          //       .setAudioSpeed(
-                                          //       audioSpeedList[
-                                          //       currentAudioSpeedIndex]);
-                                          // }
-                                          //
-                                          // developer.log(
-                                          //     "new Speed value ${audioSpeedList[currentAudioSpeedIndex]
-                                          //         .speed}");
-                                          // setState(() {
-                                          //   _opacityOfSpeedText = 1.0;
-                                          // });
-                                          // _opacityOfSpeedTimer?.cancel();
-                                          // _opacityOfSpeedTimer = Timer(
-                                          //     const Duration(seconds: 5),
-                                          //         () {
-                                          //       setState(() {
-                                          //         _opacityOfSpeedText =
-                                          //         0.0;
-                                          //       });
-                                          //     });
+
+                                          if (audioSpeedList.length - 1 ==
+                                              currentAudioSpeedIndex) {
+                                            currentAudioSpeedIndex = 0;
+                                            _audioPlayerManager
+                                                .setAudioSpeed(
+                                                audioSpeedList[
+                                                currentAudioSpeedIndex]);
+                                          } else {
+                                            currentAudioSpeedIndex++;
+                                            _audioPlayerManager
+                                                .setAudioSpeed(
+                                                audioSpeedList[
+                                                currentAudioSpeedIndex]);
+                                          }
+
+                                          setState(() {
+                                            _opacityOfSpeedText = 1.0;
+                                          });
+                                          _opacityOfSpeedTimer?.cancel();
+                                          _opacityOfSpeedTimer = Timer(
+                                              const Duration(seconds: 5),
+                                                  () {
+                                                setState(() {
+                                                  _opacityOfSpeedText =
+                                                  0.0;
+                                                });
+                                              });
                                         },
                                       ),
-                                      // Positioned(
-                                      //   top: -20,
-                                      //   left: -5,
-                                      //   right: -5,
-                                      //   child: AnimatedOpacity(
-                                      //     opacity: _opacityOfSpeedText,
-                                      //     duration: const Duration(
-                                      //         milliseconds: 500),
-                                      //     child: AutoSizeText(
-                                      //       audioSpeedList[
-                                      //       currentAudioSpeedIndex]
-                                      //           .speedValue,
-                                      //       textAlign: TextAlign.center,
-                                      //       maxLines: 1,
-                                      //       style: Style.workSansRegular(
-                                      //         color: _isAudioLoading.value
-                                      //             ? AppColors
-                                      //             .textGreyColor
-                                      //             : AppColors.white,
-                                      //         fontSize: 14.0.spMin,
-                                      //       ),
-                                      //     ),
-                                      //   ),
-                                      // ),
+                                      Positioned(
+                                        top: -20,
+                                        left: -5,
+                                        right: -5,
+                                        child: AnimatedOpacity(
+                                          opacity: _opacityOfSpeedText,
+                                          duration: const Duration(
+                                              milliseconds: 500),
+                                          child: AutoSizeText(
+                                            audioSpeedList[
+                                            currentAudioSpeedIndex]
+                                                .speedValue,
+                                            textAlign: TextAlign.center,
+                                            maxLines: 1,
+                                            style: Style.montserratMedium(
+                                              color: _isAudioLoading.value
+                                                  ? ColorConstant.grey
+                                                  : ColorConstant.white,
+                                              fontSize: 10,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                     ],
                                   );
                                 },
@@ -472,7 +467,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                       );
                     }),
 
-                /// end image
+                /// end image time duration
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
@@ -506,9 +501,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                                     builder: (BuildContext context, value,
                                         Widget? child) {
                                       return Text(
-                                        // _updatedRealtimeAudioDuration
-                                        //     .value.durationFormatter,
-                                        "00:00",
+                                        _updatedRealtimeAudioDuration.value.durationFormatter,
+                                        //"00:00",
                                         style: Style.montserratMedium(
                                           fontSize: Dimens.d14,
                                           color: ColorConstant.white
@@ -564,9 +558,10 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                                     _updatedRealtimeAudioDuration,
                                     builder: (BuildContext context, value,
                                         Widget? child) {
+
                                       return Text(
-                                        //'-${(_totalAudioDuration - _updatedRealtimeAudioDuration.value).durationFormatter}',
-                                        "12:00",
+                                        '-${(_totalAudioDuration - _updatedRealtimeAudioDuration.value).durationFormatter}',
+                                        //"12:00",
                                         style: Style.montserratMedium(
                                           fontSize: Dimens.d14,
                                             color: ColorConstant.white
@@ -623,7 +618,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                           height: Dimens.d60,
                           width: double.infinity,
                           decoration: BoxDecoration(
-                            color: ColorConstant.themeColor,
+                            color: ColorConstant.color3d5157,
                             borderRadius: Dimens.d40.radiusAll,
                           ),
                           child: Row(
@@ -642,6 +637,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                                       min: Dimens.d0,
                                       max: Dimens.d100,
                                       value: _slideValue.value,
+                                      activeColor: ColorConstant.themeColor,
                                       onChanged: (value) {
                                         _audioPlayerManager
                                             .volumeForMeditationAudio(
@@ -713,27 +709,47 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
   }
 
 
+  void _forwardTapHandler() {
+    if ((_totalAudioDuration - _updatedRealtimeAudioDuration.value) <=
+        const Duration(seconds: 15)) {
+      if (_localAudioLoaded) {
+        _updatedRealtimeAudioDuration.value =
+            _updatedRealtimeAudioDuration.value +
+                (_totalAudioDuration - _updatedRealtimeAudioDuration.value);
+      } else {
+        _audioPlayerManager.audioPlayer.seek(
+            _updatedRealtimeAudioDuration.value +
+                (_totalAudioDuration - _updatedRealtimeAudioDuration.value));
+      }
+    } else if (_updatedRealtimeAudioDuration.value <= _totalAudioDuration) {
+      if (_localAudioLoaded) {
+        _updatedRealtimeAudioDuration.value =
+            _updatedRealtimeAudioDuration.value + const Duration(seconds: 15);
+      } else {
+        _audioPlayerManager.seekForMeditationAudio(
+            position: _updatedRealtimeAudioDuration.value +
+                const Duration(seconds: 15));
+      }
+    }
+  }
+
 
   Future<void> _loadAudio() async {
+
     _isAudioLoading.value = true;
 
     /// This will stop the current selected meditation audio
     /// before setting and loading the new audio
 
     await _audioPlayerManager.audioPlayer.setAudioSource(
-      // AudioSource.asset(
-      //   "assets/audio/pod.mp3",
-      //   tag: MediaItem(
-      //     id: widget.restoreMediaData.contentId ?? 'unique_id',
-      //     album: widget.restoreMediaData.contentName ?? 'Shoorah',
-      //     title: widget.restoreMediaData.contentName ?? 'Shoorah',
-      //     artUri: Uri.parse(restoreAudioDetails?.expertImage ??
-      //         'https://d12231i07r54en.cloudfront.net/app_configs/shoorah1_logo.png'),
-      //   ),
-      // ),
-      AudioSource.uri(
-        Uri.parse("https://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Kangaroo_MusiQue_-_The_Neverwritten_Role_Playing_Game.mp3"),
+      ///asset
+      AudioSource.asset(
+        ImageConstant.audioPath,
       ),
+      /// network
+      // AudioSource.uri(
+      //   Uri.parse("https://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Kangaroo_MusiQue_-_The_Neverwritten_Role_Playing_Game.mp3"),
+      // ),
       initialPosition: (_updatedRealtimeAudioDuration.value != Duration.zero)
           ? _updatedRealtimeAudioDuration.value
           : Duration.zero,
@@ -752,9 +768,13 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
         //_stopMeditationAudio(isCalledFromCompletedState: true);
       }
 
+
+
       /// This will handle the button loading state
       if (event.processingState != ProcessingState.loading) {
         _isAudioLoading.value = false;
+      } else{
+        _isAudioLoading.value = true;
       }
 
       /// Assigning the playing state of the meditation audio
@@ -765,6 +785,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
       _audioPlayerManager.currentlyPlayingMeditationAudioDuration =
           event ?? const Duration();
     });
+
   }
 
   Future<void> _playPauseTapHandler() async {
@@ -793,6 +814,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
     /// mini audio player is in the focus or not to do the required things
 
     await _loadAudio();
+
     await _audioPlayerManager.playPauseEventHandler(
         audioPlayPauseEvent: AudioPlayPauseEvent.playBgAudio);
     /*if (!_audioPlayerManager.isMeditationAudioPlaying.value &&
@@ -877,8 +899,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
         randomNumberGenerator.nextInt(Dimens.d7.toInt() - Dimens.d1.toInt());
     //_isBookmarked = widget.restoreMediaData.isBookmarked ?? false;
 
-    _totalAudioDuration =
-        parseAudioDuration('00:00');
+    _totalAudioDuration = parseAudioDuration('00:00');
 
     /// Checked whether the audio that is playing and the selected card both are same so
     /// it won't reload the audio.
@@ -914,8 +935,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
         _updatedRealtimeAudioDuration.value = event;
       }
     });
-    _totalAudioDuration =
-        _audioPlayerManager.audioPlayer.duration ?? const Duration();
+    _totalAudioDuration = _audioPlayerManager.audioPlayer.duration ?? const Duration();
     if (_audioPlayerManager.audioPlayer.playing) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _audioPlayerManager.isMeditationAudioPlaying.value = true;
