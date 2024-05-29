@@ -57,6 +57,8 @@ class AccountScreen extends StatelessWidget {
                         onTap: () {
                            if(index==0){
                              Get.toNamed(AppRoutes.editProfileScreen);
+                           } else if(index==1){
+                            // Get.toNamed(AppRoutes.);
                            }
                         },
                       );

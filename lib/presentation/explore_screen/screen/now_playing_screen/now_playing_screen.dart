@@ -753,6 +753,9 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> with TickerProvider
         //_stopMeditationAudio(isCalledFromCompletedState: true);
       }
 
+      if(_updatedRealtimeAudioDuration.value != Duration.zero){
+        _isAudioLoading.value = false;
+      }
 
 
       /// This will handle the button loading state
@@ -761,6 +764,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> with TickerProvider
       } else{
         _isAudioLoading.value = true;
       }
+
+
 
       /// Assigning the playing state of the meditation audio
       _audioPlayerManager.isMeditationAudioPlaying.value = event.playing;

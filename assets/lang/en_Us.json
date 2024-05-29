@@ -72,6 +72,10 @@
   "editProfile": "Edit Profile",
   "changePassword": "Change Password",
   "addImage": "Add Image",
-  "save": "Save"
-
+  "save": "Save",
+  "currentPassword": "Current Password",
+  "confirmNewPassword" : "Confirm New Password",
+  "enterCurrentPassword": "Enter current password",
+  "enterConfirmNewPassword" : "Enter confirm new password",
+  "confirmPassword": "Confirm Password"
 }
