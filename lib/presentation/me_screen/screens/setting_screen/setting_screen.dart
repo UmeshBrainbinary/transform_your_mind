@@ -9,6 +9,8 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/presentation/auth/login_screen/login_controller.dart';
+import 'package:transform_your_mind/presentation/auth/ragister_screen/register_controller.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/setting_controller.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/widgets/app_confirmation_dialog.dart';
@@ -105,6 +107,26 @@ class SettingScreen extends StatelessWidget {
                          primaryBtnTitle: "no".tr,
                          secondaryBtnTitle: "yes".tr,
                          secondaryBtnAction: () {
+
+
+
+                           RegisterController registerController = Get.put(RegisterController());
+                           registerController.nameController.clear();
+                           registerController.emailController.clear();
+                           registerController.passwordController.clear();
+                           registerController.dobController.clear();
+                           registerController.genderController.clear();
+                           registerController.imageFile.value = null;
+
+    if(PrefService.getBool(PrefKey.isRemember) == false) {
+      LoginController loginController = Get.put(LoginController());
+      loginController.emailController.clear();
+      loginController.passwordController.clear();
+      loginController.rememberMe.value = false;
+    }
+
+
+
                            Get.offAllNamed(AppRoutes.loginScreen);
                            PrefService.setValue(PrefKey.isLoginOrRegister, false);
                          },

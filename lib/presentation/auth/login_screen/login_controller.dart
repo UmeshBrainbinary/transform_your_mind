@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 
-class LoginController extends GetxController{
+class LoginController extends GetxController {
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();

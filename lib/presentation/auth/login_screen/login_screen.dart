@@ -97,18 +97,23 @@ class LoginScreen extends StatelessWidget {
                                          },
                                          focusNode: FocusNode(),
                                          prefixIcon: Image.asset(ImageConstant.lock, scale: Dimens.d4),
-                                         suffixIcon: loginController.securePass.value
-                                             ? GestureDetector(
+                                         suffixIcon: GestureDetector(
                                              onTap: (){
                                                loginController.securePass.value = !loginController.securePass.value;
                                              },
-                                             child: Image.asset(ImageConstant.eyeClose, scale: Dimens.d5))
+                                             child: Transform.scale(
+                                               scale: 0.38,
+                                               child: Image.asset(
+                                                 loginController.securePass.value
+                                                     ? ImageConstant.eyeClose
+                                                     : ImageConstant.eyeOpen,
+                                                 fit: BoxFit.contain,
+                                                 height: 5,
+                                                 width: 5,
+                                               ),
+                                             )
+                                       ),
 
-                                             : GestureDetector(
-                                             onTap: (){
-                                               loginController.securePass.value = !loginController.securePass.value;
-                                             },
-                                             child:   Image.asset(ImageConstant.eyeOpen, scale: Dimens.d4)),
                                          isSecure: value,
                                          //suffixTap: () => loginController.securePass.value = !loginController.securePass.value,
                                          textInputAction: TextInputAction.done,
@@ -138,9 +143,9 @@ class LoginScreen extends StatelessWidget {
 
                                             Get.toNamed(AppRoutes.dashBoardScreen);
 
-                                           loginController.emailController.clear();
-                                           loginController.passwordController.clear();
-                                           loginController.rememberMe.value = false;
+                                           // loginController.emailController.clear();
+                                           // loginController.passwordController.clear();
+                                           // loginController.rememberMe.value = false;
 
                                          }
 

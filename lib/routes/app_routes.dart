@@ -114,7 +114,7 @@ class AppRoutes {
     GetPage(
       transition: Transition.rightToLeft,
       name: dashBoardScreen,
-      page: () => const DashBoardScreen(),
+      page: () =>  DashBoardScreen(),
       bindings: [
         DashBoardBinding(),
       ],

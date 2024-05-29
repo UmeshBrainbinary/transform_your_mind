@@ -31,6 +31,11 @@ Future<void> main() async {
   
  var locale = const Locale('en', 'US');
  Get.updateLocale(locale);
+
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent, // set the desired status bar color
+    statusBarIconBrightness: Brightness.dark, // set the status bar icon color to light or dark
+  ));
 }
 
 class MyApp extends StatefulWidget {

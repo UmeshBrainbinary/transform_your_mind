@@ -50,7 +50,11 @@ class ImageConstant {
   static String play = '$iconExplorePath/play.svg';
   static String downloadCircle = '$iconExplorePath/download_circle.svg';
   static String staticImage = '$imagePath/staticImage.svg';
-
+  static String static1 = '$imageExplorePath/static1.png';
+  static String static2 = '$imageExplorePath/static2.png';
+  static String static3 = '$imageExplorePath/static3.png';
+  static String static4 = '$imageExplorePath/static4.png';
+  static String static5 = '$imageExplorePath/static5.png';
 
 
   /// NOW PLAYING

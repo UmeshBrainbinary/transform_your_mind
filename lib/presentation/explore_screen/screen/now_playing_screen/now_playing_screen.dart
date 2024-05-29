@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:transform_your_mind/core/utils/audio_manager/audio_player_manager.dart';
 import 'package:transform_your_mind/core/utils/audio_manager/seek_bar.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
@@ -13,6 +14,7 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
+import 'package:audio_session/audio_session.dart';
 
 class NowPlayingScreen extends StatefulWidget {
   const NowPlayingScreen({super.key});
@@ -25,6 +27,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
 
 
   final AudioPlayerManager _audioPlayerManager = AudioPlayerManager();
+
+  final _player = AudioPlayer();
 
 
   Duration position = Duration.zero;
@@ -42,6 +46,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
   Random randomNumberGenerator = Random();
   late int randomNumberForSelectingLottie;
   bool _isBookmarked = false;
+  final ValueNotifier<double> _slideValue = ValueNotifier(40.0);
 
 
 
@@ -49,7 +54,30 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
   void initState() {
     super.initState();
     _setInitValues();
+    //_init();
   }
+
+  // Future<void> _init() async {
+  //   // Inform the operating system of our app's audio attributes etc.
+  //   // We pick a reasonable default for an app that plays speech.
+  //   final session = await AudioSession.instance;
+  //   await session.configure(const AudioSessionConfiguration.speech());
+  //   // Listen to errors during playback.
+  //   _player.playbackEventStream.listen((event) {
+  //
+  //   },
+  //       onError: (Object e, StackTrace stackTrace) {
+  //         print('A stream error occurred: $e');
+  //       });
+  //   // Try to load audio from a source and catch any errors.
+  //   try {
+  //     // AAC example: https://dl.espressif.com/dl/audio/ff-16b-2c-44100hz.aac
+  //     await _player.setAudioSource(AudioSource.uri(Uri.parse(
+  //         "https://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Kangaroo_MusiQue_-_The_Neverwritten_Role_Playing_Game.mp3")));
+  //   } on PlayerException catch (e) {
+  //     print("Error loading audio source: $e");
+  //   }
+  // }
 
 
 
@@ -239,6 +267,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                                 fit: FlexFit.loose,
                                 child: GestureDetector(
                                   onTap: () {
+
                                     _playPauseTapHandler();
                                   },
                                   child: Container(
@@ -573,6 +602,80 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
               ],
             ),
 
+            ValueListenableBuilder(
+              valueListenable: _isVolShowing,
+              builder: (context, value, child) {
+                if (value) {
+                  return Container(
+                    color: ColorConstant.transparent,
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(
+                        sigmaX: 1.5,
+                        sigmaY: 1.5,
+                      ),
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(
+                              vertical: Dimens.d200,
+                              horizontal: Dimens.d16),
+                          padding: const EdgeInsets.all(Dimens.d10),
+                          height: Dimens.d60,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: ColorConstant.themeColor,
+                            borderRadius: Dimens.d40.radiusAll,
+                          ),
+                          child: Row(
+                            children: [
+                              Dimens.d10.spaceWidth,
+                              SvgPicture.asset(
+                                ImageConstant.loudSpeaker,
+                                color: ColorConstant.white,
+                              ),
+                              Dimens.d10.spaceWidth,
+                              ValueListenableBuilder(
+                                valueListenable: _slideValue,
+                                builder: (context, value, child) {
+                                  return Expanded(
+                                    child: Slider(
+                                      min: Dimens.d0,
+                                      max: Dimens.d100,
+                                      value: _slideValue.value,
+                                      onChanged: (value) {
+                                        _audioPlayerManager
+                                            .volumeForMeditationAudio(
+                                            volume:
+                                            _slideValue.value /
+                                                100);
+                                        _slideValue.value = value;
+                                      },
+                                      onChangeStart: (_) {
+                                        volTimer?.cancel();
+                                      },
+                                      onChangeEnd: (_) {
+                                        Future.delayed(
+                                          const Duration(
+                                              milliseconds: 500),
+                                              () => _isVolShowing.value =
+                                          false,
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                } else {
+                  return const Offstage();
+                }
+              },
+            ),
 
 
           ],
@@ -609,11 +712,65 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
     }
   }
 
+
+
+  Future<void> _loadAudio() async {
+    _isAudioLoading.value = true;
+
+    /// This will stop the current selected meditation audio
+    /// before setting and loading the new audio
+
+    await _audioPlayerManager.audioPlayer.setAudioSource(
+      // AudioSource.asset(
+      //   "assets/audio/pod.mp3",
+      //   tag: MediaItem(
+      //     id: widget.restoreMediaData.contentId ?? 'unique_id',
+      //     album: widget.restoreMediaData.contentName ?? 'Shoorah',
+      //     title: widget.restoreMediaData.contentName ?? 'Shoorah',
+      //     artUri: Uri.parse(restoreAudioDetails?.expertImage ??
+      //         'https://d12231i07r54en.cloudfront.net/app_configs/shoorah1_logo.png'),
+      //   ),
+      // ),
+      AudioSource.uri(
+        Uri.parse("https://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Kangaroo_MusiQue_-_The_Neverwritten_Role_Playing_Game.mp3"),
+      ),
+      initialPosition: (_updatedRealtimeAudioDuration.value != Duration.zero)
+          ? _updatedRealtimeAudioDuration.value
+          : Duration.zero,
+    );
+
+    _audioPlayerManager.volumeForMeditationAudio(
+        volume: _slideValue.value / 100);
+    _totalAudioDuration =
+        _audioPlayerManager.audioPlayer.duration ?? const Duration();
+
+
+
+    _audioPlayerManager.audioPlayer.playerStateStream.listen((event) {
+      /// This will handle what to do once the audio is completed
+      if (event.processingState == ProcessingState.completed) {
+        //_stopMeditationAudio(isCalledFromCompletedState: true);
+      }
+
+      /// This will handle the button loading state
+      if (event.processingState != ProcessingState.loading) {
+        _isAudioLoading.value = false;
+      }
+
+      /// Assigning the playing state of the meditation audio
+      _audioPlayerManager.isMeditationAudioPlaying.value = event.playing;
+    });
+
+    _audioPlayerManager.audioPlayer.durationStream.listen((event) {
+      _audioPlayerManager.currentlyPlayingMeditationAudioDuration =
+          event ?? const Duration();
+    });
+  }
+
   Future<void> _playPauseTapHandler() async {
     /// This will temporarily pause the theme BG audio until the current
     /// meditation audio is playing
-    await _audioPlayerManager.playPauseEventHandler(
-        audioPlayPauseEvent: AudioPlayPauseEvent.pauseBgAudio);
+
    // _audioNotificationServiceHandler.isBgAudioPlayerInFocus = false;
 
     ///
@@ -635,7 +792,9 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
     /// This will check whether the audio is playing or not and
     /// mini audio player is in the focus or not to do the required things
 
-
+    await _loadAudio();
+    await _audioPlayerManager.playPauseEventHandler(
+        audioPlayPauseEvent: AudioPlayPauseEvent.playBgAudio);
     /*if (!_audioPlayerManager.isMeditationAudioPlaying.value &&
         _audioPlayerManager.currentAudioPlayingId !=
             widget.restoreMediaData.contentId) {

@@ -94,7 +94,6 @@ class ForgotPasswordScreen extends StatelessWidget {
                                         colorText: Colors.white,
                                         backgroundColor: Colors.black.withOpacity(0.3),
                                         snackPosition: SnackPosition.TOP,
-                                        duration: Duration(seconds: 1)
                                       );
 
 
