@@ -67,8 +67,8 @@ class NewPasswordScreen extends StatelessWidget {
                                   valueListenable: forgotController.securePass,
                                   builder: (context, value, child) {
                                     return CommonTextField(
-                                      labelText: "password".tr,
-                                      hintText: "enterPassword".tr,
+                                      labelText: "newPassword".tr,
+                                      hintText: "enterNewPasswordHint".tr,
                                       controller: forgotController.newPController,
                                       validator: (value) {
                                         if (value == "") {
@@ -80,18 +80,22 @@ class NewPasswordScreen extends StatelessWidget {
                                       },
                                       focusNode: FocusNode(),
                                       prefixIcon: Image.asset(ImageConstant.lock, scale: Dimens.d4),
-                                      suffixIcon: forgotController.securePass.value
-                                          ? GestureDetector(
+                                      suffixIcon: GestureDetector(
                                           onTap: (){
                                             forgotController.securePass.value = !forgotController.securePass.value;
                                           },
-                                          child: Image.asset(ImageConstant.eyeClose, scale: Dimens.d5))
-
-                                          : GestureDetector(
-                                          onTap: (){
-                                            forgotController.securePass.value = !forgotController.securePass.value;
-                                          },
-                                          child:   Image.asset(ImageConstant.eyeOpen, scale: Dimens.d4)),
+                                          child: Transform.scale(
+                                            scale: 0.38,
+                                            child: Image.asset(
+                                              forgotController.securePass.value
+                                                  ? ImageConstant.eyeClose
+                                                  : ImageConstant.eyeOpen,
+                                              fit: BoxFit.contain,
+                                              height: 5,
+                                              width: 5,
+                                            ),
+                                          )
+                                      ),
                                       isSecure: value,
                                       textInputAction: TextInputAction.done,
                                     );
@@ -103,7 +107,7 @@ class NewPasswordScreen extends StatelessWidget {
                                   builder: (context, value, child) {
                                     return CommonTextField(
                                       labelText: "confirmPassword".tr,
-                                      hintText: "confirmPassword",
+                                      hintText: "enterConfirmPasswordHint".tr,
                                       controller: forgotController.confirmPController,
                                       validator: (value) {
                                         if (value == "") {
@@ -117,18 +121,22 @@ class NewPasswordScreen extends StatelessWidget {
                                       },
                                       focusNode: FocusNode(),
                                       prefixIcon: Image.asset(ImageConstant.lock, scale: Dimens.d4),
-                                      suffixIcon: forgotController.securePass2.value
-                                          ? GestureDetector(
+                                      suffixIcon: GestureDetector(
                                           onTap: (){
                                             forgotController.securePass2.value = !forgotController.securePass2.value;
                                           },
-                                          child: Image.asset(ImageConstant.eyeClose, scale: Dimens.d5))
-
-                                          : GestureDetector(
-                                          onTap: (){
-                                            forgotController.securePass2.value = !forgotController.securePass2.value;
-                                          },
-                                          child:   Image.asset(ImageConstant.eyeOpen, scale: Dimens.d4)),
+                                          child: Transform.scale(
+                                            scale: 0.38,
+                                            child: Image.asset(
+                                              forgotController.securePass2.value
+                                                  ? ImageConstant.eyeClose
+                                                  : ImageConstant.eyeOpen,
+                                              fit: BoxFit.contain,
+                                              height: 5,
+                                              width: 5,
+                                            ),
+                                          )
+                                      ),
                                       isSecure: value,
                                       textInputAction: TextInputAction.done,
                                     );

@@ -3,6 +3,12 @@ class ImageConstant {
   static String imagePath = 'assets/images';
   static String iconPath = 'assets/icons';
 
+  /// audio
+  static String audioPath = 'assets/audio/audio.mp3';
+
+
+
+
   ///------------
 
   static String iconDashboardPath = '$iconPath/dashboard';
@@ -50,7 +56,11 @@ class ImageConstant {
   static String play = '$iconExplorePath/play.svg';
   static String downloadCircle = '$iconExplorePath/download_circle.svg';
   static String staticImage = '$imagePath/staticImage.svg';
-
+  static String static1 = '$imageExplorePath/static1.png';
+  static String static2 = '$imageExplorePath/static2.png';
+  static String static3 = '$imageExplorePath/static3.png';
+  static String static4 = '$imageExplorePath/static4.png';
+  static String static5 = '$imageExplorePath/static5.png';
 
 
   /// NOW PLAYING
@@ -76,6 +86,11 @@ class ImageConstant {
   static String settingsPersonalization = '$iconMePath/settings_personalization.svg';
   static String settingsReview = '$iconMePath/settings_review.svg';
   static String settingsSubscription = '$iconMePath/settings_subscription.svg';
+
+  static String editAdd = '$iconMePath/ic_add.svg';
+
+  static String edit = '$iconMePath/edit.png';
+
 
 
  /// lottie file - home
@@ -114,6 +129,8 @@ class ImageConstant {
   static  String lottieStarOcean = "$lottie/lottie_star_shape_ocean.json";
   static  String lottieArrowLef = "$lottie/lottie_arrow_lef.json";
   static  String lockHome = "$iconHomePath/ic_lock_icon.png";
+  static  String lottieAudio = "$lottie/lottie_audio_animation_shoorah.json";
+
   static  String homeBgBookmarks = "$imagePath/img_home_bg_bookmarks.png";
   static  String icDeleteWhite = "$iconPath/ic_delete_white.svg";
   static  String icEditFolderBorder = "$iconPath/ic_folder_border_icon.svg";

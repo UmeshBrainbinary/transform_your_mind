@@ -91,14 +91,14 @@ class AudioPlayerManager {
       {required AudioPlayPauseEvent audioPlayPauseEvent}) async {
     switch (audioPlayPauseEvent) {
       case AudioPlayPauseEvent.playBgAudio:
-        if (kReleaseMode) bgAudioPlayer.stop();
+        bgAudioPlayer.stop();
        // if (kReleaseMode) bgAudioPlayer.play();
         break;
       case AudioPlayPauseEvent.pauseBgAudio:
         bgAudioPlayer.pause();
         break;
       case AudioPlayPauseEvent.playMeditationAudio:
-        if (kReleaseMode) audioPlayer.play();
+        audioPlayer.play();
         break;
       case AudioPlayPauseEvent.pauseMeditationAudio:
         audioPlayer.pause();

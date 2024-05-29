@@ -24,6 +24,9 @@ import 'package:transform_your_mind/presentation/me_screen/binding/me_binding.da
 import 'package:transform_your_mind/presentation/me_screen/me_screen.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/account_screen/account_screen.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/account_screen/binding/account_binding.dart';
+import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/edit_profile_screen/binding/edit_profile_binding.dart';
+import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/edit_profile_screen/edit_profile_screen.dart';
+import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/edit_profile_screen/widget/view_fullscreen_image.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/binding/setting_binding.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/setting_screen.dart';
 
@@ -60,6 +63,9 @@ class AppRoutes {
   static const String myGratitudePage = '/myGratitudePage';
   static const String addGratitudePage = '/addGratitudePage';
   static const String myAffirmationPage = '/myAffirmationPage';
+  static const String editProfileScreen = '/edit_profile_screen';
+  static const String fullScreenImage = '/fullScreenImage';
+
 
   static List<GetPage> pages = [
 
@@ -120,7 +126,7 @@ class AppRoutes {
     GetPage(
       transition: Transition.rightToLeft,
       name: dashBoardScreen,
-      page: () => const DashBoardScreen(),
+      page: () =>  DashBoardScreen(),
       bindings: [
         DashBoardBinding(),
       ],
@@ -173,6 +179,20 @@ class AppRoutes {
         AccountBinding(),
       ],
     ),
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: editProfileScreen,
+      page: () =>  EditProfileScreen(),
+      bindings: [
+        EditProfileBinding(),
+      ],
+    ),
+    GetPage(
+      transition: Transition.rightToLeft,
+        name: fullScreenImage,
+        page: () =>  ViewFullScreenImage(),
+    ),
+
     // GetPage(
     //   transition: Transition.rightToLeft,
     //   name: nowPlayingScreen,
