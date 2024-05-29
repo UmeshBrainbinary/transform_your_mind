@@ -289,39 +289,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   )
                                       : SizedBox(),
                                 ),
-                                Dimens.d80.h.spaceHeight,
-                                Obx(
-                                      () => (editProfileController.loader.value)
-                                      ? const LoadingButton()
-                                      : CommonElevatedButton(
-                                    title: "save".tr,
-                                    onTap: () async {
-                                      FocusScope.of(context).unfocus();
-
-                                      editProfileController.loader.value = true;
-
-
-                                      if(editProfileController.imageFile.value == null){
-                                        errorToast("pleaseAddImage".tr);
-                                      }  else{
-                                        if (_formKey.currentState!.validate() ) {
-
-
-
-
-                                          Get.back();
-
-
-
-
-                                        }
-                                      }
-
-                                      editProfileController.loader.value = false;                                          },
-                                  ),
-                                ),
-
-                                Dimens.d80.h.spaceHeight,
+                                Dimens.d50.h.spaceHeight,
                               ],
                             ),
                           ),
@@ -335,6 +303,39 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ),
           ),
       ),
+      bottomNavigationBar: Padding(
+        padding: Dimens.d20.paddingAll,
+        child: Obx(
+              () => (editProfileController.loader.value)
+              ? const LoadingButton()
+              : CommonElevatedButton(
+            title: "save".tr,
+            onTap: () async {
+              FocusScope.of(context).unfocus();
+
+              editProfileController.loader.value = true;
+
+
+              if(editProfileController.imageFile.value == null){
+                errorToast("pleaseAddImage".tr);
+              }  else{
+                if (_formKey.currentState!.validate() ) {
+
+
+
+
+                  Get.back();
+
+
+
+
+                }
+              }
+
+              editProfileController.loader.value = false;                                          },
+          ),
+        ),
+      )
     );
   }
 }
