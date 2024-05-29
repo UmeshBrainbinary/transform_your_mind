@@ -33,7 +33,6 @@ class ColorConstant {
 
   static const deleteRed = Color.fromRGBO(227, 89, 73, 1);
 
-  static const lightGrey = Color.fromRGBO(220, 220, 220, 1);
 
   static const textGreyColor = Color.fromRGBO(96, 96, 96, 1);
   static const positive = Color.fromRGBO(18, 183, 106, 1);
