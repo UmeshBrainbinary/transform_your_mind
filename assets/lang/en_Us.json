@@ -70,6 +70,8 @@
   "enterName": "Enter name",
   "theNameFieldIsRequired": "The name field is required.",
   "editProfile": "Edit Profile",
-  "changePassword": "Change Password"
+  "changePassword": "Change Password",
+  "addImage": "Add Image",
+  "save": "Save"
 
 }

@@ -60,7 +60,7 @@ class _CustomAppBarState extends State<CustomAppBar>
               Style.cormorantGaramondBold(fontSize: Dimens.d20)),
       backgroundColor: ColorConstant.transparent,
       leading: widget.leading ?? _getLeading(),
-      automaticallyImplyLeading: false,
+      //automaticallyImplyLeading: false,
       actions: [
         _getAction(),
       ],

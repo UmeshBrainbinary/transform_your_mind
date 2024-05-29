@@ -45,7 +45,7 @@ class SettingScreen extends StatelessWidget {
             top: Dimens.d120,
             right: 0,
             left:  null,
-            child: Image.asset(ImageConstant.bgStar, height: Dimens.d287),
+            child: Image.asset(ImageConstant.bgStar, height: Dimens.d253),
           ),
            Padding(
                padding: Dimens.d20.paddingHorizontal,

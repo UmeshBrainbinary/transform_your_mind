@@ -26,12 +26,12 @@ class _AccountData {
 
   static get getAccountData => [
     _AccountData(
-      prefixIcon:   ImageConstant.user,
+      prefixIcon:   ImageConstant.edit,
       title: "editProfile".tr,
       //suffixIcon: themeManager.lottieRightArrow,
     ),
     _AccountData(
-      prefixIcon: ImageConstant.user,
+      prefixIcon: ImageConstant.lock,
       title: "changePassword".tr,
       //suffixIcon: themeManager.lottieRightArrow,
     ),
