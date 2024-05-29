@@ -1,0 +1,120 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:transform_your_mind/core/utils/color_constant.dart';
+import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/widgets/common_elevated_button.dart';
+import 'package:transform_your_mind/widgets/common_load_image.dart';
+import 'package:transform_your_mind/core/utils/dimensions.dart';
+import 'package:transform_your_mind/core/utils/extension_utils.dart';
+import 'package:transform_your_mind/core/utils/string_constant.dart';
+import 'package:transform_your_mind/core/utils/style.dart';
+
+
+
+class AddAffirmationImageWidget extends StatefulWidget {
+  final XFile? image;
+  final VoidCallback onTap;
+  final VoidCallback onDeleteTap;
+  final String? imageURL;
+  final bool hideDelete;
+  final String? title;
+
+  const AddAffirmationImageWidget(
+      {super.key,
+      this.image,
+      required this.onTap,
+      required this.onDeleteTap,
+      this.imageURL,
+      this.hideDelete = false,
+      this.title});
+
+  @override
+  State<AddAffirmationImageWidget> createState() => _AddAffirmationImageWidgetState();
+}
+
+class _AddAffirmationImageWidgetState extends State<AddAffirmationImageWidget> {
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Dimens.d10.spaceHeight,
+          SizedBox(
+            height: Dimens.d110,
+            width: Dimens.d110,
+            child: Stack(
+              children: [
+                widget.image != null
+                    ? Hero(
+                      tag: widget.image?.path ?? '',
+                      child: ClipRRect(
+                         borderRadius: BorderRadius.circular(15),
+                        child: Image.file(
+                          File(widget.image?.path ?? ""),
+                          fit: BoxFit.cover,
+                          height: Dimens.d100,
+                          width: Dimens.d100,
+                        ),
+                      ),
+                    )
+                    : (widget.imageURL != null)
+                        ? Hero(
+                          tag: widget.imageURL ?? '',
+                          child: CommonLoadImage(
+                            url: widget.imageURL ?? '',
+                            height: Dimens.d100,
+                            width: Dimens.d100,
+                          ),
+                        )
+                        : (widget.imageURL?.isNotEmpty ?? false)
+                            ? const SizedBox()
+                            : InkWell(
+                              onTap: widget.onTap,
+                              borderRadius: Dimens.d16.radiusAll,
+                              child: SvgPicture.asset(
+                                ImageConstant.icAdd,
+                                 color: ColorConstant.themeColor,
+                              ),
+                            ),
+
+                /// image delete function
+
+                if ((widget.image != null || widget.imageURL != null) &&
+                    !widget.hideDelete)
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: GestureDetector(
+                      onTap: widget.onDeleteTap,
+                      child: Container(
+                        padding: const EdgeInsets.all(Dimens.d5),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(24),
+                          color: Colors.white,
+                        ),
+                        child:const Icon(Icons.delete,color: Colors.red,),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+         /* Dimens.d10.spaceHeight,
+          CommonElevatedButton(
+            title: widget.title??'addProfileImage'.tr,
+            onTap: widget.onTap,
+            width: Dimens.d125,
+            textStyle: Style.montserratMedium(color: ColorConstant.white, fontSize: Dimens.d14),
+          ),*/
+        ],
+      ),
+    );
+  }
+}

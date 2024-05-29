@@ -3,12 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
+import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/common_widget/app_common_dialog.dart';
 import 'package:transform_your_mind/core/common_widget/ritual_tile.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/presentation/rituals_screen/rituals_screen.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/divider.dart';
 
@@ -141,7 +143,7 @@ class _TodaysRitualsState extends State<TodaysRituals> {
               fontSize: Dimens.d14,
             ),
             onTap: () {
-
+             //  Get.to(const RitualsPage());
             },
           ),
         ),

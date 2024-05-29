@@ -22,18 +22,18 @@ class _JournalScreenState extends State<JournalScreen>    with SingleTickerProvi
     JournalData(
       title:"Gratitude",
       lottie: ImageConstant.lottieSquare,
-      route: AppRoutes.dashBoardScreen,
+      route: AppRoutes.myGratitudePage,
     ),
     JournalData(
         title: "Affirmation",
         lottie: ImageConstant.lottieCircle,
-      route: AppRoutes.dashBoardScreen,
+      route: AppRoutes.myAffirmationPage,
     ),
  
     JournalData(
       title:"Daily Journal",
       lottie: ImageConstant.lottieStarOcean,
-      route: AppRoutes.dashBoardScreen,
+      route: AppRoutes.myAffirmationPage,
     ),
   ];
   ValueNotifier<bool> isTutorialVideoVisible = ValueNotifier(false);
@@ -160,14 +160,11 @@ backgroundColor: Colors.white,
                                               (BuildContext context, int index) {
                                             return GestureDetector(
                                               onTap: () {
-                                                if (journalList[index].route !=
-                                                    null) {
-                                               /*   Navigator.pushNamed(
-                                                      context,
-                                                      journalList[index].route ??
-                                                          "",
-                                                  );*/
-                                                }
+                                                Navigator.pushNamed(
+                                                  context,
+                                                  journalList[index].route ??
+                                                      "",
+                                                );
                                               },
                                               child: Column(
                                                 children: [

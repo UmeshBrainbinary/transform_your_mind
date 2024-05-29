@@ -52,6 +52,11 @@ dependencies:
   auto_size_text: ^3.0.0
   get_it: ^7.7.0
   flutter_image_compress: ^2.3.0
+  pull_to_refresh: ^2.0.0
+  shimmer: ^3.0.0
+  loading_animation_widget: ^1.2.1
+  flutter_slidable: ^3.1.0
+  top_snackbar_flutter: ^3.1.0
 
 
 dev_dependencies:

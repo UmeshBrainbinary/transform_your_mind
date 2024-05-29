@@ -23,12 +23,28 @@ class ColorConstant {
 
   static const colorFF0000 = Color(0XFFFF0000);
   static const textWhiteBackGround = Color.fromRGBO(229, 234, 249, 1);
+  static const textDarkBlue = Color.fromRGBO(49, 59, 107, 1);
+  static const deleteRedLight = Color.fromRGBO(240, 68, 56, 1);
 
+  static const successGreen = Color(0xff12B76A);
 
+  static const deleteRed = Color.fromRGBO(227, 89, 73, 1);
 
+  static const lightGrey = Color.fromRGBO(220, 220, 220, 1);
 
+  static const textGreyColor = Color.fromRGBO(96, 96, 96, 1);
+  static const positive = Color.fromRGBO(18, 183, 106, 1);
+  static const negative = Color.fromRGBO(240, 68, 56, 1);
+  static const textGreyColorBadges = Color.fromRGBO(189, 189, 189, 1);
+  static const badgesGrey = Color(0xffF3F3F3);
 
+  static const botMessageTextColor = Color.fromRGBO(139, 139, 139, 1);
+  static const colorVoice = Color(0xff434ECC);
 
+  static const colorThemed1 = Color.fromRGBO(229, 234, 249, 1);
+  static const colorThemed8 = Color.fromRGBO(24, 32, 47, 1);
+  static const colorThemed4 = Color.fromRGBO(97, 103, 232, 1);
+  static const colorThemed7 =    Color.fromRGBO(49, 59, 107, 1);
 
 
 }

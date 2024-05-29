@@ -81,6 +81,12 @@ class ImageConstant {
  /// lottie file - home
   static String homeScreenMeshLottie = '$lottie/mesh_transform_feather.json';
   static String homeInfoLottie = '$lottie/lottie_info_transform.json';
+  static String lottieNavAdd = '$lottie/lottie_nav_add.json';
+  static String lottieSearch = '$lottie/lottie_search.json';
+  static String lottieClose = '$lottie/lottie_close.json';
+  static String lottieTitle = '$lottie/lottie_title.json';
+  static String lottieDescription = '$lottie/lottie_description.json';
+  static String lottieRightArrowWhite = '$lottie/lottie_right_arrow_white.json';
 
   static String icAddRounded = '$iconHomePath/ic_add_rounded.svg';
   static  String icShareWhite = "$iconHomePath/ic_share_white.svg";
@@ -98,6 +104,8 @@ class ImageConstant {
   static  String transformPodIcon = "$iconPath/ic_pod_selected.svg";
   static  String ritualIcon = "$iconPath/ic_rituals_selected.svg";
   static  String menueIcon = "$iconPath/ic_menu_icon_for_tools.svg";
+  static  String icEmoji = "$iconPath/ic_emoji.svg";
+  static  String icDownArrow = "$iconPath/ic_down_arrow.svg";
   //lottie
   static  String lottieCircle = "$lottie/lottie_circle.json";
   static  String lottieSquare = "$lottie/lottie_square.json";
@@ -106,4 +114,14 @@ class ImageConstant {
   static  String lottieStarOcean = "$lottie/lottie_star_shape_ocean.json";
   static  String lottieArrowLef = "$lottie/lottie_arrow_lef.json";
   static  String lockHome = "$iconHomePath/ic_lock_icon.png";
+  static  String homeBgBookmarks = "$imagePath/img_home_bg_bookmarks.png";
+  static  String icDeleteWhite = "$iconPath/ic_delete_white.svg";
+  static  String icEditFolderBorder = "$iconPath/ic_folder_border_icon.svg";
+  static  String imgAffirmationTileBg1 = "$imagePath/img_affirmation_tile_bg1.png";
+  static  String imgAffirmationTileBg2 = "$imagePath/img_affirmation_tile_bg2.png";
+  static  String lottieNoDataForRestoring = "$lottie/lottie_no_data_for_restorin.json";
+  static  String imgAddRounded = "$imagePath/img_add_rounded.png";
+  static  String playIcon = "$iconPath/ic_shoorah_play.svg";
+  static  String ratingFillSvg = "$iconPath/tran_star_fill.svg";
+  static  String ratingNoFillSvg = "$iconPath/transform_star_no.svg";
 }

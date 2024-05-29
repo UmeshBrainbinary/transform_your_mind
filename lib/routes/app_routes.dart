@@ -17,6 +17,9 @@ import 'package:transform_your_mind/presentation/home_screen/binding/home_bindin
 import 'package:transform_your_mind/presentation/home_screen/home_screen.dart';
 import 'package:transform_your_mind/presentation/journal_screen/binding/journal_binding.dart';
 import 'package:transform_your_mind/presentation/journal_screen/journal_screen.dart';
+import 'package:transform_your_mind/presentation/journal_screen/widget/add_gratitude_page.dart';
+import 'package:transform_your_mind/presentation/journal_screen/widget/my_affirmation_page.dart';
+import 'package:transform_your_mind/presentation/journal_screen/widget/my_gratitude_page.dart';
 import 'package:transform_your_mind/presentation/me_screen/binding/me_binding.dart';
 import 'package:transform_your_mind/presentation/me_screen/me_screen.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/account_screen/account_screen.dart';
@@ -54,6 +57,9 @@ class AppRoutes {
   static const String journalScreen = '/journalScreen';
   static const String settingScreen = '/setting_screen';
   static const String accountScreen = '/account_screen';
+  static const String myGratitudePage = '/myGratitudePage';
+  static const String addGratitudePage = '/addGratitudePage';
+  static const String myAffirmationPage = '/myAffirmationPage';
 
   static List<GetPage> pages = [
 
@@ -215,6 +221,31 @@ class AppRoutes {
       transition: Transition.rightToLeft,
       name: journalScreen,
       page: () => const JournalScreen(),
+      bindings: [
+        JournalBinding(),
+      ],
+    ),
+
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: myGratitudePage,
+      page: () => const MyGratitudePage(),
+      bindings: [
+        JournalBinding(),
+      ],
+    ),
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: addGratitudePage,
+      page: () =>  const AddGratitudePage( isFromMyGratitude: true,),
+      bindings: [
+        JournalBinding(),
+      ],
+    ),
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: myAffirmationPage,
+      page: () =>  const MyAffirmationPage(),
       bindings: [
         JournalBinding(),
       ],
