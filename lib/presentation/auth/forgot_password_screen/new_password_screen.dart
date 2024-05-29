@@ -67,8 +67,8 @@ class NewPasswordScreen extends StatelessWidget {
                                   valueListenable: forgotController.securePass,
                                   builder: (context, value, child) {
                                     return CommonTextField(
-                                      labelText: "password".tr,
-                                      hintText: "enterPassword".tr,
+                                      labelText: "newPassword".tr,
+                                      hintText: "enterNewPasswordHint".tr,
                                       controller: forgotController.newPController,
                                       validator: (value) {
                                         if (value == "") {
@@ -107,7 +107,7 @@ class NewPasswordScreen extends StatelessWidget {
                                   builder: (context, value, child) {
                                     return CommonTextField(
                                       labelText: "confirmPassword".tr,
-                                      hintText: "confirmPassword",
+                                      hintText: "enterConfirmPasswordHint".tr,
                                       controller: forgotController.confirmPController,
                                       validator: (value) {
                                         if (value == "") {

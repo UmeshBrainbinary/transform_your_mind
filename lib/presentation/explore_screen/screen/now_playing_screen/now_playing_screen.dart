@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:lottie/lottie.dart';
 import 'package:transform_your_mind/core/utils/audio_manager/audio_player_manager.dart';
 import 'package:transform_your_mind/core/utils/audio_manager/seek_bar.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
@@ -25,7 +26,7 @@ class NowPlayingScreen extends StatefulWidget {
   State<NowPlayingScreen> createState() => _NowPlayingScreenState();
 }
 
-class _NowPlayingScreenState extends State<NowPlayingScreen> {
+class _NowPlayingScreenState extends State<NowPlayingScreen> with TickerProviderStateMixin{
 
 
   final AudioPlayerManager _audioPlayerManager = AudioPlayerManager();
@@ -51,39 +52,30 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
   double _opacityOfSpeedText = 0.0;
   Timer? _opacityOfSpeedTimer;
   final ValueNotifier<double> _slideValue = ValueNotifier(40.0);
+  late final AnimationController _lottieBgController, _lottieController;
 
 
 
   @override
   void initState() {
     super.initState();
+
+    _lottieController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500));
+    _lottieBgController = AnimationController(vsync: this);
+
     _setInitValues();
-    //_init();
+
   }
 
-  // Future<void> _init() async {
-  //   // Inform the operating system of our app's audio attributes etc.
-  //   // We pick a reasonable default for an app that plays speech.
-  //   final session = await AudioSession.instance;
-  //   await session.configure(const AudioSessionConfiguration.speech());
-  //   // Listen to errors during playback.
-  //   _player.playbackEventStream.listen((event) {
-  //
-  //   },
-  //       onError: (Object e, StackTrace stackTrace) {
-  //         print('A stream error occurred: $e');
-  //       });
-  //   // Try to load audio from a source and catch any errors.
-  //   try {
-  //     // AAC example: https://dl.espressif.com/dl/audio/ff-16b-2c-44100hz.aac
-  //     await _player.setAudioSource(AudioSource.uri(Uri.parse(
-  //         "https://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Kangaroo_MusiQue_-_The_Neverwritten_Role_Playing_Game.mp3")));
-  //   } on PlayerException catch (e) {
-  //     print("Error loading audio source: $e");
-  //   }
-  // }
 
 
+  @override
+  void dispose() {
+    _lottieController.dispose();
+    _lottieBgController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -151,20 +143,22 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
 
             /// center widget
             Positioned(
-              top: Dimens.d120,
-              left: Dimens.d150,
-              child: Transform.rotate(
-                angle: 0.5,
-                child: Container(
-                  height: 100,
-                  width: 100,
-                  decoration: BoxDecoration(
-                    color: Colors.amber,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
+              top: Dimens.d90,
+              left: Dimens.d110,
+              child: Lottie.asset(
+                ImageConstant.lottieStarOcean,
+                controller: _lottieBgController,
+                //height: MediaQuery.of(context).size.height / 3,
+                height: 160,
+                width: 160,
+                onLoaded: (composition) {
+                  _lottieBgController
+                    ..duration = composition.duration
+                    ..repeat();
+                },
               ),
             ),
+
 
              ///seekbar
             Column(
@@ -502,7 +496,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                                         Widget? child) {
                                       return Text(
                                         _updatedRealtimeAudioDuration.value.durationFormatter,
-                                        //"00:00",
+
                                         style: Style.montserratMedium(
                                           fontSize: Dimens.d14,
                                           color: ColorConstant.white
@@ -515,39 +509,30 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
 
 
                               /// music animation
-                              // ValueListenableBuilder(
-                              //   valueListenable: _audioPlayerManager
-                              //       .isMeditationAudioPlaying,
-                              //   builder: (context, value, child) {
-                              //     value
-                              //         ? _lottieController.repeat()
-                              //         : _lottieController.stop();
-                              //
-                              //     return Lottie.asset(
-                              //       getAssetAccordingToTheme(
-                              //         shoorah: AppAssets.lottieAudioShoorah,
-                              //         land: AppAssets.lottieAudioLand,
-                              //         bloom: AppAssets.lottieAudioBloom,
-                              //         sun: AppAssets.lottieAudioSun,
-                              //         ocean: AppAssets.lottieAudioOcean,
-                              //         desert: AppAssets.lottieAudioDesert,
-                              //       ),
-                              //       controller: _lottieController,
-                              //       height: Dimens.d40,
-                              //       width: Dimens.d40,
-                              //       fit: BoxFit.fill,
-                              //       repeat: true,
-                              //       onLoaded: (composition) {
-                              //         _lottieController.duration =
-                              //             composition.duration;
-                              //         value
-                              //             ? _lottieController.repeat()
-                              //             : _lottieController.stop();
-                              //       },
-                              //     );
-                              //   },
-                              // ),
-                              SvgPicture.asset(ImageConstant.musicBars),
+                              ValueListenableBuilder(
+                                valueListenable: _audioPlayerManager.isMeditationAudioPlaying,
+                                builder: (context, value, child) {
+                                  value
+                                      ? _lottieController.repeat()
+                                      : _lottieController.stop();
+
+                                  return Lottie.asset(
+                                    ImageConstant.lottieAudio,
+                                    controller: _lottieController,
+                                    height: Dimens.d40,
+                                    width: Dimens.d40,
+                                    fit: BoxFit.fill,
+                                    repeat: true,
+                                    onLoaded: (composition) {
+                                      _lottieController.duration = composition.duration;
+                                      value
+                                          ? _lottieController.repeat()
+                                          : _lottieController.stop();
+                                    },
+                                  );
+                                },
+                              ),
+                              //SvgPicture.asset(ImageConstant.musicBars),
 
                               SizedBox(
                                 height: Dimens.d35,
@@ -560,8 +545,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                                         Widget? child) {
 
                                       return Text(
-                                        '-${(_totalAudioDuration - _updatedRealtimeAudioDuration.value).durationFormatter}',
-                                        //"12:00",
+                                        '${(_totalAudioDuration - _updatedRealtimeAudioDuration.value).durationFormatter}',
+
                                         style: Style.montserratMedium(
                                           fontSize: Dimens.d14,
                                             color: ColorConstant.white

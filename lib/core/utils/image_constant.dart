@@ -119,4 +119,6 @@ class ImageConstant {
   static  String lottieStarOcean = "$lottie/lottie_star_shape_ocean.json";
   static  String lottieArrowLef = "$lottie/lottie_arrow_lef.json";
   static  String lockHome = "$iconHomePath/ic_lock_icon.png";
+  static  String lottieAudio = "$lottie/lottie_audio_animation_shoorah.json";
+
 }

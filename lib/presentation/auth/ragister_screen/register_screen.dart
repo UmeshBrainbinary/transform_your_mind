@@ -93,8 +93,8 @@ class RegisterScreen extends StatelessWidget {
                                 ),
                                 Dimens.d30.h.spaceHeight,
                                 CommonTextField(
-                                    labelText: "Name".tr,
-                                    hintText: "EnterName".tr,
+                                    labelText: "name".tr,
+                                    hintText: "enterName".tr,
                                     controller:
                                         registerController.nameController,
                                     focusNode: FocusNode(),
@@ -107,14 +107,14 @@ class RegisterScreen extends StatelessWidget {
                                     validator: (value) {
                                       if (value == null ||
                                           (!isText(value, isRequired: true))) {
-                                        return "The Name Field Is Required".tr;
+                                        return "theNameFieldIsRequired".tr;
                                       }
                                       return null;
                                     }),
                                 Dimens.d16.h.spaceHeight,
                                 CommonTextField(
-                                    labelText: "Email",
-                                    hintText: "EnterEmail",
+                                    labelText: "email".tr,
+                                    hintText: "enterEmail".tr,
                                     controller:
                                         registerController.emailController,
                                     focusNode: FocusNode(),
@@ -136,8 +136,8 @@ class RegisterScreen extends StatelessWidget {
                                       registerController.securePass,
                                   builder: (context, value, child) {
                                     return CommonTextField(
-                                      labelText:"Password",
-                                      hintText:"EnterPassword",
+                                      labelText:"password".tr,
+                                      hintText:"enterPassword".tr,
                                       controller:
                                           registerController.passwordController,
                                       validator: (value) {
@@ -346,21 +346,23 @@ class RegisterScreen extends StatelessWidget {
 
                                            if(registerController.imageFile.value == null){
                                              errorToast("pleaseAddImage".tr);
-                                           } else if (_formKey.currentState!.validate() ) {
+                                           }  else{
+                                             if (_formKey.currentState!.validate() ) {
 
 
-                                             await PrefService.setValue(PrefKey.isLoginOrRegister, true);
+                                               await PrefService.setValue(PrefKey.isLoginOrRegister, true);
 
-                                             Get.toNamed(AppRoutes.dashBoardScreen);
+                                               Get.toNamed(AppRoutes.dashBoardScreen);
 
 
-                                             // registerController.nameController.clear();
-                                             // registerController.emailController.clear();
-                                             // registerController.passwordController.clear();
-                                             // registerController.dobController.clear();
-                                             // registerController.genderController.clear();
-                                             // registerController.imageFile.value = null;
+                                               // registerController.nameController.clear();
+                                               // registerController.emailController.clear();
+                                               // registerController.passwordController.clear();
+                                               // registerController.dobController.clear();
+                                               // registerController.genderController.clear();
+                                               // registerController.imageFile.value = null;
 
+                                             }
                                            }
 
                                             registerController.loader.value = false;                                          },
