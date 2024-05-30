@@ -6,18 +6,18 @@ class AppTheme {
   static final ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
     primaryColor: Colors.white,
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.white,
-        backgroundColor: Colors.blue,
-        textStyle: TextStyle(fontSize: 16.0),
-      ),
-    ),
-    //backgroundColor: Colors.white,
+    // elevatedButtonTheme: ElevatedButtonThemeData(
+    //   style: ElevatedButton.styleFrom(
+    //     foregroundColor: Colors.white,
+    //     backgroundColor: Colors.blue,
+    //     textStyle: TextStyle(fontSize: 16.0),
+    //   ),
+    // ),
+
 
     scaffoldBackgroundColor: ColorConstant.backGround,
     textTheme: TextTheme(
-      displayLarge: TextStyle(color: Colors.black),
+      displayLarge: TextStyle(color: ColorConstant.black),
     ),
 
   );
@@ -25,16 +25,16 @@ class AppTheme {
   static final ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
     primaryColor: Colors.black,
-    //backgroundColor: Colors.black,
+
     scaffoldBackgroundColor: Colors.black,
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.white, backgroundColor: Colors.orange,
-        textStyle: TextStyle(fontSize: 16.0),
-      ),
-    ),
+    // elevatedButtonTheme: ElevatedButtonThemeData(
+    //   style: ElevatedButton.styleFrom(
+    //     foregroundColor: Colors.white, backgroundColor: Colors.orange,
+    //     textStyle: TextStyle(fontSize: 16.0),
+    //   ),
+    // ),
     textTheme: TextTheme(
-      displayLarge: TextStyle(color: Colors.white),
+      displayLarge: TextStyle(color: ColorConstant.white),
     ),
 
   );

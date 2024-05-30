@@ -454,8 +454,6 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> with TickerProvider
                                 },
                               ),
                             ),
-
-
                           ),
                         ],
                       );
@@ -496,7 +494,6 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> with TickerProvider
                                         Widget? child) {
                                       return Text(
                                         _updatedRealtimeAudioDuration.value.durationFormatter,
-
                                         style: Style.montserratMedium(
                                           fontSize: Dimens.d14,
                                           color: ColorConstant.white
@@ -753,6 +750,9 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> with TickerProvider
         //_stopMeditationAudio(isCalledFromCompletedState: true);
       }
 
+      if(_updatedRealtimeAudioDuration.value != Duration.zero){
+        _isAudioLoading.value = false;
+      }
 
 
       /// This will handle the button loading state
@@ -761,6 +761,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> with TickerProvider
       } else{
         _isAudioLoading.value = true;
       }
+
+
 
       /// Assigning the playing state of the meditation audio
       _audioPlayerManager.isMeditationAudioPlaying.value = event.playing;

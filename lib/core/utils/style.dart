@@ -29,7 +29,7 @@ class Style {
     double? height,
   }) {
     return TextStyle(
-      color: color,
+      color: color ,
       fontFamily: FontFamily.montserratBold,
       fontWeight: fontWeight,
       fontStyle: fontStyle,

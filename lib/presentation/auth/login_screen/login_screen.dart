@@ -113,7 +113,6 @@ class LoginScreen extends StatelessWidget {
                                                ),
                                              )
                                        ),
-
                                          isSecure: value,
                                          //suffixTap: () => loginController.securePass.value = !loginController.securePass.value,
                                          textInputAction: TextInputAction.done,

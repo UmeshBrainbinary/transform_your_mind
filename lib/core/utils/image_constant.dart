@@ -86,10 +86,12 @@ class ImageConstant {
   static String settingsPersonalization = '$iconMePath/settings_personalization.svg';
   static String settingsReview = '$iconMePath/settings_review.svg';
   static String settingsSubscription = '$iconMePath/settings_subscription.svg';
-
   static String editAdd = '$iconMePath/ic_add.svg';
-
+  static String privacyPolicy = '$iconMePath/privacyPolicy.png';
+  static String setting = '$iconMePath/settings.png';
   static String edit = '$iconMePath/edit.png';
+  static String breath = '$iconMePath/breath.svg';
+
 
 
 
@@ -153,5 +155,6 @@ class ImageConstant {
   static  String folderIcon = "$iconPath/transfrom_folder_add.svg";
   static  String transformDot = "$iconPath/transform_dot.svg";
   static  String lottieDeleteAccount = "$lottie/lottie_delete_account.json";
+
 
 }
