@@ -88,6 +88,7 @@ class ImageConstant {
   static String settingsSubscription = '$iconMePath/settings_subscription.svg';
 
   static String editAdd = '$iconMePath/ic_add.svg';
+  static String privacyPolicy = '$iconMePath/privacyPolicy.png';
 
   static String edit = '$iconMePath/edit.png';
 

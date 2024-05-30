@@ -54,10 +54,12 @@ class ChangePasswordScreen extends StatelessWidget {
                                           controller: changePasswordController.currentPController,
                                           validator: (value) {
                                             if (value == "") {
-                                              return "thePasswordFieldIsRequired".tr;
-                                            } else if(!isValidPassword(value, isRequired: true)){
-                                              return "pleaseEnterValidPassword".tr;
+                                              return "thePasswordFieldIsRequired"
+                                                  .tr;
                                             }
+                                            //  else if(!isValidPassword(value, isRequired: true)){
+                                            //   return "pleaseEnterValidPassword".tr;
+                                            // }
                                             return null;
                                           },
                                           focusNode: FocusNode(),
@@ -173,7 +175,7 @@ class ChangePasswordScreen extends StatelessWidget {
                                         FocusScope.of(context).unfocus();
 
                                         if (_formKey.currentState!.validate()) {
-
+                                            Get.back();
                                         }
 
 

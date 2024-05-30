@@ -24,9 +24,15 @@ import 'package:transform_your_mind/presentation/me_screen/binding/me_binding.da
 import 'package:transform_your_mind/presentation/me_screen/me_screen.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/account_screen/account_screen.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/account_screen/binding/account_binding.dart';
+import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/change_password_screen/binding/change_password_binding.dart';
+import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/change_password_screen/change_password_screen.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/edit_profile_screen/binding/edit_profile_binding.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/edit_profile_screen/edit_profile_screen.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/edit_profile_screen/widget/view_fullscreen_image.dart';
+import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/notification_setting_screen/binding/notification_setting_binding.dart';
+import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/notification_setting_screen/notification_setting_screen.dart';
+import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/privacy_policy_screen/binding/privacy_policy_binding.dart';
+import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/privacy_policy_screen/privacy_policy_screen.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/binding/setting_binding.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/setting_screen.dart';
 
@@ -65,6 +71,9 @@ class AppRoutes {
   static const String myAffirmationPage = '/myAffirmationPage';
   static const String editProfileScreen = '/edit_profile_screen';
   static const String fullScreenImage = '/fullScreenImage';
+  static const String changePassword = '/change_password_screen';
+  static const String notificationSetting = '/notification_setting_screen';
+  static const String privacyPolicy = '/privacy_policy_screen';
 
 
   static List<GetPage> pages = [
@@ -86,7 +95,14 @@ class AppRoutes {
         LoginBinding(),
       ],
     ),
-
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: initialRoute,
+      page: () => LoginScreen(),
+      bindings: [
+        LoginBinding(),
+      ],
+    ),
 
 
     GetPage(
@@ -192,33 +208,33 @@ class AppRoutes {
         name: fullScreenImage,
         page: () =>  ViewFullScreenImage(),
     ),
-
-    // GetPage(
-    //   transition: Transition.rightToLeft,
-    //   name: nowPlayingScreen,
-    //   page: () => const NowPlayingScreen(),
-    //   bindings: [
-    //     NowPlayingBinding(),
-    //   ],
-    // ),
-    ///--------------
-    // GetPage(
-    //   transition: Transition.rightToLeft,
-    //   name: initialRoute,
-    //   page: () => const DashBoardScreen(),
-    //   bindings: [
-    //     DashBoardBinding(),
-    //   ],
-    // ),
-    ///
     GetPage(
       transition: Transition.rightToLeft,
-      name: initialRoute,
-      page: () => LoginScreen(),
+      name: changePassword,
+      page: () =>  ChangePasswordScreen(),
       bindings: [
-        LoginBinding(),
+        ChangePasswordBinding(),
       ],
     ),
+
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: privacyPolicy,
+      page: () =>  PrivacyPolicyScreen(),
+      bindings: [
+        PrivacyPolicyBinding(),
+      ],
+    ),
+
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: notificationSetting,
+      page: () =>  NotificationSettingScreen(),
+      bindings: [
+        NotificationSettingBinding(),
+      ],
+    ),
+
 
     GetPage(
       transition: Transition.rightToLeft,
@@ -270,15 +286,7 @@ class AppRoutes {
         JournalBinding(),
       ],
     ),
-    ///
-    // GetPage(
-    //   transition: Transition.rightToLeft,
-    //   name: initialRoute,
-    //   page: () => SplashScreen(),
-    //   bindings: [
-    //     SplashBinding(),
-    //   ],
-    // )
+
 
   ];
 }

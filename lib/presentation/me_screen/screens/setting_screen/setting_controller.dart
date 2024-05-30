@@ -6,6 +6,7 @@ class SettingController extends GetxController {
 
    RxList settingsData = [].obs;
 
+
   @override
   void onInit() {
     settingsData.value = _SettingsData.getSettingsData;
@@ -38,7 +39,7 @@ class _SettingsData {
     ),
     _SettingsData(
       prefixIcon: ImageConstant.settingsPersonalization,
-      title: "personalisations".tr,
+      title: "theme".tr,
       //suffixIcon: themeManager.lottieRightArrow,
       index: 1,
     ),
@@ -55,12 +56,12 @@ class _SettingsData {
       //suffixIcon: themeManager.lottieRightArrow,
       index: 3,
     ),
-    _SettingsData(
-      prefixIcon: ImageConstant.settingsReview,
-      title: "leaveUsReview".tr,
-      //suffixIcon: themeManager.lottieRightArrow,
-      index: 4,
-    ),
+    // _SettingsData(
+    //   prefixIcon: ImageConstant.settingsReview,
+    //   title: "leaveUsReview".tr,
+    //   //suffixIcon: themeManager.lottieRightArrow,
+    //   index: 4,
+    // ),
     _SettingsData(
       prefixIcon: ImageConstant.settingsDelete,
       title: "deleteAccount".tr,

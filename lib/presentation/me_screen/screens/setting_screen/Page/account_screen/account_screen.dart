@@ -58,7 +58,9 @@ class AccountScreen extends StatelessWidget {
                            if(index==0){
                              Get.toNamed(AppRoutes.editProfileScreen);
                            } else if(index==1){
-                            // Get.toNamed(AppRoutes.);
+                             Get.toNamed(AppRoutes.changePassword);
+                           } else if(index==2){
+                             Get.toNamed(AppRoutes.privacyPolicy);
                            }
                         },
                       );
@@ -136,7 +138,7 @@ class AccountListItem extends StatelessWidget {
               Dimens.d6.spaceWidth,
               Text(
                 title,
-                style: Style.cormorantGaramondBold(fontSize: 16).copyWith(
+                style: Style.montserratMedium(fontSize: 14).copyWith(
                   letterSpacing: Dimens.d0_16,
                 ),
               ),
@@ -146,7 +148,7 @@ class AccountListItem extends StatelessWidget {
                 child: SvgPicture.asset(
                   ImageConstant.icUpArrow,
                   height: Dimens.d18.h,
-                  color: Colors.black,
+                  color: ColorConstant.themeColor,
                 ),
               ),
               Dimens.d6.spaceWidth,

@@ -35,5 +35,10 @@ class _AccountData {
       title: "changePassword".tr,
       //suffixIcon: themeManager.lottieRightArrow,
     ),
+    _AccountData(
+      prefixIcon: ImageConstant.privacyPolicy,
+      title: "privacyPolicy".tr,
+      //suffixIcon: themeManager.lottieRightArrow,
+    ),
   ];
 }

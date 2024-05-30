@@ -13,6 +13,7 @@ import 'package:transform_your_mind/presentation/auth/login_screen/login_control
 import 'package:transform_your_mind/presentation/auth/ragister_screen/register_controller.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/setting_controller.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/app_confirmation_dialog.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
@@ -21,6 +22,7 @@ class SettingScreen extends StatelessWidget {
    SettingScreen({super.key});
 
    SettingController settingController = Get.put(SettingController());
+   ThemeController themeController = Get.put(ThemeController(),permanent: true);
 
   @override
   Widget build(BuildContext context) {
@@ -70,14 +72,77 @@ class SettingScreen extends StatelessWidget {
                            padding: EdgeInsets.zero,
                            itemBuilder: (context, index) {
                              var data = settingController.settingsData[index];
-                             return SettingListItem(
+                             return index == 1
+
+                                 ?  Container(
+                               margin: const EdgeInsets.symmetric(horizontal: 1.2),
+                                   decoration: BoxDecoration(
+                                       color: ColorConstant.white,
+                                       borderRadius: BorderRadius.circular(50),
+                                       boxShadow: [
+                                         BoxShadow(
+                                             color: ColorConstant.grey.withOpacity(0.1),
+                                             blurRadius: 5,spreadRadius: 1
+                                         )
+                                       ]
+                                   ),
+                                   padding: const EdgeInsets.symmetric(
+                                     horizontal: Dimens.d10,
+                                     vertical: Dimens.d10,
+                                   ),
+                                   child: Row(
+                                     mainAxisSize: MainAxisSize.min,
+                                     children: [
+
+                                       Container(
+                                         height: Dimens.d50.h,
+                                         width: Dimens.d50,
+                                         padding: const EdgeInsets.all(10),
+                                         decoration: BoxDecoration(
+                                           color: ColorConstant.themeColor,
+                                           shape: BoxShape.circle,),
+                                         child: SvgPicture.asset(
+                                           ImageConstant.settingsPersonalization,
+                                           color: ColorConstant.white,
+                                         ),
+                                       ),
+                                       Dimens.d12.spaceWidth,
+                                       Text(
+                                         "theme".tr,
+                                         style: Style.montserratMedium().copyWith(
+                                           letterSpacing: Dimens.d0_16,
+                                         ),
+                                       ),
+                                       Spacer(),
+                                       CustomSwitch(
+                                         value: themeController.isDarkMode.value,
+                                         onChanged: (value) {
+                                          // settingController.swithVlaue?.value = value;
+                                           debugPrint('Switch value changed: $value');
+
+                                           themeController.isDarkMode.value = value;
+                                         },
+                                         width: 50.0,
+                                         height: 25.0,
+                                         activeColor: ColorConstant.themeColor,
+                                         inactiveColor: ColorConstant.backGround,
+                                       ),
+
+                                     ],
+                                   ),
+                                 )
+                               : SettingListItem(
                                isSettings: true,
                                prefixIcon: data.prefixIcon,
                                title: data.title,
                                //suffixIcon: data.suffixIcon,
                                onTap: () {
-
-                                 if(index==2){
+                                  if(index==0){
+                                    Get.toNamed(AppRoutes.notificationSetting);
+                                  } else if(index==1){
+                                    //Get.toNamed(AppRoutes.accountScreen);
+                                  }
+                                  else if(index==2){
                                    Get.toNamed(AppRoutes.accountScreen);
                                  }
                                },
@@ -96,10 +161,10 @@ class SettingScreen extends StatelessWidget {
                  Center(
                    child: CommonElevatedButton(
                      title: "logout".tr,
-                     textStyle: Style.montserratMedium(
-                       color: ColorConstant.white,
-                       fontSize: Dimens.d14,
-                     ),
+                     // textStyle: Style.montserratMedium(
+                     //   color: ColorConstant.white,
+                     //   fontSize: Dimens.d14,
+                     // ),
                      onTap: () {
                        showAppConfirmationDialog(
                          context: context,
@@ -218,5 +283,71 @@ class SettingListItem extends StatelessWidget {
   }
 
 
+}
+
+class CustomSwitch extends StatefulWidget {
+  final bool value;
+  final ValueChanged<bool> onChanged;
+  final double width;
+  final double height;
+  final Color activeColor;
+  final Color inactiveColor;
+
+  CustomSwitch({
+    required this.value,
+    required this.onChanged,
+    this.width = 50.0,
+    this.height = 20.0,
+    this.activeColor = Colors.green,
+    this.inactiveColor = Colors.grey,
+  });
+
+  @override
+  _CustomSwitchState createState() => _CustomSwitchState();
+}
+
+class _CustomSwitchState extends State<CustomSwitch> {
+  late bool _value;
+
+  @override
+  void initState() {
+    super.initState();
+    _value = widget.value;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _value = !_value;
+          widget.onChanged(_value);
+        });
+      },
+      child: Container(
+        width: widget.width,
+        height: widget.height,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(widget.height / 2),
+          color: _value ? widget.activeColor : widget.inactiveColor,
+        ),
+        child: Row(
+          mainAxisAlignment:
+          _value ? MainAxisAlignment.end : MainAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              width: widget.height - 2,
+              height: widget.height - 2,
+              margin: const EdgeInsets.all(1),
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
