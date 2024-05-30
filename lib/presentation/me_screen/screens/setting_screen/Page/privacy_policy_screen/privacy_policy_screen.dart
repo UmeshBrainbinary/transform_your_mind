@@ -9,7 +9,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorConstant.backGround,
+      //backgroundColor: ColorConstant.backGround,
       appBar: CustomAppBar(title: "privacyPolicy".tr),
       body: Column(
         children: [

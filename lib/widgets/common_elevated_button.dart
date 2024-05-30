@@ -76,7 +76,8 @@ class _CommonElevatedButtonState extends State<CommonElevatedButton> {
                 widget.title,
                 textAlign: TextAlign.center,
                 style: widget.textStyle ??
-                    Style.cormorantGaramondBold(fontSize: Dimens.d23, color: ColorConstant.white),
+                    Style.cormorantGaramondBold(fontSize: Dimens.d23, //color: ColorConstant.white
+                    ),
               ),
             ],
           ),

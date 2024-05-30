@@ -37,6 +37,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
      ExploreScreen(),
     const MeScreen(),
   ];
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(

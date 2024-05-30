@@ -77,7 +77,6 @@
   "confirmNewPassword" : "Confirm New Password",
   "enterCurrentPassword": "Enter current password",
   "enterConfirmNewPassword" : "Enter confirm new password",
-  "confirmPassword": "Confirm Password",
   "setYourReminders" : "Set your reminders",
   "howManyTimesWouldYouLikeToBe" : "Choose how many times you wish to be reminded to complete your rituals, recevice affirmations and nudge notifications by the Transform your mind app",
   "10timeInADay" : "10 times in a day",
@@ -89,11 +88,22 @@
   "affirmations": "Affirmations",
   "meditations": "Meditations",
   "gratitudes": "Gratitudes",
-  "rituals": "Rituals",
   "affirmationsReminder": "Affirmations Reminder",
   "meditationsReminder": "Meditations Reminder",
   "gratitudesReminder": "Gratitudes Reminder",
   "ritualsReminder": "Rituals Reminder",
   "theme": "Theme",
-  "privacyPolicy": "Privacy Policy"
+  "privacyPolicy": "Privacy Policy",
+  "me": "Me",
+  "everyoneU": "Everyone is unique, let's tailor your space to get you the most relevant content.",
+  "myHub": "My Hub",
+  "myLibrary": "My Library",
+  "myHistory": "My History",
+  "recentlyPlayed": "Recently Played",
+  "yourBookmarks": "Your bookmarks",
+  "yourProgramme": "Your Programme",
+  "myDownloads": "My Downloads",
+  "seeAll": "See All",
+  "comingSoon": "Coming Soon..."
+
 }

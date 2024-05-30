@@ -21,7 +21,7 @@ class ChangePasswordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorConstant.backGround,
+
       appBar: CustomAppBar(
         title: "changePassword".tr,
       ),

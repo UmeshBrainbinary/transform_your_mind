@@ -454,8 +454,6 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> with TickerProvider
                                 },
                               ),
                             ),
-
-
                           ),
                         ],
                       );
@@ -496,7 +494,6 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> with TickerProvider
                                         Widget? child) {
                                       return Text(
                                         _updatedRealtimeAudioDuration.value.durationFormatter,
-
                                         style: Style.montserratMedium(
                                           fontSize: Dimens.d14,
                                           color: ColorConstant.white

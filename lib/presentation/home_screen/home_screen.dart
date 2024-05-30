@@ -25,6 +25,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen>  with TickerProviderStateMixin,WidgetsBindingObserver {
+
   late final AnimationController _lottieBgController;
   String _greeting = "";
   late ScrollController scrollController = ScrollController();
@@ -37,6 +38,7 @@ class _HomeScreenState extends State<HomeScreen>  with TickerProviderStateMixin,
     {"title":"Journal","icon":ImageConstant.calendar},
     {"title":"My Badges","icon":ImageConstant.calendar},
   ];
+
   @override
   void initState() {
     _lottieBgController = AnimationController(vsync: this);

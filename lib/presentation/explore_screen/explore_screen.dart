@@ -64,7 +64,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                   ? 1.0
                   : 0.0, //set opacity to 1 on visible, or hide
               child: Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: ColorConstant.colorBFD0D4,
                 ),
