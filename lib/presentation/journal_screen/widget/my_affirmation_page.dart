@@ -32,6 +32,7 @@ import 'package:transform_your_mind/widgets/app_confirmation_dialog.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
+
 List affirmationList = [];
 List affirmationDraftList = [];
 
@@ -66,7 +67,6 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   TextEditingController searchController = TextEditingController();
   FocusNode searchFocus = FocusNode();
 
-
   bool _isSearching = true;
   Timer? _debounce;
 
@@ -86,7 +86,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   void initState() {
     super.initState();
 
-  /*  bookmarkBloc.add(
+    /*  bookmarkBloc.add(
       GetMyBookmarksEvent(
         paginationRequest: PaginationRequest(
           page: pageNumber,
@@ -119,7 +119,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
     _tabController = TabController(length: Dimens.d2.toInt(), vsync: this);
 
     /// Fetch categories for affirmation
- /*   categoryBloc.add(
+    /*   categoryBloc.add(
       FetchCategories(contentId: AppContentType.affirmation.value),
     );*/
   }
@@ -127,24 +127,25 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   void _onAddClick(BuildContext context) {
     final subscriptionStatus = "SUBSCRIBED";
 
-
     /// to check if item counts are not more then the config count in case of no subscription
-    if (!(subscriptionStatus == "SUBSCRIBED" || subscriptionStatus == "SUBSCRIBED")) {
-    /*  Navigator.pushNamed(context, SubscriptionPage.subscription, arguments: {
+    if (!(subscriptionStatus == "SUBSCRIBED" ||
+        subscriptionStatus == "SUBSCRIBED")) {
+      /*  Navigator.pushNamed(context, SubscriptionPage.subscription, arguments: {
         AppConstants.isInitialUser: AppConstants.noSubscription,
         AppConstants.subscriptionMessage: i10n.journalNoSubscriptionMessage,
       });*/
     } else {
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return const AddAffirmationPage(isFromMyAffirmation: true);
-      },)).then((value) {
-        setState(() {});
-        if (value != null && value is bool) {
-          value ? affirmationList.clear() : affirmationDraftList.clear();
-          setState(() {
-
-          });
-          /*     _affirmationBloc.add(
+      Navigator.push(context, MaterialPageRoute(
+        builder: (context) {
+          return const AddAffirmationPage(isFromMyAffirmation: true);
+        },
+      )).then(
+        (value) {
+          setState(() {});
+          if (value != null && value is bool) {
+            value ? affirmationList.clear() : affirmationDraftList.clear();
+            setState(() {});
+            /*     _affirmationBloc.add(
             GetMyAffirmationEvent(
               paginationRequest: PaginationRequest(
                 page: 1,
@@ -158,8 +159,9 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
               ),
             ),
           );*/
-        }
-      },);
+          }
+        },
+      );
     }
   }
 
@@ -172,7 +174,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
       if (query.isNotEmpty) {
         query.trim();
         if (!RegExp(r'[^\w\s]').hasMatch(query) && query.isNotEmpty) {
-         /* _affirmationBloc.add(
+          /* _affirmationBloc.add(
             GetMyAffirmationEvent(
               paginationRequest: PaginationRequest(
                 page: pageNumber,
@@ -185,7 +187,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
           );*/
         }
       } else {
-   /*     _affirmationBloc.add(
+        /*     _affirmationBloc.add(
           GetMyAffirmationEvent(
             paginationRequest: PaginationRequest(
               page: pageNumber,
@@ -202,7 +204,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
+      appBar: CustomAppBar(showBack: true,
         title: "My Affirmation".tr,
         action: (_isLoading || _isLoadingDraft)
             ? const Offstage()
@@ -214,7 +216,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                 onTap: () => _onAddClick(context),
               ),
       ),
-      body:Stack(
+      body: Stack(
         children: [
           BackGroundContainer(
             image: ImageConstant.homeBgBookmarks,
@@ -231,8 +233,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                 Align(
                   alignment: Alignment.center,
                   child: CustomTabBar(
-                    bgColor:
-                    ColorConstant.themeColor.withOpacity(Dimens.d0_1),
+                    bgColor: ColorConstant.themeColor.withOpacity(Dimens.d0_1),
                     padding: Dimens.d12.paddingHorizontal,
                     labelPadding: Dimens.d12.paddingHorizontal,
                     tabBarIndicatorSize: TabBarIndicatorSize.label,
@@ -270,7 +271,6 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                 ),
                 Dimens.d20.spaceHeight,
                 _getTabListOfGoals(),
-
               ],
             ),
           ),
@@ -288,11 +288,12 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   }
 
   Widget yourAffirmationWidget() {
-    return  /*pageNumberAf == 1 &&
+    return /*pageNumberAf == 1 &&
         !_isSearching
         ? const JournalListShimmer()
         : affirmationList.isNotEmpty || affirmationDraftList.isNotEmpty
-        ?*/ Expanded(
+        ?*/
+        Expanded(
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -302,7 +303,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
             Align(
               alignment: Alignment.topLeft,
               child: Text(
-                "my Affirmation",
+                "My Affirmation".tr,
                 style: Style.montserratRegular(
                   fontSize: Dimens.d18,
                 ).copyWith(
@@ -340,93 +341,18 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                   });*/
                   },
                   child: true
-                      ? Container(
-                    margin: const EdgeInsets.only(
-                        bottom: Dimens.d16),
-                    padding:
-                    const EdgeInsets.all(Dimens.d24),
-                    decoration: BoxDecoration(
-                      color: ColorConstant.themeColor.withOpacity(0.8),
-                      borderRadius: Dimens.d16.radiusAll,
-                      image: DecorationImage(
-                        colorFilter: ColorFilter.mode(
-                          index.isEven
-                              ?  ColorConstant.themeColor.withOpacity(0.8)
-                              :  ColorConstant.themeColor,
-                          BlendMode.color,
-                        ),
-                        image: AssetImage(
-                          index.isEven
-                              ? ImageConstant
-                              .imgAffirmationTileBg1
-                              : ImageConstant
-                              .imgAffirmationTileBg2,
-                        ),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment:
-                      MainAxisAlignment.start,
-                      crossAxisAlignment:
-                      CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            data["title"] ?? '',
-                            style: Style.montserratRegular(
-                                height: Dimens.d1_3.h,
-                                fontSize: Dimens.d18,
-                                color: Colors.white)
-                                .copyWith(
-                                wordSpacing:
-                                Dimens.d4),
-                            maxLines: 7,
-                          ),
-                        ),
-                        Dimens.d24.spaceWidth,
-                        Column(
-                          children: [
-                            Lottie.asset(
-                              ImageConstant
-                                  .lottieRightArrowWhite,
-                              height: Dimens.d24,
-                              width: Dimens.d24,
-                              fit: BoxFit.cover,
-                              repeat: false,
-                            ),
-                            Dimens.d10.spaceHeight,
-                            InkWell(
-                              borderRadius:
-                              Dimens.d25.radiusAll,
-                              onTap: () =>
-                                  onEditAffirmation(
-                                      context,),
-                              child: SvgPicture.asset(
-                                ImageConstant.icPencil,
-                                color: Colors.white,
-                                height: Dimens.d16,
-                                width: Dimens.d16,
-                              ),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  )
-                      : Slidable(
-                    closeOnScroll: true,
-                    key: ValueKey<String>(
-                        "" ?? ""),
-                    endActionPane: ActionPane(
-                      motion: const ScrollMotion(),
-                      dragDismissible: false,
-                      extentRatio: 0.26,
-                      children: [
-                        Dimens.d20.spaceWidth,
-                        GestureDetector(
-                          onTap: () {
-                            /*      _affirmationBloc.add(
+                      ? Slidable(
+                          closeOnScroll: true,
+                          key: const ValueKey<String>("" ?? ""),
+                          endActionPane: ActionPane(
+                            motion: const ScrollMotion(),
+                            dragDismissible: false,
+                            extentRatio: 0.26,
+                            children: [
+                              Dimens.d20.spaceWidth,
+                              GestureDetector(
+                                onTap: () {
+                                  /*      _affirmationBloc.add(
                                                   DeleteAffirmationEvent(
                                                       deleteAffirmationRequest:
                                                           DeleteAffirmationRequest(
@@ -435,42 +361,145 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                                                       ""),
                                                       isFromDraft: false),
                                                 );*/
-                            affirmationList.removeAt(index);
-                            _isSearching =
-                                affirmationList.isNotEmpty;
-                            setState(() {
-
-                            });
-                            /*_affirmationBloc.add(
+                                  affirmationList.removeAt(index);
+                                  _isSearching = affirmationList.isNotEmpty;
+                                  setState(() {});
+                                  /*_affirmationBloc.add(
                                                     RefreshAffirmationEvent());*/
-                          },
+                                },
+                                child: Container(
+                                  width: Dimens.d65,
+                                  margin: EdgeInsets.only(bottom: Dimens.d20.h),
+                                  decoration: BoxDecoration(
+                                    color: ColorConstant.deleteRed,
+                                    borderRadius: Dimens.d16.radiusAll,
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: SvgPicture.asset(
+                                    ImageConstant.icDeleteWhite,
+                                    width: Dimens.d24,
+                                    height: Dimens.d24,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                           child: Container(
-                            width: Dimens.d65,
-                            margin: EdgeInsets.only(
-                                bottom: Dimens.d20.h),
+                            margin: const EdgeInsets.only(bottom: Dimens.d16),
+                            padding: const EdgeInsets.all(Dimens.d24),
                             decoration: BoxDecoration(
-                              color: ColorConstant.deleteRed,
-                              borderRadius:
-                              Dimens.d16.radiusAll,
+                              color: ColorConstant.themeColor.withOpacity(0.8),
+                              borderRadius: Dimens.d16.radiusAll,
+                              image: DecorationImage(
+                                colorFilter: ColorFilter.mode(
+                                  index.isEven
+                                      ? ColorConstant.themeColor
+                                          .withOpacity(0.8)
+                                      : ColorConstant.themeColor,
+                                  BlendMode.color,
+                                ),
+                                image: AssetImage(
+                                  index.isEven
+                                      ? ImageConstant.imgAffirmationTileBg1
+                                      : ImageConstant.imgAffirmationTileBg2,
+                                ),
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                            alignment: Alignment.center,
-                            child: SvgPicture.asset(
-                              ImageConstant.icDeleteWhite,
-                              width: Dimens.d24,
-                              height: Dimens.d24,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    data["title"] ?? '',
+                                    style: Style.montserratRegular(
+                                            height: Dimens.d1_3.h,
+                                            fontSize: Dimens.d18,
+                                            color: Colors.white)
+                                        .copyWith(wordSpacing: Dimens.d4),
+                                    maxLines: 7,
+                                  ),
+                                ),
+                                Dimens.d24.spaceWidth,
+                                Column(
+                                  children: [
+                                    Lottie.asset(
+                                      ImageConstant.lottieRightArrowWhite,
+                                      height: Dimens.d24,
+                                      width: Dimens.d24,
+                                      fit: BoxFit.cover,
+                                      repeat: false,
+                                    ),
+                                    Dimens.d10.spaceHeight,
+                                    InkWell(
+                                      borderRadius: Dimens.d25.radiusAll,
+                                      onTap: () => onEditAffirmation(
+                                        context,
+                                      ),
+                                      child: SvgPicture.asset(
+                                        ImageConstant.icPencil,
+                                        color: Colors.white,
+                                        height: Dimens.d16,
+                                        width: Dimens.d16,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
+                        )
+                      : Slidable(
+                          closeOnScroll: true,
+                          key: const ValueKey<String>("" ?? ""),
+                          endActionPane: ActionPane(
+                            motion: const ScrollMotion(),
+                            dragDismissible: false,
+                            extentRatio: 0.26,
+                            children: [
+                              Dimens.d20.spaceWidth,
+                              GestureDetector(
+                                onTap: () {
+                                  /*      _affirmationBloc.add(
+                                                  DeleteAffirmationEvent(
+                                                      deleteAffirmationRequest:
+                                                          DeleteAffirmationRequest(
+                                                              affirmationId:
+                                                                  data.affirmationId ??
+                                                                      ""),
+                                                      isFromDraft: false),
+                                                );*/
+                                  affirmationList.removeAt(index);
+                                  _isSearching = affirmationList.isNotEmpty;
+                                  setState(() {});
+                                  /*_affirmationBloc.add(
+                                                    RefreshAffirmationEvent());*/
+                                },
+                                child: Container(
+                                  width: Dimens.d65,
+                                  margin: EdgeInsets.only(bottom: Dimens.d20.h),
+                                  decoration: BoxDecoration(
+                                    color: ColorConstant.deleteRed,
+                                    borderRadius: Dimens.d16.radiusAll,
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: SvgPicture.asset(
+                                    ImageConstant.icDeleteWhite,
+                                    width: Dimens.d24,
+                                    height: Dimens.d24,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          child: JournalListTileLayout(
+                            margin: EdgeInsets.only(bottom: Dimens.d20.h),
+                            title: data["title"] ?? '',
+                            image: data["image"] ?? '',
+                            createdDate: data["createdOn"] ?? '',
+                          ),
                         ),
-                      ],
-                    ),
-                    child: JournalListTileLayout(
-                      margin: EdgeInsets.only(
-                          bottom: Dimens.d20.h),
-                      title: data["title"] ?? '',
-                      image: data["image"] ?? '',
-                      createdDate: data["createdOn"] ?? '',
-                    ),
-                  ),
                 );
               },
             ),
@@ -482,36 +511,37 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
       showBottomHeight: false,
       message: "Affirmation No Data",
       horizontalPadding: 0,
-    )*/;
+    )*/
+        ;
   }
 
   Widget _draftAffirmationListWidget() {
     return ValueListenableBuilder(
       valueListenable: isDraftAdded,
       builder: (context, value, child) => (_isLoadingDraft &&
-          pageNumberDrafts == 1)
+              pageNumberDrafts == 1)
           ? const SizedBox.shrink()
           : (affirmationDraftList.isNotEmpty)
-          ? Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Drafts",
-            style: Style.montserratRegular(
-              fontSize: Dimens.d18,
-            ).copyWith(
-              letterSpacing: Dimens.d0_16,
-            ),
-          ),
-          Dimens.d20.spaceHeight,
-          ListView.separated(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              final data = affirmationDraftList[index];
-              return GestureDetector(
-                onTap: () {
-                /*  Navigator.pushNamed(
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Drafts",
+                      style: Style.montserratRegular(
+                        fontSize: Dimens.d18,
+                      ).copyWith(
+                        letterSpacing: Dimens.d0_16,
+                      ),
+                    ),
+                    Dimens.d20.spaceHeight,
+                    ListView.separated(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        final data = affirmationDraftList[index];
+                        return GestureDetector(
+                          onTap: () {
+                            /*  Navigator.pushNamed(
                     context,
                     HomeMessagePage.homeMessagePage,
                     arguments: {
@@ -530,87 +560,133 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                       bookmarkBloc.add(RefreshBookmarksEvent());
                     }
                   });*/
-                },
-                child: true
-                    ? Container(
-                  margin: const EdgeInsets.only(
-                      bottom: Dimens.d16),
-                  padding: const EdgeInsets.all(Dimens.d24),
-                  decoration: BoxDecoration(
-                    color: ColorConstant.colorThemed8,
-                    borderRadius: Dimens.d16.radiusAll,
-                    image: DecorationImage(
-                      colorFilter: ColorFilter.mode(
-                        index.isEven
-                            ? ColorConstant.colorThemed8
-                            : ColorConstant.themeColor,
-                        BlendMode.color,
-                      ),
-                      image: AssetImage(
-                        index.isEven
-                            ? ImageConstant
-                            .imgAffirmationTileBg1
-                            : ImageConstant
-                            .imgAffirmationTileBg2,
-                      ),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment:
-                    MainAxisAlignment.start,
-                    crossAxisAlignment:
-                    CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          data["title"] ?? '',
-                          style: Style.montserratRegular(
-                              height: Dimens.d1_3.h,
-                              fontSize: Dimens.d18,
-                              color: Colors.white)
-                              .copyWith(
-                              wordSpacing: Dimens.d4),
-                          maxLines: 7,
-                        ),
-                      ),
-                      Dimens.d24.spaceWidth,
-                      Column(
-                        children: [
-                          Lottie.asset(
-                            ImageConstant.lottieRightArrowWhite,
-                            height: Dimens.d24,
-                            width: Dimens.d24,
-                            fit: BoxFit.cover,
-                            repeat: false,
-                          ),
-                          Dimens.d10.spaceHeight,
-                          InkWell(
-                            borderRadius:
-                            Dimens.d25.radiusAll,
-                            onTap: () => onEditAffirmation(
-                              context,
-
-                              isFromDraft: true,
-                            ),
-                            child: SvgPicture.asset(
-                              ImageConstant.icPencil,
-                              color: Colors.white,
-                              height: Dimens.d16,
-                              width: Dimens.d16,
-                            ),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                )
-                    : AffirmationDraftListItem(
-                    index: index,
-                    listOfAffirmationDraftsResponse:
-                    affirmationDraftList,
-                    onDeleteTapCallback: () {
-                /*      _affirmationBloc.add(
+                          },
+                          child: true
+                              ? Slidable(
+                                  closeOnScroll: true,
+                                  key: const ValueKey<String>("" ?? ""),
+                                  endActionPane: ActionPane(
+                                    motion: const ScrollMotion(),
+                                    dragDismissible: false,
+                                    extentRatio: 0.26,
+                                    children: [
+                                      Dimens.d20.spaceWidth,
+                                      GestureDetector(
+                                        onTap: () {
+                                          /*      _affirmationBloc.add(
+                                                  DeleteAffirmationEvent(
+                                                      deleteAffirmationRequest:
+                                                          DeleteAffirmationRequest(
+                                                              affirmationId:
+                                                                  data.affirmationId ??
+                                                                      ""),
+                                                      isFromDraft: false),
+                                                );*/
+                                          affirmationDraftList.removeAt(index);
+                                          _isSearching =
+                                              affirmationDraftList.isNotEmpty;
+                                          setState(() {});
+                                          /*_affirmationBloc.add(
+                                                    RefreshAffirmationEvent());*/
+                                        },
+                                        child: Container(
+                                          width: Dimens.d65,
+                                          margin: EdgeInsets.only(
+                                              bottom: Dimens.d20.h),
+                                          decoration: BoxDecoration(
+                                            color: ColorConstant.deleteRed,
+                                            borderRadius: Dimens.d16.radiusAll,
+                                          ),
+                                          alignment: Alignment.center,
+                                          child: SvgPicture.asset(
+                                            ImageConstant.icDeleteWhite,
+                                            width: Dimens.d24,
+                                            height: Dimens.d24,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Container(
+                                    margin: const EdgeInsets.only(
+                                        bottom: Dimens.d16),
+                                    padding: const EdgeInsets.all(Dimens.d24),
+                                    decoration: BoxDecoration(
+                                      color: ColorConstant.colorThemed8,
+                                      borderRadius: Dimens.d16.radiusAll,
+                                      image: DecorationImage(
+                                        colorFilter: ColorFilter.mode(
+                                          index.isEven
+                                              ? ColorConstant.colorThemed8
+                                              : ColorConstant.themeColor,
+                                          BlendMode.color,
+                                        ),
+                                        image: AssetImage(
+                                          index.isEven
+                                              ? ImageConstant
+                                                  .imgAffirmationTileBg1
+                                              : ImageConstant
+                                                  .imgAffirmationTileBg2,
+                                        ),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            data["title"] ?? '',
+                                            style: Style.montserratRegular(
+                                                    height: Dimens.d1_3.h,
+                                                    fontSize: Dimens.d18,
+                                                    color: Colors.white)
+                                                .copyWith(
+                                                    wordSpacing: Dimens.d4),
+                                            maxLines: 7,
+                                          ),
+                                        ),
+                                        Dimens.d24.spaceWidth,
+                                        Column(
+                                          children: [
+                                            Lottie.asset(
+                                              ImageConstant
+                                                  .lottieRightArrowWhite,
+                                              height: Dimens.d24,
+                                              width: Dimens.d24,
+                                              fit: BoxFit.cover,
+                                              repeat: false,
+                                            ),
+                                            Dimens.d10.spaceHeight,
+                                            InkWell(
+                                              borderRadius:
+                                                  Dimens.d25.radiusAll,
+                                              onTap: () => onEditAffirmation(
+                                                context,
+                                                isFromDraft: true,
+                                              ),
+                                              child: SvgPicture.asset(
+                                                ImageConstant.icPencil,
+                                                color: Colors.white,
+                                                height: Dimens.d16,
+                                                width: Dimens.d16,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              : AffirmationDraftListItem(
+                                  index: index,
+                                  listOfAffirmationDraftsResponse:
+                                      affirmationDraftList,
+                                  onDeleteTapCallback: () {
+                                    /*      _affirmationBloc.add(
                           DeleteAffirmationEvent(
                               deleteAffirmationRequest:
                               DeleteAffirmationRequest(
@@ -622,16 +698,16 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                       affirmationDraftList.removeAt(index);
                       _affirmationBloc
                           .add(RefreshAffirmationEvent());*/
-                    }),
-              );
-            },
-            separatorBuilder: (context, index) =>
-            Dimens.d16.spaceWidth,
-            itemCount: affirmationDraftList.length,
-          ),
-        ],
-      )
-          : const Offstage(),
+                                  }),
+                        );
+                      },
+                      separatorBuilder: (context, index) =>
+                          Dimens.d16.spaceWidth,
+                      itemCount: affirmationDraftList.length,
+                    ),
+                  ],
+                )
+              : const Offstage(),
     );
   }
 
@@ -639,7 +715,8 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
     return /* pageNumber == 1
         ? const JournalListAffirmationShimmer()
         : listOfBookmarks.isNotEmpty
-        ? */Expanded(
+        ? */
+        Expanded(
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -672,14 +749,13 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                           outLined: true,
                           textStyle: Style.montserratRegular(
                               color: ColorConstant.textDarkBlue),
-                          onTap: () =>
-                              addUserAffirmation(isSave: false),
+                          onTap: () => addUserAffirmation(isSave: false),
                         ),
                       ),
                       Dimens.d20.spaceWidth,
                       Expanded(
                         child: CommonElevatedButton(
-                          title:"Save".tr,
+                          title: "Save".tr,
                           onTap: () => addUserAffirmation(),
                         ),
                       ),
@@ -724,11 +800,9 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                 shrinkWrap: true,
                 primary: false,
                 itemBuilder: (context, index) {
-                  final bookMarkAffirmationData =
-                  listOfBookmarks[index];
+                  final bookMarkAffirmationData = listOfBookmarks[index];
                   return Container(
-                    margin:
-                    const EdgeInsets.only(bottom: Dimens.d16),
+                    margin: const EdgeInsets.only(bottom: Dimens.d16),
                     padding: const EdgeInsets.all(Dimens.d24),
                     decoration: BoxDecoration(
                       color: ColorConstant.themeColor.withOpacity(0.8),
@@ -753,21 +827,18 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                       children: [
                         Expanded(
                           child: Text(
-                            bookMarkAffirmationData.contentName ??
-                                '',
+                            bookMarkAffirmationData.contentName ?? '',
                             style: Style.montserratRegular(
-                                height: Dimens.d1_3.h,
-                                fontSize: Dimens.d18,
-                                color: Colors.white)
-                                .copyWith(
-                                wordSpacing: Dimens.d4),
+                                    height: Dimens.d1_3.h,
+                                    fontSize: Dimens.d18,
+                                    color: Colors.white)
+                                .copyWith(wordSpacing: Dimens.d4),
                             maxLines: 7,
                           ),
                         ),
                         Dimens.d24.spaceWidth,
                         Column(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             Lottie.asset(
@@ -794,8 +865,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                 listOfBookmarks.removeAt(index);
                               },
                               child: Padding(
-                                padding:
-                                const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.all(8.0),
                                 child: SvgPicture.asset(
                                   ImageConstant.icEmoji,
                                   height: Dimens.d20,
@@ -815,11 +885,12 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
         ),
       ),
     )
-       /* : const NoDataAvailable(
+        /* : const NoDataAvailable(
       showBottomHeight: false,
       message:"Have you considered saving affirmations that resonate with you, so you can revisit them whenever you need a boost of positivity?",
       horizontalPadding: 0,
-    )*/;
+    )*/
+        ;
   }
 
   Widget _buildCategoryDropDown(BuildContext context) {
@@ -903,7 +974,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
       showSnackBarError(context, "Please Enter Your Own Affirmation");
       return;
     }
-   /* _affirmationBloc.add(
+    /* _affirmationBloc.add(
       AddAffirmationEvent(
         addAffirmationRequest: AddAffirmationRequest(
           title: _userAffirmationController.text.trim(),
@@ -917,7 +988,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   }
 
   void onEditAffirmation(
-    BuildContext context,{
+    BuildContext context, {
     bool isFromDraft = false,
   }) {
     showDialog(
@@ -982,7 +1053,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
     bool isSaved = false,
   }) {
     if (affirmationTitle.trim().isEmpty) {
-      showSnackBarError(context,"Please Enter Your Own Affirmation");
+      showSnackBarError(context, "Please Enter Your Own Affirmation");
       return;
     }
     /*_affirmationBloc.add(

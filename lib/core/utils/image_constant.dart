@@ -130,6 +130,7 @@ class ImageConstant {
   static  String lottieArrowLef = "$lottie/lottie_arrow_lef.json";
   static  String lockHome = "$iconHomePath/ic_lock_icon.png";
   static  String lottieAudio = "$lottie/lottie_audio_animation_shoorah.json";
+  static  String lottieFilter = "$lottie/lottie_filter.json";
 
   static  String homeBgBookmarks = "$imagePath/img_home_bg_bookmarks.png";
   static  String icDeleteWhite = "$iconPath/ic_delete_white.svg";
@@ -141,4 +142,16 @@ class ImageConstant {
   static  String playIcon = "$iconPath/ic_shoorah_play.svg";
   static  String ratingFillSvg = "$iconPath/tran_star_fill.svg";
   static  String ratingNoFillSvg = "$iconPath/transform_star_no.svg";
+  static  String imgTransformSemi = "$iconHomePath/img_transform_semi.png";
+  static  String imgAboutShapes = "$imagePath/img_about_shapes.png";
+  static  String imgPlayButton = "$imagePath/img_play_button.png";
+  static  String imgSelectFocus = "$imagePath/img_select_focus_bg.png";
+  static  String icTick = "$iconPath/ic_tick.svg";
+  static  String icNewFolder = "$iconPath/ic_new_folder.png";
+  static  String icMenuFolder = "$iconPath/ic_folder_menu.png";
+  static  String icFolderColor = "$iconPath/ic_folder_color.png";
+  static  String folderIcon = "$iconPath/transfrom_folder_add.svg";
+  static  String transformDot = "$iconPath/transform_dot.svg";
+  static  String lottieDeleteAccount = "$lottie/lottie_delete_account.json";
+
 }

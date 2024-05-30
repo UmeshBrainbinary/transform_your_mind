@@ -12,6 +12,7 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/image_utills.dart';
 import 'package:transform_your_mind/presentation/home_screen/widgets/add_image_gratitude.dart';
+import 'package:transform_your_mind/presentation/journal_screen/widget/add_rituals_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/my_gratitude_page.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
@@ -25,11 +26,13 @@ class AddGratitudePage extends StatefulWidget {
   const AddGratitudePage({
     Key? key,
     this.isSaved,  this.isFromMyGratitude,
+    this.registerUser
   }) : super(key: key);
   static const addGratitude = '/addGratitude';
 
   final bool? isFromMyGratitude;
   final bool? isSaved;
+  final bool? registerUser;
   @override
   State<AddGratitudePage> createState() => _AddGratitudePageState();
 }
@@ -61,6 +64,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: CustomAppBar(
+        showBack: widget.registerUser!?false:true,
         title: "Add Gratitude",
      /*   title: widget.gratitudeData != null
             ? i10n.editGratitude
@@ -78,7 +82,24 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                     child: const Text("Skip")),
                 Dimens.d20.spaceWidth,
               ])
-            : /*widget.gratitudeData != null
+            :widget.registerUser!?  GestureDetector(
+            onTap: () {
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                return AddRitualsPage();
+              },));
+              /*                dashboardBloc.add(UpdateOnboardingStepEvent(
+                          request: OnboardingStep(onBoardStep: 5)));
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, AddGoalsPage.addGoals, (route) => false,
+                          arguments: {AppConstants.isFromMyGoals: false});*/
+            },
+            child:  Padding(
+              padding: const EdgeInsets.only(right: 20),
+              child: Text("Skip",style:Style.montserratRegular(
+              fontSize: Dimens.d15,
+                color: Colors.black,
+              ),),
+            )):/*widget.gratitudeData != null
                 ? LottieIconButton(
                     icon: AppAssets.lottieDeleteAccount,
                     onTap: () {

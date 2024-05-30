@@ -97,7 +97,7 @@ class _HomeAppBarState extends State<HomeAppBar> with TickerProviderStateMixin {
             ),
             Dimens.d10.h.spaceWidth,
             GestureDetector(
-              onTap: () {},
+              onTap:widget.onInfoTap!,
               child: SvgPicture.asset(ImageConstant.information,
                   height: Dimens.d25, width: Dimens.d25),
             ),

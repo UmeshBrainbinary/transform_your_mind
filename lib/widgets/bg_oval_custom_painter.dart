@@ -73,3 +73,31 @@ class BgOvalCustomPainterLogin extends CustomPainter {
     return true;
   }
 }
+
+
+
+//Copy this CustomPainter code to the Bottom of the File
+class RPSCustomPainter extends CustomPainter {
+@override
+void paint(Canvas canvas, Size size) {
+
+Path path_0 = Path();
+path_0.moveTo(32.5,20.083);
+path_0.cubicTo(19.082,20.083,8.166,30.999,8.166,44.417);
+path_0.cubicTo(8.166,44.693000000000005,8.39,44.917,8.666,44.917);
+path_0.lineTo(56.334,44.917);
+path_0.cubicTo(56.61000000000001,44.917,56.834,44.693000000000005,56.834,44.417);
+path_0.cubicTo(56.834,30.999,45.918,20.083,32.5,20.083);
+path_0.close();
+
+Paint paint_0_fill = Paint()..style=PaintingStyle.fill;
+paint_0_fill.color = Color(0xff000000).withOpacity(1.0);
+canvas.drawPath(path_0,paint_0_fill);
+
+}
+
+@override
+bool shouldRepaint(covariant CustomPainter oldDelegate) {
+return true;
+}
+}

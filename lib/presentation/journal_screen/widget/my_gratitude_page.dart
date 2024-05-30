@@ -355,6 +355,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                                       builder: (context) {
                                                         return const AddGratitudePage(
                                                           isFromMyGratitude: true,
+                                                          registerUser: false,
                                                           isSaved: true,
                                                         );
                                                       },

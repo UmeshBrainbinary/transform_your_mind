@@ -42,11 +42,17 @@ class ColorConstant {
 
   static const botMessageTextColor = Color.fromRGBO(139, 139, 139, 1);
   static const colorVoice = Color(0xff434ECC);
+  static const whiteLight = Color.fromRGBO(250, 251, 254, 1);
 
   static const colorThemed1 = Color.fromRGBO(229, 234, 249, 1);
   static const colorThemed8 = Color.fromRGBO(24, 32, 47, 1);
   static const colorThemed4 = Color.fromRGBO(97, 103, 232, 1);
   static const colorThemed7 =    Color.fromRGBO(49, 59, 107, 1);
+  static const textWhiteTransform = Color.fromRGBO(229, 234, 249, 1);
+  static const chipColor =    Color.fromRGBO(211, 218, 255, 1);
+  static const backgroundWhite = Color.fromRGBO(245, 245, 245, 1);
+  static const selectedFocusBorderColor = Color.fromRGBO(229, 234, 249, 0.6);
+  static const textGreyColorLight = Color.fromRGBO(143, 143, 143, 1);
 
 
 }
