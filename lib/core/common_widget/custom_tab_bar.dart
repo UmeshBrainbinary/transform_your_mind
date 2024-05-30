@@ -55,7 +55,7 @@ class _CustomTabBarState extends State<CustomTabBar> {
       controller: widget.tabController,
       onTap: (value) {
         widget.onTapCallBack?.call(value);
-      },
+      },dividerHeight: 0,
       labelColor: widget.selectedLabelColor,
       labelStyle: widget.selectedLabelStyle,
       unselectedLabelColor: widget.unSelectedLabelColor,

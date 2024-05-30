@@ -15,11 +15,14 @@ import 'package:transform_your_mind/presentation/explore_screen/binding/explore_
 import 'package:transform_your_mind/presentation/explore_screen/explore_screen.dart';
 import 'package:transform_your_mind/presentation/home_screen/binding/home_binding.dart';
 import 'package:transform_your_mind/presentation/home_screen/home_screen.dart';
+import 'package:transform_your_mind/presentation/intro_screen/about_page.dart';
+import 'package:transform_your_mind/presentation/intro_screen/select_your_focus_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/binding/journal_binding.dart';
 import 'package:transform_your_mind/presentation/journal_screen/journal_screen.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_gratitude_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/my_affirmation_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/my_gratitude_page.dart';
+import 'package:transform_your_mind/presentation/journal_screen/widget/my_notes_page.dart';
 import 'package:transform_your_mind/presentation/me_screen/binding/me_binding.dart';
 import 'package:transform_your_mind/presentation/me_screen/me_screen.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/account_screen/account_screen.dart';
@@ -71,6 +74,9 @@ class AppRoutes {
   static const String myAffirmationPage = '/myAffirmationPage';
   static const String editProfileScreen = '/edit_profile_screen';
   static const String fullScreenImage = '/fullScreenImage';
+  static const String aboutPage = '/aboutPage';
+  static const String selectYourFocusPage = '/selectYourFocusPage';
+  static const String myNotesPage = '/myNotesPage';
   static const String changePassword = '/change_password_screen';
   static const String notificationSetting = '/notification_setting_screen';
   static const String privacyPolicy = '/privacy_policy_screen';
@@ -273,7 +279,7 @@ class AppRoutes {
     GetPage(
       transition: Transition.rightToLeft,
       name: addGratitudePage,
-      page: () =>  const AddGratitudePage( isFromMyGratitude: true,),
+      page: () =>  const AddGratitudePage( isFromMyGratitude: true,registerUser: false,),
       bindings: [
         JournalBinding(),
       ],
@@ -287,6 +293,40 @@ class AppRoutes {
       ],
     ),
 
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: myNotesPage,
+      page: () =>  const MyNotesPage(),
+      bindings: [
+        JournalBinding(),
+      ],
+    ),
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: aboutPage,
+      page: () =>  const AboutPage(),
+      bindings: [
+       DashBoardBinding()
+      ],
+    ),
+
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: selectYourFocusPage,
+      page: () =>  const SelectYourFocusPage(isFromMe: false,),
+      bindings: [
+       DashBoardBinding()
+      ],
+    ),
+    ///
+    // GetPage(
+    //   transition: Transition.rightToLeft,
+    //   name: initialRoute,
+    //   page: () => SplashScreen(),
+    //   bindings: [
+    //     SplashBinding(),
+    //   ],
+    // )
 
   ];
 }

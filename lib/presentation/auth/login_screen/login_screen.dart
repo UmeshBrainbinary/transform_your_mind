@@ -140,7 +140,7 @@ class LoginScreen extends StatelessWidget {
                                            await PrefService.setValue(PrefKey.email, loginController.emailController.text);
                                            await PrefService.setValue(PrefKey.password, loginController.passwordController.text);
 
-                                            Get.toNamed(AppRoutes.dashBoardScreen);
+                                            Get.toNamed(AppRoutes.selectYourFocusPage);
 
                                            // loginController.emailController.clear();
                                            // loginController.passwordController.clear();

@@ -24,19 +24,19 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>  with TickerProviderStateMixin,WidgetsBindingObserver {
-
+class _HomeScreenState extends State<HomeScreen>
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   late final AnimationController _lottieBgController;
   String _greeting = "";
   late ScrollController scrollController = ScrollController();
   ValueNotifier<bool> showScrollTop = ValueNotifier(false);
   int? totalCountCleanse = 0;
-  List<Map<String,dynamic>> quickAccessList = [
-    {"title":"Meditation","icon":ImageConstant.calendar},
-    {"title":"Sleep","icon":ImageConstant.calendar},
-    {"title":"Transfrom Pods","icon":ImageConstant.calendar},
-    {"title":"Journal","icon":ImageConstant.calendar},
-    {"title":"My Badges","icon":ImageConstant.calendar},
+  List<Map<String, dynamic>> quickAccessList = [
+    {"title": "Meditation", "icon": ImageConstant.calendar},
+    {"title": "Sleep", "icon": ImageConstant.calendar},
+    {"title": "Transfrom Pods", "icon": ImageConstant.calendar},
+    {"title": "Journal", "icon": ImageConstant.calendar},
+    {"title": "My Badges", "icon": ImageConstant.calendar},
   ];
 
   @override
@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen>  with TickerProviderStateMixin,
     _lottieBgController = AnimationController(vsync: this);
     Future.delayed(
       const Duration(milliseconds: 100),
-          () {
+      () {
         _setGreetingBasedOnTime();
       },
     );
@@ -61,17 +61,18 @@ class _HomeScreenState extends State<HomeScreen>  with TickerProviderStateMixin,
     super.initState();
   }
 
-
   @override
   void dispose() {
     _lottieBgController.dispose();
     super.dispose();
   }
+
   void _setGreetingBasedOnTime() {
     setState(() {
       _greeting = _getGreetingBasedOnTime();
     });
   }
+
   String _getGreetingBasedOnTime() {
     final now = DateTime.now();
     final hour = now.hour;
@@ -86,11 +87,11 @@ class _HomeScreenState extends State<HomeScreen>  with TickerProviderStateMixin,
       return 'Good night';
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-      floatingActionButton:ValueListenableBuilder(
+      floatingActionButton: ValueListenableBuilder(
         valueListenable: showScrollTop,
         builder: (context, value, child) {
           return AnimatedOpacity(
@@ -101,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen>  with TickerProviderStateMixin,
             child: Container(
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color:ColorConstant.themeColor,
+                color: ColorConstant.themeColor,
               ),
               padding: const EdgeInsets.all(5.0),
               child: FloatingActionButton(
@@ -131,7 +132,8 @@ class _HomeScreenState extends State<HomeScreen>  with TickerProviderStateMixin,
         physics: const ClampingScrollPhysics(),
         child: Stack(
           children: [
-            Column(crossAxisAlignment: CrossAxisAlignment.start,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 //__________________________ top view ____________________
                 topView(),
@@ -141,11 +143,9 @@ class _HomeScreenState extends State<HomeScreen>  with TickerProviderStateMixin,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
-
                     children: [
                       GestureDetector(
-                        onTap: () {
-                        },
+                        onTap: () {},
                         child: SvgPicture.asset(
                           ImageConstant.icAddRounded,
                           width: Dimens.d46,
@@ -155,9 +155,7 @@ class _HomeScreenState extends State<HomeScreen>  with TickerProviderStateMixin,
                       ),
                       Dimens.d15.spaceWidth,
                       GestureDetector(
-                        onTap: () {
-
-                        },
+                        onTap: () {},
                         child: CircleAvatar(
                           backgroundColor: ColorConstant.themeColor,
                           radius: Dimens.d23,
@@ -171,8 +169,7 @@ class _HomeScreenState extends State<HomeScreen>  with TickerProviderStateMixin,
                 ),
                 Dimens.d16.spaceHeight,
                 Padding(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: Dimens.d20),
+                  padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
                   child: Text(
                     "$_greeting, RK!",
                     textAlign: TextAlign.center,
@@ -195,36 +192,30 @@ class _HomeScreenState extends State<HomeScreen>  with TickerProviderStateMixin,
                 //______________________________ yourDaily Recommendations _______________________
 
                 Padding(
-                  padding:  const EdgeInsets.symmetric(
-                      horizontal: Dimens.d20),
+                  padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
                   child: Text(
                     "Your Recommendations",
                     textAlign: TextAlign.center,
-                    style:
-                    Style.montserratRegular(fontSize: Dimens.d22),
+                    style: Style.montserratRegular(fontSize: Dimens.d22),
                   ),
                 ),
                 Dimens.d20.spaceHeight,
                 recommendationsView(),
                 Dimens.d20.spaceHeight,
                 GestureDetector(
-                  onTap: () {
-                  },
+                  onTap: () {},
                   child: Container(
                     height: 40,
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: Dimens.d20),
+                    margin: const EdgeInsets.symmetric(horizontal: Dimens.d20),
                     decoration: BoxDecoration(
-                        borderRadius:
-                        BorderRadius.circular(20),
-                        color:ColorConstant.themeColor,
+                      borderRadius: BorderRadius.circular(20),
+                      color: ColorConstant.themeColor,
                     ),
                     child: Center(
                       child: Text(
                         "Refresh Daily Recommendations",
                         style: Style.montserratRegular(
-                            fontSize: 12,
-                            color: Colors.white),
+                            fontSize: 12, color: Colors.white),
                       ),
                     ),
                   ),
@@ -233,19 +224,16 @@ class _HomeScreenState extends State<HomeScreen>  with TickerProviderStateMixin,
                 //______________________________ Today's Cleanse _______________________
 
                 Padding(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: Dimens.d20),
+                  padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
                   child: Text(
                     "Today's Cleanse",
                     textAlign: TextAlign.center,
-                    style:
-                    Style.montserratRegular(fontSize: Dimens.d22),
+                    style: Style.montserratRegular(fontSize: Dimens.d22),
                   ),
                 ),
                 Dimens.d30.spaceHeight,
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: CleanseButton(
                     totalCount: totalCountCleanse ?? 0,
                   ),
@@ -256,23 +244,19 @@ class _HomeScreenState extends State<HomeScreen>  with TickerProviderStateMixin,
                   decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(16)),
-                  padding:
-                  const EdgeInsets.symmetric(vertical: 27),
-                  margin: const EdgeInsets.symmetric(
-                      horizontal: 20),
+                  padding: const EdgeInsets.symmetric(vertical: 27),
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
                   child: const TodaysRituals(
                     type: "Your Daily Rituals",
                   ),
                 ),
                 Dimens.d20.spaceHeight,
                 Padding(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: Dimens.d20),
+                  padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
                   child: Text(
                     "Your Bookmarks",
                     textAlign: TextAlign.center,
-                    style:
-                    Style.montserratRegular(fontSize: Dimens.d22),
+                    style: Style.montserratRegular(fontSize: Dimens.d22),
                   ),
                 ),
                 Dimens.d20.spaceHeight,
@@ -283,92 +267,87 @@ class _HomeScreenState extends State<HomeScreen>  with TickerProviderStateMixin,
                 Dimens.d30.spaceHeight,
 
                 Padding(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: Dimens.d20),
+                  padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
                   child: Text(
                     "Quick Access",
                     textAlign: TextAlign.center,
                     style: Style.montserratRegular(fontSize: Dimens.d22),
                   ),
                 ),
-            Dimens.d30.spaceHeight,
+                Dimens.d30.spaceHeight,
 
-              Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: Dimens.d20),
-              child: SizedBox(
-                height: 250,
-                child: GridView.builder(
-                  gridDelegate:
-                  const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      // 3 items per row
-                      childAspectRatio: 1.6,
-                      crossAxisSpacing: 30,
-                      mainAxisSpacing:
-                      30 // Set the aspect ratio as needed
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
+                  child: SizedBox(
+                    height: 250,
+                    child: GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              // 3 items per row
+                              childAspectRatio: 1.6,
+                              crossAxisSpacing: 30,
+                              mainAxisSpacing:
+                                  30 // Set the aspect ratio as needed
+                              ),
+                      itemCount: quickAccessList.length,
+                      // Total number of items
+                      itemBuilder: (BuildContext context, int index) {
+                        // Generating items for the GridView
+                        return GestureDetector(
+                          onTap: () {},
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(9),
+                                color:
+                                    ColorConstant.themeColor.withOpacity(0.21)),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  quickAccessList[index]["icon"],
+                                  height: 20,
+                                  width: 20,
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  quickAccessList[index]["title"],
+                                  // Displaying item index
+                                  style: Style.montserratRegular(
+                                      fontSize: 8, color: Colors.black),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
-                  itemCount: quickAccessList.length,
-                  // Total number of items
-                  itemBuilder: (BuildContext context,
-                      int index) {
-                    // Generating items for the GridView
-                    return GestureDetector(onTap: (){},
-
-
-                      child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius:
-                            BorderRadius.circular(
-                                9),
-                            color: ColorConstant.themeColor
-                                .withOpacity(0.21)),
-                        child: Column(
-                          crossAxisAlignment:
-                          CrossAxisAlignment.center,
-                          mainAxisAlignment:
-                          MainAxisAlignment.center,
-                          children: [
-                            SvgPicture.asset(
-                              quickAccessList[index]["icon"],
-                              height: 20,
-                              width: 20,
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              quickAccessList[index]["title"],
-                              // Displaying item index
-                              style:
-                              Style.montserratRegular(
-                                  fontSize: 8,
-                                  color: Colors.black),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
                 ),
-              ),
-            ),
                 Dimens.d50.spaceHeight,
-            ],
+              ],
             ),
           ],
         ),
       ),
     );
   }
-  Widget customDivider(){
-    return    Container(margin: const EdgeInsets.symmetric(horizontal: Dimens.d20),
+
+  Widget customDivider() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: Dimens.d20),
       color: ColorConstant.themeColor.withOpacity(0.2),
-      height: 1,width: double.infinity,);
+      height: 1,
+      width: double.infinity,
+    );
   }
 
-  Widget topView(){
-    return Stack(alignment: Alignment.bottomCenter,
+  Widget topView() {
+    return Stack(
+      alignment: Alignment.bottomCenter,
       children: [
         SizedBox(
           height: Dimens.d300,
@@ -384,19 +363,14 @@ class _HomeScreenState extends State<HomeScreen>  with TickerProviderStateMixin,
             },
           ),
         ),
-        Stack(alignment: Alignment.bottomCenter,
+        Stack(
+          alignment: Alignment.bottomCenter,
           children: [
-            Column(
-              children: [
-                CustomPaint(
-                  painter: BgOvalCustomPainterLogin(),
-                  size: Size(double.infinity, Dimens.d43.h),
-                ),
-                Container(height: 100,
-                  color: ColorConstant.themeColor,)
-              ],
+            Image.asset(
+              ImageConstant.imgTransformSemi,
+              fit: BoxFit.cover,
+              color: ColorConstant.themeColor.withOpacity(0.5),
             ),
-
             Positioned(
               left: Dimens.d50,
               right: Dimens.d50,
@@ -408,17 +382,17 @@ class _HomeScreenState extends State<HomeScreen>  with TickerProviderStateMixin,
                   textAlign: TextAlign.center,
                   wrapWords: false,
                   maxLines: 4,
-                  style: Style.cormorantGaramondMedium(
-                      fontSize: Dimens.d60),
+                  style: Style.cormorantGaramondMedium(fontSize: Dimens.d60),
                 ),
               ),
             )
           ],
         ),
-      ],);
+      ],
+    );
   }
 
-  Widget trendingView(){
+  Widget trendingView() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -428,13 +402,9 @@ class _HomeScreenState extends State<HomeScreen>  with TickerProviderStateMixin,
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children:
-            List.generate(10, (index) {
+            children: List.generate(10, (index) {
               return GestureDetector(
-                  onTap: () {
-
-
-                  },
+                  onTap: () {},
                   child: const Padding(
                     padding: EdgeInsets.only(right: 20.0),
                     child: BookmarkListTile(),
@@ -447,153 +417,112 @@ class _HomeScreenState extends State<HomeScreen>  with TickerProviderStateMixin,
     );
   }
 
-  Widget recommendationsView(){
-    return        Padding(
-      padding: const EdgeInsets.symmetric(
-          horizontal: Dimens.d20),
+  Widget recommendationsView() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
       child: ListView.builder(
         shrinkWrap: true,
         padding: EdgeInsets.zero,
-        physics:
-        const NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         //itemCount:yourDailyRecommendations.length,
-        itemCount:5,
+        itemCount: 5,
 
         itemBuilder: (context, index) {
           return InkWell(
-            onTap: () {
-
-            },
+            onTap: () {},
             child: Container(
               height: Dimens.d100.h,
               width: double.infinity,
-              padding:
-              const EdgeInsets.symmetric(
-                  vertical: 10,
-                  horizontal: 10),
-              margin:
-              const EdgeInsets.symmetric(
-                  vertical: 10),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              margin: const EdgeInsets.symmetric(vertical: 10),
               decoration: BoxDecoration(
-                borderRadius:
-                BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(15),
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black
-                        .withOpacity(0.1),
-                    offset:
-                    const Offset(0, 0),
+                    color: Colors.black.withOpacity(0.1),
+                    offset: const Offset(0, 0),
                     // Specify the offset of the shadow
                     blurRadius: 4,
                     // Specify the blur radius
-                    spreadRadius:
-                    0, // Specify the spread radius
+                    spreadRadius: 0, // Specify the spread radius
                   ),
                 ],
               ),
               child: Row(children: [
                 Stack(
-                  alignment:
-                  Alignment.topRight,
+                  alignment: Alignment.topRight,
                   children: [
                     CachedNetworkImage(
                       height: Dimens.d80.h,
                       width: Dimens.d80,
-                      imageUrl:"https://picsum.photos/250?image=9",
-                      imageBuilder: (context,
-                          imageProvider) =>
-                          Container(
-                            decoration:
-                            BoxDecoration(
-                              shape: BoxShape
-                                  .rectangle,
-                              borderRadius:
-                              BorderRadius
-                                  .circular(
-                                10.0,
-                              ),
-                              image:
-                              DecorationImage(
-                                image:
-                                imageProvider,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
+                      imageUrl: "https://picsum.photos/250?image=9",
+                      imageBuilder: (context, imageProvider) => Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.circular(
+                            10.0,
                           ),
-                      placeholder:
-                          (context, url) =>
-                          PlaceHolderCNI(
-                            height: Dimens.d80.h,
-                            width: Dimens.d80,
-                            borderRadius: 10.0,
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
                           ),
-                      errorWidget: (context,
-                          url, error) =>
-                          PlaceHolderCNI(
-                            height: Dimens.d80.h,
-                            width: Dimens.d80,
-                            isShowLoader: false,
-                            borderRadius: 8.0,
-                          ),
+                        ),
+                      ),
+                      placeholder: (context, url) => PlaceHolderCNI(
+                        height: Dimens.d80.h,
+                        width: Dimens.d80,
+                        borderRadius: 10.0,
+                      ),
+                      errorWidget: (context, url, error) => PlaceHolderCNI(
+                        height: Dimens.d80.h,
+                        width: Dimens.d80,
+                        isShowLoader: false,
+                        borderRadius: 8.0,
+                      ),
                     ),
                     Container(
-                      margin:
-                      const EdgeInsets
-                          .all(6.0),
+                      margin: const EdgeInsets.all(6.0),
                       height: 10,
                       width: 10,
                       decoration: const BoxDecoration(
-                          color: Colors
-                              .black,
-                          shape: BoxShape
-                              .circle),
+                          color: Colors.black, shape: BoxShape.circle),
                       child: Center(
-                          child: Image
-                              .asset(
-                            ImageConstant.lockHome,
-                            height: 5,
-                            width: 5,
-                          )),
+                          child: Image.asset(
+                        ImageConstant.lockHome,
+                        height: 5,
+                        width: 5,
+                      )),
                     )
-
                   ],
                 ),
                 Dimens.d25.spaceWidth,
                 Column(
-                  crossAxisAlignment:
-                  CrossAxisAlignment
-                      .start,
-                  mainAxisAlignment:
-                  MainAxisAlignment
-                      .center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       "Meditation Min",
-                      style: Style
-                          .montserratRegular(
-                          fontSize: 8,
-                          color: Colors
-                              .black),
+                      style: Style.montserratRegular(
+                          fontSize: 8, color: Colors.black),
                     ),
                     Dimens.d7.spaceHeight,
                     SizedBox(
                       width: Dimens.d200,
-                      child: Text("cormorant Medium",
+                      child: Text(
+                        "cormorant Medium",
                         maxLines: 2,
-                        style: Style
-                            .montserratRegular(
+                        style: Style.montserratRegular(
                           fontSize: 15,
                           color: Colors.black,
                         ),
                       ),
                     ),
                     Dimens.d7.spaceHeight,
-                    Text("Ravi Khunt",
+                    Text(
+                      "Ravi Khunt",
                       style: Style.montserratRegular(
-                          fontSize: 8,
-                          color: Colors
-                              .black),
+                          fontSize: 8, color: Colors.black),
                     ),
                   ],
                 )
@@ -604,6 +533,4 @@ class _HomeScreenState extends State<HomeScreen>  with TickerProviderStateMixin,
       ),
     );
   }
-
-
 }

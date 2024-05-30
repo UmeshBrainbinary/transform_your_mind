@@ -86,6 +86,5 @@ class CleanseButton extends StatelessWidget {
 
   void _onAddNew(BuildContext context) {
     Get.toNamed(AppRoutes.todayCleanseScreen);
-
   }
 }

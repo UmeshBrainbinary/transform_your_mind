@@ -70,7 +70,7 @@ class _CustomAppBarState extends State<CustomAppBar>
   }
 
   Widget _getLeading() {
-    return InkWell(
+    return widget.showBack!?InkWell(
       onTap: widget.onTap ??
           () {
             Get.back();
@@ -94,7 +94,7 @@ class _CustomAppBarState extends State<CustomAppBar>
         ),
         child: Center(child: Image.asset(ImageConstant.backArrow, height: 25.h,width: 25.h,)),
       ),
-    );
+    ):const SizedBox();
   }
 
   Widget _getAction() {

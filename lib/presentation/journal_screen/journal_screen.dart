@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:transform_your_mind/core/common_widget/common_gradiant_container.dart';
+import 'package:transform_your_mind/core/common_widget/screen_info_widget.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/presentation/explore_screen/widget/home_app_bar.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 
@@ -17,23 +19,23 @@ class JournalScreen extends StatefulWidget {
   State<JournalScreen> createState() => _JournalScreenState();
 }
 
-class _JournalScreenState extends State<JournalScreen>    with SingleTickerProviderStateMixin {
+class _JournalScreenState extends State<JournalScreen>
+    with SingleTickerProviderStateMixin {
   List<JournalData> journalList = [
     JournalData(
-      title:"Gratitude",
+      title: "Gratitude",
       lottie: ImageConstant.lottieSquare,
       route: AppRoutes.myGratitudePage,
     ),
     JournalData(
-        title: "Affirmation",
-        lottie: ImageConstant.lottieCircle,
+      title: "Affirmation",
+      lottie: ImageConstant.lottieCircle,
       route: AppRoutes.myAffirmationPage,
     ),
- 
     JournalData(
-      title:"Daily Journal",
+      title: "Daily Journal",
       lottie: ImageConstant.lottieStarOcean,
-      route: AppRoutes.myAffirmationPage,
+      route: AppRoutes.myNotesPage,
     ),
   ];
   ValueNotifier<bool> isTutorialVideoVisible = ValueNotifier(false);
@@ -41,6 +43,7 @@ class _JournalScreenState extends State<JournalScreen>    with SingleTickerProvi
   late AnimationController _controller;
   ScrollController scrollController = ScrollController();
   bool _isScrollingOrNot = false;
+  bool info = false;
 
   @override
   void initState() {
@@ -50,23 +53,23 @@ class _JournalScreenState extends State<JournalScreen>    with SingleTickerProvi
       vsync: this,
       duration: const Duration(milliseconds: 200),
     );
-
-
-
   }
+
   bool ratingView = false;
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
 
-  int initialRating=0;
+  int initialRating = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-backgroundColor: Colors.white,
-        body:SafeArea(
+        backgroundColor: Colors.white,
+        body: SafeArea(
           child: Stack(
             children: [
               Padding(
@@ -82,7 +85,7 @@ backgroundColor: Colors.white,
                       title: "",
                       downloadShown: false,
                       downloadWidget: const SizedBox(),
-                      isInfo: true ,
+                      isInfo: true,
                       onRatingTap: () {
                         setState(() {
                           if (ratingView == true) {
@@ -95,10 +98,15 @@ backgroundColor: Colors.white,
                       showMeIcon: false,
                       onInfoTap: () {
                         setState(() {
+                          if (info == false) {
+                            info = true;
+                          } else {
+                            info = false;
+                          }
                           ratingView = false;
                         });
                         isTutorialVideoVisible.value =
-                        !isTutorialVideoVisible.value;
+                            !isTutorialVideoVisible.value;
                         if (isTutorialVideoVisible.value) {
                           _controller.forward();
                         } else {
@@ -108,15 +116,15 @@ backgroundColor: Colors.white,
                       },
                     ),
                     Dimens.d30.spaceHeight,
-                  //  welcomeTextTitle(title: "Welcome ${i10n.selfDevelopment}"),
-                  //  welcomeTextDescriptionTitle(title: i10n.welcomeSelfDesc),
+                    //  welcomeTextTitle(title: "Welcome ${i10n.selfDevelopment}"),
+                    //  welcomeTextDescriptionTitle(title: i10n.welcomeSelfDesc),
                     NotificationListener<ScrollNotification>(
                       onNotification: (ScrollNotification scrollInfo) {
                         if (scrollInfo is UserScrollNotification) {
                           setState(() {
                             _isScrollingOrNot = true;
                             if (scrollController.offset <=
-                                scrollController.position.minScrollExtent &&
+                                    scrollController.position.minScrollExtent &&
                                 !scrollController.position.outOfRange) {
                               setState(() {
                                 _isScrollingOrNot = false;
@@ -132,8 +140,8 @@ backgroundColor: Colors.white,
                           children: [
                             ValueListenableBuilder(
                                 valueListenable: isTutorialVideoVisible,
-                                builder:
-                                    (BuildContext context, value, Widget? child) {
+                                builder: (BuildContext context, value,
+                                    Widget? child) {
                                   return Column(
                                     children: [
                                       Expanded(
@@ -148,16 +156,17 @@ backgroundColor: Colors.white,
                                             left: Dimens.d5,
                                             right: Dimens.d5,
                                           ),
-                                          physics: const ClampingScrollPhysics(),
+                                          physics:
+                                              const ClampingScrollPhysics(),
                                           gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                              SliverGridDelegateWithFixedCrossAxisCount(
                                             crossAxisCount: Dimens.d2.toInt(),
                                             crossAxisSpacing: Dimens.d20,
                                             mainAxisSpacing: Dimens.d20,
                                             mainAxisExtent: 210,
                                           ),
-                                          itemBuilder:
-                                              (BuildContext context, int index) {
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
                                             return GestureDetector(
                                               onTap: () {
                                                 Navigator.pushNamed(
@@ -171,16 +180,20 @@ backgroundColor: Colors.white,
                                                   Expanded(
                                                     child: Container(
                                                       padding:
-                                                      Dimens.d12.paddingAll,
-                                                      alignment: Alignment.center,
+                                                          Dimens.d12.paddingAll,
+                                                      alignment:
+                                                          Alignment.center,
                                                       decoration: BoxDecoration(
                                                         color: Colors.white,
-                                                        borderRadius:
-                                                        Dimens.d19.radiusAll,
-                                                        boxShadow:  [
+                                                        borderRadius: Dimens
+                                                            .d19.radiusAll,
+                                                        boxShadow: [
                                                           BoxShadow(
-                                                            color: Colors.black.withOpacity(0.1),
-                                                            blurRadius: Dimens.d8,
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.1),
+                                                            blurRadius:
+                                                                Dimens.d8,
                                                           )
                                                         ],
                                                       ),
@@ -194,8 +207,8 @@ backgroundColor: Colors.white,
                                                   Dimens.d12.spaceHeight,
                                                   Text(
                                                     journalList[index].title,
-                                                    style:
-                                                    Style.montserratRegular(),
+                                                    style: Style
+                                                        .montserratRegular(),
                                                   )
                                                 ],
                                               ),
@@ -208,7 +221,7 @@ backgroundColor: Colors.white,
                                 }),
                             (_isScrollingOrNot)
                                 ? commonGradiantContainer(
-                                color: Colors.white, h: 30)
+                                    color: Colors.white, h: 30)
                                 : const SizedBox()
                           ],
                         ),
@@ -217,7 +230,26 @@ backgroundColor: Colors.white,
                   ],
                 ),
               ),
-            /*  ratingView
+              info
+                  ? Padding(
+                      padding: EdgeInsets.only(top: Dimens.d110.h),
+                      child: SizedBox(
+                        child: ScreenInfoWidget(
+                          controller: _controller,
+                          isTutorialVideoVisible: isTutorialVideoVisible,
+                          screenTitle: "Welcome To Journal",
+                          screenHeading:
+                              "Use this self reflection fetaure to pratice the art of gratitude, clear unwanted fellings from your life, set goals and help you feel more clam and contect." ??
+                                  '',
+                          screenDesc:
+                              "Use this self reflection fetaure to pratice the art of gratitude," ??
+                                  '',
+                          onVideoViewTap: () {},
+                        ),
+                      ),
+                    )
+                  : const SizedBox(),
+              /*  ratingView
                   ? Padding(
                 padding: EdgeInsets.only(top: Dimens.d110),
                 child: AddRatingsView(
@@ -262,11 +294,9 @@ backgroundColor: Colors.white,
                   : const SizedBox(),*/
             ],
           ),
-        )
-    );
+        ));
   }
 }
-
 
 class JournalData {
   final String lottie;

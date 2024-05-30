@@ -4,4 +4,5 @@ class PrefKey{
   static const String email = "email";
   static const String password = "password";
   static const String isLoginOrRegister = "isLoginOrRegister";
+  static const String firstTimeRegister = "firstTimeRegister";
 }
