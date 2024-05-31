@@ -40,13 +40,13 @@ class _MeScreenState extends State<MeScreen> {
     final hour = now.hour;
 
     if (hour >= 0 && hour < 12) {
-      return 'Good morning';
+      return 'goodMorning'.tr;
     } else if (hour >= 12 && hour < 17) {
-      return 'Good afternoon';
+      return 'goodAfternoon'.tr;
     } else if (hour >= 17 && hour < 21) {
-      return 'Good evening';
+      return 'goodEvening'.tr;
     } else {
-      return 'Good night';
+      return 'goodNight'.tr;
     }
   }
 

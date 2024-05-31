@@ -69,7 +69,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
       resizeToAvoidBottomInset: true,
       appBar: CustomAppBar(
         showBack: widget.registerUser!?false:true,
-        title: "Add Gratitude",
+        title: "addGratitude".tr,
      /*   title: widget.gratitudeData != null
             ? i10n.editGratitude
             : i10n.addGratitude,*/
@@ -83,7 +83,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                           context, AddGoalsPage.addGoals, (route) => false,
                           arguments: {AppConstants.isFromMyGoals: false});*/
                     },
-                    child:  Text("Skip", style: Style.montserratRegular(),)),
+                    child:  Text("skip".tr, style: Style.montserratRegular(),)),
                 Dimens.d20.spaceWidth,
               ])
             :widget.registerUser!?  GestureDetector(
@@ -99,7 +99,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
             },
             child:  Padding(
               padding: const EdgeInsets.only(right: 20),
-              child: Text("Skip",style:Style.montserratRegular(
+              child: Text("skip".tr,style:Style.montserratRegular(
               fontSize: Dimens.d15,
 
               ),),
@@ -166,8 +166,8 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                           ),
                           Dimens.d20.spaceHeight,
                           CommonTextField(
-                            hintText: "Enter Title",
-                            labelText: "Title",
+                            hintText: "enterTitle".tr,
+                            labelText: "title".tr,
                             controller: titleController,
                             focusNode: titleFocus,
                             nextFocusNode: descFocus,
@@ -179,8 +179,8 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                           ),
                           Dimens.d16.spaceHeight,
                           CommonTextField(
-                            hintText: "Enter Description",
-                            labelText: "Description",
+                            hintText: "enterDescription".tr,
+                            labelText: "description".tr,
                             controller: descController,
                             focusNode: descFocus,
                             transform:
@@ -213,16 +213,16 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                     children: [
                       Expanded(
                         child: CommonElevatedButton(
-                          title:"Draft",
+                          title:"draft".tr,
                           outLined: true,
                           textStyle: Style.montserratRegular(
                               color: ColorConstant.textDarkBlue),
                           onTap: () async {
                             if (titleController.text.trim().isEmpty) {
-                              showSnackBarError(context, "Empty Title");
+                              showSnackBarError(context, "emptyTitle".tr);
                             } else if (descController.text.trim().isEmpty) {
                               showSnackBarError(
-                                  context, "Empty Description");
+                                  context, "emptyDescription".tr);
                             } else {
                               gratitudeDraftList.add({
                                 "title":titleController.text,
@@ -259,13 +259,13 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                       Dimens.d20.spaceWidth,
                       Expanded(
                         child: CommonElevatedButton(
-                          title: "Save",
+                          title: "save".tr,
                           onTap: () async {
                             if (titleController.text.trim().isEmpty) {
-                              showSnackBarError(context, "Empty Title");
+                              showSnackBarError(context, "emptyTitle".tr);
                             } else if (descController.text.trim().isEmpty) {
                               showSnackBarError(
-                                  context, "Empty Description");
+                                  context, "emptyDescription".tr);
                             } else {
                               gratitudeList.add({
                                 "title":titleController.text,

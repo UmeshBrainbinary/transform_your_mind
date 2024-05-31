@@ -8,7 +8,7 @@ class AppTranslations extends Translations {
   static Future<void> loadTranslations() async {
     translations = {
       'en_US': await _loadTranslationFile('assets/lang/en_Us.json'),
-      'de_DE': await _loadTranslationFile('assets/lang/de_DE.json'),
+      'de_DE': await _loadTranslationFile('assets/lang/de_De.json'),
     };
   }
 

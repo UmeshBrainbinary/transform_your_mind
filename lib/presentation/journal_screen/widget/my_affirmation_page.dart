@@ -40,7 +40,6 @@ List affirmationDraftList = [];
 
 class MyAffirmationPage extends StatefulWidget {
   const MyAffirmationPage({Key? key}) : super(key: key);
-  static const myAffirmation = '/myAffirmation';
 
   @override
   State<MyAffirmationPage> createState() => _MyAffirmationPageState();
@@ -210,7 +209,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
     return Scaffold(
       //backgroundColor: themeController.isDarkMode.value ? ColorConstant.black : ColorConstant.backGround,
       appBar: CustomAppBar(showBack: true,
-        title: "My Affirmation".tr,
+        title: "myAffirmation".tr,
         action: (_isLoading || _isLoadingDraft)
             ? const Offstage()
             : LottieIconButton(
@@ -245,7 +244,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                     isScrollable: true,
                     listOfItems: [
                       TabText(
-                        text: "Your Affirmation",
+                        text: "yourAffirmation".tr,
                         value: Dimens.d0,
                         selectedIndex: _currentTabIndex.toDouble(),
                         padding: Dimens.d15.paddingAll,
@@ -253,7 +252,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                         fontSize: Dimens.d14,
                       ),
                       TabText(
-                        text: "Affirmations",
+                        text: "affirmations".tr,
                         value: Dimens.d1,
                         selectedIndex: _currentTabIndex.toDouble(),
                         padding: Dimens.d15.paddingAll,
@@ -308,7 +307,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
             Align(
               alignment: Alignment.topLeft,
               child: Text(
-                "My Affirmation".tr,
+                "myAffirmation".tr,
                 style: Style.montserratRegular(
                   fontSize: Dimens.d18,
                 ).copyWith(
@@ -531,7 +530,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Drafts",
+                      "drafts".tr,
                       style: Style.montserratRegular(
                         fontSize: Dimens.d18,
                       ).copyWith(
@@ -730,7 +729,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
               children: [
                 Dimens.d10.spaceHeight,
                 AutoSizeText(
-                  "Affirmation Header",
+                  "affirmationHeader".tr,
                   textAlign: TextAlign.center,
                   style: Style.montserratRegular(
                     fontSize: 16.0,
@@ -740,7 +739,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                 ),
                 Dimens.d20.spaceHeight,
                 CommonTextField(
-                  hintText: "Enter Your Own Affirmation",
+                  hintText: "enterYourOwnAffirmation".tr,
                   controller: _userAffirmationController,
                   focusNode: _userAffirmationFocus,
                   textInputAction: TextInputAction.done,
@@ -750,7 +749,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                     children: [
                       Expanded(
                         child: CommonElevatedButton(
-                          title: "Draft",
+                          title: "draft".tr,
                           outLined: true,
                           textStyle: Style.montserratRegular(
                               color: ColorConstant.textDarkBlue),
@@ -760,7 +759,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                       Dimens.d20.spaceWidth,
                       Expanded(
                         child: CommonElevatedButton(
-                          title: "Save".tr,
+                          title: "save".tr,
                           onTap: () => addUserAffirmation(),
                         ),
                       ),
@@ -976,7 +975,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
 
   void addUserAffirmation({bool isSave = true}) {
     if (_userAffirmationController.text.trim().isEmpty) {
-      showSnackBarError(context, "PleaseEnterYourOwnAffirmation".tr);
+      showSnackBarError(context, "pleaseEnterYourOwnAffirmation".tr);
       return;
     }
     /* _affirmationBloc.add(
@@ -1058,7 +1057,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
     bool isSaved = false,
   }) {
     if (affirmationTitle.trim().isEmpty) {
-      showSnackBarError(context, "PleaseEnterYourOwnAffirmation".tr);
+      showSnackBarError(context, "pleaseEnterYourOwnAffirmation".tr);
       return;
     }
     /*_affirmationBloc.add(
