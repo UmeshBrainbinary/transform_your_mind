@@ -14,9 +14,9 @@ class ThemeController extends GetxController {
 
     isDarkMode.value = PrefService.getBool(PrefKey.isDarkTheme);
 
-    switchTheme();
-
   }
+
+
 
   Future<void> saveThemeToBox(bool isDarkMode) async{
     await PrefService.setValue(PrefKey.isDarkTheme, isDarkMode);

@@ -71,64 +71,65 @@ class SettingScreen extends StatelessWidget {
                            padding: EdgeInsets.zero,
                            itemBuilder: (context, index) {
                              var data = settingController.settingsData[index];
-                             return index == 1
-
-                                 ?  Container(
-                               margin: const EdgeInsets.symmetric(horizontal: 1.2),
-                               decoration: BoxDecoration(
-                                   color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.white,
-                                   borderRadius: BorderRadius.circular(50),
-                                   boxShadow: [
-                                     BoxShadow(
-                                         color: ColorConstant.grey.withOpacity(0.1),
-                                         blurRadius: 5,spreadRadius: 1
-                                     )
-                                   ]
-                               ),
-                               padding: const EdgeInsets.symmetric(
-                                 horizontal: Dimens.d10,
-                                 vertical: Dimens.d10,
-                               ),
-                               child: Row(
-                                 mainAxisSize: MainAxisSize.min,
-                                 children: [
-
-                                   Container(
-                                     height: Dimens.d50.h,
-                                     width: Dimens.d50,
-                                     padding: const EdgeInsets.all(10),
-                                     decoration: BoxDecoration(
-                                       color: ColorConstant.themeColor,
-                                       shape: BoxShape.circle,),
-                                     child: SvgPicture.asset(
-                                       ImageConstant.settingsPersonalization,
-                                       color: ColorConstant.white,
-                                     ),
-                                   ),
-                                   Dimens.d12.spaceWidth,
-                                   Text(
-                                     "theme".tr,
-                                     style: Style.montserratMedium().copyWith(
-                                       letterSpacing: Dimens.d0_16,
-                                     ),
-                                   ),
-                                   Spacer(),
-                                   CustomSwitch(
-                                     value: themeController.isDarkMode.value,
-                                     onChanged: (value) async{
-                                       themeController.switchTheme();
-                                       Get.forceAppUpdate();
-                                     },
-                                     width: 50.0,
-                                     height: 25.0,
-                                     activeColor: ColorConstant.themeColor,
-                                     inactiveColor: ColorConstant.backGround,
-                                   ),
-
-                                 ],
-                               ),
-                             )
-                               : SettingListItem(
+                             return
+                             //   index == 1
+                             //     ?  Container(
+                             //   margin: const EdgeInsets.symmetric(horizontal: 1.2),
+                             //   decoration: BoxDecoration(
+                             //       color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.white,
+                             //       borderRadius: BorderRadius.circular(50),
+                             //       boxShadow: [
+                             //         BoxShadow(
+                             //             color: ColorConstant.grey.withOpacity(0.1),
+                             //             blurRadius: 5,spreadRadius: 1
+                             //         )
+                             //       ]
+                             //   ),
+                             //   padding: const EdgeInsets.symmetric(
+                             //     horizontal: Dimens.d10,
+                             //     vertical: Dimens.d10,
+                             //   ),
+                             //   child: Row(
+                             //     mainAxisSize: MainAxisSize.min,
+                             //     children: [
+                             //
+                             //       Container(
+                             //         height: Dimens.d50.h,
+                             //         width: Dimens.d50,
+                             //         padding: const EdgeInsets.all(10),
+                             //         decoration: BoxDecoration(
+                             //           color: ColorConstant.themeColor,
+                             //           shape: BoxShape.circle,),
+                             //         child: SvgPicture.asset(
+                             //           ImageConstant.settingsPersonalization,
+                             //           color: ColorConstant.white,
+                             //         ),
+                             //       ),
+                             //       Dimens.d12.spaceWidth,
+                             //       Text(
+                             //         "theme".tr,
+                             //         style: Style.montserratMedium().copyWith(
+                             //           letterSpacing: Dimens.d0_16,
+                             //         ),
+                             //       ),
+                             //       Spacer(),
+                             //       CustomSwitch(
+                             //         value: themeController.isDarkMode.value,
+                             //         onChanged: (value) async{
+                             //           themeController.switchTheme();
+                             //           Get.forceAppUpdate();
+                             //         },
+                             //         width: 50.0,
+                             //         height: 25.0,
+                             //         activeColor: ColorConstant.themeColor,
+                             //         inactiveColor: ColorConstant.backGround,
+                             //       ),
+                             //
+                             //     ],
+                             //   ),
+                             // )
+                             //   :
+                             SettingListItem(
                                isSettings: true,
                                prefixIcon: data.prefixIcon,
                                title: data.title,
@@ -137,9 +138,8 @@ class SettingScreen extends StatelessWidget {
                                   if(index==0){
                                     Get.toNamed(AppRoutes.notificationSetting);
                                   } else if(index==1){
-                                    //Get.toNamed(AppRoutes.accountScreen);
-                                  }
-                                  else if(index==2){
+                                    Get.toNamed(AppRoutes.personalisationsScreen);
+                                  } else if(index==2){
                                    Get.toNamed(AppRoutes.accountScreen);
                                  }
                                },
