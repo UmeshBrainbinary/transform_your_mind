@@ -22,7 +22,7 @@ class FontFamily {
 class Style {
 
   static TextStyle montserratBold({
-    Color color = ColorConstant.black,
+    Color? color ,
     FontWeight fontWeight = FontWeight.w700,
     FontStyle fontStyle = FontStyle.normal,
     double? fontSize,
@@ -39,7 +39,7 @@ class Style {
   }
 
   static TextStyle montserratMedium({
-    Color color = ColorConstant.black,
+    Color? color ,
     FontWeight fontWeight = FontWeight.w600,
     FontStyle fontStyle = FontStyle.normal,
     double? fontSize,
@@ -57,7 +57,7 @@ class Style {
 
 
   static TextStyle montserratRegular({
-    Color color = ColorConstant.black,
+    Color? color,
     FontWeight fontWeight = FontWeight.w400,
     FontStyle fontStyle = FontStyle.normal,
     double? fontSize,
@@ -74,7 +74,7 @@ class Style {
   }
 
   static TextStyle montserratSemiBold({
-    Color color = ColorConstant.black,
+    Color? color,
     FontWeight fontWeight = FontWeight.w900,
     FontStyle fontStyle = FontStyle.normal,
     double? fontSize,
@@ -93,7 +93,7 @@ class Style {
   ///---------------
 
   static TextStyle cormorantGaramondBold({
-    Color color = ColorConstant.black,
+    Color? color,
     FontWeight fontWeight = FontWeight.bold,
     FontStyle fontStyle = FontStyle.normal,
     double? fontSize,
@@ -110,7 +110,7 @@ class Style {
   }
 
   static TextStyle cormorantGaramondMedium({
-    Color color = ColorConstant.black,
+    Color? color,
     FontWeight fontWeight = FontWeight.w500,
     FontStyle fontStyle = FontStyle.normal,
     double? fontSize,
@@ -128,7 +128,7 @@ class Style {
 
 
   static TextStyle cormorantGaramondRegular({
-    Color color = ColorConstant.black,
+    Color? color,
     FontWeight fontWeight = FontWeight.w400,
     FontStyle fontStyle = FontStyle.normal,
     double? fontSize,
@@ -145,7 +145,7 @@ class Style {
   }
 
   static TextStyle cormorantGaramondSemiBold({
-    Color color = ColorConstant.black,
+    Color? color,
     FontWeight fontWeight = FontWeight.w600,
     FontStyle fontStyle = FontStyle.normal,
     double? fontSize,

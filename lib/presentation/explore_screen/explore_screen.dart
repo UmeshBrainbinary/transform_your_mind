@@ -54,7 +54,7 @@ class _ExploreScreenState extends State<ExploreScreen>
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: ColorConstant.white,
+
         floatingActionButton: ValueListenableBuilder(
           valueListenable: showScrollTop,
           builder: (context, value, child) {
@@ -235,7 +235,7 @@ class _ExploreScreenState extends State<ExploreScreen>
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: ColorConstant.white,
+
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(

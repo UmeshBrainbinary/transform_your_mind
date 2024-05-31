@@ -80,7 +80,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> with TickerProvider
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorConstant.white,
+
       body: SafeArea(
         child: Stack(
           children: [

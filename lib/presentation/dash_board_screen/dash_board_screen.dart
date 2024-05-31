@@ -148,7 +148,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               ),
             ),
           ),
-          backgroundColor: ColorConstant.white,
+
           body: Column(
             children: [
               Expanded(

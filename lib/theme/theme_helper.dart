@@ -15,7 +15,7 @@ class AppTheme {
     // ),
 
 
-    scaffoldBackgroundColor: ColorConstant.backGround,
+    scaffoldBackgroundColor: ColorConstant.white,
     textTheme: TextTheme(
       displayLarge: TextStyle(color: ColorConstant.black),
     ),

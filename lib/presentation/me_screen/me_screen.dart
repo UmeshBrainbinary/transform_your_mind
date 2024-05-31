@@ -84,7 +84,6 @@ class _MeScreenState extends State<MeScreen> {
             ],
           ),
         ),
-        backgroundColor: ColorConstant.white,
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(
