@@ -61,6 +61,7 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
     return Scaffold(
       backgroundColor: ColorConstant.backGround,
       appBar: CustomAppBar(
+
           title: "setYourReminders".tr,
       ),
       body: Padding(

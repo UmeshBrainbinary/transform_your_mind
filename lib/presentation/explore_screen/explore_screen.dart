@@ -124,6 +124,8 @@ class _ExploreScreenState extends State<ExploreScreen>
                         children: [
                           Dimens.d30.h.spaceHeight,
                           HomeAppBar(
+                            onInfoTap: (){},
+                            isInfo: false,
                             back: false,
                             title: "explore".tr,
                           ),

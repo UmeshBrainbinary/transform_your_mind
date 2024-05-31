@@ -21,7 +21,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
     Key? key,
     required this.title,
     this.centerTitle = true,
-    this.showBack = false,
+    this.showBack = true,
     this.titleStyle,
     this.onTap,
     this.leading,
