@@ -25,17 +25,17 @@ class _JournalScreenState extends State<JournalScreen>
     with SingleTickerProviderStateMixin {
   List<JournalData> journalList = [
     JournalData(
-      title: "Gratitude",
+      title: "gratitude".tr,
       lottie: ImageConstant.lottieSquare,
       route: AppRoutes.myGratitudePage,
     ),
     JournalData(
-      title: "Affirmation",
+      title: "affirmation".tr,
       lottie: ImageConstant.lottieCircle,
       route: AppRoutes.myAffirmationPage,
     ),
     JournalData(
-      title: "Daily Journal",
+      title: "dailyJournal".tr,
       lottie: ImageConstant.lottieStarOcean,
       route: AppRoutes.myNotesPage,
     ),
@@ -244,7 +244,7 @@ class _JournalScreenState extends State<JournalScreen>
                           controller: _controller,
                           info: info,
                           isTutorialVideoVisible: isTutorialVideoVisible,
-                          screenTitle: "Welcome To Journal",
+                          screenTitle: "welcomeToJournal".tr,
                           screenHeading:
                               "Use this self reflection fetaure to pratice the art of gratitude, clear unwanted fellings from your life, set goals and help you feel more clam and contect." ??
                                   '',

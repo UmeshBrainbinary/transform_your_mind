@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
@@ -107,7 +108,7 @@ class _TodayCleanseScreenState extends State<TodayCleanseScreen> {
                               valueListenable: imageFile,
                               builder: (context, value, child) {
                                 return AddGratitudeImageWidget(
-                                  title: "Add Image",
+                                  title: "addImage".tr,
                                   onTap: () async {
                                     await showImagePickerActionSheet(context)
                                         ?.then((value) async {
@@ -135,8 +136,8 @@ class _TodayCleanseScreenState extends State<TodayCleanseScreen> {
                             ),
                             Dimens.d20.spaceHeight,
                             CommonTextField(
-                              hintText:"Enter Title",
-                              labelText: "Title",
+                              hintText:"enterTitle".tr,
+                              labelText: "title".tr,
                               controller: titleController,
                               focusNode: titleFocus,
                               nextFocusNode: descFocus,
@@ -148,8 +149,8 @@ class _TodayCleanseScreenState extends State<TodayCleanseScreen> {
                             ),
                             Dimens.d16.spaceHeight,
                             CommonTextField(
-                              hintText: "Enter Description",
-                              labelText: "Description",
+                              hintText: "enterDescription".tr,
+                              labelText: "description".tr,
                               controller: descController,
                               focusNode: descFocus,
                               transform:
@@ -179,7 +180,7 @@ class _TodayCleanseScreenState extends State<TodayCleanseScreen> {
                       children: [
                         Expanded(
                           child: CommonElevatedButton(
-                            title:"Draft",
+                            title:"draft".tr,
                             outLined: true,
                             textStyle: Style.montserratRegular(
                               color: ColorConstant.themeColor,
@@ -189,7 +190,7 @@ class _TodayCleanseScreenState extends State<TodayCleanseScreen> {
                         const SizedBox(width: 20,),
                         Expanded(
                           child: CommonElevatedButton(
-                            title: "Save",
+                            title: "save".tr,
                             onTap: () async {
 
                             },

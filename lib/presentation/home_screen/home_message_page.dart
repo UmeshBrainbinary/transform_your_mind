@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:lottie/lottie.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
@@ -18,7 +19,6 @@ import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 
 class HomeMessagePage extends StatefulWidget {
   final bool fromNotification;
-  static const homeMessagePage = 'homeMessagePage';
 
   const HomeMessagePage(
       {Key? key, this.fromNotification = false})
@@ -66,7 +66,7 @@ class _HomeMessagePageState extends State<HomeMessagePage> {
                     padding: EdgeInsets.symmetric(
                         horizontal: 45, vertical: 20.h),
                     child: AutoSizeText(
-                      "Display Name Transform Your Mind",
+                      "displayNameTransformYourMind".tr,
                       textAlign: TextAlign.center,
                       wrapWords: false,
                       maxLines: 6,
@@ -127,7 +127,7 @@ class _HomeMessagePageState extends State<HomeMessagePage> {
                   children: [
                     Expanded(
                       child: CommonElevatedButton(
-                          title: _isBookmarked ? "Remove" : "Save",
+                          title: _isBookmarked ? "remove".tr : "save".tr,
                           outLined: true,
                           textStyle: Style.montserratRegular(
                             fontSize: Dimens.d14,
@@ -165,7 +165,7 @@ class _HomeMessagePageState extends State<HomeMessagePage> {
                     Dimens.d20.spaceWidth,
                     Expanded(
                       child: CommonElevatedButton(
-                        title: "Share",
+                        title: "share".tr,
                         prefixIcon: ImageConstant.icShareWhite,
                         textStyle: Style.montserratRegular(
                           color: Colors.white,

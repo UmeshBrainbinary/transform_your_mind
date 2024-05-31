@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:transform_your_mind/core/utils/date_time.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
@@ -80,7 +81,7 @@ class JournalListTileLayout extends StatelessWidget {
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: "Created On",
+                          text: "createdOn".tr,
                           style: Style.montserratRegular(fontSize: Dimens.d14),
                         ),
                         const WidgetSpan(
@@ -182,7 +183,7 @@ class JournalDraftListTileLayout extends StatelessWidget {
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: "Created On",
+                          text: "createdOn".tr,
                           style: Style.montserratRegular(fontSize: Dimens.d14),
                         ),
                         const WidgetSpan(

@@ -26,7 +26,6 @@ import 'package:transform_your_mind/widgets/divider.dart';
 
 class AddRitualsPage extends StatefulWidget {
   const AddRitualsPage({Key? key}) : super(key: key);
-  static const addRituals = '/addRituals';
 
   @override
   State<AddRitualsPage> createState() => _AddRitualsPageState();
@@ -64,7 +63,7 @@ class _AddRitualsPageState extends State<AddRitualsPage> {
     return Scaffold(
         backgroundColor: themeController.isDarkMode.value ? ColorConstant.black : ColorConstant.backGround,
       appBar: CustomAppBar(
-          title: "Rituals",
+          title: "rituals".tr,
           action: Row(children: [
             GestureDetector(
                 onTap: () async {
@@ -74,7 +73,7 @@ class _AddRitualsPageState extends State<AddRitualsPage> {
                   Navigator.pushNamedAndRemoveUntil(
                       context, AppRoutes.dashBoardScreen, (route) => false);
                 },
-                child: Text("Skip",style:Style.montserratRegular(
+                child: Text("skip".tr,style:Style.montserratRegular(
                   fontSize: Dimens.d15,
 
                 ),)),
@@ -119,7 +118,7 @@ class _AddRitualsPageState extends State<AddRitualsPage> {
                 Stack(
                   children: [
                     CommonTextField(
-                      hintText: "Search Rituals",
+                      hintText: "searchRituals".tr,
                       controller: searchController,
                       focusNode: searchFocus,
                       prefixLottieIcon: ImageConstant.lottieSearch,
@@ -218,15 +217,15 @@ class _AddRitualsPageState extends State<AddRitualsPage> {
                               );
                             } else if (mode ==
                                 LoadStatus.failed) {
-                              body = const Text(
-                                  "Load Failed! retry!");
+                              body =  Text(
+                                  "loadFailedRetry".tr);
                             } else if (mode ==
                                 LoadStatus.canLoading) {
-                              body = const Text(
-                                  "Release to load more!");
+                              body =  Text(
+                                  "releaseToLoadMore".tr);
                             } else {
                               body =
-                              const Text("No more data!");
+                               Text("noMoreData".tr);
                             }
                             return SizedBox(
                               height: Dimens.d55,
@@ -353,10 +352,10 @@ class _AddRitualsPageState extends State<AddRitualsPage> {
                   Dimens.d20.spaceHeight,
                 if (_listOfShoorahRitualsRequest.isNotEmpty)
                   CommonElevatedButton(
-                    title: "Next",
+                    title: "next".tr,
                     onTap: () {
                       if (addShoorahRitual.isEmpty) {
-                        showSnackBarError(context, "Please select at-least one ritual");
+                        showSnackBarError(context, "pleaseSelectLeastOneRitual".tr);
                       } else {
                     /*    _ritualsBloc.add(AddMyRitualsEvent(
                             addMyRitualsRequest: AddMyRitualsRequest(

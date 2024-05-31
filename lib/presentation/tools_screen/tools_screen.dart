@@ -29,21 +29,21 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
 
   List<Map<String, dynamic>> menuItems = [
     {
-      "title": "Self Development",
+      "title": "selfDevelopment".tr,
       "desc":"Self Development Description",
-      "buttonTitle": "Start Today!",
+      "buttonTitle": "startToday".tr,
       "icon": ImageConstant.journalIcon
     },
     {
-      "title": "transform Pods",
+      "title": "transformPods".tr,
       "desc":"Self Development Description",
-      "buttonTitle": "Listen & Grow!",
+      "buttonTitle": "listenGrow".tr,
       "icon": ImageConstant.transformPodIcon
     },
     {
-      "title": "Rituals",
+      "title": "rituals".tr,
       "desc":"Self Development Description",
-      "buttonTitle": "Begin Today!",
+      "buttonTitle": "beginToday".tr,
       "icon": ImageConstant.ritualIcon
     },
 
@@ -95,7 +95,7 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
                       showMeIcon: false,
                       downloadShown: true,
                       downloadWidget: const SizedBox(),
-                      title: "Tools",
+                      title: "tools".tr,
                       isInfo: true,
                       onInfoTap: () {
                         setState(() {
@@ -126,7 +126,7 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
                         RichText(
                           textAlign: TextAlign.center,
                           text: TextSpan(
-                            text: "Welcome to your\nTransform tool-kit",
+                            text: "welcomeToYourTransform".tr,
                             style: Style.montserratRegular(fontSize: Dimens.d18,color: Colors.black,),
                             children: [
                               TextSpan(
@@ -166,7 +166,7 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
                                   key: ValueKey(menuItems[index]),
                                   onTap: () {
                                     if (menuItems[index]["title"] ==
-                                        "Self Development") {
+                                        "selfDevelopment".tr) {
                                       Navigator.pushNamed(
                                           context, AppRoutes.journalScreen)
                                           .then((value) {
@@ -300,7 +300,7 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
                   info: info,
                   controller: _controller,
                   isTutorialVideoVisible: isTutorialVideoVisible,
-                  screenTitle: "Welcome To Tools",
+                  screenTitle: "welcomeToTools".tr,
                   screenHeading:
                   "Use this self reflection fetaure to pratice the art of gratitude, clear unwanted fellings from your life, set goals and help you feel more clam and contect." ??
                       '',

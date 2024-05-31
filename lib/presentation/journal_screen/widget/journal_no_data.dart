@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:lottie/lottie.dart';
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
 import 'package:transform_your_mind/core/common_widget/message_view.dart';
@@ -29,7 +30,7 @@ class JournalNoDataWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            "GET STARTED",
+            "getStarted".tr,
             style: Style.cormorantGaramondBold(color: ColorConstant.themeColor),
           ),
           Dimens.d20.spaceHeight,
@@ -79,7 +80,7 @@ class CleanseNoData extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "Add Your Cleanse",
+              "addYourCleanse".tr,
               style: Style.montserratRegular(color: Colors.black.withOpacity(0.7),
                   fontSize: Dimens.d19.h),
             ),
@@ -94,7 +95,7 @@ class CleanseNoData extends StatelessWidget {
             ),
             Dimens.d18.h.spaceHeight,
             Text(
-              "Release Cleanse",
+              "releaseCleanse".tr,
               style: Style.montserratRegular( fontSize: Dimens.d14.h,
                 color:  Colors.black.withOpacity(0.7),
               ),

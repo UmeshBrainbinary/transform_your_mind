@@ -45,7 +45,7 @@ class _TodaysGratitudeState extends State<TodaysGratitude> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-         "Today's Gratitude",
+         "today'sGratitude".tr,
           style: Style.montserratRegular(
             fontSize: Dimens.d22
           ),
@@ -80,7 +80,7 @@ class _TodaysGratitudeState extends State<TodaysGratitude> {
                               child: CommonTextField(
                                 controller: titleController,
                                 focusNode: gratitudeFocus,
-                                hintText: "Write Your Gratitude",
+                                hintText: "writeYourGratitude".tr,
                                 textStyle: Style.montserratRegular(
                                     color: Colors.black,
                                     fontSize: Dimens.d14),
@@ -119,7 +119,7 @@ class _TodaysGratitudeState extends State<TodaysGratitude> {
                             ),
                             Dimens.d5.spaceWidth,
                             Text(
-                              "Edit",
+                              "edit".tr,
                               style: Style.montserratRegular(
                                 color: ColorConstant.themeColor,
                                 fontSize: Dimens.d14,
@@ -144,7 +144,7 @@ class _TodaysGratitudeState extends State<TodaysGratitude> {
                             ),
                             Dimens.d5.spaceWidth,
                             Text(
-                             "Add Image",
+                             "addImage".tr,
                               style: Style.montserratRegular(
                                 color:ColorConstant.themeColor,
                                 fontSize: Dimens.d11,
@@ -161,7 +161,7 @@ class _TodaysGratitudeState extends State<TodaysGratitude> {
         ),
         isAddNew
             ? CommonElevatedButton(
-          title: "AddNew",
+          title: "addNew".tr,
           textStyle: Style.montserratRegular(
             color: ColorConstant.white,
             fontSize: Dimens.d14,

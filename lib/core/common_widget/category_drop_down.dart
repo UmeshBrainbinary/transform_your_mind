@@ -99,6 +99,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
@@ -188,7 +189,7 @@ class CategoryDropDown extends StatelessWidget {
               hint: Padding(
                 padding: const EdgeInsets.only(left: 15),
                 child: Text(
-                  "Select Category",
+                  "selectCategory".tr,
                   style: Style.montserratRegular(
                       fontSize: Dimens.d14, color: Colors.white),
                 ),
