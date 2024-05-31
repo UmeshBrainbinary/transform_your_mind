@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:transform_your_mind/core/app_export.dart';
 
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
@@ -69,7 +70,7 @@ class _EditAffirmationDialogWidgetState
         Align(
           alignment: Alignment.topLeft,
           child: AutoSizeText(
-            "Edit Custom Affirmation",
+            "editCustomAffirmation".tr,
             style: Style.montserratRegular(
               fontSize: Dimens.d16,
               fontWeight: FontWeight.bold,
@@ -79,7 +80,7 @@ class _EditAffirmationDialogWidgetState
         ),
         Dimens.d10.spaceHeight,
         CommonTextField(
-          hintText: "Edit Custom Affirmation",
+          hintText: "editCustomAffirmation".tr,
           controller: _userAffirmationController,
           textInputAction: TextInputAction.done,
           focusNode: _userAffirmationFocusNode,
@@ -89,12 +90,12 @@ class _EditAffirmationDialogWidgetState
             children: [
               Expanded(
                 child: CommonElevatedButton(
-                  title: "Draft",
+                  title: "draft".tr,
                   outLined: true,
                   textStyle: Style.montserratRegular(color: ColorConstant.textDarkBlue),
                   onTap: () => isEmptyAffirmation
                       ? showSnackBarError(
-                          context, "Please EnterYour Own Affirmation")
+                          context, "pleaseEnterYourOwnAffirmation".tr)
                       : widget
                           .onDraftTap(_userAffirmationController.text.trim()),
                 ),
@@ -102,10 +103,10 @@ class _EditAffirmationDialogWidgetState
               Dimens.d20.spaceWidth,
               Expanded(
                 child: CommonElevatedButton(
-                  title: "Save",
+                  title: "save".tr,
                   onTap: () => isEmptyAffirmation
                       ? showSnackBarError(
-                          context, "please Enter Your Own Affirmation")
+                          context, "pleasEnterYourOwnAffirmation".tr)
                       : widget
                           .onSaveTap(_userAffirmationController.text.trim()),
                 ),

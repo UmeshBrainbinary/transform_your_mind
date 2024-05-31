@@ -4,6 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:transform_your_mind/core/common_widget/category_drop_down.dart';
 import 'package:transform_your_mind/core/common_widget/custom_tab_bar.dart';
@@ -37,7 +38,6 @@ bool isRitualShowPlayer = false;
 class RitualsPage extends StatefulWidget {
   final int? ritualPage;
 
-  static const String ritualsPage = '/ritualsPage';
 
   const RitualsPage({Key? key, this.ritualPage = 0}) : super(key: key);
 
@@ -158,7 +158,7 @@ class _RitualsPageState extends State<RitualsPage>
                           tabBarIndicatorSize: TabBarIndicatorSize.label,
                           listOfItems: [
                             TabText(
-                              text: "My Rituals",
+                              text: "myRituals".tr,
                               value: Dimens.d1,
                               selectedIndex: _currentTabIndex.value,
                               padding: Dimens.d15.paddingAll,
@@ -166,7 +166,7 @@ class _RitualsPageState extends State<RitualsPage>
                               fontSize: Dimens.d16,
                             ),
                             TabText(
-                              text: "Transform Rituals",
+                              text: "transformRituals".tr,
                               value: Dimens.d0,
                               selectedIndex: _currentTabIndex.value,
                               padding: Dimens.d15.paddingAll,
@@ -200,7 +200,7 @@ class _RitualsPageState extends State<RitualsPage>
                    // AddFeatureRatingRequestModel(contentType:2 ,rating: p0)));
                   },
                   initialRating: initialRating,
-                  screenTitle:"Give your rating!",
+                  screenTitle:"giveYourRating".tr,
                   screenHeading: 'We genuinely value your input and strive to continuously improve our services.',
                   screenDesc: 'Please take a moment to rate your experience with Shoorah Rituals.',
                 ),
@@ -291,7 +291,7 @@ class _RitualsPageState extends State<RitualsPage>
         mainAxisSize: MainAxisSize.min,
         children: [
           NoDataAvailable(
-            message: "Add More Rituals To Daily Routine",
+            message: "addMoreRitualsToDailyRoutine".tr,
             showBottomHeight: false,
           ),
         ],
@@ -314,7 +314,7 @@ class _RitualsPageState extends State<RitualsPage>
                   children: [
                     Dimens.d10.spaceHeight,
                     AutoSizeText(
-                      "Add Your Own Ritual",
+                      "addYourOwnRitual".tr,
                       textAlign: TextAlign.center,
                       style: Style.montserratBold(
                         fontSize: 16.0,
@@ -324,7 +324,7 @@ class _RitualsPageState extends State<RitualsPage>
                     ),
                     Dimens.d20.spaceHeight,
                     CommonTextField(
-                      hintText: "Write Your Own Ritual",
+                      hintText: "writeYourOwnRitual".tr,
                       controller: _userRitualController,
                       focusNode: _userRitualFocus,
                       textInputAction: TextInputAction.done,
@@ -334,7 +334,7 @@ class _RitualsPageState extends State<RitualsPage>
                         children: [
                           Expanded(
                             child: CommonElevatedButton(
-                              title: "Draft",
+                              title: "draft".tr,
                               outLined: true,
                               textStyle: Style.montserratRegular(
                                   color: ColorConstant.textDarkBlue),
@@ -345,7 +345,7 @@ class _RitualsPageState extends State<RitualsPage>
                           Dimens.d20.spaceWidth,
                           Expanded(
                             child: CommonElevatedButton(
-                              title: "Save",
+                              title: "save".tr,
                               onTap: () =>
                                   _addUserRitual(isSaved: true),
                             ),
@@ -354,7 +354,7 @@ class _RitualsPageState extends State<RitualsPage>
                       ),
                     ),
                     AutoSizeText(
-                      "Explore Transform Rituals",
+                      "exploreTransformRituals".tr,
                       textAlign: TextAlign.center,
                       style: Style.montserratBold(
                         fontSize: 16.0,
@@ -374,7 +374,7 @@ class _RitualsPageState extends State<RitualsPage>
                     Dimens.d10.spaceWidth,
                     Expanded(
                       child: CommonTextField(
-                        hintText: "Search",
+                        hintText: "search".tr,
                         controller: searchController,
                         focusNode: searchFocus,
                         prefixLottieIcon: ImageConstant.lottieSearch,
@@ -444,7 +444,7 @@ class _RitualsPageState extends State<RitualsPage>
         mainAxisSize: MainAxisSize.min,
         children: [
           NoDataAvailable(
-            message: "Select More Focus To Find New Rituals",
+            message: "selectMoreFocusToFindNewRituals".tr,
             showBottomHeight: false,
           ),
           const Spacer()
@@ -506,14 +506,14 @@ class _RitualsPageState extends State<RitualsPage>
               onTap: () {
                 showAppConfirmationDialog(
                   context: context,
-                  message: "Your Selected Ritual Has Been Delete",
-                  primaryBtnTitle: "No",
-                  secondaryBtnTitle: "Yes",
+                  message: "yourSelectedRitualHasBeenDelete".tr,
+                  primaryBtnTitle: "no".tr,
+                  secondaryBtnTitle: "yes".tr,
                   secondaryBtnAction: () => secondaryBtnAction("" ?? ''),
                 );
               },
-              title: "rituals Name" ?? '',
-              subTitle: "rituals Name"  ?? '',
+              title: "ritualsName".tr ?? '',
+              subTitle: "ritualsName".tr   ?? '',
               multiSubTitle: ["rituals Name" ],
               showDelete: true,
               image: '',
@@ -553,9 +553,9 @@ class _RitualsPageState extends State<RitualsPage>
                             Navigator.of(context).pop();
                             showAppConfirmationDialog(
                               context: context,
-                              message: "Your Selected Ritual Has BeenDelete",
-                              primaryBtnTitle: "No",
-                              secondaryBtnTitle: "Yes",
+                              message: "yourSelectedRitualHasBeenDelete".tr,
+                              primaryBtnTitle: "no".tr,
+                              secondaryBtnTitle: "yes".tr,
                               secondaryBtnAction: () =>
                                   secondaryBtnAction("" ?? ''),
                             );
@@ -683,7 +683,7 @@ class _RitualsPageState extends State<RitualsPage>
         Padding(
           padding: const EdgeInsets.only(left: Dimens.d20),
           child: AutoSizeText(
-            "My Drafts",
+            "myDrafts".tr,
             style: Style.montserratBold(
               fontSize: 16.0,
               fontWeight: FontWeight.bold,
@@ -754,7 +754,7 @@ class _RitualsPageState extends State<RitualsPage>
         Padding(
           padding: const EdgeInsets.only(left: Dimens.d20),
           child: AutoSizeText(
-            "My Rituals",
+            "myRituals".tr,
             style: Style.montserratBold(
               fontSize: 16.0,
               fontWeight: FontWeight.bold,
@@ -920,7 +920,7 @@ class _RitualsPageState extends State<RitualsPage>
 
   void _addUserRitual({bool isSaved = true}) {
     if (_userRitualController.text.isEmpty) {
-      showSnackBarError(context, "Please Add Own Rituals");
+      showSnackBarError(context, "pleaseAddOwnRituals".tr);
       return;
     }
   /*  _ritualsBloc.add(
@@ -939,7 +939,7 @@ class _RitualsPageState extends State<RitualsPage>
         bool isSaved = true,
       }) {
     if (customRitualTitle.isEmpty) {
-      showSnackBarError(context, "Please Add Own Rituals");
+      showSnackBarError(context, "pleaseAddOwnRituals".tr);
       return;
     }
   /*  _ritualsBloc.add(
@@ -982,7 +982,7 @@ class ShoorahRitualTileWidget extends StatelessWidget {
           Align(
             alignment: Alignment.center,
             child: AutoSizeText(
-              "ritualName" ?? '',
+              "ritualName".tr ?? '',
               textAlign: TextAlign.center,
               style: Style.montserratBold(
                 fontSize: Dimens.d16,

@@ -15,6 +15,7 @@ import 'package:transform_your_mind/core/utils/style.dart';
 /// and video from API
 class ScreenInfoWidget extends StatefulWidget {
   final ValueNotifier<bool> isTutorialVideoVisible;
+  final ValueNotifier<bool> info;
   final VoidCallback onVideoViewTap;
   final AnimationController controller;
   final String screenTitle;
@@ -32,7 +33,7 @@ class ScreenInfoWidget extends StatefulWidget {
     required this.screenHeading,
     required this.screenDesc,
     this.showVideoIcon = true,
-    Key? key,
+    Key? key, required this.info,
   }) : super(key: key);
 
   @override
@@ -106,6 +107,7 @@ class _ScreenInfoWidgetState extends State<ScreenInfoWidget>
               onTap: () {
                 widget.isTutorialVideoVisible.value =
                 !widget.isTutorialVideoVisible.value;
+                widget.info.value = !widget.info.value;
                 if (widget.isTutorialVideoVisible.value) {
                   _controller.forward();
                 } else {
