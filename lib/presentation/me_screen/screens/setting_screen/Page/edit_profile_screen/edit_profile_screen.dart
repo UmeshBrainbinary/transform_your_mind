@@ -17,6 +17,7 @@ import 'package:transform_your_mind/core/utils/validation_functions.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/edit_profile_screen/edit_profile_controller.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/edit_profile_screen/widget/add_image.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
@@ -34,17 +35,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final EditProfileController editProfileController = Get.put(EditProfileController());
+  ThemeController themeController = Get.find<ThemeController>();
 
  bool _isImageRemoved = false;
+
+ @override
+  void initState() {
+    // TODO: implement initState
+   editProfileController.emailController.text = PrefService.getString(PrefKey.email);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
+        backgroundColor: themeController.isDarkMode.value ? ColorConstant.black : ColorConstant.backGround,
       appBar: CustomAppBar(
         title: "editProfile".tr,
       ),
       body: SafeArea(
+
           child:  Padding(
             padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
             child: LayoutBuilder(
@@ -115,10 +125,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 CommonTextField(
                                     labelText: "email".tr,
                                     hintText: "enterEmail".tr,
-                                    controller:
-                                    editProfileController.emailController,
+                                    controller: editProfileController.emailController,
                                     focusNode: FocusNode(),
-                                    filledColor: ColorConstant.lightGrey,
+                                    filledColor: themeController.isDarkMode.value ? ColorConstant.lightGrey2 : ColorConstant.lightGrey,
                                     prefixIcon: Image.asset(ImageConstant.email,
                                         scale: Dimens.d4),
                                     keyboardType: TextInputType.emailAddress,

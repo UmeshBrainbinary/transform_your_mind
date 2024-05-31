@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 
 
 class CommonTextField extends StatefulWidget {
@@ -81,7 +83,7 @@ class CommonTextField extends StatefulWidget {
       this.filterSelected = false,
       this.showMultipleSuffix = false,
       this.suffixLottieIcon2,
-      this.filledColor = Colors.white,
+      this.filledColor,
       this.suffixTap2,
       this.heightFactor = 2.1,
       this.transform,
@@ -98,6 +100,7 @@ class _CommonTextFieldState extends State<CommonTextField>
     with SingleTickerProviderStateMixin {
   late ValueNotifier<bool> isFocus;
   late final AnimationController _lottieIconsController;
+  ThemeController themeController = Get.find<ThemeController>();
 
   @override
   void initState() {
@@ -155,13 +158,13 @@ class _CommonTextFieldState extends State<CommonTextField>
       validator: widget.validator,
       enabled: widget.enabled,
       style: widget.textStyle ??
-          Style.montserratMedium(fontSize: Dimens.d12),
+          Style.montserratMedium(fontSize: Dimens.d12, color: themeController.isDarkMode.value ? ColorConstant.white : ColorConstant.black),
 
       decoration: InputDecoration(
           alignLabelWithHint: true,
           isDense: true,
           filled: true,
-          fillColor: widget.filledColor,
+          fillColor: widget.filledColor ?? (themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.white),
           hintText: widget.hintText,
           counterStyle: Style.montserratRegular(),
           hintStyle: widget.hintStyle ??

@@ -14,7 +14,7 @@ class AppTheme {
     //   ),
     // ),
 
-
+    dialogTheme: DialogTheme(backgroundColor: ColorConstant.white),
     scaffoldBackgroundColor: ColorConstant.white,
     textTheme: TextTheme(
       displayLarge: TextStyle(color: ColorConstant.black),
@@ -25,7 +25,7 @@ class AppTheme {
   static final ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
     primaryColor: Colors.black,
-
+    dialogTheme: DialogTheme(backgroundColor: ColorConstant.textfieldFillColor),
     scaffoldBackgroundColor: Colors.black,
     // elevatedButtonTheme: ElevatedButtonThemeData(
     //   style: ElevatedButton.styleFrom(

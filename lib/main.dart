@@ -51,30 +51,28 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     themeController = Get.put(ThemeController(),permanent: true);
-    themeController.isDarkMode.listen((isDarkMode) {
-      setState(() {});
-    });
+    // themeController.isDarkMode.listen((isDarkMode) {
+    //   setState(() {});
+    // });
   }
 
   @override
   Widget build(BuildContext context) {
-    return  Obx(
-      () =>
-       GetMaterialApp(
-         debugShowCheckedModeBanner: false,
-        // theme: ThemeData.light(),
-        // darkTheme: ThemeData.dark(),
-        theme: themeController.isDarkMode.value ? AppTheme.darkTheme : AppTheme.lightTheme,
-         translations: AppTranslations(),
-         locale: Locale('en', 'US'),
-         fallbackLocale: Locale('en', 'US'),
-        title: 'Transform Your Mind',
-        initialBinding: InitialBindings(),
-        initialRoute: PrefService.getBool(PrefKey.isLoginOrRegister) == true ? AppRoutes.dashBoardScreen : AppRoutes.loginScreen, //AppRoutes.initialRoute
-        getPages: AppRoutes.pages,
+    return  GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      // theme: ThemeData.light(),
+      // darkTheme: ThemeData.dark(),
+
+      theme: PrefService.getBool(PrefKey.isDarkTheme) == true ? AppTheme.darkTheme : AppTheme.lightTheme,
+      translations: AppTranslations(),
+      locale: Locale('en', 'US'),
+      fallbackLocale: Locale('en', 'US'),
+      title: 'Transform Your Mind',
+      initialBinding: InitialBindings(),
+      initialRoute: PrefService.getBool(PrefKey.isLoginOrRegister) == true ? AppRoutes.dashBoardScreen : AppRoutes.loginScreen, //AppRoutes.initialRoute
+      getPages: AppRoutes.pages,
 
 
-      ),
-    ) ;
+    );
   }
 }

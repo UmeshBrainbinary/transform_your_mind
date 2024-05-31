@@ -10,6 +10,7 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/notification_setting_screen/widget/reminder_time_utils.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 
@@ -43,6 +44,8 @@ Future<void> showRemindersDialog(
               text: selectedReminderTime.name + selectedReminderPeriod.desc);
           FocusNode focusNode = FocusNode();
 
+          ThemeController themeController = Get.find<ThemeController>();
+
           return Dialog(
             backgroundColor: ColorConstant.transparent,
             alignment: Alignment.center,
@@ -50,7 +53,7 @@ Future<void> showRemindersDialog(
             child: Container(
               padding: Dimens.d20.paddingAll,
               decoration: BoxDecoration(
-                color: ColorConstant.backGround,
+                color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.backGround,
                 borderRadius: Dimens.d16.radiusAll,
               ),
               child: Column(
@@ -117,7 +120,7 @@ Future<void> showRemindersDialog(
                       controller: controller,
                       focusNode: focusNode,
                       labelText: '',
-
+                       filledColor: themeController.isDarkMode.value ? ColorConstant.color121212 : ColorConstant.white,
                       suffixIcon: Transform.scale(
                         scale: 0.38,
                         child:  Transform.rotate(
@@ -184,7 +187,7 @@ Future<void> showReminderIntervalsDialog(
             onSave(selectedReminderTime);
             Navigator.pop(context);
           }
-
+          ThemeController themeController = Get.find<ThemeController>();
           return Dialog(
             backgroundColor: ColorConstant.transparent,
             alignment: Alignment.center,
@@ -192,7 +195,7 @@ Future<void> showReminderIntervalsDialog(
             child: Container(
               padding: Dimens.d20.paddingAll,
               decoration: BoxDecoration(
-                color: ColorConstant.white,
+                color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.white,
                 borderRadius: Dimens.d16.radiusAll,
               ),
               child: Column(

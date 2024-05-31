@@ -22,19 +22,18 @@ class SettingScreen extends StatelessWidget {
    SettingScreen({super.key});
 
    SettingController settingController = Get.put(SettingController());
-   ThemeController themeController = Get.put(ThemeController(),permanent: true);
+   ThemeController themeController = Get.find<ThemeController>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: themeController.isDarkMode.value ? ColorConstant.black : ColorConstant.backGround,
       appBar: CustomAppBar(
       title: "settings".tr,
         action: Row(
           children: [
             GestureDetector(
-                onTap: () async {
-
-                },
+                onTap: () {},
                 child: SvgPicture.asset(ImageConstant.notification, height: Dimens.d30, width: Dimens.d30)
             ),
             Dimens.d20.spaceWidth
@@ -43,12 +42,12 @@ class SettingScreen extends StatelessWidget {
     ),
       body: Stack(
         children: [
-          Positioned(
+         /* Positioned(
             top: Dimens.d120,
             right: 0,
             left:  null,
             child: Image.asset(ImageConstant.bgStar, height: Dimens.d253),
-          ),
+          ),*/
            Padding(
                padding: Dimens.d20.paddingHorizontal,
              child: Column(
@@ -76,61 +75,59 @@ class SettingScreen extends StatelessWidget {
 
                                  ?  Container(
                                margin: const EdgeInsets.symmetric(horizontal: 1.2),
-                                   decoration: BoxDecoration(
+                               decoration: BoxDecoration(
+                                   color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.white,
+                                   borderRadius: BorderRadius.circular(50),
+                                   boxShadow: [
+                                     BoxShadow(
+                                         color: ColorConstant.grey.withOpacity(0.1),
+                                         blurRadius: 5,spreadRadius: 1
+                                     )
+                                   ]
+                               ),
+                               padding: const EdgeInsets.symmetric(
+                                 horizontal: Dimens.d10,
+                                 vertical: Dimens.d10,
+                               ),
+                               child: Row(
+                                 mainAxisSize: MainAxisSize.min,
+                                 children: [
+
+                                   Container(
+                                     height: Dimens.d50.h,
+                                     width: Dimens.d50,
+                                     padding: const EdgeInsets.all(10),
+                                     decoration: BoxDecoration(
+                                       color: ColorConstant.themeColor,
+                                       shape: BoxShape.circle,),
+                                     child: SvgPicture.asset(
+                                       ImageConstant.settingsPersonalization,
                                        color: ColorConstant.white,
-                                       borderRadius: BorderRadius.circular(50),
-                                       boxShadow: [
-                                         BoxShadow(
-                                             color: ColorConstant.grey.withOpacity(0.1),
-                                             blurRadius: 5,spreadRadius: 1
-                                         )
-                                       ]
+                                     ),
                                    ),
-                                   padding: const EdgeInsets.symmetric(
-                                     horizontal: Dimens.d10,
-                                     vertical: Dimens.d10,
+                                   Dimens.d12.spaceWidth,
+                                   Text(
+                                     "theme".tr,
+                                     style: Style.montserratMedium().copyWith(
+                                       letterSpacing: Dimens.d0_16,
+                                     ),
                                    ),
-                                   child: Row(
-                                     mainAxisSize: MainAxisSize.min,
-                                     children: [
-
-                                       Container(
-                                         height: Dimens.d50.h,
-                                         width: Dimens.d50,
-                                         padding: const EdgeInsets.all(10),
-                                         decoration: BoxDecoration(
-                                           color: ColorConstant.themeColor,
-                                           shape: BoxShape.circle,),
-                                         child: SvgPicture.asset(
-                                           ImageConstant.settingsPersonalization,
-                                           color: ColorConstant.white,
-                                         ),
-                                       ),
-                                       Dimens.d12.spaceWidth,
-                                       Text(
-                                         "theme".tr,
-                                         style: Style.montserratMedium().copyWith(
-                                           letterSpacing: Dimens.d0_16,
-                                         ),
-                                       ),
-                                       Spacer(),
-                                       CustomSwitch(
-                                         value: themeController.isDarkMode.value,
-                                         onChanged: (value) {
-                                          // settingController.swithVlaue?.value = value;
-                                           debugPrint('Switch value changed: $value');
-
-                                           themeController.isDarkMode.value = value;
-                                         },
-                                         width: 50.0,
-                                         height: 25.0,
-                                         activeColor: ColorConstant.themeColor,
-                                         inactiveColor: ColorConstant.backGround,
-                                       ),
-
-                                     ],
+                                   Spacer(),
+                                   CustomSwitch(
+                                     value: themeController.isDarkMode.value,
+                                     onChanged: (value) async{
+                                       themeController.switchTheme();
+                                       Get.forceAppUpdate();
+                                     },
+                                     width: 50.0,
+                                     height: 25.0,
+                                     activeColor: ColorConstant.themeColor,
+                                     inactiveColor: ColorConstant.backGround,
                                    ),
-                                 )
+
+                                 ],
+                               ),
+                             )
                                : SettingListItem(
                                isSettings: true,
                                prefixIcon: data.prefixIcon,
@@ -228,15 +225,18 @@ class SettingListItem extends StatelessWidget {
   final bool isSettings;
   final VoidCallback? onTap;
 
+  ThemeController themeController = Get.find<ThemeController>();
+
   @override
   Widget build(BuildContext context) {
     return
 
       GestureDetector(
         onTap: onTap,
-        child: Container(margin: const EdgeInsets.symmetric(horizontal: 1.2),
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 1.2),
           decoration: BoxDecoration(
-              color: ColorConstant.white,
+              color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.white,
               borderRadius: BorderRadius.circular(50),
               boxShadow: [
                 BoxShadow(
@@ -253,7 +253,7 @@ class SettingListItem extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
 
-            Container(
+              Container(
                 height: Dimens.d50.h,
                 width: Dimens.d50,
                 padding: const EdgeInsets.all(10),

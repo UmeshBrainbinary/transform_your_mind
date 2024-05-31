@@ -12,6 +12,7 @@ import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/me_screen/me_controller.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 class MeScreen extends StatefulWidget {
@@ -30,6 +31,7 @@ class _MeScreenState extends State<MeScreen> {
   int tabIndexMeSectionHistory = 0;
 
   MeController meController = Get.put(MeController());
+
 
 
 
@@ -70,6 +72,7 @@ class _MeScreenState extends State<MeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+
         appBar: CustomAppBar(
           title: "me".tr,
           showBack: false,

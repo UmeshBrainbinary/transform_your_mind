@@ -7,6 +7,7 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
@@ -38,6 +39,8 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
 class _CustomAppBarState extends State<CustomAppBar>
     with SingleTickerProviderStateMixin {
   late final AnimationController _lottieBackBtnController;
+
+  ThemeController themeController = Get.find<ThemeController>();
 
   @override
   void initState() {
@@ -83,16 +86,16 @@ class _CustomAppBarState extends State<CustomAppBar>
         alignment: Alignment.center,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(Dimens.d5),
-            color: ColorConstant.white,
+            color: themeController.isDarkMode.value ?  ColorConstant.textfieldFillColor : ColorConstant.white,
             boxShadow: [
               BoxShadow(
-                color: ColorConstant.color8BA4E5.withOpacity(0.25),
+                color: themeController.isDarkMode.value ? ColorConstant.transparent : ColorConstant.color8BA4E5.withOpacity(0.25),
                 blurRadius: 10.0,
                 spreadRadius: 2.0,
               ),
             ]
         ),
-        child: Center(child: Image.asset(ImageConstant.backArrow, height: 25.h,width: 25.h,)),
+        child: Center(child: Image.asset(ImageConstant.backArrow, height: 25.h,width: 25.h, color: themeController.isDarkMode.value ?  ColorConstant.white : ColorConstant.black,)),
       ),
     ):const SizedBox();
   }

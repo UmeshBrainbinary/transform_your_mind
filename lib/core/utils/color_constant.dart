@@ -9,6 +9,7 @@ class ColorConstant {
   static const transparent = Colors.transparent;
   static const themeColor = Color(0XFF769AA3);
   static const grey = Colors.grey;
+  static const textfieldFillColor = Color(0XFF1c1f1f);
 
   static const colorbfd0d4 = Color(0XFFbfd0d4);
   static const colorebebeb = Color(0XFFebebeb);
@@ -16,13 +17,19 @@ class ColorConstant {
   static const color545454 = Color(0XFF545454);
   static const color716B6B = Color(0XFF716B6B);
 
+  static const color121212 = Color(0XFF121212);
+
   static const colorBFD0D4 = Color(0XFFBFD0D4);
   static const colorD9D9D9 = Color(0XFFD9D9D9);
+
+
 
   static const color8BA4E5 = Color(0XFF8BA4E5);
 
   static const color3d5157 = Color(0XFF3d5157);
   static const lightGrey = Color.fromRGBO(220, 220, 220, 1);
+  static const lightGrey2 = Color.fromRGBO( 125, 124, 124, 1);
+
 
   static const colorFF0000 = Color(0XFFFF0000);
   static const textWhiteBackGround = Color.fromRGBO(229, 234, 249, 1);

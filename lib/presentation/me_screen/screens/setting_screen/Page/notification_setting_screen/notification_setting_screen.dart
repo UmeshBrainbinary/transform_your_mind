@@ -10,6 +10,7 @@ import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/notification_setting_screen/notification_setting_controller.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/notification_setting_screen/widget/reminder_time_utils.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/notification_setting_screen/widget/reminders_dialog.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
@@ -23,6 +24,7 @@ class NotificationSettingScreen extends StatefulWidget {
 
 class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
    final NotificationSettingController notificationSettingController = Get.put(NotificationSettingController());
+   ThemeController themeController = Get.find<ThemeController>();
 
    TextEditingController affirmationController = TextEditingController();
    TextEditingController meditationController = TextEditingController();
@@ -59,7 +61,7 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorConstant.backGround,
+        backgroundColor: themeController.isDarkMode.value ? ColorConstant.black : ColorConstant.backGround,
       appBar: CustomAppBar(
 
           title: "setYourReminders".tr,

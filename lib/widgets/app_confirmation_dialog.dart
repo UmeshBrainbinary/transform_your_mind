@@ -21,13 +21,13 @@ Future<void> showAppConfirmationDialog({
     context: context,
     builder: (context) {
       return Dialog(
-        backgroundColor: ColorConstant.transparent,
+        //backgroundColor: ColorConstant.transparent,
         alignment: Alignment.center,
         insetPadding: Dimens.d20.paddingAll,
         child: Container(
           padding: Dimens.d20.paddingAll,
           decoration: BoxDecoration(
-            color: ColorConstant.white,
+            //color: ColorConstant.white,
             borderRadius: Dimens.d16.radiusAll,
           ),
           child: Column(
