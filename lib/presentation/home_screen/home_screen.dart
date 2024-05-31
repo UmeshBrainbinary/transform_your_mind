@@ -34,11 +34,10 @@ class _HomeScreenState extends State<HomeScreen>
   ValueNotifier<bool> showScrollTop = ValueNotifier(false);
   int? totalCountCleanse = 0;
   List<Map<String, dynamic>> quickAccessList = [
-    {"title": "Meditation", "icon": ImageConstant.calendar},
-    {"title": "Sleep", "icon": ImageConstant.calendar},
-    {"title": "Transfrom Pods", "icon": ImageConstant.calendar},
-    {"title": "Journal", "icon": ImageConstant.calendar},
-    {"title": "My Badges", "icon": ImageConstant.calendar},
+    {"title": "meditation".tr, "icon": ImageConstant.calendar},
+    {"title": "sleep".tr, "icon": ImageConstant.calendar},
+    {"title": "transformPods".tr, "icon": ImageConstant.calendar},
+    {"title": "journal".tr, "icon": ImageConstant.calendar},
   ];
 
   ThemeController themeController = Get.find<ThemeController>();
@@ -82,13 +81,13 @@ class _HomeScreenState extends State<HomeScreen>
     final hour = now.hour;
 
     if (hour >= 0 && hour < 12) {
-      return 'Good morning';
+      return 'goodMorning'.tr;
     } else if (hour >= 12 && hour < 17) {
-      return 'Good afternoon';
+      return 'goodAfternoon'.tr;
     } else if (hour >= 17 && hour < 21) {
-      return 'Good evening';
+      return 'goodEvening'.tr;
     } else {
-      return 'Good night';
+      return 'goodNight'.tr;
     }
   }
 
@@ -199,7 +198,7 @@ class _HomeScreenState extends State<HomeScreen>
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
                     child: Text(
-                      "Your Recommendations",
+                      "yourRecommendations".tr,
                       textAlign: TextAlign.center,
                       style: Style.montserratRegular(fontSize: Dimens.d22),
                     ),
@@ -218,7 +217,7 @@ class _HomeScreenState extends State<HomeScreen>
                       ),
                       child: Center(
                         child: Text(
-                          "Refresh Daily Recommendations",
+                          "refreshDailyRecommendations".tr,
                           style: Style.montserratRegular(
                               fontSize: 12, color: Colors.white),
                         ),
@@ -231,7 +230,7 @@ class _HomeScreenState extends State<HomeScreen>
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
                     child: Text(
-                      "Today's Cleanse",
+                      "todayCleanse".tr,
                       textAlign: TextAlign.center,
                       style: Style.montserratRegular(fontSize: Dimens.d22),
                     ),
@@ -251,15 +250,15 @@ class _HomeScreenState extends State<HomeScreen>
                         borderRadius: BorderRadius.circular(16)),
                     padding: const EdgeInsets.symmetric(vertical: 27),
                     margin: const EdgeInsets.symmetric(horizontal: 20),
-                    child: const TodaysRituals(
-                      type: "Your Daily Rituals",
+                    child:  TodaysRituals(
+                      type: "yourDailyRituals".tr,
                     ),
                   ),
                   Dimens.d20.spaceHeight,
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
                     child: Text(
-                      "Your Bookmarks",
+                      "yourBookmarks".tr,
                       textAlign: TextAlign.center,
                       style: Style.montserratRegular(fontSize: Dimens.d22),
                     ),
@@ -274,7 +273,7 @@ class _HomeScreenState extends State<HomeScreen>
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
                     child: Text(
-                      "Quick Access",
+                      "quickAccess".tr,
                       textAlign: TextAlign.center,
                       style: Style.montserratRegular(fontSize: Dimens.d22),
                     ),
@@ -507,7 +506,7 @@ class _HomeScreenState extends State<HomeScreen>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Meditation Min",
+                      "meditationMin".tr,
                       style: Style.montserratRegular(
                           fontSize: 8,),
                     ),
@@ -515,7 +514,7 @@ class _HomeScreenState extends State<HomeScreen>
                     SizedBox(
                       width: Dimens.d200,
                       child: Text(
-                        "cormorant Medium",
+                        "cormorantMedium".tr,
                         maxLines: 2,
                         style: Style.montserratRegular(
                           fontSize: 15,
@@ -525,7 +524,7 @@ class _HomeScreenState extends State<HomeScreen>
                     ),
                     Dimens.d7.spaceHeight,
                     Text(
-                      "Ravi Khunt",
+                      "Ravi K",
                       style: Style.montserratRegular(
                           fontSize: 8,),
                     ),

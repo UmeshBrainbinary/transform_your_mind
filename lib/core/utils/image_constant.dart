@@ -153,6 +153,7 @@ class ImageConstant {
   static  String icMenuFolder = "$iconPath/ic_folder_menu.png";
   static  String icFolderColor = "$iconPath/ic_folder_color.png";
   static  String folderIcon = "$iconPath/transfrom_folder_add.svg";
+  static  String homeBg = "$imagePath/img_home_message_page_bg_img.png";
   static  String transformDot = "$iconPath/transform_dot.svg";
   static  String lottieDeleteAccount = "$lottie/lottie_delete_account.json";
 

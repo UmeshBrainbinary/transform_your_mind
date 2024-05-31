@@ -75,7 +75,7 @@ class _AddNotesPageState extends State<AddNotesPage>
       appBar: CustomAppBar(
         showBack: true,
         // title: widget.notesData != null ? i10n.editNotes : i10n.addNotes,
-          title: "New Note",
+          title: "newNote".tr,
           action:LottieIconButton(
             icon: ImageConstant.lottieDeleteAccount,
             onTap: () {
@@ -101,8 +101,8 @@ class _AddNotesPageState extends State<AddNotesPage>
                               children: [
                                 Dimens.d10.spaceHeight,
                                 CommonTextField(
-                                  hintText: "Enter Title",
-                                  labelText: "Title",
+                                  hintText: "enterTitle".tr,
+                                  labelText: "title".tr,
                                   controller: titleController,
                                   focusNode: titleFocus,
                                   prefixLottieIcon:
@@ -115,8 +115,8 @@ class _AddNotesPageState extends State<AddNotesPage>
                                 ),
                                 Dimens.d16.h.spaceHeight,
                                 CommonTextField(
-                                  hintText: "Enter Description",
-                                  labelText: "Description",
+                                  hintText: "enterDescription".tr,
+                                  labelText: "description".tr,
                                   controller: descController,
                                   focusNode: descFocus,
                                   transform: Matrix4.translationValues(
@@ -214,7 +214,7 @@ class _AddNotesPageState extends State<AddNotesPage>
                       children: [
                         Expanded(
                           child: CommonElevatedButton(
-                            title: "Draft",
+                            title: "draft".tr,
                             outLined: true,
                             textStyle: Style.montserratMedium(
                                 color: ColorConstant.textDarkBlue),
@@ -224,7 +224,7 @@ class _AddNotesPageState extends State<AddNotesPage>
                         Dimens.d20.spaceWidth,
                         Expanded(
                           child: CommonElevatedButton(
-                            title: "Save",
+                            title: "save".tr,
                             onTap: () => _callSubmitApi(true),
                           ),
                         ),
@@ -251,9 +251,9 @@ class _AddNotesPageState extends State<AddNotesPage>
 
   void _callSubmitApi(bool isSaved) {
     if (titleController.text.trim().isEmpty) {
-      showSnackBarError(context, "Title cannot be empty.");
+      showSnackBarError(context, "titleCanNotEmpty".tr);
     } else if (descController.text.trim().isEmpty) {
-      showSnackBarError(context, "Description cannot be empty.");
+      showSnackBarError(context, "descriptionCanNotEmpty".tr);
     } else {
       if(isSaved){
         notesListToday.add({

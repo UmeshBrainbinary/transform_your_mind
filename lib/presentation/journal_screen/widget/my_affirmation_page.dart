@@ -763,7 +763,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                   ),
                 ),
                 AutoSizeText(
-                  "Explore transform Affirmations",
+                  "exploreTransformAffirmations".tr,
                   textAlign: TextAlign.center,
                   style: Style.montserratRegular(
                     fontSize: 16.0,
@@ -781,7 +781,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                   Dimens.d10.spaceWidth,
                   Expanded(
                     child: CommonTextField(
-                      hintText: "Search",
+                      hintText: "search".tr,
                       controller: searchController,
                       focusNode: searchFocus,
                       prefixLottieIcon: ImageConstant.lottieSearch,
@@ -971,7 +971,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
 
   void addUserAffirmation({bool isSave = true}) {
     if (_userAffirmationController.text.trim().isEmpty) {
-      showSnackBarError(context, "Please Enter Your Own Affirmation");
+      showSnackBarError(context, "PleaseEnterYourOwnAffirmation".tr);
       return;
     }
     /* _affirmationBloc.add(
@@ -1025,9 +1025,9 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                 Navigator.of(context).pop();
                 showAppConfirmationDialog(
                   context: context,
-                  message: "Your Selected Affirmation Has Been Delete",
-                  primaryBtnTitle: "No",
-                  secondaryBtnTitle: "Yes",
+                  message: "yourSelectedAffirmationHasBeenDelete".tr,
+                  primaryBtnTitle: "no".tr,
+                  secondaryBtnTitle: "yes".tr,
                   secondaryBtnAction: () {
                     Navigator.of(context).pop();
                     /*_affirmationBloc.add(
@@ -1053,7 +1053,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
     bool isSaved = false,
   }) {
     if (affirmationTitle.trim().isEmpty) {
-      showSnackBarError(context, "Please Enter Your Own Affirmation");
+      showSnackBarError(context, "PleaseEnterYourOwnAffirmation".tr);
       return;
     }
     /*_affirmationBloc.add(

@@ -1,14 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:lottie/lottie.dart';
 import 'package:transform_your_mind/core/common_widget/custom_tab_bar.dart';
 import 'package:transform_your_mind/core/common_widget/lottie_icon_button.dart';
-import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/common_widget/tab_text.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -60,107 +56,29 @@ class _MyNotesPageState extends State<MyNotesPage>
   @override
   void initState() {
     super.initState();
- /*   _notesBloc.add(
-      GetFolderEvent(),
-    );*/
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
     );
-/*    noteAddedCount = SharedPrefUtils.getValue(
-      SharedPrefUtilsKeys.noteAddedCount,
-      0,
-    );*/
+
     isTutorialVideoVisible.value = (noteAddedCount < 3);
     if (isTutorialVideoVisible.value) {
       _controller.forward();
     }
-/*    tutorialVideoData = TutorialVideoData();
-    BlocProvider.of<DashboardBloc>(context)
-        .tutorialVideoData
-        ?.forEach((element) {
-      if (element.contentType == TutorialContentType.notes.value) {
-        tutorialVideoData = element;
-      }
-    });
 
-    SharedPrefUtils.setValue(
-      SharedPrefUtilsKeys.goalAddedCount,
-      noteAddedCount + 1,
-    );*/
     _tabController = TabController(length: Dimens.d2.toInt(), vsync: this);
     _tabControllerFolder =
         TabController(length: Dimens.d2.toInt(), vsync: this);
-/*    _notesBloc.add(
-      GetMyNotesEvent(
-        paginationRequest: PaginationRequest(
-          page: pageNumber,
-          perPage: Dimens.d10.toInt(),
-          isSaved: true,
-        ),
-      ),
-    );*/
+
   }
 
-/*  Future<void> getFoldersApi() async {
-    getFolderModel = GetFolderModel();
 
-    getFolderModel = await getFolders();
-    setState(() {});
-    debugPrint("folders name $getFolderModel");
-  }*/
 
-/*
-  getFolders() async {
-    final LocalService local = sl<LocalService>();
 
-    var headers = {
-      'Authorization': 'Bearer ${local.getLogInfo()?.accessToken ?? ""}',
-      'devicetype': '1',
-      'Content-Type': 'application/json'
-    };
-    var request =
-        http.Request('GET', Uri.parse('${Apis.baseUrl}/folder?folderType=5'));
-    request.headers.addAll(headers);
-
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      String responseBody = await response.stream.bytesToString();
-      // Parse the response body JSON
-
-      // Convert the parsed JSON into a voiceRecordingModel object
-      return getFolderModelFromJson(responseBody);
-    } else {
-      print(response.reasonPhrase);
-    }
-  }
-*/
 
   createFolders({String? text}) async {
 
-   // final LocalService local = sl<LocalService>();
-
-  /*  var headers = {
-      'Authorization': 'Bearer ${local.getLogInfo()?.accessToken ?? ""}',
-      'devicetype': '1',
-      'Content-Type': 'application/json'
-    };
-    var request = http.Request('POST', Uri.parse('${Apis.baseUrl}/folder'));
-    request.headers.addAll(headers);
-    request.body = json.encode({"folderId": "", "name": text, "folderType": 5});
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      String responseBody = await response.stream.bytesToString();
-      // Parse the response body JSON
-      showSnackBarSuccess(context, "New folder added successfully" ?? "");
-
-      // Convert the parsed JSON into a voiceRecordingModel object
-      return createFolderModelFromJson(responseBody);
-    } else {
-      print(response.reasonPhrase);
-    }*/
   }
 
   deleteFolders({String? id , int? index}) async {
@@ -168,65 +86,25 @@ class _MyNotesPageState extends State<MyNotesPage>
    setState(() {
      
    });
- /*   var headers = {
-      'Authorization': 'Bearer ${local.getLogInfo()?.accessToken ?? ""}',
-      'devicetype': '1',
-      'Content-Type': 'application/json'
-    };
-    var request = http.Request(
-        'DELETE', Uri.parse('${Apis.baseUrl}/folder?folderId=$id'));
-    request.headers.addAll(headers);
 
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      showSnackBarSuccess(context, "Delete Folder Success" ?? "");
-    } else {
-      debugPrint(response.reasonPhrase);
-    }*/
   }
 
   editApi({String? id, String? text}) async {
     await editFolders(id: id, text: text);
-   /* _notesBloc.add(
-      GetFolderEvent(),
-    );*/
+
   }
 
   editFolders({String? id, String? text}) async {
-/*    final LocalService local = sl<LocalService>();
 
-    var headers = {
-      'Authorization': 'Bearer ${local.getLogInfo()?.accessToken ?? ""}',
-      'devicetype': '1',
-      'Content-Type': 'application/json'
-    };
-    var request = http.Request('POST', Uri.parse('${Apis.baseUrl}/folder'));
-    request.headers.addAll(headers);
-    request.body = json.encode({"folderId": id, "name": text, "folderType": 5});
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      String responseBody = await response.stream.bytesToString();
-      showSnackBarSuccess(context, "Edit Folder Success" ?? "");
-
-      // Convert the parsed JSON into a voiceRecordingModel object
-      return createFolderModelFromJson(responseBody);
-    } else {
-      print(response.reasonPhrase);
-    }*/
   }
 
   TextEditingController ser = TextEditingController();
   TextEditingController enterFolderName = TextEditingController();
   TextEditingController renameFolderController = TextEditingController();
-  String? _selectedOption;
 
   Future<void> createFolder() async {
     await createFolders(text: enterFolderName.text);
-   /* _notesBloc.add(
-      GetFolderEvent(),
-    );*/
+
     getFolderData.add({"name":enterFolderName.text,"id":"","counts":""});
     setState(() {});
     Navigator.of(context).pop();
@@ -236,9 +114,7 @@ class _MyNotesPageState extends State<MyNotesPage>
     int? index,
   }) async {
     await deleteFolders(id: getFolderData[index!]["id"],index: index);
-  /*  _notesBloc.add(
-      GetFolderEvent(),
-    );*/
+
   }
 
   List  getFolderData = [];
@@ -283,7 +159,7 @@ class _MyNotesPageState extends State<MyNotesPage>
   int _currentTabIndexFolder = Dimens.d0.toInt();
   bool recentJournal = false;
   bool getListOpen = false;
-  String folderName = "Select Folder";
+  String folderName = "selectFolder".tr;
   String folderId = "";
 
   @override
@@ -313,8 +189,7 @@ class _MyNotesPageState extends State<MyNotesPage>
         resizeToAvoidBottomInset: false,
         appBar: CustomAppBar(showBack: true,
           // title: i10n.dailyJournal,
-          title: "Daily Journal",
-          action: Row(
+          title: "dailyJournal".tr,          action: Row(
             children: [
               _currentTabIndex == 0
                   ? const SizedBox()
@@ -357,7 +232,7 @@ class _MyNotesPageState extends State<MyNotesPage>
                                 ),
                                 Expanded(
                                   child: CommonTextField(
-                                     hintText: "Search",
+                                     hintText: "search".tr,
                                     onChanged: (value) {
                                       _currentTabIndex == 0
                                           ? filterSearchResults(value)
@@ -425,7 +300,7 @@ class _MyNotesPageState extends State<MyNotesPage>
                             isScrollable: true,
                             listOfItems: [
                               TabText(
-                                text: "My Folders",
+                                text: "myFolders".tr,
                                 value: Dimens.d0,
                                 selectedIndex:
                                 _currentTabIndex.toDouble(),
@@ -435,7 +310,7 @@ class _MyNotesPageState extends State<MyNotesPage>
                               ),
                               TabText(
                                 // text: i10n.journal,
-                                text: 'Recent Journals',
+                                text: 'recentJournals'.tr,
                                 value: Dimens.d1,
                                 selectedIndex:
                                 _currentTabIndex.toDouble(),
@@ -471,7 +346,7 @@ class _MyNotesPageState extends State<MyNotesPage>
                         ),
                         Dimens.d13.spaceHeight,
                         Text(
-                          "Organise Folder",
+                          "organiseFolder".tr,
                           style: Style.montserratRegular(
                               fontSize: Dimens.d12,
                               color: Colors.black.withOpacity(0.8),
@@ -619,7 +494,7 @@ class _MyNotesPageState extends State<MyNotesPage>
                                                   value:
                                                   'rename',
                                                   child:
-                                                  Text('Rename', style: Style.montserratMedium(fontSize: Dimens.d12, fontWeight: FontWeight.w200)),
+                                                  Text('rename'.tr, style: Style.montserratMedium(fontSize: Dimens.d12, fontWeight: FontWeight.w200)),
                                                 ),
                                                 PopupMenuItem(
                                                   height:
@@ -629,7 +504,7 @@ class _MyNotesPageState extends State<MyNotesPage>
                                                   value:
                                                   'delete',
                                                   child:
-                                                  Text('Delete Folder', style: Style.montserratMedium(fontSize: Dimens.d12, fontWeight: FontWeight.w200)),
+                                                  Text('deleteFolder'.tr, style: Style.montserratMedium(fontSize: Dimens.d12, fontWeight: FontWeight.w200)),
                                                 ),
                                               ],
                                               onSelected:
@@ -795,7 +670,7 @@ class _MyNotesPageState extends State<MyNotesPage>
                                                   value:
                                                   'delete',
                                                   child:
-                                                  Text('Delete Folder', style: Style.montserratMedium(fontSize: Dimens.d12, fontWeight: FontWeight.w200)),
+                                                  Text('deleteFolder'.tr, style: Style.montserratMedium(fontSize: Dimens.d12, fontWeight: FontWeight.w200)),
                                                 ),
                                               ],
                                               onSelected:
@@ -980,7 +855,7 @@ class _MyNotesPageState extends State<MyNotesPage>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "Add Folder",
+              "addFolder".tr,
               style: Style.montserratMedium(
                   fontSize: Dimens.d20,
                   color: Colors.black.withOpacity(0.8),
@@ -997,7 +872,7 @@ class _MyNotesPageState extends State<MyNotesPage>
             ),
             Dimens.d15.spaceHeight,
             Text(
-            "Start Ideas Folder",
+            "startIdeasFolder".tr,
               textAlign: TextAlign.center,
               style: Style.montserratMedium(
                   fontSize: Dimens.d14,
@@ -1021,7 +896,7 @@ class _MyNotesPageState extends State<MyNotesPage>
   void _onAddClick(BuildContext context,{bool? value}) {
     setState(() {
       recentJournal = value!;
-      folderName = "Select Folder";
+      folderName = "selectFolder".tr;
     });
     final subscriptionStatus = "SUBSCRIBED";
 
@@ -1084,7 +959,7 @@ class _MyNotesPageState extends State<MyNotesPage>
                                   Navigator.of(context).pop();
                                 },
                                 child: Text(
-                                  "Cancel",
+                                  "cancel".tr,
                                   style: Style.montserratMedium(
                                       fontSize: Dimens.d16,
                                       fontWeight: FontWeight.w200),
@@ -1098,7 +973,7 @@ class _MyNotesPageState extends State<MyNotesPage>
                                   await createFolder();
                                 },
                                 child: Text(
-                                  "Done",
+                                  "done".tr,
                                   style: Style.montserratMedium(
                                     fontSize: Dimens.d16,
                                   ),
@@ -1120,7 +995,7 @@ class _MyNotesPageState extends State<MyNotesPage>
                             isScrollable: true,
                             listOfItems: [
                               TabText(
-                                text: "Select Folder",
+                                text: "selectFolder".tr,
                                 value: Dimens.d0,
                                 selectedIndex: _currentTabIndex.toDouble(),
                                 padding: Dimens.d15.paddingAll,
@@ -1129,7 +1004,7 @@ class _MyNotesPageState extends State<MyNotesPage>
                               ),
                               TabText(
                                 // text: i10n.journal,
-                                text: 'Add New Folder',
+                                text: 'addNewFolder'.tr,
                                 value: Dimens.d1,
                                 selectedIndex:
                                 _currentTabIndexFolder.toDouble(),
@@ -1197,7 +1072,7 @@ class _MyNotesPageState extends State<MyNotesPage>
                               children: [
                                 Dimens.d10.spaceHeight,
                                 Text(
-                                  "Add New Folder",
+                                  "addNewFolder".tr,
                                   style: Style.montserratMedium(
                                       fontSize: Dimens.d16,
                                       fontWeight: FontWeight.w200),
@@ -1235,7 +1110,7 @@ class _MyNotesPageState extends State<MyNotesPage>
                                               FontWeight
                                                   .w200),
                                           hintText:
-                                          "Enter FolderName",
+                                          "enterFolderName".tr,
                                           // Hint text
                                           border: InputBorder.none,
                                           contentPadding:
@@ -1303,7 +1178,7 @@ class _MyNotesPageState extends State<MyNotesPage>
                         recentJournal == true
                             ? const SizedBox()
                             : Text(
-                          "Add New Folder",
+                          "addNewFolder".tr,
                           style: Style.montserratMedium(
                               fontSize: Dimens.d16,
                               fontWeight: FontWeight.w200),
@@ -1312,7 +1187,7 @@ class _MyNotesPageState extends State<MyNotesPage>
                         recentJournal == true
                             ? _currentTabIndexFolder==0?GestureDetector(
                           onTap: () {
-                            if(folderName!="Select Folder"){
+                            if(folderName!="selectFolder".tr){
                               Navigator.push(context, MaterialPageRoute(builder: (context) {
                                 return AddNotesPage(isFromMyNotes: true,
                                   folderId: "",
@@ -1333,7 +1208,7 @@ class _MyNotesPageState extends State<MyNotesPage>
                                 borderRadius: BorderRadius.circular(25)),
                             child: Center(
                               child: Text(
-                                "Done",
+                                "done".tr,
                                 style: Style.montserratMedium(
                                     fontSize: Dimens.d15,
                                     color: Colors.white),
@@ -1373,7 +1248,7 @@ class _MyNotesPageState extends State<MyNotesPage>
                                       FontWeight
                                           .w200),
                                   hintText:
-                                  "Enter FolderName",
+                                  "enterFolderName".tr,
                                   // Hint text
                                   border: InputBorder.none,
                                   contentPadding:
@@ -1410,7 +1285,7 @@ class _MyNotesPageState extends State<MyNotesPage>
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  'Rename Folder',
+                  'renameFolder'.tr,
                   style: Style.montserratMedium(
                       fontSize: Dimens.d14,
                       color: Colors.black.withOpacity(0.8),

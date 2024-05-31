@@ -69,7 +69,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: "Affirmation Data",
+        title: "affirmationData".tr,
    /*     title: widget.affirmationData != null
             ? i10n.editAffirmation
             : i10n.addAffirmation,*/
@@ -85,7 +85,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                       //       AppConstants.isFromGratitude: false,
                       //     });
                     },
-                    child: Text("Skip")),
+                    child: Text("skip".tr)),
                 Dimens.d20.spaceWidth,
               ])
             : /*widget.affirmationData != null
@@ -153,8 +153,8 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                             ),
                             Dimens.d20.spaceHeight,
                             CommonTextField(
-                              hintText: "Enter Title",
-                              labelText: "Title",
+                              hintText: "enterTitle".tr,
+                              labelText: "title".tr,
                               controller: titleController,
                               focusNode: titleFocus,
                               prefixLottieIcon: ImageConstant.lottieTitle,
@@ -167,8 +167,8 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                             Stack(
                               children: [
                                 CommonTextField(
-                                  hintText: "Enter Description",
-                                  labelText: "Description",
+                                  hintText: "enterDescription".tr,
+                                  labelText: "description".tr,
                                   controller: descController,
                                   focusNode: descFocus,
                                   transform: Matrix4.translationValues(
@@ -199,18 +199,18 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                       children: [
                         Expanded(
                           child: CommonElevatedButton(
-                            title: "Draft",
+                            title: "draft".tr,
                             outLined: true,
                             textStyle: Style.montserratRegular(
                                 color: ColorConstant.textDarkBlue),
                             onTap: () {
                               if (titleController.text.trim().isEmpty) {
-                                showSnackBarError(context, "Empty Title");
+                                showSnackBarError(context, "emptyTitle".tr);
                               } else if (descController.text
                                   .trim()
                                   .isEmpty) {
                                 showSnackBarError(
-                                    context, "Empty Description");
+                                    context, "emptyDescription".tr);
                               } else {
 
                                 affirmationDraftList.add({
@@ -254,15 +254,15 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                         Dimens.d20.spaceWidth,
                         Expanded(
                           child: CommonElevatedButton(
-                            title: "Save",
+                            title: "save".tr,
                             onTap: () {
                               if (titleController.text.trim().isEmpty) {
-                                showSnackBarError(context, "Empty Title");
+                                showSnackBarError(context, "emptyTitle".tr);
                               } else if (descController.text
                                   .trim()
                                   .isEmpty) {
                                 showSnackBarError(
-                                    context, "Empty Description");
+                                    context, "emptyDescription".tr);
                               } else {
                                 affirmationList.add({
                                   "title":titleController.text,

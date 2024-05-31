@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -176,7 +177,7 @@ class _MyFoldersNoteState extends State<MyFoldersNote>  with SingleTickerProvide
                     padding: const EdgeInsets.symmetric(
                         horizontal: Dimens.d20),
                     child: Text(
-                      "Drafts",
+                      "drafts".tr,
                       style: Style.montserratBold(
                         fontSize: Dimens.d16,
                       ),
@@ -258,7 +259,7 @@ class _MyFoldersNoteState extends State<MyFoldersNote>  with SingleTickerProvide
                   children: [
                     Dimens.d30.spaceHeight,
                     Text(
-                      "Today",
+                      "today".tr,
                       style: Style.montserratBold(
                         fontSize: Dimens.d16,
                       ),
@@ -427,7 +428,7 @@ class _MyFoldersNoteState extends State<MyFoldersNote>  with SingleTickerProvide
                   children: [
                     Dimens.d30.spaceHeight,
                     Text(
-                      "Previous 30 Days",
+                      "previous30Days".tr,
                       style: Style.montserratBold(
                           fontSize: Dimens.d16,
                           color: Colors.black
@@ -608,8 +609,8 @@ class _MyFoldersNoteState extends State<MyFoldersNote>  with SingleTickerProvide
           child: JournalNoDataWidget(
             showBottomHeight: true,
             title: _isSearching
-                ? "Notes No Search Data"
-                :"Notes No Data Message",
+                ? "notesNoSearchData".tr
+                :"notesNoDataMessage".tr,
             onClick: () =>
                 _onAddClick(context),
           ))

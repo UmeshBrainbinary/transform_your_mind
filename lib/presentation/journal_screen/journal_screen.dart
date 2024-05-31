@@ -45,7 +45,7 @@ class _JournalScreenState extends State<JournalScreen>
   late AnimationController _controller;
   ScrollController scrollController = ScrollController();
   bool _isScrollingOrNot = false;
-  bool info = false;
+  ValueNotifier<bool> info = ValueNotifier(false);
 
   @override
   void initState() {
@@ -101,10 +101,10 @@ class _JournalScreenState extends State<JournalScreen>
                       showMeIcon: false,
                       onInfoTap: () {
                         setState(() {
-                          if (info == false) {
-                            info = true;
+                          if (info.value == false) {
+                            info.value = true;
                           } else {
-                            info = false;
+                            info.value = false;
                           }
                           ratingView = false;
                         });
@@ -234,12 +234,13 @@ class _JournalScreenState extends State<JournalScreen>
                   ],
                 ),
               ),
-              info
+              info.value
                   ? Padding(
                       padding: EdgeInsets.only(top: Dimens.d110.h),
                       child: SizedBox(
                         child: ScreenInfoWidget(
                           controller: _controller,
+                          info: info,
                           isTutorialVideoVisible: isTutorialVideoVisible,
                           screenTitle: "Welcome To Journal",
                           screenHeading:

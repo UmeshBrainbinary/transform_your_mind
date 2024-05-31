@@ -31,7 +31,6 @@ class MyGratitudePage extends StatefulWidget {
     Key? key,
     this.fromNotification = false,
   }) : super(key: key);
-  static const myGratitude = '/myGratitude';
 
   @override
   State<MyGratitudePage> createState() => _MyGratitudePageState();
@@ -64,7 +63,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: CustomAppBar(
-          title: "My Gratitude",
+          title: "myGratitude".tr,
           showBack: true,
           action: LottieIconButton(
               icon: ImageConstant.lottieNavAdd,
@@ -113,7 +112,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                             padding: const EdgeInsets.symmetric(
                                                 horizontal: Dimens.d20),
                                             child: Text(
-                                              "Drafts",
+                                              "drafts".tr,
                                               style: Style.montserratMedium(
                                                 fontSize: Dimens.d16,
                                               ),
@@ -253,7 +252,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                   ],
                                 ),
                                 child: CommonTextField(
-                                    hintText: "Search Gratitude here",
+                                    hintText: "searchGratitudeHere".tr,
                                     controller: searchController,
                                     focusNode: searchFocus,
                                     prefixLottieIcon:
@@ -477,8 +476,8 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                               child: JournalNoDataWidget(
                                               showBottomHeight: true,
                                               title: _isSearching
-                                                  ? "No Search Data"
-                                                  : "No Gratitude Data",
+                                                  ? "noSearchData".tr
+                                                  : "noGratitudeData".tr,
                                               onClick: () {
                                                 _onAddClick(context);
                                               },

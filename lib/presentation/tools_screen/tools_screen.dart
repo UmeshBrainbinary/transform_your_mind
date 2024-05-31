@@ -24,7 +24,6 @@ class ToolsScreen extends StatefulWidget {
 
 class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin  {
   late final AnimationController _lottieBgController;
-  bool info = false;
   late AnimationController _controller;
   ThemeController themeController = Get.find<ThemeController>();
 
@@ -32,32 +31,29 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
     {
       "title": "Self Development",
       "desc":"Self Development Description",
-      // "buttonTitle": i10n.selfDevelopment,
       "buttonTitle": "Start Today!",
       "icon": ImageConstant.journalIcon
     },
     {
       "title": "transform Pods",
       "desc":"Self Development Description",
-      // "buttonTitle": i10n.listenNow,
       "buttonTitle": "Listen & Grow!",
       "icon": ImageConstant.transformPodIcon
     },
     {
       "title": "Rituals",
       "desc":"Self Development Description",
-      //"buttonTitle": i10n.ritualNow,
       "buttonTitle": "Begin Today!",
       "icon": ImageConstant.ritualIcon
     },
 
   ];
   ValueNotifier<bool> isTutorialVideoVisible = ValueNotifier(false);
+  ValueNotifier<bool> info = ValueNotifier(false);
 
   @override
   void initState() {
   _lottieBgController = AnimationController(vsync: this);
-
   _controller = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 200),
@@ -103,14 +99,15 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
                       isInfo: true,
                       onInfoTap: () {
                         setState(() {
-                          if (info == false) {
-                            info = true;
+                          if (info.value == false) {
+                            info.value = true;
+                            isTutorialVideoVisible.value = true;
                           } else {
-                            info = false;
+                            info.value = false;
+                            isTutorialVideoVisible.value = false;
                           }
                         });
-                        isTutorialVideoVisible.value =
-                        !isTutorialVideoVisible.value;
+                        // isTutorialVideoVisible.value = !isTutorialVideoVisible.value;
                         if (isTutorialVideoVisible.value) {
                           _controller.forward();
                         } else {
@@ -130,12 +127,12 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
                           textAlign: TextAlign.center,
                           text: TextSpan(
                             text: "Welcome to your\nTransform tool-kit",
-                            style: Style.montserratRegular(fontSize: Dimens.d18),
+                            style: Style.montserratRegular(fontSize: Dimens.d18,color: Colors.black,),
                             children: [
                               TextSpan(
                                 text: " RK!",
                                 style: Style.montserratRegular(
-                                  fontSize: Dimens.d18,
+                                  fontSize: Dimens.d18,color: Colors.black,
                                   fontWeight: FontWeight.bold,
                                   fontStyle: FontStyle.italic,
                                 ),
@@ -294,11 +291,12 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
                 ],
               ),
             ),
-            info
+            info.value
                 ? Padding(
               padding: EdgeInsets.only(top: Dimens.d110.h),
               child: SizedBox(
                 child: ScreenInfoWidget(
+                  info: info,
                   controller: _controller,
                   isTutorialVideoVisible: isTutorialVideoVisible,
                   screenTitle: "Welcome To Tools",
