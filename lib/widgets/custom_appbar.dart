@@ -56,11 +56,12 @@ class _CustomAppBarState extends State<CustomAppBar>
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
+    return AppBar(foregroundColor: Colors.white,surfaceTintColor: Colors.transparent,
+
       centerTitle: widget.centerTitle,
       title: Text(widget.title,
           style: widget.titleStyle ??
-              Style.cormorantGaramondBold(fontSize: Dimens.d20)),
+              Style.cormorantGaramondBold(fontSize: Dimens.d20,color: themeController.isDarkMode.value ? ColorConstant.white:ColorConstant.black)),
       backgroundColor: ColorConstant.transparent,
       leading: widget.leading ?? _getLeading(),
       //automaticallyImplyLeading: false,
@@ -68,7 +69,6 @@ class _CustomAppBarState extends State<CustomAppBar>
         _getAction(),
       ],
       elevation: 0,
-      systemOverlayStyle: SystemUiOverlayStyle.dark,
     );
   }
 
