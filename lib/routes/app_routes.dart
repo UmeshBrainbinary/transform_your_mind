@@ -34,6 +34,8 @@ import 'package:transform_your_mind/presentation/me_screen/screens/setting_scree
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/edit_profile_screen/widget/view_fullscreen_image.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/notification_setting_screen/binding/notification_setting_binding.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/notification_setting_screen/notification_setting_screen.dart';
+import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/personalisations_screen/binding/personalisations_binding.dart';
+import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/personalisations_screen/personalisations_screen.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/privacy_policy_screen/binding/privacy_policy_binding.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/privacy_policy_screen/privacy_policy_screen.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/binding/setting_binding.dart';
@@ -80,6 +82,8 @@ class AppRoutes {
   static const String changePassword = '/change_password_screen';
   static const String notificationSetting = '/notification_setting_screen';
   static const String privacyPolicy = '/privacy_policy_screen';
+  static const String personalisationsScreen = '/personalisations_screen';
+
 
 
   static List<GetPage> pages = [
@@ -318,6 +322,16 @@ class AppRoutes {
        DashBoardBinding()
       ],
     ),
+
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: personalisationsScreen,
+      page: () =>  const PersonalisationsScreen(),
+      bindings: [
+        PersonalisationsBinding()
+      ],
+    ),
+
     ///
     // GetPage(
     //   transition: Transition.rightToLeft,

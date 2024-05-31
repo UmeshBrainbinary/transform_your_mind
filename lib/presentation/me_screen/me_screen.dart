@@ -1111,6 +1111,9 @@ class _MeScreenState extends State<MeScreen> {
                           ],
                         ),
                         Dimens.d35.spaceHeight,
+
+
+                        /// my download yet
                         Column(
                           crossAxisAlignment:
                           CrossAxisAlignment
@@ -1120,16 +1123,19 @@ class _MeScreenState extends State<MeScreen> {
                               padding:
                               const EdgeInsets
                                   .only(
-                                right: 25,
-                                left: 25,
-                              ),
+                                  right:
+                                  25,
+                                  left:
+                                  25,
+                                  top:
+                                  20),
                               child: Row(
                                 mainAxisAlignment:
                                 MainAxisAlignment
                                     .spaceBetween,
                                 children: [
                                   Text(
-                                    "yourProgramme".tr,
+                                    "myDownloads".tr,
                                     textAlign:
                                     TextAlign.center,
                                     style: Style.montserratMedium(
@@ -1137,21 +1143,27 @@ class _MeScreenState extends State<MeScreen> {
                                         18,
                                         color: ColorConstant.white),
                                   ),
-                                  Container(
-                                    width:
-                                    100,
-                                    height:
-                                    20,
-                                    alignment:
-                                    Alignment.centerRight,
+                                  InkWell(
+                                    onTap:
+                                        () {
+
+                                    },
                                     child:
-                                    Text(
-                                      "seeAll".tr,
-                                      textAlign:
-                                      TextAlign.center,
-                                      style: Style.montserratMedium(
-                                          fontSize: 10,
-                                          color: Colors.white.withOpacity(0.4)),
+                                    Container(
+                                      width:
+                                      100,
+                                      height:
+                                      20,
+                                      alignment:
+                                      Alignment.centerRight,
+                                      child:
+                                      Text(
+                                        "seeAll".tr,
+                                        textAlign:
+                                        TextAlign.center,
+                                        style:
+                                        Style.montserratRegular(fontSize: 10, color: Colors.white.withOpacity(0.4)),
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -1159,334 +1171,122 @@ class _MeScreenState extends State<MeScreen> {
                             ),
                             Dimens.d20
                                 .spaceHeight,
-                            Container(
-                              margin:
-                              const EdgeInsets
-                                  .only(
-                                right: 25,
-                                left: 25,
+                            (meController.downloadList.isNotEmpty)
+                                ? SingleChildScrollView(
+                              scrollDirection:
+                              Axis.horizontal,
+                              child:
+                              Row(
+                                children:
+                                List.generate(
+                                  meController.recentlyPlayed.length,
+                                      (index) =>
+                                          GestureDetector(
+                                            onTap: () {},
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(left: 20),
+                                              child: SizedBox(
+                                                width: Dimens.d120,
+                                                child: Column(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Container(
+                                                      height: 130,
+                                                      width: 140,
+                                                      alignment: Alignment.center,
+                                                      decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(16),
+                                                          image: DecorationImage(
+                                                            image: AssetImage(
+                                                                meController.recentlyPlayed[index]["image"]
+                                                            ),
+                                                            fit: BoxFit.cover,
+                                                          )),
+                                                    ),
+                                                    Dimens.d6.spaceHeight,
+                                                    Text(
+                                                      "meditation",
+                                                      style: Style.montserratRegular(fontSize: Dimens.d12, color: ColorConstant.white).copyWith(
+                                                        letterSpacing: -Dimens.d0_16,
+                                                      ),
+                                                      maxLines: 1,
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                    Dimens.d7.spaceHeight,
+                                                    Text(
+                                                      meController.recentlyPlayed[index]["title"],
+                                                      style: Style.montserratRegular().copyWith(letterSpacing: Dimens.d0_48, fontSize: Dimens.d12, color: ColorConstant.white),
+                                                      maxLines: 2,
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                ).toList(),
                               ),
-                              width: MediaQuery.of(context).size.width,
+                            )
+                                : Container(
+                              margin:
+                              const EdgeInsets.only(
+                                right:
+                                25,
+                                left:
+                                25,
+                              ),
+                              width: MediaQuery.of(context)
+                                  .size
+                                  .width,
                               padding:
                               const EdgeInsets.symmetric(
-                                vertical: Dimens.d24,
-                                horizontal: Dimens.d20,
+                                vertical:
+                                Dimens.d24,
+                                horizontal:
+                                Dimens.d20,
                               ),
                               decoration:
                               BoxDecoration(
-                                color: ColorConstant.white.withOpacity(0.5),
+                                color: ColorConstant.black.withOpacity(0.2),
                                 borderRadius:
                                 BorderRadius.circular(Dimens.d16),
+                                /*   boxShadow: [
+                                              BoxShadow(
+                                                  color: const Color(0xff707070).withOpacity(0.18),
+                                                  blurRadius: 6,
+                                                  spreadRadius: 1)
+                                            ],*/
                               ),
-                              child: Column(
+                              child:
+                              Column(
                                 mainAxisSize:
-                                MainAxisSize
-                                    .min,
+                                MainAxisSize.min,
                                 crossAxisAlignment:
-                                CrossAxisAlignment
-                                    .center,
+                                CrossAxisAlignment.center,
                                 children: [
-                                  SvgPicture
-                                      .asset(
-                                    height:
-                                    28.h,
-                                    width:
-                                    28.h,
-                                    ImageConstant.breath,
+                                  SvgPicture.asset(
+                                    height: 28.h,
+                                    width: 28.h,
+                                    color: Colors.grey.withOpacity(0.35),
+                                    ImageConstant.download,
                                   ),
-                                  Dimens.d10
-                                      .spaceHeight,
+                                  Dimens.d10.spaceHeight,
                                   Text(
-                                    "comingSoon".tr,
-                                    style: Style.cormorantGaramondBold(
-                                        fontSize:
-                                        16,
-                                        color:
-                                        Colors.white.withOpacity(0.5)),
+                                    "noDownloadYet".tr,
+                                    style: Style.cormorantGaramondBold(fontSize: 16, color: Colors.white.withOpacity(0.5)),
                                   ),
-                                  Dimens.d10
-                                      .spaceHeight,
-                                  // Text(
-                                  //   i10n.startYourFirstBreathwork,
-                                  //   textAlign:
-                                  //   TextAlign.center,
-                                  //   style: Style.mockinacLight(
-                                  //       fontSize:
-                                  //       12,
-                                  //       color:
-                                  //       Colors.white.withOpacity(0.4)),
-                                  // ),
+                                  Dimens.d10.spaceHeight,
+                                  Text(
+                                    "downloadYourFavouriteContentToSaveThemHereForQuickAccess".tr,
+                                    textAlign: TextAlign.center,
+                                    style: Style.montserratMedium(fontSize: 12, color: Colors.white.withOpacity(0.4)),
+                                  ),
                                 ],
                               ),
                             ),
                           ],
-                        ),
-                        Dimens
-                            .d5.spaceHeight,
-
-                        /// my download yet
-                        // Column(
-                        //   crossAxisAlignment:
-                        //   CrossAxisAlignment
-                        //       .start,
-                        //   children: [
-                        //     Padding(
-                        //       padding:
-                        //       const EdgeInsets
-                        //           .only(
-                        //           right:
-                        //           25,
-                        //           left:
-                        //           25,
-                        //           top:
-                        //           20),
-                        //       child: Row(
-                        //         mainAxisAlignment:
-                        //         MainAxisAlignment
-                        //             .spaceBetween,
-                        //         children: [
-                        //           Text(
-                        //             i10n.myDownloads,
-                        //             textAlign:
-                        //             TextAlign.center,
-                        //             style: Style.mockinacBold(
-                        //                 fontSize:
-                        //                 18,
-                        //                 color:
-                        //                 themeManager.colorTextWhite),
-                        //           ),
-                        //           InkWell(
-                        //             onTap:
-                        //                 () {
-                        //               Navigator.pushNamed(context, DownloadsPage.download)
-                        //                   .then((value) {
-                        //                 allDownloads =
-                        //                 [];
-                        //                 shoorahPodList =
-                        //                 [];
-                        //                 meditationPodList =
-                        //                 [];
-                        //                 sleepPodList =
-                        //                 [];
-                        //                 breathPodList =
-                        //                 [];
-                        //                 meditationPodList =
-                        //                     sl<LocalService>().getRestoreMediaList(StorageKey.medDownloadedPod);
-                        //                 sleepPodList =
-                        //                     sl<LocalService>().getRestoreMediaList(StorageKey.sleepDownloadedPod);
-                        //                 shoorahPodList =
-                        //                     sl<LocalService>().getRestoreMediaList(StorageKey.downloadedPod);
-                        //                 breathPodList =
-                        //                     sl<LocalService>().getRestoreMediaList(StorageKey.breathDownloadedPod);
-                        //
-                        //                 allDownloads.add({
-                        //                   "type": "meditation",
-                        //                   "data": meditationPodList,
-                        //                 });
-                        //                 allDownloads.add({
-                        //                   "type": "sleep",
-                        //                   "data": sleepPodList,
-                        //                 });
-                        //                 allDownloads.add({
-                        //                   "type": "pods",
-                        //                   "data": shoorahPodList,
-                        //                 });
-                        //                 allDownloads.add({
-                        //                   "type": "breath",
-                        //                   "data": breathPodList,
-                        //                 });
-                        //
-                        //                 allDownloads.forEach((element) {
-                        //                   if (element['data'].length != 0) {
-                        //                     setState(() {
-                        //                       isDownloadAvailable = true;
-                        //                     });
-                        //                   } else {
-                        //                     isDownloadAvailable = false;
-                        //                   }
-                        //                 });
-                        //                 setState(() {});
-                        //               });
-                        //             },
-                        //             child:
-                        //             Container(
-                        //               width:
-                        //               100,
-                        //               height:
-                        //               20,
-                        //               alignment:
-                        //               Alignment.centerRight,
-                        //               child:
-                        //               Text(
-                        //                 i10n.seeAll,
-                        //                 textAlign:
-                        //                 TextAlign.center,
-                        //                 style:
-                        //                 Style.mockinacLight(fontSize: 10, color: Colors.white.withOpacity(0.4)),
-                        //               ),
-                        //             ),
-                        //           ),
-                        //         ],
-                        //       ),
-                        //     ),
-                        //     Dimens.d20
-                        //         .spaceHeight,
-                        //     (isDownloadAvailable)
-                        //         ? SingleChildScrollView(
-                        //       scrollDirection:
-                        //       Axis.horizontal,
-                        //       child:
-                        //       Row(
-                        //         children:
-                        //         List.generate(
-                        //           allDownloads.length,
-                        //               (index) =>
-                        //               Row(
-                        //                 crossAxisAlignment: CrossAxisAlignment.start,
-                        //                 children: [
-                        //                   Row(
-                        //                     crossAxisAlignment: CrossAxisAlignment.start,
-                        //                     children: List.generate(
-                        //                       allDownloads[index]['data'].length,
-                        //                           (i) => GestureDetector(
-                        //                         onTap: () async {
-                        //                           setState(() {
-                        //                             loader = true;
-                        //                           });
-                        //                           restoreBloc.add(
-                        //                             FetchRestoreAudioDetailsEvent(
-                        //                               contentType: allDownloads[index]['data'][i].contentType,
-                        //                               contentId: allDownloads[index]['data'][i].contentId,
-                        //                             ),
-                        //                           );
-                        //                           await Future.delayed(const Duration(seconds: 3), () {});
-                        //                           setState(() {
-                        //                             loader = false;
-                        //                           });
-                        //                           if (dataToPass != null) {
-                        //                             if (allDownloads[index]['data'][i].contentType.toString() == "3") {
-                        //                               _onMeditationTap(index, context, dataToPass);
-                        //                             } else if (allDownloads[index]['data'][i].contentType.toString() == "4") {
-                        //                               _onSleepTap(index, context, dataToPass);
-                        //                             } else if (allDownloads[index]['data'][i].contentType.toString() == "11") {
-                        //                               _onBreathTap(index, context, dataToPass);
-                        //                             } else {
-                        //                               _onPodsTap(index, context, dataToPass);
-                        //                             }
-                        //                           }
-                        //                           setState(() {
-                        //                             loader = false;
-                        //                           });
-                        //                         },
-                        //                         child: Padding(
-                        //                           padding: const EdgeInsets.only(left: 20.0),
-                        //                           child: SizedBox(
-                        //                             width: Dimens.d120.w,
-                        //                             child: Column(
-                        //                               mainAxisSize: MainAxisSize.min,
-                        //                               crossAxisAlignment: CrossAxisAlignment.start,
-                        //                               children: [
-                        //                                 Container(
-                        //                                   height: 140.r,
-                        //                                   width: 140.r,
-                        //                                   alignment: Alignment.center,
-                        //                                   decoration: BoxDecoration(
-                        //                                       borderRadius: BorderRadius.circular(16),
-                        //                                       image: DecorationImage(
-                        //                                         image: NetworkImage(
-                        //                                           allDownloads[index]['data'][i].image ?? allDownloads[index]['data'][i].expertImage ?? '',
-                        //                                         ),
-                        //                                         fit: BoxFit.contain,
-                        //                                       )),
-                        //                                 ),
-                        //                                 Dimens.d6.spaceHeight,
-                        //                                 Text(
-                        //                                   allDownloads[index]['type'],
-                        //                                   style: Style.workSansRegular(fontSize: Dimens.d12, color: themeManager.colorTextWhite).copyWith(
-                        //                                     letterSpacing: -Dimens.d0_16,
-                        //                                   ),
-                        //                                   maxLines: 1,
-                        //                                   overflow: TextOverflow.ellipsis,
-                        //                                 ),
-                        //                                 Dimens.d7.spaceHeight,
-                        //                                 Text(
-                        //                                   allDownloads[index]['data'][i].contentName,
-                        //                                   style: Style.mockinacRegular().copyWith(letterSpacing: Dimens.d0_48, fontSize: Dimens.d12, color: themeManager.colorTextWhite),
-                        //                                   maxLines: 2,
-                        //                                   overflow: TextOverflow.ellipsis,
-                        //                                 ),
-                        //                               ],
-                        //                             ),
-                        //                           ),
-                        //                         ),
-                        //                       ),
-                        //                     ),
-                        //                   ),
-                        //                 ],
-                        //               ),
-                        //         ).toList(),
-                        //       ),
-                        //     )
-                        //         : Container(
-                        //       margin:
-                        //       const EdgeInsets.only(
-                        //         right:
-                        //         25,
-                        //         left:
-                        //         25,
-                        //       ),
-                        //       width: MediaQuery.of(context)
-                        //           .size
-                        //           .width,
-                        //       padding:
-                        //       const EdgeInsets.symmetric(
-                        //         vertical:
-                        //         Dimens.d24,
-                        //         horizontal:
-                        //         Dimens.d20,
-                        //       ),
-                        //       decoration:
-                        //       BoxDecoration(
-                        //         color:
-                        //         themeManager.meContainer,
-                        //         borderRadius:
-                        //         BorderRadius.circular(Dimens.d16),
-                        //         /*   boxShadow: [
-                        //                       BoxShadow(
-                        //                           color: const Color(0xff707070).withOpacity(0.18),
-                        //                           blurRadius: 6,
-                        //                           spreadRadius: 1)
-                        //                     ],*/
-                        //       ),
-                        //       child:
-                        //       Column(
-                        //         mainAxisSize:
-                        //         MainAxisSize.min,
-                        //         crossAxisAlignment:
-                        //         CrossAxisAlignment.center,
-                        //         children: [
-                        //           SvgPicture.asset(
-                        //             height: 28.h,
-                        //             width: 28.h,
-                        //             color: Colors.grey.withOpacity(0.35),
-                        //             AppAssets.icDownload,
-                        //           ),
-                        //           Dimens.d10.spaceHeight,
-                        //           Text(
-                        //             i10n.noDownloadYet,
-                        //             style: Style.mockinacLight(fontSize: 16, color: Colors.white.withOpacity(0.5)),
-                        //           ),
-                        //           Dimens.d10.spaceHeight,
-                        //           Text(
-                        //             "Download Your Favourite content to save them here for quick access",
-                        //             textAlign: TextAlign.center,
-                        //             style: Style.mockinacLight(fontSize: 12, color: Colors.white.withOpacity(0.4)),
-                        //           ),
-                        //         ],
-                        //       ),
-                        //     ),
-                        //   ],
-                        // )
+                        )
                       ],
                     ),
                   ),

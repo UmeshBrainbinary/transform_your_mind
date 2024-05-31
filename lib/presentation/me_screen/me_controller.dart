@@ -31,4 +31,6 @@ class MeController extends GetxController{
     },
   ];
 
+  List downloadList = [];
+
 }
