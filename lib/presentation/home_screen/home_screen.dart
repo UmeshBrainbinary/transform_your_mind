@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -13,6 +14,7 @@ import 'package:transform_your_mind/presentation/home_screen/widgets/cleanse_but
 import 'package:transform_your_mind/presentation/home_screen/widgets/home_widget.dart';
 import 'package:transform_your_mind/presentation/home_screen/widgets/todays_gratitude.dart';
 import 'package:transform_your_mind/presentation/home_screen/widgets/todays_rituals.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/bg_oval_custom_painter.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:transform_your_mind/widgets/custom_view_controller.dart';
@@ -38,6 +40,8 @@ class _HomeScreenState extends State<HomeScreen>
     {"title": "Journal", "icon": ImageConstant.calendar},
     {"title": "My Badges", "icon": ImageConstant.calendar},
   ];
+
+  ThemeController themeController = Get.find<ThemeController>();
 
   @override
   void initState() {
@@ -90,247 +94,248 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: ValueListenableBuilder(
-        valueListenable: showScrollTop,
-        builder: (context, value, child) {
-          return AnimatedOpacity(
-            duration: const Duration(milliseconds: 700), //show/hide animation
-            opacity: showScrollTop.value
-                ? 1.0
-                : 0.0, //set opacity to 1 on visible, or hide
-            child: Container(
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: ColorConstant.themeColor,
-              ),
-              padding: const EdgeInsets.all(5.0),
-              child: FloatingActionButton(
-                elevation: 0.0,
-                onPressed: () {
-                  scrollController.animateTo(
-                    0,
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.fastOutSlowIn,
-                  );
-                },
-                backgroundColor: ColorConstant.themeColor,
-                child: SvgPicture.asset(
-                  ImageConstant.icUpArrow,
-                  fit: BoxFit.fill,
-                  height: Dimens.d20.h,
-                  color: Colors.white,
+    return SafeArea(
+      child: Scaffold(
+        floatingActionButton: ValueListenableBuilder(
+          valueListenable: showScrollTop,
+          builder: (context, value, child) {
+            return AnimatedOpacity(
+              duration: const Duration(milliseconds: 700), //show/hide animation
+              opacity: showScrollTop.value
+                  ? 1.0
+                  : 0.0, //set opacity to 1 on visible, or hide
+              child: Container(
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: ColorConstant.themeColor,
+                ),
+                padding: const EdgeInsets.all(5.0),
+                child: FloatingActionButton(
+                  elevation: 0.0,
+                  onPressed: () {
+                    scrollController.animateTo(
+                      0,
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.fastOutSlowIn,
+                    );
+                  },
+                  backgroundColor: ColorConstant.themeColor,
+                  child: SvgPicture.asset(
+                    ImageConstant.icUpArrow,
+                    fit: BoxFit.fill,
+                    height: Dimens.d20.h,
+                    color: Colors.white,
+                  ),
                 ),
               ),
-            ),
-          );
-        },
-      ),
-      backgroundColor: ColorConstant.themeColor.withOpacity(0.1),
-      body: CustomScrollViewWidget(
-        controller: scrollController,
-        physics: const ClampingScrollPhysics(),
-        child: Stack(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                //__________________________ top view ____________________
-                topView(),
-                Dimens.d36.spaceHeight,
-                //___________________________ add share view  ______________
-                Center(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () {},
-                        child: SvgPicture.asset(
-                          ImageConstant.icAddRounded,
-                          width: Dimens.d46,
-                          height: Dimens.d46,
-                          color: ColorConstant.themeColor,
-                        ),
-                      ),
-                      Dimens.d15.spaceWidth,
-                      GestureDetector(
-                        onTap: () {},
-                        child: CircleAvatar(
-                          backgroundColor: ColorConstant.themeColor,
-                          radius: Dimens.d23,
+            );
+          },
+        ),
+        backgroundColor: ColorConstant.themeColor.withOpacity(0.1),
+        body: CustomScrollViewWidget(
+          controller: scrollController,
+          physics: const ClampingScrollPhysics(),
+          child: Stack(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  //__________________________ top view ____________________
+                  topView(),
+                  Dimens.d36.spaceHeight,
+                  //___________________________ add share view  ______________
+                  Center(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {},
                           child: SvgPicture.asset(
-                            ImageConstant.icShareWhite,
+                            ImageConstant.icAddRounded,
+                            width: Dimens.d46,
+                            height: Dimens.d46,
+                            color: ColorConstant.themeColor,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                Dimens.d16.spaceHeight,
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
-                  child: Text(
-                    "$_greeting, RK!",
-                    textAlign: TextAlign.center,
-                    style: Style.cormorantGaramondMedium(fontSize: 22),
-                  ),
-                ),
-                Dimens.d16.spaceHeight,
-
-                //______________________________ TrendingThings _______________________
-                trendingView(),
-
-                Dimens.d30.spaceHeight,
-                customDivider(),
-                Dimens.d30.spaceHeight,
-                //______________________________ ToDays Gratitude _______________________
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: TodaysGratitude(),
-                ),
-                //______________________________ yourDaily Recommendations _______________________
-
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
-                  child: Text(
-                    "Your Recommendations",
-                    textAlign: TextAlign.center,
-                    style: Style.montserratRegular(fontSize: Dimens.d22),
-                  ),
-                ),
-                Dimens.d20.spaceHeight,
-                recommendationsView(),
-                Dimens.d20.spaceHeight,
-                GestureDetector(
-                  onTap: () {},
-                  child: Container(
-                    height: 40,
-                    margin: const EdgeInsets.symmetric(horizontal: Dimens.d20),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: ColorConstant.themeColor,
-                    ),
-                    child: Center(
-                      child: Text(
-                        "Refresh Daily Recommendations",
-                        style: Style.montserratRegular(
-                            fontSize: 12, color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
-                Dimens.d30.spaceHeight,
-                //______________________________ Today's Cleanse _______________________
-
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
-                  child: Text(
-                    "Today's Cleanse",
-                    textAlign: TextAlign.center,
-                    style: Style.montserratRegular(fontSize: Dimens.d22),
-                  ),
-                ),
-                Dimens.d30.spaceHeight,
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: CleanseButton(
-                    totalCount: totalCountCleanse ?? 0,
-                  ),
-                ),
-                Dimens.d50.spaceHeight,
-                //______________________________ yourDailyRituals _______________________
-                Container(
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16)),
-                  padding: const EdgeInsets.symmetric(vertical: 27),
-                  margin: const EdgeInsets.symmetric(horizontal: 20),
-                  child: const TodaysRituals(
-                    type: "Your Daily Rituals",
-                  ),
-                ),
-                Dimens.d20.spaceHeight,
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
-                  child: Text(
-                    "Your Bookmarks",
-                    textAlign: TextAlign.center,
-                    style: Style.montserratRegular(fontSize: Dimens.d22),
-                  ),
-                ),
-                Dimens.d20.spaceHeight,
-
-                trendingView(),
-                Dimens.d30.spaceHeight,
-                customDivider(),
-                Dimens.d30.spaceHeight,
-
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
-                  child: Text(
-                    "Quick Access",
-                    textAlign: TextAlign.center,
-                    style: Style.montserratRegular(fontSize: Dimens.d22),
-                  ),
-                ),
-                Dimens.d30.spaceHeight,
-
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
-                  child: SizedBox(
-                    height: 250,
-                    child: GridView.builder(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                              // 3 items per row
-                              childAspectRatio: 1.6,
-                              crossAxisSpacing: 30,
-                              mainAxisSpacing:
-                                  30 // Set the aspect ratio as needed
-                              ),
-                      itemCount: quickAccessList.length,
-                      // Total number of items
-                      itemBuilder: (BuildContext context, int index) {
-                        // Generating items for the GridView
-                        return GestureDetector(
+                        Dimens.d15.spaceWidth,
+                        GestureDetector(
                           onTap: () {},
-                          child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(9),
-                                color:
-                                    ColorConstant.themeColor.withOpacity(0.21)),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SvgPicture.asset(
-                                  quickAccessList[index]["icon"],
-                                  height: 20,
-                                  width: 20,
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Text(
-                                  quickAccessList[index]["title"],
-                                  // Displaying item index
-                                  style: Style.montserratRegular(
-                                      fontSize: 8, color: Colors.black),
-                                ),
-                              ],
+                          child: CircleAvatar(
+                            backgroundColor: ColorConstant.themeColor,
+                            radius: Dimens.d23,
+                            child: SvgPicture.asset(
+                              ImageConstant.icShareWhite,
                             ),
                           ),
-                        );
-                      },
+                        ),
+                      ],
                     ),
                   ),
-                ),
-                Dimens.d50.spaceHeight,
-              ],
-            ),
-          ],
+                  Dimens.d16.spaceHeight,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
+                    child: Text(
+                      "$_greeting, RK!",
+                      textAlign: TextAlign.center,
+                      style: Style.cormorantGaramondMedium(fontSize: 22),
+                    ),
+                  ),
+                  Dimens.d16.spaceHeight,
+      
+                  //______________________________ TrendingThings _______________________
+                  trendingView(),
+      
+                  Dimens.d30.spaceHeight,
+                  customDivider(),
+                  Dimens.d30.spaceHeight,
+                  //______________________________ ToDays Gratitude _______________________
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: TodaysGratitude(),
+                  ),
+                  //______________________________ yourDaily Recommendations _______________________
+      
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
+                    child: Text(
+                      "Your Recommendations",
+                      textAlign: TextAlign.center,
+                      style: Style.montserratRegular(fontSize: Dimens.d22),
+                    ),
+                  ),
+                  Dimens.d20.spaceHeight,
+                  recommendationsView(),
+                  Dimens.d20.spaceHeight,
+                  GestureDetector(
+                    onTap: () {},
+                    child: Container(
+                      height: 40,
+                      margin: const EdgeInsets.symmetric(horizontal: Dimens.d20),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: ColorConstant.themeColor,
+                      ),
+                      child: Center(
+                        child: Text(
+                          "Refresh Daily Recommendations",
+                          style: Style.montserratRegular(
+                              fontSize: 12, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Dimens.d30.spaceHeight,
+                  //______________________________ Today's Cleanse _______________________
+      
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
+                    child: Text(
+                      "Today's Cleanse",
+                      textAlign: TextAlign.center,
+                      style: Style.montserratRegular(fontSize: Dimens.d22),
+                    ),
+                  ),
+                  Dimens.d30.spaceHeight,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: CleanseButton(
+                      totalCount: totalCountCleanse ?? 0,
+                    ),
+                  ),
+                  Dimens.d50.spaceHeight,
+                  //______________________________ yourDailyRituals _______________________
+                  Container(
+                    decoration: BoxDecoration(
+                        color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : Colors.white,
+                        borderRadius: BorderRadius.circular(16)),
+                    padding: const EdgeInsets.symmetric(vertical: 27),
+                    margin: const EdgeInsets.symmetric(horizontal: 20),
+                    child: const TodaysRituals(
+                      type: "Your Daily Rituals",
+                    ),
+                  ),
+                  Dimens.d20.spaceHeight,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
+                    child: Text(
+                      "Your Bookmarks",
+                      textAlign: TextAlign.center,
+                      style: Style.montserratRegular(fontSize: Dimens.d22),
+                    ),
+                  ),
+                  Dimens.d20.spaceHeight,
+      
+                  trendingView(),
+                  Dimens.d30.spaceHeight,
+                  customDivider(),
+                  Dimens.d30.spaceHeight,
+      
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
+                    child: Text(
+                      "Quick Access",
+                      textAlign: TextAlign.center,
+                      style: Style.montserratRegular(fontSize: Dimens.d22),
+                    ),
+                  ),
+                  Dimens.d30.spaceHeight,
+      
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
+                    child: SizedBox(
+                      height: 250,
+                      child: GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                // 3 items per row
+                                childAspectRatio: 1.6,
+                                crossAxisSpacing: 30,
+                                mainAxisSpacing:
+                                    30 // Set the aspect ratio as needed
+                                ),
+                        itemCount: quickAccessList.length,
+                        // Total number of items
+                        itemBuilder: (BuildContext context, int index) {
+                          // Generating items for the GridView
+                          return GestureDetector(
+                            onTap: () {},
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(9),
+                                  color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.themeColor.withOpacity(0.21)),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    quickAccessList[index]["icon"],
+                                    height: 20,
+                                    width: 20,
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    quickAccessList[index]["title"],
+                                    // Displaying item index
+                                    style: Style.montserratRegular(
+                                        fontSize: 8),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  Dimens.d50.spaceHeight,
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -437,7 +442,7 @@ class _HomeScreenState extends State<HomeScreen>
               margin: const EdgeInsets.symmetric(vertical: 10),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
-                color: Colors.white,
+                color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : Colors.white,
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.1),
@@ -504,7 +509,7 @@ class _HomeScreenState extends State<HomeScreen>
                     Text(
                       "Meditation Min",
                       style: Style.montserratRegular(
-                          fontSize: 8, color: Colors.black),
+                          fontSize: 8,),
                     ),
                     Dimens.d7.spaceHeight,
                     SizedBox(
@@ -514,7 +519,7 @@ class _HomeScreenState extends State<HomeScreen>
                         maxLines: 2,
                         style: Style.montserratRegular(
                           fontSize: 15,
-                          color: Colors.black,
+
                         ),
                       ),
                     ),
@@ -522,7 +527,7 @@ class _HomeScreenState extends State<HomeScreen>
                     Text(
                       "Ravi Khunt",
                       style: Style.montserratRegular(
-                          fontSize: 8, color: Colors.black),
+                          fontSize: 8,),
                     ),
                   ],
                 )

@@ -14,6 +14,7 @@ import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/core/utils/validation_functions.dart';
 import 'package:transform_your_mind/presentation/auth/login_screen/login_controller.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
@@ -24,24 +25,26 @@ class LoginScreen extends StatelessWidget {
    final LoginController loginController = Get.put(LoginController());
    GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+   ThemeController themeController = Get.find<ThemeController>();
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorConstant.backGround,
+      backgroundColor: themeController.isDarkMode.value ?  ColorConstant.black : ColorConstant.backGround,
       appBar: CustomAppBar(
         title: "login".tr,
       ),
       body: SafeArea(
           child: Stack(
             children: [
-
-            Positioned(
+              !themeController.isDarkMode.value ?
+             Positioned(
               top: Dimens.d70.h,
               right: 0,
               left:  null,
               child: Image.asset(ImageConstant.bgStar, height: Dimens.d274.h),
-            ),
+            ) : SizedBox(),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
                 child: LayoutBuilder(
@@ -227,7 +230,7 @@ class LoginScreen extends StatelessWidget {
                          width: Dimens.d1),
                      borderRadius:
                      const BorderRadius.all(Radius.circular(Dimens.d3)),
-                     color: ColorConstant.white
+                     color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.white
                    ),
                    child: loginController.rememberMe.value  ? const Icon(Icons.check, color: ColorConstant.themeColor, size: Dimens.d12) : const SizedBox(),
 

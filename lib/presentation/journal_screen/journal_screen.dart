@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:transform_your_mind/core/common_widget/common_gradiant_container.dart';
 import 'package:transform_your_mind/core/common_widget/screen_info_widget.dart';
@@ -9,6 +10,7 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/presentation/explore_screen/widget/home_app_bar.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 
 import '../../core/utils/style.dart';
 
@@ -56,6 +58,7 @@ class _JournalScreenState extends State<JournalScreen>
   }
 
   bool ratingView = false;
+  ThemeController themeController = Get.find<ThemeController>();
 
   @override
   void dispose() {
@@ -68,7 +71,7 @@ class _JournalScreenState extends State<JournalScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
+
         body: SafeArea(
           child: Stack(
             children: [
@@ -184,7 +187,7 @@ class _JournalScreenState extends State<JournalScreen>
                                                       alignment:
                                                           Alignment.center,
                                                       decoration: BoxDecoration(
-                                                        color: Colors.white,
+                                                        color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.white,
                                                         borderRadius: Dimens
                                                             .d19.radiusAll,
                                                         boxShadow: [
@@ -221,7 +224,8 @@ class _JournalScreenState extends State<JournalScreen>
                                 }),
                             (_isScrollingOrNot)
                                 ? commonGradiantContainer(
-                                    color: Colors.white, h: 30)
+                                    color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.white,
+                                h: 30)
                                 : const SizedBox()
                           ],
                         ),

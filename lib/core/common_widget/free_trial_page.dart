@@ -113,7 +113,7 @@ class _FreeTrialPageState extends State<FreeTrialPage>
                     onTap: () {
                       Navigator.pushReplacement(context, MaterialPageRoute(
                         builder: (context) {
-                          return const SubscriptionScreen();
+                          return  SubscriptionScreen();
                         },
                       ));
                     },

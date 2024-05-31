@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/custom_chip.dart';
@@ -12,6 +13,7 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/intro_screen/select_your_affirmation_focus_page.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 class Tag {
@@ -71,6 +73,8 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
 
   List<String> selectedTagNames = [];
 
+  ThemeController themeController = Get.find<ThemeController>();
+
   @override
   void initState() {
     super.initState();
@@ -90,18 +94,20 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       appBar: const CustomAppBar(
         title: "Select Your Focus",
       ),
       body: Stack(
         alignment: Alignment.bottomCenter,
         children: [
-          BackGroundContainer(
+          !themeController.isDarkMode.value
+          ? BackGroundContainer(
             image: ImageConstant.imgSelectFocus,
             isLeft: false,
             top: Dimens.d100.h,
             height: Dimens.d230.h,
-          ),
+          ) : SizedBox(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
             child: Column(
@@ -110,7 +116,7 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
                 Text(
                   "What areas in your life do you want to focus on and to receive daily doses of positivity? Select minimum 5",
                   style: Style.montserratRegular(
-                      color: Colors.black,
+                      color: themeController.isDarkMode.value ? ColorConstant.white : ColorConstant.black,
                       fontSize: Dimens.d14,
                       fontWeight: FontWeight.w600),
                 ),

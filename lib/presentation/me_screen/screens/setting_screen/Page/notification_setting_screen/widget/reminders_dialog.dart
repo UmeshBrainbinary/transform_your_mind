@@ -120,7 +120,7 @@ Future<void> showRemindersDialog(
                       controller: controller,
                       focusNode: focusNode,
                       labelText: '',
-                       filledColor: themeController.isDarkMode.value ? ColorConstant.color121212 : ColorConstant.white,
+                       filledColor: themeController.isDarkMode.value ? ColorConstant.lightBlack : ColorConstant.white,
                       suffixIcon: Transform.scale(
                         scale: 0.38,
                         child:  Transform.rotate(

@@ -6,11 +6,13 @@ import 'package:lottie/lottie.dart';
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/common_widget/app_common_dialog.dart';
 import 'package:transform_your_mind/core/common_widget/ritual_tile.dart';
+import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/rituals_screen/rituals_screen.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/divider.dart';
 
@@ -33,6 +35,8 @@ class _TodaysRitualsState extends State<TodaysRituals> {
   final GlobalKey<AnimatedListState> _myRitualListKey =
       GlobalKey<AnimatedListState>();
   Timer? _debounce;
+
+  ThemeController themeController = Get.find<ThemeController>();
 
   @override
   void initState() {
@@ -117,7 +121,7 @@ class _TodaysRitualsState extends State<TodaysRituals> {
           padding: const EdgeInsets.only(bottom: Dimens.d8),
           child:  Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : Colors.white,
               borderRadius: BorderRadius.circular(Dimens.d16),
             ),
             child: AnimatedList(

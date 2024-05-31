@@ -11,6 +11,7 @@ import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/core/utils/toast_message.dart';
 import 'package:transform_your_mind/presentation/auth/forgot_password_screen/forgot_controller.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/theme/theme_helper.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
@@ -20,10 +21,12 @@ class VerificationsScreen extends StatelessWidget {
    VerificationsScreen({super.key});
   final ForgotController forgotController = Get.put(ForgotController());
 
+   ThemeController themeController = Get.find<ThemeController>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorConstant.backGround,
+      backgroundColor: themeController.isDarkMode.value ?  ColorConstant.black : ColorConstant.backGround,
       appBar: CustomAppBar(
         title: "verification".tr,
       ),
@@ -72,8 +75,9 @@ class VerificationsScreen extends StatelessWidget {
                                         fontSize: Dimens.d23,
                                         fontWeight: FontWeight.w400,
                                         color: ColorConstant.color716B6B),
+
                                       decoration: BoxDecoration(
-                                        color: Colors.white,
+                                        color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.white,
                                         borderRadius: BorderRadius.circular(5),
                                       ),
                                     ),
@@ -88,7 +92,8 @@ class VerificationsScreen extends StatelessWidget {
                                       textStyle:Style.montserratRegular(
                                           fontSize: Dimens.d23,
                                           fontWeight: FontWeight.w400,
-                                          color: ColorConstant.color716B6B)
+                                          color: ColorConstant.color716B6B),
+
                                     ),
                                   ),
                                   Dimens.d23.spaceHeight,

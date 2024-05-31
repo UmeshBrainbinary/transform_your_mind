@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/common_gradiant_container.dart';
 import 'package:transform_your_mind/core/common_widget/custom_chip.dart';
@@ -14,6 +15,7 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/intro_screen/select_your_focus_page.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 
@@ -57,6 +59,7 @@ class _SelectYourAffirmationFocusPageState
 
   List<String> selectedTagNames = [];
   ValueNotifier<String> selectedReminderTime = ValueNotifier('');
+  ThemeController themeController = Get.find<ThemeController>();
 
 
 
@@ -85,12 +88,13 @@ class _SelectYourAffirmationFocusPageState
       body:Stack(
         alignment: Alignment.bottomCenter,
         children: [
+          !themeController.isDarkMode.value ?
           BackGroundContainer(
             image:ImageConstant.imgSelectFocus,
             isLeft: true,
             top: Dimens.d160.h,
             height: Dimens.d230.h,
-          ),
+          ):SizedBox(),
           Column(
             children: [
               Dimens.d40.spaceHeight,
@@ -98,7 +102,7 @@ class _SelectYourAffirmationFocusPageState
                 "chooseMinInterest",
                 textAlign: TextAlign.center,
                 style: Style.montserratRegular(
-                    color: Colors.black,
+                    color: themeController.isDarkMode.value ? ColorConstant.white : ColorConstant.black,
                     fontSize: Dimens.d14,
                     fontWeight: FontWeight.w600),
               ),
@@ -159,7 +163,8 @@ class _SelectYourAffirmationFocusPageState
                                 "Set Reminders",
                                 style: Style.montserratRegular(
                                     fontSize: Dimens.d16,
-                                    color: Colors.black),
+                                    color: themeController.isDarkMode.value ? ColorConstant.white : ColorConstant.black
+                                ),
                               ),
                             ),
                             const Spacer(),

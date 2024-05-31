@@ -6,6 +6,14 @@ class AppTheme {
   static final ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
     primaryColor: Colors.white,
+
+      navigationBarTheme: NavigationBarThemeData(
+          backgroundColor: Colors.transparent,
+          iconTheme: WidgetStatePropertyAll(
+            IconThemeData(
+            color: Colors.black, // Icon color
+          ),)
+      ),
     // elevatedButtonTheme: ElevatedButtonThemeData(
     //   style: ElevatedButton.styleFrom(
     //     foregroundColor: Colors.white,
@@ -19,14 +27,20 @@ class AppTheme {
     textTheme: TextTheme(
       displayLarge: TextStyle(color: ColorConstant.black),
     ),
-
+     bottomNavigationBarTheme: BottomNavigationBarThemeData(backgroundColor: ColorConstant.white)
   );
 
   static final ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
     primaryColor: Colors.black,
     dialogTheme: DialogTheme(backgroundColor: ColorConstant.textfieldFillColor),
-    scaffoldBackgroundColor: Colors.black,
+    scaffoldBackgroundColor: ColorConstant.black,
+    navigationBarTheme: NavigationBarThemeData(
+      backgroundColor: Colors.transparent,
+      iconTheme: WidgetStatePropertyAll(IconThemeData(
+        color: Colors.white, // Icon color
+      ),)
+    ),
     // elevatedButtonTheme: ElevatedButtonThemeData(
     //   style: ElevatedButton.styleFrom(
     //     foregroundColor: Colors.white, backgroundColor: Colors.orange,
@@ -36,6 +50,7 @@ class AppTheme {
     textTheme: TextTheme(
       displayLarge: TextStyle(color: ColorConstant.white),
     ),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(backgroundColor: ColorConstant.black)
 
   );
 }

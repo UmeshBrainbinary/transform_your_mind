@@ -10,6 +10,7 @@ import 'package:transform_your_mind/core/utils/string_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/core/utils/validation_functions.dart';
 import 'package:transform_your_mind/presentation/auth/forgot_password_screen/forgot_controller.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
@@ -20,10 +21,12 @@ class NewPasswordScreen extends StatelessWidget {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   ForgotController forgotController = Get.put(ForgotController());
 
+  ThemeController themeController = Get.find<ThemeController>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorConstant.backGround,
+      backgroundColor: themeController.isDarkMode.value ?  ColorConstant.black : ColorConstant.backGround,
       appBar: CustomAppBar(
         title: "newPassword".tr,
       ),
@@ -179,7 +182,7 @@ class NewPasswordScreen extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.white,
+          //backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(11.0), // Set border radius
           ),
@@ -194,7 +197,7 @@ class NewPasswordScreen extends StatelessWidget {
                   style: Style.cormorantGaramondBold(
                       fontSize: Dimens.d22,
                       fontWeight: FontWeight.w700,
-                      color: Colors.black)),
+                     )),
             ),
             Dimens.d7.spaceHeight,
             Center(
@@ -204,7 +207,7 @@ class NewPasswordScreen extends StatelessWidget {
                   style: Style.montserratRegular(
                       fontSize: Dimens.d12,
                       fontWeight: FontWeight.w400,
-                      color: Colors.black)),
+                     )),
             ),
             Dimens.d31.spaceHeight,
             Padding(

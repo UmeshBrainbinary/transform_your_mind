@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -37,6 +38,8 @@ class AddImageWidget extends StatefulWidget {
 }
 
 class _AddImageWidgetState extends State<AddImageWidget> {
+
+  ThemeController themeController = Get.find<ThemeController>();
 
 
   @override
@@ -93,6 +96,7 @@ class _AddImageWidgetState extends State<AddImageWidget> {
                                         child: SvgPicture.asset(
                                           ImageConstant.userPlaceHolder,
                                           fit: BoxFit.cover,
+                                          color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.white,
                                         ),
                                       ),
                                     ),

@@ -75,7 +75,7 @@ class Style {
 
   static TextStyle montserratSemiBold({
     Color? color,
-    FontWeight fontWeight = FontWeight.w900,
+    FontWeight fontWeight = FontWeight.w700,
     FontStyle fontStyle = FontStyle.normal,
     double? fontSize,
     double? height,

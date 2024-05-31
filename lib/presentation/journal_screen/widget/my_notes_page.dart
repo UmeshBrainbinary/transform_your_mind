@@ -19,6 +19,8 @@ import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_notes_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/folder_descrptions.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/my_folders_note.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
+import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 
@@ -41,6 +43,7 @@ class _MyNotesPageState extends State<MyNotesPage>
   int totalItemCountOfNotes = 0;
   Timer? _debounce;
   int itemIndexToRemove = -1;
+  ThemeController themeController = Get.find<ThemeController>();
   ScrollController scrollController = ScrollController();
 
   //Drafts
@@ -353,32 +356,17 @@ class _MyNotesPageState extends State<MyNotesPage>
                                   color:Colors.grey,
                                 ),
                                 Expanded(
-                                  child: TextFormField(
+                                  child: CommonTextField(
+                                     hintText: "Search",
                                     onChanged: (value) {
                                       _currentTabIndex == 0
                                           ? filterSearchResults(value)
                                           : filterNotesSearchResults(value);
                                     },
                                     controller: ser,
-                                    style: Style.montserratRegular(
-                                        fontSize: Dimens.d14,
-                                        color:
-                                        Colors.black.withOpacity(0.8),
-                                        fontWeight: FontWeight.w200),
-                                    decoration: InputDecoration(
-                                      hintStyle: Style.montserratRegular(
-                                          fontSize: Dimens.d14,
-                                          color: Colors.black
-                                              .withOpacity(0.8),
-                                          fontWeight: FontWeight.w200),
-                                      hintText: 'Search', // Hint text
-                                      border: InputBorder.none,
-                                      contentPadding: const EdgeInsets.only(
-                                          left: 10, bottom: 0),
-                                    ),
+                                    focusNode: FocusNode(),
                                   ),
                                 ),
-
                               ],
                             ),
                           ),
@@ -573,10 +561,7 @@ class _MyNotesPageState extends State<MyNotesPage>
                                                     fontSize:
                                                     Dimens
                                                         .d14,
-                                                    color: Colors
-                                                        .black
-                                                        .withOpacity(
-                                                        0.8),
+
                                                     fontWeight:
                                                     FontWeight
                                                         .w200),
@@ -1064,7 +1049,7 @@ class _MyNotesPageState extends State<MyNotesPage>
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(
@@ -1076,7 +1061,7 @@ class _MyNotesPageState extends State<MyNotesPage>
         return StatefulBuilder(
           builder: (context, setState) {
             return Container(
-              color: Colors.transparent,
+              //color: Colors.transparent,
               height: MediaQuery.of(context).size.height - 80,
               child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),

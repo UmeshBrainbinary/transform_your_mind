@@ -6,43 +6,45 @@ import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 
 
 Future<XFile?>? showImagePickerActionSheet(BuildContext context) async {
 
   final ImagePicker picker = ImagePicker();
   XFile? image;
+  ThemeController themeController = Get.find<ThemeController>();
 
   await showCupertinoModalPopup(
     context: context,
     builder: (BuildContext context) => CupertinoActionSheet(
       actions: <Widget>[
         Container(
-          color: ColorConstant.white,
+          color: themeController.isDarkMode.value? ColorConstant.textfieldFillColor : ColorConstant.white,
           child: CupertinoActionSheetAction(
             onPressed: () async {
               Navigator.pop(context, ImageSource.camera);
             },
-            child: Text("takePhoto".tr, style: Style.montserratRegular()),
+            child: Text("takePhoto".tr, style: Style.montserratRegular(color: themeController.isDarkMode.value? ColorConstant.white : ColorConstant.black,)),
           ),
         ),
         Container(
-          color: ColorConstant.white,
+          color: themeController.isDarkMode.value? ColorConstant.textfieldFillColor : ColorConstant.white,
           child: CupertinoActionSheetAction(
             onPressed: () async {
 
 
            Navigator.pop(context, ImageSource.gallery);
 
-              //ignore: use_build_context_synchronously
+
             },
-            child: Text("chooseFromLibrary".tr, style: Style.montserratRegular()),
+            child: Text("chooseFromLibrary".tr, style: Style.montserratRegular(color:  themeController.isDarkMode.value? ColorConstant.white : ColorConstant.black,)),
           ),
         ),
       ],
       cancelButton: Container(
         decoration: BoxDecoration(
-          color: ColorConstant.white,
+          color: themeController.isDarkMode.value? ColorConstant.textfieldFillColor : ColorConstant.white,
           borderRadius: Dimens.d10.radiusAll,
         ),
         child: CupertinoActionSheetAction(

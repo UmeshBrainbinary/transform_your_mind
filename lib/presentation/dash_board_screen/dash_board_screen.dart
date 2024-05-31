@@ -65,7 +65,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 ],
               ),
               child: BottomNavigationBar(
-                backgroundColor: Colors.white,
+               // backgroundColor: Colors.white,
                 items: [
                   BottomNavigationBarItem(backgroundColor: Colors.white,
                     icon: SvgPicture.asset(
@@ -132,13 +132,13 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 unselectedItemColor: Colors.grey,
                 selectedFontSize: Dimens.d12,
                 unselectedFontSize: Dimens.d12,
-                selectedLabelStyle: Style.cormorantGaramondMedium(
-                  color: Colors.black,
+                selectedLabelStyle: Style.cormorantGaramondBold(
+                  color: ColorConstant.themeColor,
                   fontSize: Dimens.d12,
                 ),
                 showUnselectedLabels: true,
-                unselectedLabelStyle: Style.cormorantGaramondMedium(
-                  color: Colors.black,
+                unselectedLabelStyle: Style.cormorantGaramondBold(
+                  //color: Colors.black,
                   fontSize: Dimens.d12,
                 ),
                 onTap: _onItemTapped,

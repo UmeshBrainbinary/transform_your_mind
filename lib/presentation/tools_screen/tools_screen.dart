@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:transform_your_mind/core/common_widget/screen_info_widget.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
@@ -11,6 +12,7 @@ import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/explore_screen/widget/home_app_bar.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 
 class ToolsScreen extends StatefulWidget {
@@ -24,6 +26,7 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
   late final AnimationController _lottieBgController;
   bool info = false;
   late AnimationController _controller;
+  ThemeController themeController = Get.find<ThemeController>();
 
   List<Map<String, dynamic>> menuItems = [
     {
@@ -64,7 +67,7 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
-     backgroundColor: Colors.white,
+
       body: SafeArea(
         child: Stack(
           children: [
@@ -187,7 +190,7 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
                                           decoration: BoxDecoration(
                                               borderRadius:
                                               BorderRadius.circular(25.0),
-                                              color: Colors.white,
+                                              color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.white,
                                               border: Border.all(
                                                   color: Colors.black
                                                       .withOpacity(0.2))),
@@ -206,14 +209,14 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
                                                 menuItems[index]["title"],
                                                 style: Style.montserratMedium(
                                                     fontSize: 15,
-                                                    color: Colors.black),
+                                                  ),
                                               ),
                                               Dimens.d10.spaceHeight,
                                               AutoSizeText(
                                                 menuItems[index]["desc"],
                                                 style: Style.montserratRegular(
                                                     fontSize: 12.0,
-                                                    color: Colors.black),
+                                                    ),
                                               ),
                                               Dimens.d15.spaceHeight,
                                               CommonElevatedButton(
@@ -227,7 +230,7 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
                                                 textStyle:
                                                 Style.montserratRegular(
                                                   fontSize: 14.0,
-                                                  color: Colors.white,
+
                                                 ),
                                               ),
                                               Dimens.d10.spaceHeight,
@@ -243,7 +246,7 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
                                                 borderRadius:
                                                 BorderRadius.circular(
                                                     25.0),
-                                                color: Colors.white,
+                                                color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.white,
                                                 border: Border.all(
                                                     color: Colors.black
                                                         .withOpacity(0.2))),

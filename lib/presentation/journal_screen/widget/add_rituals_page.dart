@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/focus_filter_bottom_sheet_child.dart';
@@ -16,6 +17,7 @@ import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
@@ -41,6 +43,7 @@ class _AddRitualsPageState extends State<AddRitualsPage> {
   int totalItemCountOfRituals = 0;
   int ritualAddedCount = 0;
   ValueNotifier<bool> isTutorialVideoVisible = ValueNotifier(true);
+  ThemeController themeController = Get.find<ThemeController>();
 
   Timer? _debounce;
 
@@ -72,7 +75,7 @@ class _AddRitualsPageState extends State<AddRitualsPage> {
                 },
                 child: Text("Skip",style:Style.montserratRegular(
                   fontSize: Dimens.d15,
-                  color: Colors.black,
+
                 ),)),
             Dimens.d20.spaceWidth,
           ])),
@@ -192,7 +195,7 @@ class _AddRitualsPageState extends State<AddRitualsPage> {
                       : _listOfShoorahRitualsRequest.isNotEmpty
                       ? */Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : Colors.white,
                       borderRadius: Dimens.d15.radiusAll,
                     ),
                     child: SmartRefresher(

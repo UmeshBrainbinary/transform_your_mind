@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 
 class CustomChip extends StatefulWidget {
   final String label;
@@ -23,6 +25,10 @@ class CustomChip extends StatefulWidget {
 }
 
 class _CustomChipState extends State<CustomChip> {
+
+
+  ThemeController themeController = Get.find<ThemeController>();
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -49,20 +55,21 @@ class _CustomChipState extends State<CustomChip> {
                       begin: Alignment.bottomLeft,
                       end: Alignment.topRight,
                       colors: [
-                        ColorConstant.backgroundWhite.withOpacity(0.1),
-                        ColorConstant.backgroundWhite.withOpacity(0.1)
+                        ColorConstant.backgroundWhite.withOpacity(0.2),
+                        ColorConstant.backgroundWhite.withOpacity(0.2)
                       ],
                     )
                   : LinearGradient(
                       begin: Alignment.bottomLeft,
                       end: Alignment.topRight,
                       colors: [
-                        ColorConstant.backgroundWhite.withOpacity(0.1),
-                        ColorConstant.backgroundWhite.withOpacity(0.1)
+                        ColorConstant.backgroundWhite.withOpacity(0.2),
+                        ColorConstant.backgroundWhite.withOpacity(0.2)
                       ],
                     ),
           border: Border.all(
-            color: !widget.isChipSelected
+            color:
+            !widget.isChipSelected
                 ? Colors.black.withOpacity(Dimens.d0_2)
                 : Colors.black.withOpacity(Dimens.d0_2),
           ),
@@ -77,10 +84,10 @@ class _CustomChipState extends State<CustomChip> {
             widget.label,
             style: Style.montserratRegular(
               color: (widget.isFocusMain != null && widget.isFocusMain == true)
-                  ? ColorConstant.textWhiteTransform
+                  ?  ColorConstant.textWhiteTransform
                   : widget.isChipSelected
                       ? ColorConstant.themeColor
-                      : Colors.black,
+                      : themeController.isDarkMode.value ? ColorConstant.white : ColorConstant.black,
               fontSize: Dimens.d14,
             ),
           ),

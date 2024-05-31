@@ -14,6 +14,7 @@ import 'package:transform_your_mind/core/utils/image_utills.dart';
 import 'package:transform_your_mind/presentation/home_screen/widgets/add_image_gratitude.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_rituals_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/my_gratitude_page.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
@@ -40,6 +41,8 @@ class AddGratitudePage extends StatefulWidget {
 class _AddGratitudePageState extends State<AddGratitudePage> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descController = TextEditingController();
+
+  ThemeController themeController = Get.find<ThemeController>();
 
   final FocusNode titleFocus = FocusNode();
   final FocusNode descFocus = FocusNode();
@@ -79,7 +82,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                           context, AddGoalsPage.addGoals, (route) => false,
                           arguments: {AppConstants.isFromMyGoals: false});*/
                     },
-                    child: const Text("Skip")),
+                    child:  Text("Skip", style: Style.montserratRegular(),)),
                 Dimens.d20.spaceWidth,
               ])
             :widget.registerUser!?  GestureDetector(
@@ -97,7 +100,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
               padding: const EdgeInsets.only(right: 20),
               child: Text("Skip",style:Style.montserratRegular(
               fontSize: Dimens.d15,
-                color: Colors.black,
+
               ),),
             )):/*widget.gratitudeData != null
                 ? LottieIconButton(
