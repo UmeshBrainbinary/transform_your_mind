@@ -209,6 +209,8 @@
   "descriptionCanNotEmpty": "Description cannot be empty.",
   "welcomeToYourTransform": "Welcome to your\nTransform tool-kit",
   "startYourFirstBreathWorkCourseToAddItToThisListAndTrackYourProgress" : "start Your First BreathWork Course To Add It To This List And Track Your Progress",
-  "language": "Language"
+  "language": "Language",
+  "thoughtOfTheDay": "Thought of the day",
+    "yourInsights": "Your Insights"
 
 }
