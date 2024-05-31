@@ -51,9 +51,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     themeController = Get.put(ThemeController(),permanent: true);
-    // themeController.isDarkMode.listen((isDarkMode) {
-    //   setState(() {});
-    // });
+    themeController.isDarkMode.value = PrefService.getBool(PrefKey.isDarkTheme);
   }
 
   @override
@@ -63,7 +61,7 @@ class _MyAppState extends State<MyApp> {
       // theme: ThemeData.light(),
       // darkTheme: ThemeData.dark(),
 
-      theme: PrefService.getBool(PrefKey.isDarkTheme) == true ? AppTheme.darkTheme : AppTheme.lightTheme,
+      theme: themeController.isDarkMode.value ? AppTheme.darkTheme : AppTheme.lightTheme,
       translations: AppTranslations(),
       locale: Locale('en', 'US'),
       fallbackLocale: Locale('en', 'US'),
