@@ -21,6 +21,7 @@ import 'package:transform_your_mind/presentation/auth/ragister_screen/widget/add
 import 'package:transform_your_mind/presentation/home_screen/widgets/add_image_gratitude.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_image_affirmation.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/my_affirmation_page.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
@@ -48,6 +49,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
   ValueNotifier<int> currentLength = ValueNotifier(0);
 
   final TextEditingController descController = TextEditingController();
+  ThemeController themeController = Get.find<ThemeController>();
 
   final FocusNode titleFocus = FocusNode();
   final FocusNode descFocus = FocusNode();
@@ -68,6 +70,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: themeController.isDarkMode.value ? ColorConstant.black : ColorConstant.backGround,
       appBar: CustomAppBar(
         title: "affirmationData".tr,
    /*     title: widget.affirmationData != null

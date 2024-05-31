@@ -65,6 +65,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: themeController.isDarkMode.value ? ColorConstant.black : ColorConstant.backGround,
       resizeToAvoidBottomInset: true,
       appBar: CustomAppBar(
         showBack: widget.registerUser!?false:true,

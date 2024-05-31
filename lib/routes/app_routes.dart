@@ -317,7 +317,7 @@ class AppRoutes {
     GetPage(
       transition: Transition.rightToLeft,
       name: selectYourFocusPage,
-      page: () =>  const SelectYourFocusPage(isFromMe: false,),
+      page: () =>  const SelectYourFocusPage(isFromMe: false),
       bindings: [
        DashBoardBinding()
       ],

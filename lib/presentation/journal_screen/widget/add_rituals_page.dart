@@ -62,6 +62,7 @@ class _AddRitualsPageState extends State<AddRitualsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: themeController.isDarkMode.value ? ColorConstant.black : ColorConstant.backGround,
       appBar: CustomAppBar(
           title: "Rituals",
           action: Row(children: [

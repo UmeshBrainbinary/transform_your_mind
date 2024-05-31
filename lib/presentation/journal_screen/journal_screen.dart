@@ -204,7 +204,9 @@ class _JournalScreenState extends State<JournalScreen>
                                                           journalList[index]
                                                               .lottie,
                                                           height: 180,
-                                                          width: 180),
+                                                          width: 180,
+
+                                                      ),
                                                     ),
                                                   ),
                                                   Dimens.d12.spaceHeight,

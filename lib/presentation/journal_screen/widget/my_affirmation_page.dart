@@ -4,6 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -28,6 +29,7 @@ import 'package:transform_your_mind/presentation/journal_screen/widget/add_affir
 import 'package:transform_your_mind/presentation/journal_screen/widget/edit_affirmation_dialog_widget.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/journal_list_tile_layout.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/journal_shimmer_widget.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/app_confirmation_dialog.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
@@ -65,6 +67,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   int totalItemCountOfAffirmationDrafts = 0;
 
   TextEditingController searchController = TextEditingController();
+  ThemeController themeController = Get.find<ThemeController>();
   FocusNode searchFocus = FocusNode();
 
   bool _isSearching = true;
@@ -81,6 +84,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   final FocusNode _userAffirmationFocus = FocusNode();
   int perPageCount = 100;
   ValueNotifier selectedCategory = ValueNotifier(null);
+
 
   @override
   void initState() {
@@ -204,6 +208,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //backgroundColor: themeController.isDarkMode.value ? ColorConstant.black : ColorConstant.backGround,
       appBar: CustomAppBar(showBack: true,
         title: "My Affirmation".tr,
         action: (_isLoading || _isLoadingDraft)

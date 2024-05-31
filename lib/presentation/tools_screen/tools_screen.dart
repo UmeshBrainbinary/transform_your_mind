@@ -148,7 +148,7 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
                             textAlign: TextAlign.center,
                             wrapWords: false,
                             maxLines: 3,
-                            style: Style.montserratRegular(fontSize: Dimens.d16),
+                            style: Style.montserratRegular(fontSize: Dimens.d16, color:  ColorConstant.black),
                           ),
                         ),
                         Dimens.d50.spaceHeight,
@@ -227,7 +227,7 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
                                                 textStyle:
                                                 Style.montserratRegular(
                                                   fontSize: 14.0,
-
+                                                  color: ColorConstant.white
                                                 ),
                                               ),
                                               Dimens.d10.spaceHeight,
@@ -255,6 +255,7 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
                                                 menuItems[index]["icon"],
                                                 height: 40,
                                                 width: 40,
+                                                color: themeController.isDarkMode.value ? ColorConstant.white : ColorConstant.black,
                                               ),
                                             ),
                                           ),
@@ -264,9 +265,9 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
                                                 top: 15, left: 15),
                                             child: SvgPicture.asset(
                                               ImageConstant.menueIcon,
-                                              color: Colors.black,
                                               height: 15,
                                               width: 15,
+                                               color: themeController.isDarkMode.value ? ColorConstant.white : ColorConstant.black
                                             ))
                                       ],
                                     ),
