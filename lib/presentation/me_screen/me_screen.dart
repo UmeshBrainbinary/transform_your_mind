@@ -275,33 +275,40 @@ class _MeScreenState extends State<MeScreen> {
                   CrossAxisAlignment
                       .start,
                   children: [
-                    Column(
-                      crossAxisAlignment:
-                      CrossAxisAlignment
-                          .start,
-                      children: [
-                        Text(
-                          "thoughtOfTheDay".tr,
-                          textAlign:
-                          TextAlign
-                              .center,
-                          style: Style.cormorantGaramondBold(
-                              fontSize:
-                              18,
-                              color: ColorConstant.white),
-                        ),
-                        Dimens.d10
-                            .spaceHeight,
-                        Text(
-                          "The journey of a thousand miles begins with one step. - Lao Tzu",
-                          style: Style.montserratRegular(
-                              height: Dimens
-                                  .d1_4,
-                              fontSize:
-                              12,
-                              color: ColorConstant.white),
-                        ),
-                      ],
+                    Container(
+                      padding: Dimens.d15.paddingAll,
+                      decoration: BoxDecoration(
+                        borderRadius: Dimens.d10.radiusAll,
+                        color: ColorConstant.black.withOpacity(0.2)
+                      ),
+                      child: Column(
+                        crossAxisAlignment:
+                        CrossAxisAlignment
+                            .start,
+                        children: [
+                          Text(
+                            "thoughtOfTheDay".tr,
+                            textAlign:
+                            TextAlign
+                                .center,
+                            style: Style.cormorantGaramondBold(
+                                fontSize:
+                                18,
+                                color: ColorConstant.white),
+                          ),
+                          Dimens.d10
+                              .spaceHeight,
+                          Text(
+                            "The journey of a thousand miles begins with one step. - Lao Tzu",
+                            style: Style.montserratRegular(
+                                height: Dimens
+                                    .d1_4,
+                                fontSize:
+                                12,
+                                color: ColorConstant.white),
+                          ),
+                        ],
+                      ),
                     ),
                     Dimens.d40.spaceHeight,
                     Text(
@@ -314,6 +321,8 @@ class _MeScreenState extends State<MeScreen> {
                     ),
                     Dimens
                         .d35.spaceHeight,
+
+                    /// UI pending
                     // Row(
                     //   mainAxisAlignment:
                     //   MainAxisAlignment
@@ -345,8 +354,7 @@ class _MeScreenState extends State<MeScreen> {
                     //             borderRadius:
                     //             BorderRadius.circular(
                     //                 25),
-                    //             color: themeManager
-                    //                 .meContainer,
+                    //             color: ColorConstant.black.withOpacity(0.2),
                     //           ),
                     //           child:
                     //           Column(
@@ -355,10 +363,10 @@ class _MeScreenState extends State<MeScreen> {
                     //                 .center,
                     //             children: [
                     //               Text(
-                    //                 i10n.daysSpent,
+                    //                 "daysSpent".tr,
                     //                 textAlign:
                     //                 TextAlign.center,
-                    //                 style: Style.workSansRegular(
+                    //                 style: Style.montserratMedium(
                     //                     fontSize: 11,
                     //                     color: Colors.white.withOpacity(0.4)),
                     //               ),
@@ -370,7 +378,7 @@ class _MeScreenState extends State<MeScreen> {
                     //                 Alignment.center,
                     //                 children: [
                     //                   Image.asset(
-                    //                     AppAssets.icC,
+                    //                     ImageConstant.icCalender,
                     //                     height: 40,
                     //                     width: 40,
                     //                     color: Colors.white,

@@ -92,6 +92,9 @@ class ImageConstant {
   static String edit = '$iconMePath/edit.png';
   static String breath = '$iconMePath/breath.svg';
 
+  static String icCalender = '$iconMePath/ic_calender.png';
+
+
 
 
 
