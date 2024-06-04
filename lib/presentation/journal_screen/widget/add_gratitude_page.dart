@@ -22,18 +22,16 @@ import 'package:transform_your_mind/widgets/image_picker_action_sheet.dart';
 
 import '../../../core/utils/style.dart';
 
-
 class AddGratitudePage extends StatefulWidget {
-  const AddGratitudePage({
-    Key? key,
-    this.isSaved,  this.isFromMyGratitude,
-    this.registerUser
-  }) : super(key: key);
+  const AddGratitudePage(
+      {Key? key, this.isSaved, this.isFromMyGratitude, this.registerUser})
+      : super(key: key);
   static const addGratitude = '/addGratitude';
 
   final bool? isFromMyGratitude;
   final bool? isSaved;
   final bool? registerUser;
+
   @override
   State<AddGratitudePage> createState() => _AddGratitudePageState();
 }
@@ -55,55 +53,65 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
   int gratitudeAddedCount = 0;
 
   File? selectedImage;
+
   @override
   void initState() {
     super.initState();
-
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: themeController.isDarkMode.value ? ColorConstant.black : ColorConstant.backGround,
+      backgroundColor: themeController.isDarkMode.value
+          ? ColorConstant.black
+          : ColorConstant.backGround,
       resizeToAvoidBottomInset: true,
       appBar: CustomAppBar(
-        showBack: widget.registerUser!?false:true,
+        showBack: widget.registerUser! ? false : true,
         title: "addGratitude".tr,
-     /*   title: widget.gratitudeData != null
+        /*   title: widget.gratitudeData != null
             ? i10n.editGratitude
             : i10n.addGratitude,*/
         action: !(widget.isFromMyGratitude!)
             ? Row(children: [
                 GestureDetector(
                     onTap: () {
-      /*                dashboardBloc.add(UpdateOnboardingStepEvent(
+                      /*                dashboardBloc.add(UpdateOnboardingStepEvent(
                           request: OnboardingStep(onBoardStep: 5)));
                       Navigator.pushNamedAndRemoveUntil(
                           context, AddGoalsPage.addGoals, (route) => false,
                           arguments: {AppConstants.isFromMyGoals: false});*/
                     },
-                    child:  Text("skip".tr, style: Style.montserratRegular(),)),
+                    child: Text(
+                      "skip".tr,
+                      style:
+                          Style.montserratRegular(color: themeController.isDarkMode.value ? ColorConstant.white : ColorConstant.black),
+                    )),
                 Dimens.d20.spaceWidth,
               ])
-            :widget.registerUser!?  GestureDetector(
-            onTap: () {
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                return AddRitualsPage();
-              },));
-              /*                dashboardBloc.add(UpdateOnboardingStepEvent(
+            : widget.registerUser!
+                ? GestureDetector(
+                    onTap: () {
+                      Navigator.pushReplacement(context, MaterialPageRoute(
+                        builder: (context) {
+                          return const AddRitualsPage();
+                        },
+                      ));
+                      /*                dashboardBloc.add(UpdateOnboardingStepEvent(
                           request: OnboardingStep(onBoardStep: 5)));
                       Navigator.pushNamedAndRemoveUntil(
                           context, AddGoalsPage.addGoals, (route) => false,
                           arguments: {AppConstants.isFromMyGoals: false});*/
-            },
-            child:  Padding(
-              padding: const EdgeInsets.only(right: 20),
-              child: Text("skip".tr,style:Style.montserratRegular(
-              fontSize: Dimens.d15,
-
-              ),),
-            )):/*widget.gratitudeData != null
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 20),
+                      child: Text(
+                        "skip".tr,
+                        style: Style.montserratRegular(
+                            fontSize: Dimens.d15, color: themeController.isDarkMode.value ? ColorConstant.white : ColorConstant.black),
+                      ),
+                    ))
+                : /*widget.gratitudeData != null
                 ? LottieIconButton(
                     icon: AppAssets.lottieDeleteAccount,
                     onTap: () {
@@ -117,7 +125,8 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                       );
                     },
                   )
-                :*/ const SizedBox.shrink(),
+                :*/
+                const SizedBox.shrink(),
       ),
       body: LayoutBuilder(builder: (context, constraints) {
         return Stack(
@@ -142,21 +151,17 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                                       ?.then((value) async {
                                     if (value != null) {
                                       imageFile.value =
-                                      await ImageUtils.compressImage(
-                                          value);
+                                          await ImageUtils.compressImage(value);
                                       imageFile.value = value;
                                     }
                                   });
                                 },
                                 onDeleteTap: () async {
-
                                   imageFile = ValueNotifier(null);
                                   urlImage = null;
                                   _isImageRemoved = true;
-                                  setState(() {
-
-                                  });
-                                 /* _gratitudeBloc
+                                  setState(() {});
+                                  /* _gratitudeBloc
                                       .add(RefreshGratitudeEvent());*/
                                 },
                                 image: imageFile.value,
@@ -183,19 +188,15 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                             labelText: "description".tr,
                             controller: descController,
                             focusNode: descFocus,
-                            transform:
-                            Matrix4.translationValues(0, -108, 0),
-                            prefixLottieIcon:
-                            ImageConstant.lottieDescription,
+                            transform: Matrix4.translationValues(0, -108, 0),
+                            prefixLottieIcon: ImageConstant.lottieDescription,
                             maxLines: 15,
                             maxLength: maxLengthDesc,
                             inputFormatters: [
-                              LengthLimitingTextInputFormatter(
-                                  maxLengthDesc),
+                              LengthLimitingTextInputFormatter(maxLengthDesc),
                             ],
                             onChanged: (value) {
-                              currentLength.value =
-                                  descController.text.length;
+                              currentLength.value = descController.text.length;
                             },
                             keyboardType: TextInputType.multiline,
                             textInputAction: TextInputAction.newline,
@@ -213,7 +214,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                     children: [
                       Expanded(
                         child: CommonElevatedButton(
-                          title:"draft".tr,
+                          title: "draft".tr,
                           outLined: true,
                           textStyle: Style.montserratRegular(
                               color: ColorConstant.textDarkBlue),
@@ -221,19 +222,17 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                             if (titleController.text.trim().isEmpty) {
                               showSnackBarError(context, "emptyTitle".tr);
                             } else if (descController.text.trim().isEmpty) {
-                              showSnackBarError(
-                                  context, "emptyDescription".tr);
+                              showSnackBarError(context, "emptyDescription".tr);
                             } else {
                               gratitudeDraftList.add({
-                                "title":titleController.text,
-                                "des":descController.text,
-                                "image":imageFile.value,
-                                "createdOn":"",
+                                "title": titleController.text,
+                                "des": descController.text,
+                                "image": imageFile.value,
+                                "createdOn": "",
                               });
-                              setState(() {
-                              });
+                              setState(() {});
                               Get.back();
-                            /*  _gratitudeBloc.add(
+                              /*  _gratitudeBloc.add(
                                 AddGratitudeEvent(
                                   addGratitudeRequest: AddGratitudeRequest(
                                       userGratitudeId: widget
@@ -264,20 +263,17 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                             if (titleController.text.trim().isEmpty) {
                               showSnackBarError(context, "emptyTitle".tr);
                             } else if (descController.text.trim().isEmpty) {
-                              showSnackBarError(
-                                  context, "emptyDescription".tr);
+                              showSnackBarError(context, "emptyDescription".tr);
                             } else {
                               gratitudeList.add({
-                                "title":titleController.text,
-                                "des":descController.text,
-                                "image":imageFile.value,
-                                "createdOn":"",
+                                "title": titleController.text,
+                                "des": descController.text,
+                                "image": imageFile.value,
+                                "createdOn": "",
                               });
-                              setState(() {
-
-                              });
+                              setState(() {});
                               Get.back();
-                           /*   _gratitudeBloc.add(
+                              /*   _gratitudeBloc.add(
                                 AddGratitudeEvent(
                                   addGratitudeRequest: AddGratitudeRequest(
                                       userGratitudeId: widget
@@ -306,7 +302,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                 Dimens.d10.spaceHeight,
               ],
             ),
-       /*     if (state is GratitudeLoadingState)
+            /*     if (state is GratitudeLoadingState)
               Container(
                 color: Colors.transparent,
                 child: Center(

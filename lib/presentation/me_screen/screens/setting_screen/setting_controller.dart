@@ -39,7 +39,7 @@ class _SettingsData {
     ),
     _SettingsData(
       prefixIcon: ImageConstant.settingsPersonalization,
-      title: "personalisations".tr,
+      title: "personalization".tr,
       //suffixIcon: themeManager.lottieRightArrow,
       index: 1,
     ),

@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/prefKeys.dart';
 
 class PersonalisationsController extends GetxController{
 
@@ -13,6 +15,21 @@ class PersonalisationsController extends GetxController{
   void onInit() {
     accountData.value = _AccountData.getAccountData;
     super.onInit();
+  }
+
+  Future<void> onTapChangeLan() async {
+    String currentLanguage = PrefService.getString(PrefKey.language);
+    Locale newLocale;
+
+    if (currentLanguage == 'en_US') {
+      newLocale = const Locale('en', 'US');
+    } else {
+      newLocale = const Locale('de', 'DE');
+    }
+
+    Get.updateLocale(newLocale);
+    await PrefService.setValue(PrefKey.language, newLocale.toLanguageTag());
+    debugPrint("Language changed to ${newLocale.languageCode}_${newLocale.countryCode}");
   }
 
 }

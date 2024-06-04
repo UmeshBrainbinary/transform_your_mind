@@ -24,7 +24,6 @@ class SelectYourAffirmationFocusPage extends StatefulWidget {
     Key? key,
     required this.isFromMe,
   }) : super(key: key);
-  static const selectAffirmationFocus = '/selectAffirmationFocus';
 
   final bool isFromMe;
 
@@ -82,8 +81,8 @@ class _SelectYourAffirmationFocusPageState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        title: "Select Your Affirmation Focus",
+      appBar:  CustomAppBar(
+        title: "selectYourAffirmationFocus".tr,
       ),
       body:Stack(
         alignment: Alignment.bottomCenter,
@@ -99,7 +98,7 @@ class _SelectYourAffirmationFocusPageState
             children: [
               Dimens.d40.spaceHeight,
               AutoSizeText(
-                "chooseMinInterest",
+                "chooseMinInterest".tr,
                 textAlign: TextAlign.center,
                 style: Style.montserratRegular(
                     color: themeController.isDarkMode.value ? ColorConstant.white : ColorConstant.black,
@@ -160,7 +159,7 @@ class _SelectYourAffirmationFocusPageState
                             Flexible(
                               flex: 4,
                               child: Text(
-                                "Set Reminders",
+                                "setReminders".tr,
                                 style: Style.montserratRegular(
                                     fontSize: Dimens.d16,
                                     color: themeController.isDarkMode.value ? ColorConstant.white : ColorConstant.black
@@ -184,8 +183,8 @@ class _SelectYourAffirmationFocusPageState
               Dimens.d20.spaceHeight,
               FocusSelectButton(
                 primaryBtnText:
-                widget.isFromMe ? "Save" : "Next",
-                secondaryBtnText: widget.isFromMe ? '' : "Skip",
+                widget.isFromMe ? "save".tr : "next".tr,
+                secondaryBtnText: widget.isFromMe ? '' : "skip".tr,
                 isLoading:false,
                 primaryBtnCallBack: () {
                   if (selectedTagNames.length >= 5) {

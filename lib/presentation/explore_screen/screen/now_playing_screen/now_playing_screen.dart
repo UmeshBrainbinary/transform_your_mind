@@ -107,6 +107,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> with TickerProvider
               children: [
                 Dimens.d30.h.spaceHeight,
                 CustomAppBar(
+                  showBack: true,
                   title: "nowPlaying".tr,
                   leading: GestureDetector(
                       onTap: (){

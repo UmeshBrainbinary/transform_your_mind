@@ -75,7 +75,7 @@ class _AddRitualsPageState extends State<AddRitualsPage> {
                 },
                 child: Text("skip".tr,style:Style.montserratRegular(
                   fontSize: Dimens.d15,
-
+                color:  themeController.isDarkMode.value ? ColorConstant.white : ColorConstant.black
                 ),)),
             Dimens.d20.spaceWidth,
           ])),

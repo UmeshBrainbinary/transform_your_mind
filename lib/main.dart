@@ -26,11 +26,19 @@ Future<void> main() async {
   });
 
 /// localization on tap
- //var locale = const Locale('es', 'ES');
+ //var locale = const Locale('de', 'De');
  //Get.updateLocale(locale);
-  
- var locale = const Locale('en', 'US');
- Get.updateLocale(locale);
+
+  String currentLanguage = PrefService.getString(PrefKey.language);
+  Locale newLocale;
+
+  if (currentLanguage == 'en_US') {
+    newLocale = const Locale('de', 'DE');
+  } else {
+    newLocale = const Locale('en', 'US');
+  }
+
+  Get.updateLocale(newLocale);
 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent, // set the desired status bar color
