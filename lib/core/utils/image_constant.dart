@@ -42,9 +42,15 @@ class ImageConstant {
 
   /// Dashboard
   static String exploreSelected = '$iconDashboardPath/explore_selected.svg';
-  static String homeSelected = '$iconDashboardPath/home_deselected.svg';
+  static String exploreDeSelected = '$iconDashboardPath/explore_deselect.svg';
+  static String homeUnSelected = '$iconDashboardPath/home_deselected.svg';
+  static String homeSelected = '$iconDashboardPath/home_selected.svg';
+  static String toolsSelected = '$iconDashboardPath/tools_selected.svg';
   static String meSelected = '$iconDashboardPath/me_deselected.svg';
-  static String toolsSelected = '$iconDashboardPath/tools_deselected.svg';
+  static String toolsUnSelected = '$iconDashboardPath/tools_deselected.svg';
+  static String profileIcon = '$iconDashboardPath/profile_icon.svg';
+  static String floatting = '$iconDashboardPath/floatting.svg';
+  static String sFloatting = '$iconDashboardPath/serach_floatting.svg';
 
   ///Explore
   static String upArrow = '$iconExplorePath/upArrow.svg';
@@ -61,6 +67,7 @@ class ImageConstant {
   static String static3 = '$imageExplorePath/static3.png';
   static String static4 = '$imageExplorePath/static4.png';
   static String static5 = '$imageExplorePath/static5.png';
+  static String searchExplore = '$iconExplorePath/search_explore.svg';
 
 
   /// NOW PLAYING
@@ -75,7 +82,8 @@ class ImageConstant {
   static String playbackSpeed = '$iconExplorePath/ic_playback_speed.svg';
   static String audio15second = '$iconExplorePath/audio15second.png';
   static String audio15second2 = '$iconExplorePath/audio15second2.png';
-
+  static String ratingIcon = '$iconExplorePath/rating_icon.svg';
+  static String rating = '$iconExplorePath/rating.svg';
 
   /// ME
 
@@ -158,6 +166,26 @@ class ImageConstant {
   static  String folderIcon = "$iconPath/transfrom_folder_add.svg";
   static  String homeBg = "$imagePath/img_home_message_page_bg_img.png";
   static  String transformDot = "$iconPath/transform_dot.svg";
+  static String addTools = "$iconPath/add_tools.svg";
+  static String editTools = "$iconPath/edit_tools.svg";
+  static String likeRedTools = "$iconPath/like_red_tools.svg";
+  static String likeTools = "$iconPath/like_tools.svg";
+  static String close = "$iconPath/close.svg";
+  static String delete = "$iconPath/delete.svg";
+  static String profile1 = "$imagePath/profile1_back.svg";
+  static String profile2 = "$imagePath/profile2_back.svg";
+  static String successTools = "$iconPath/success_tools.svg";
+  static String affirmationSuccessTools = "$iconPath/affirmation_success_icon.svg";
+  static String logOut = "$iconPath/logout.svg";
+  static String unSelect = "$iconPath/unselect.svg";
+  static String select = "$iconPath/select.svg";
+  static String alarm = "$iconPath/alarm.svg";
+  static String moment = "$imagePath/moment.png";
+  static String closePositive = "$iconPath/close_positive.svg";
+  static String subscriptionCheck = "$iconPath/subscription_check.svg";
+  static String shapeAffirmationShare =
+      "$imagePath/shape_affirmation_share.svg";
+  static String settingArrowRight = "$iconPath/setting_arrow_right.svg";
   static  String lottieDeleteAccount = "$lottie/lottie_delete_account.json";
 
 

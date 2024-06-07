@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:transform_your_mind/core/app_export.dart';
+import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/date_time.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
-
 
 class JournalListTileLayout extends StatelessWidget {
   final EdgeInsets margin;
@@ -30,78 +31,93 @@ class JournalListTileLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ThemeController themeController = Get.find<ThemeController>();
+
     return Container(
-      margin: margin,
-      height: Dimens.d110.h,
+      height: Dimens.d70.h,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: themeController.isDarkMode.value
+            ? ColorConstant.textfieldFillColor
+            : ColorConstant.white,
         borderRadius: Dimens.d16.radiusAll,
       ),
       child: Row(
         children: [
           CommonLoadImage(
             url: image,
-            width: Dimens.d110,
-            height: Dimens.d110,
+            width: Dimens.d90,
+            height: Dimens.d70,
             customBorderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(Dimens.d16),
-              bottomLeft: Radius.circular(Dimens.d16),
+              topLeft: Radius.circular(Dimens.d10),
+              bottomLeft: Radius.circular(Dimens.d10),
             ),
           ),
           Dimens.d16.spaceWidth,
           Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: Dimens.d20.h),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          title,
-                          style: Style.montserratMedium(fontSize: Dimens.d16),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Dimens.d1.spaceHeight,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: Style.cormorantGaramondBold(
+                          fontSize: Dimens.d20,
+                          color: themeController.isDarkMode.value
+                              ? ColorConstant.white
+                              : ColorConstant.black,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Dimens.d16.spaceWidth,
+                    if (showDelete)
+                      GestureDetector(
+                        onTap: () => onDeleteTapCallback?.call(),
+                        child: SvgPicture.asset(
+                          ImageConstant.icDeleteWhite,
+                          color: Colors.transparent,
                         ),
                       ),
-                      if (showDelete)
-                        GestureDetector(
-                          onTap: () => onDeleteTapCallback?.call(),
-                          child: SvgPicture.asset(
-                            ImageConstant.icDeleteWhite,
-                            color: Colors.red.withOpacity(0.5),
-                          ),
+                    Dimens.d15.spaceWidth,
+                  ],
+                ),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: "createdOn".tr,
+                        style: Style.montserratRegular(
+                          fontSize: Dimens.d12,
+                          color: themeController.isDarkMode.value
+                              ? ColorConstant.white
+                              : ColorConstant.black,
                         ),
-                      Dimens.d15.spaceWidth,
+                      ),
+                      const WidgetSpan(
+                        child: Padding(padding: EdgeInsets.all(Dimens.d4)),
+                      ),
+                      TextSpan(
+                        text: createdDate.isNotEmpty
+                            ? DateTimeUtils.formatDate(
+                                DateTime.parse(createdDate),
+                                formatDateType: FormatDateType.ddMMMyyyy,
+                              )
+                            : "29 May 2024",
+                        style: Style.montserratRegular(
+                          color: ColorConstant.themeColor,
+                          fontSize: Dimens.d12,
+                        ),
+                      ),
                     ],
                   ),
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: "createdOn".tr,
-                          style: Style.montserratRegular(fontSize: Dimens.d14),
-                        ),
-                        const WidgetSpan(
-                          child: Padding(padding: EdgeInsets.all(Dimens.d4)),
-                        ),
-                        TextSpan(
-                          text:createdDate.isNotEmpty? DateTimeUtils.formatDate(
-                            DateTime.parse(createdDate),
-                            formatDateType: FormatDateType.ddMMMyyyy,
-                          ):"",
-                          style: Style.montserratRegular(
-                            color: Colors.grey.withOpacity(0.8),
-                            fontSize: Dimens.d14,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                ),
+                Dimens.d5.spaceHeight,
+              ],
             ),
           )
         ],
@@ -130,80 +146,92 @@ class JournalDraftListTileLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ThemeController themeController = Get.find<ThemeController>();
     return Container(
-      margin: margin,
-      height: Dimens.d110.h,
       width: Dimens.d335,
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: Dimens.d16.radiusAll,
+        color: themeController.isDarkMode.value
+            ? ColorConstant.textfieldFillColor
+            : ColorConstant.white,
+        borderRadius: Dimens.d10.radiusAll,
       ),
       child: Row(
         children: [
           CommonLoadImage(
             url: image,
-            width: Dimens.d110,
-            height: Dimens.d110,
+            width: Dimens.d90,
+            height: Dimens.d70,
             customBorderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(Dimens.d16),
-              bottomLeft: Radius.circular(Dimens.d16),
+              topLeft: Radius.circular(Dimens.d10),
+              bottomLeft: Radius.circular(Dimens.d10),
             ),
           ),
           Dimens.d16.spaceWidth,
           Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: Dimens.d20.h),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          title,
-                          style: Style.montserratMedium(fontSize: Dimens.d16),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Dimens.d1.spaceHeight,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: Style.cormorantGaramondBold(
+                          fontSize: Dimens.d20,
+                          color: themeController.isDarkMode.value
+                              ? ColorConstant.white
+                              : ColorConstant.black,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Dimens.d16.spaceWidth,
+                    if (showDelete)
+                      GestureDetector(
+                        onTap: () => onDeleteTapCallback?.call(),
+                        child: SvgPicture.asset(
+                          ImageConstant.icDeleteWhite,
+                          color: Colors.red.withOpacity(0.5),
                         ),
                       ),
-                      Dimens.d16.spaceWidth,
-                      if (showDelete)
-                        GestureDetector(
-                          onTap: () => onDeleteTapCallback?.call(),
-                          child: SvgPicture.asset(
-                            ImageConstant.icDeleteWhite,
-                            color:Colors.red.withOpacity(0.5),
-                          ),
+                    Dimens.d15.spaceWidth,
+                  ],
+                ),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: "createdOn".tr,
+                        style: Style.montserratRegular(
+                          fontSize: Dimens.d12,
+                          color: themeController.isDarkMode.value
+                              ? ColorConstant.white
+                              : ColorConstant.black,
                         ),
-                      Dimens.d15.spaceWidth,
+                      ),
+                      const WidgetSpan(
+                        child: Padding(padding: EdgeInsets.all(Dimens.d4)),
+                      ),
+                      TextSpan(
+                        text: createdDate.isNotEmpty
+                            ? DateTimeUtils.formatDate(
+                                DateTime.parse(createdDate),
+                                formatDateType: FormatDateType.ddMMMyyyy,
+                              )
+                            : "29 May 2024",
+                        style: Style.montserratRegular(
+                          color: ColorConstant.themeColor,
+                          fontSize: Dimens.d12,
+                        ),
+                      ),
                     ],
                   ),
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: "createdOn".tr,
-                          style: Style.montserratRegular(fontSize: Dimens.d14),
-                        ),
-                        const WidgetSpan(
-                          child: Padding(padding: EdgeInsets.all(Dimens.d4)),
-                        ),
-                        TextSpan(
-                          text:  createdDate.isNotEmpty? DateTimeUtils.formatDate(
-                             DateTime.parse(createdDate),
-                            formatDateType: FormatDateType.ddMMMyyyy,
-                          ):"",
-                          style: Style.montserratRegular(
-                            color: Colors.grey.withOpacity(0.8),
-                            fontSize: Dimens.d14,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                ),
+                Dimens.d5.spaceHeight,
+              ],
             ),
           )
         ],
@@ -277,23 +305,31 @@ class JournalListTileNotesLayout extends StatelessWidget {
                   Dimens.d10.spaceHeight,
                   Row(
                     children: [
-
                       Text(
                         DateTimeUtils.formatDate(
                           DateTime.parse(createdDate),
                           formatDateType: FormatDateType.ddMMMyyyy,
                         ),
-                        style: Style.montserratRegular(fontSize: Dimens.d12,color:Colors.grey.withOpacity(0.8)),
+                        style: Style.montserratRegular(
+                            fontSize: Dimens.d12,
+                            color: Colors.grey.withOpacity(0.8)),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                       Dimens.d10.spaceWidth,
-                      Container(height: 15,width: 1,color: Colors.grey.withOpacity(0.8),),
+                      Container(
+                        height: 15,
+                        width: 1,
+                        color: Colors.grey.withOpacity(0.8),
+                      ),
                       Dimens.d10.spaceWidth,
-                      SizedBox(width: Dimens.d200,
+                      SizedBox(
+                        width: Dimens.d200,
                         child: Text(
                           desc,
-                          style: Style.montserratRegular(fontSize: Dimens.d12,color: Colors.grey.withOpacity(0.8)),
+                          style: Style.montserratRegular(
+                              fontSize: Dimens.d12,
+                              color: Colors.grey.withOpacity(0.8)),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -303,11 +339,17 @@ class JournalListTileNotesLayout extends StatelessWidget {
                   Dimens.d10.spaceHeight,
                   Row(
                     children: [
-                      SvgPicture.asset(ImageConstant.icEditFolderBorder,height: 20,width: 20,),
+                      SvgPicture.asset(
+                        ImageConstant.icEditFolderBorder,
+                        height: 20,
+                        width: 20,
+                      ),
                       Dimens.d10.spaceWidth,
                       Text(
                         type,
-                        style: Style.montserratRegular(fontSize: Dimens.d12,color: Colors.grey.withOpacity(0.8)),
+                        style: Style.montserratRegular(
+                            fontSize: Dimens.d12,
+                            color: Colors.grey.withOpacity(0.8)),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),

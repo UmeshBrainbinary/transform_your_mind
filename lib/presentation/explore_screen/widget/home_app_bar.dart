@@ -28,7 +28,7 @@ class HomeAppBar extends StatefulWidget {
       this.fromHomeTab = false,
       this.onInfoTap,
       this.onRatingTap,
-      this.downloadShown,
+      this.downloadShown = true,
       this.downloadWidget,
       this.showMeIcon = true,
       this.ratings = false,
@@ -90,20 +90,32 @@ class _HomeAppBarState extends State<HomeAppBar> with TickerProviderStateMixin {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            GestureDetector(
-              onTap: () {},
-              child: SvgPicture.asset(ImageConstant.download,
-                  height: Dimens.d25, width: Dimens.d25),
-            ),
+            widget.ratings
+                ? GestureDetector(
+                    onTap: widget.onRatingTap,
+                    child: SvgPicture.asset(
+                      ImageConstant.ratingIcon,
+                    ),
+                  )
+                : const SizedBox(),
+            widget.downloadShown!
+                ? GestureDetector(
+                    onTap: () {},
+                    child: SvgPicture.asset(ImageConstant.download,
+                        height: Dimens.d25, width: Dimens.d25),
+                  )
+                : const SizedBox(),
             Dimens.d10.h.spaceWidth,
             GestureDetector(
-              onTap:widget.onInfoTap!,
+              onTap: widget.onInfoTap!,
               child: SvgPicture.asset(ImageConstant.information,
                   height: Dimens.d25, width: Dimens.d25),
             ),
             Dimens.d10.h.spaceWidth,
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                //Get.toNamed(AppRoutes.settingScreen);
+              },
               child: SvgPicture.asset(ImageConstant.notification,
                   height: Dimens.d25, width: Dimens.d25),
             ),

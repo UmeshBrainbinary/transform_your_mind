@@ -5,12 +5,10 @@ import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
-import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/account_screen/account_controller.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
-
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 class AccountScreen extends StatelessWidget {
@@ -26,56 +24,46 @@ class AccountScreen extends StatelessWidget {
       appBar: CustomAppBar(title: "account".tr),
       body: Stack(
         children: [
-         /* Positioned(
-            top: Dimens.d80.h,
-            right: null,
-            left: 0,
-            child: Transform.rotate(
-              angle: 3.14,
-              child: Image.asset(ImageConstant.bgStar, height: Dimens.d177.h),
-            ),
-          ),*/
+          Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.only(top: Dimens.d100),
+                child: SvgPicture.asset(ImageConstant.profile1),
+              )),
+          Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: Dimens.d120),
+                child: SvgPicture.asset(ImageConstant.profile2),
+              )),
           Padding(
               padding: Dimens.d20.paddingAll,
-            child: Column(
-              children: [
-                Dimens.d30.spaceHeight,
-                Container(
-                  decoration: BoxDecoration(
-                    color: themeController.isDarkMode.value ?  ColorConstant.textfieldFillColor : ColorConstant.white,
-                    borderRadius: BorderRadius.circular(Dimens.d16),
-                  ),
-                  child: ListView.separated(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    clipBehavior: Clip.none,
-                    padding: EdgeInsets.zero,
-                    itemBuilder: (context, index) {
-                      var data = accountController.accountData[index];
-                      return AccountListItem(
-                        isSettings: false,
-                        prefixIcon: data.prefixIcon,
-                        title: data.title,
-                        //suffixIcon: data.suffixIcon,
-                        onTap: () {
-                          if(index==0){
-                            Get.toNamed(AppRoutes.editProfileScreen);
-                          } else if(index==1){
-                            Get.toNamed(AppRoutes.changePassword);
-                          } else if(index==2){
-                            Get.toNamed(AppRoutes.privacyPolicy);
-                          }
-                        },
-                      );
-                    },
-                    separatorBuilder: (context, index) => Padding(
-                      padding: Dimens.d20.paddingHorizontal,
-                      child: const Divider(),
-                    ),
-                    itemCount: accountController.accountData.length,
-                  ),
-                ),
-              ],
+            child:   ListView.separated(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              clipBehavior: Clip.none,
+              padding: EdgeInsets.zero,
+              itemBuilder: (context, index) {
+                var data = accountController.accountData[index];
+                return AccountListItem(
+                  isSettings: false,
+                  prefixIcon: data.prefixIcon,
+                  title: data.title,
+                  //suffixIcon: data.suffixIcon,
+                  onTap: () {
+                    if(index==0){
+                      Get.toNamed(AppRoutes.editProfileScreen);
+                    } else if(index==1){
+                      Get.toNamed(AppRoutes.changePassword);
+                    } else if(index==2){
+                      Get.toNamed(AppRoutes.privacyPolicy);
+                    }
+                  },
+                );
+              },separatorBuilder: (context, index) {
+                return const SizedBox(height: 15,);
+              },
+              itemCount: accountController.accountData.length,
             ),
           )
         ],
@@ -86,13 +74,13 @@ class AccountScreen extends StatelessWidget {
 
 class AccountListItem extends StatelessWidget {
   AccountListItem({
-    Key? key,
+    super.key,
     required this.prefixIcon,
     required this.title,
     //required this.suffixIcon,
     required this.isSettings,
     this.onTap,
-  }) : super(key: key);
+  });
 
   final String prefixIcon;
   final String title;
@@ -107,52 +95,39 @@ class AccountListItem extends StatelessWidget {
     return
 
       GestureDetector(
-        onTap: onTap,
+        onTap:onTap,
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 1.2),
           decoration: BoxDecoration(
-              color:  themeController.isDarkMode.value ?  ColorConstant.textfieldFillColor : ColorConstant.white,
-              borderRadius: BorderRadius.circular(50),
-
+            color: themeController.isDarkMode.value
+                ? ColorConstant.textfieldFillColor
+                : ColorConstant.white,
+            borderRadius: BorderRadius.circular(50),
           ),
           padding: const EdgeInsets.symmetric(
             horizontal: Dimens.d10,
-            vertical: Dimens.d10,
+            vertical: Dimens.d5,
           ),
           child: Row(
-            //mainAxisSize: MainAxisSize.min,
+            mainAxisSize: MainAxisSize.min,
             children: [
-
-              Container(
-                height: Dimens.d50.h,
-                width: Dimens.d50,
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: themeController.isDarkMode.value ?  ColorConstant.textfieldFillColor : ColorConstant.white,
-                  shape: BoxShape.circle,
-                ),
-                child: Image.asset(
-                  prefixIcon,
-                  color: ColorConstant.themeColor,
+              Dimens.d12.spaceWidth,
+              Expanded(
+                child: Text(
+                  title,
+                  style: Style.montserratMedium().copyWith(
+                    letterSpacing: Dimens.d0_16,
+                  ),
                 ),
               ),
-              Dimens.d6.spaceWidth,
-              Text(
-                title,
-                style: Style.montserratMedium(fontSize: 14).copyWith(
-                  letterSpacing: Dimens.d0_16,
-                ),
-              ),
-              Spacer(),
-              Transform.rotate(
-                  angle: 1.5,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
                 child: SvgPicture.asset(
-                  ImageConstant.icUpArrow,
-                  height: Dimens.d18.h,
-                  color: ColorConstant.themeColor,
-                ),
-              ),
-              Dimens.d6.spaceWidth,
+                    ImageConstant.settingArrowRight,
+                    color: themeController.isDarkMode.value
+                        ? ColorConstant.white
+                        : ColorConstant.black),
+              )
             ],
           ),
         ),

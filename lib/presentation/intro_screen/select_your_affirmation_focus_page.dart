@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
-import 'package:transform_your_mind/core/common_widget/common_gradiant_container.dart';
 import 'package:transform_your_mind/core/common_widget/custom_chip.dart';
 import 'package:transform_your_mind/core/common_widget/free_trial_page.dart';
 import 'package:transform_your_mind/core/common_widget/select_focus_button.dart';
@@ -18,6 +17,8 @@ import 'package:transform_your_mind/presentation/intro_screen/select_your_focus_
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
+import '../me_screen/screens/setting_screen/Page/notification_setting_screen/widget/reminder_time_utils.dart';
+import '../me_screen/screens/setting_screen/Page/notification_setting_screen/widget/reminders_dialog.dart';
 
 class SelectYourAffirmationFocusPage extends StatefulWidget {
   const SelectYourAffirmationFocusPage({
@@ -34,7 +35,6 @@ class SelectYourAffirmationFocusPage extends StatefulWidget {
 
 class _SelectYourAffirmationFocusPageState
     extends State<SelectYourAffirmationFocusPage> {
-
   List<Tag> listOfTags = [
     Tag("Self Care", false),
     Tag("Family", false),
@@ -60,14 +60,16 @@ class _SelectYourAffirmationFocusPageState
   ValueNotifier<String> selectedReminderTime = ValueNotifier('');
   ThemeController themeController = Get.find<ThemeController>();
 
+  TextEditingController affirmationController = TextEditingController();
 
-
+  ReminderTime? affirmationReminderTime;
+  ReminderPeriod? affirmationReminderPeriod;
 
   @override
   void initState() {
-
     super.initState();
   }
+
   void _onTagTap(Tag tag) {
     setState(() {
       tag.isSelected = !tag.isSelected;
@@ -78,22 +80,24 @@ class _SelectYourAffirmationFocusPageState
       }
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:  CustomAppBar(
+      appBar: CustomAppBar(
         title: "selectYourAffirmationFocus".tr,
       ),
-      body:Stack(
+      body: Stack(
         alignment: Alignment.bottomCenter,
+
         children: [
-          !themeController.isDarkMode.value ?
-          BackGroundContainer(
-            image:ImageConstant.imgSelectFocus,
-            isLeft: true,
-            top: Dimens.d160.h,
+          !themeController.isDarkMode.value
+              ? BackGroundContainer(
+            image: ImageConstant.imgSelectFocus,
+            isLeft: false,
+            top: Dimens.d100.h,
             height: Dimens.d230.h,
-          ):SizedBox(),
+          ) : const SizedBox(),
           Column(
             children: [
               Dimens.d40.spaceHeight,
@@ -101,7 +105,9 @@ class _SelectYourAffirmationFocusPageState
                 "chooseMinInterest".tr,
                 textAlign: TextAlign.center,
                 style: Style.montserratRegular(
-                    color: themeController.isDarkMode.value ? ColorConstant.white : ColorConstant.black,
+                    color: themeController.isDarkMode.value
+                        ? ColorConstant.white
+                        : ColorConstant.black,
                     fontSize: Dimens.d14,
                     fontWeight: FontWeight.w600),
               ),
@@ -125,36 +131,28 @@ class _SelectYourAffirmationFocusPageState
                   ],
                 ),
               ),
-              ValueListenableBuilder(
+         /*     ValueListenableBuilder(
                   valueListenable: selectedReminderTime,
                   builder: (context, value, child) {
                     return GestureDetector(
                       onTap: () {
-                    /*    showRemindersDialog(context,
-                                (value, reminderPeriod) {
-                              selectedReminderTime.value = value.name ==
-                                  '0 time '
-                                  ? 'Off'
-                                  : value.name + reminderPeriod.desc;
-                              affirmationReminderTime = value;
-                              affirmationReminderPeriod =
-                                  reminderPeriod;
-                            },
-                            prevSelectedReminder:
-                            affirmationReminderTime,
+                        showRemindersDialog(context, (value, reminderPeriod) {
+                          affirmationController.text =
+                              value.name + reminderPeriod.desc;
+                          affirmationReminderTime = value;
+                          affirmationReminderPeriod = reminderPeriod;
+                        },
+                            prevSelectedReminder: affirmationReminderTime,
                             prevSelectedReminderPeriod:
-                            affirmationReminderPeriod,
+                                affirmationReminderPeriod,
                             isAffirmations: true,
-                            label: "Affirmation Reminder");*/
+                            label: "affirmationsReminder".tr);
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(
-                            left: Dimens.d24,
-                            right: Dimens.d24,
-                            top: 20),
+                            left: Dimens.d24, right: Dimens.d24, top: 20),
                         child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Flexible(
                               flex: 4,
@@ -162,39 +160,40 @@ class _SelectYourAffirmationFocusPageState
                                 "setReminders".tr,
                                 style: Style.montserratRegular(
                                     fontSize: Dimens.d16,
-                                    color: themeController.isDarkMode.value ? ColorConstant.white : ColorConstant.black
-                                ),
+                                    color: themeController.isDarkMode.value
+                                        ? ColorConstant.white
+                                        : ColorConstant.black),
                               ),
                             ),
                             const Spacer(),
                             Dimens.d10.spaceWidth,
-                          /*  if (state is! RemindersLoadingState)
+                            *//*  if (state is! RemindersLoadingState)
                               Text(selectedReminderTime.value,
                                   style: Style.montserratRegular(
                                       fontSize: Dimens.d16,
-                                      color: Colors.black)),*/
+                                      color: Colors.black)),*//*
                             SvgPicture.asset(ImageConstant.icDownArrow,
                                 height: 20),
                           ],
                         ),
                       ),
                     );
-                  }),
+                  }),*/
               Dimens.d20.spaceHeight,
               FocusSelectButton(
-                primaryBtnText:
-                widget.isFromMe ? "save".tr : "next".tr,
+                primaryBtnText: widget.isFromMe ? "save".tr : "next".tr,
                 secondaryBtnText: widget.isFromMe ? '' : "skip".tr,
-                isLoading:false,
+                isLoading: false,
                 primaryBtnCallBack: () {
                   if (selectedTagNames.length >= 5) {
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                    return const FreeTrialPage();
-                  },));
-
+                    Navigator.pushReplacement(context, MaterialPageRoute(
+                      builder: (context) {
+                        return const FreeTrialPage();
+                      },
+                    ));
                   } else {
-                    showSnackBarError(context,
-                        'Please choose more then 5 affirmation');
+                    showSnackBarError(
+                        context, 'Please choose more than 5 affirmation');
                   }
                 },
               )

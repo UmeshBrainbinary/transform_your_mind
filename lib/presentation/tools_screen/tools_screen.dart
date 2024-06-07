@@ -11,6 +11,7 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/explore_screen/widget/home_app_bar.dart';
+import 'package:transform_your_mind/presentation/transform_pods_screen/transform_pods_screen.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
@@ -22,7 +23,8 @@ class ToolsScreen extends StatefulWidget {
   State<ToolsScreen> createState() => _ToolsScreenState();
 }
 
-class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin  {
+class _ToolsScreenState extends State<ToolsScreen>
+    with TickerProviderStateMixin {
   late final AnimationController _lottieBgController;
   late AnimationController _controller;
   ThemeController themeController = Get.find<ThemeController>();
@@ -30,40 +32,39 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
   List<Map<String, dynamic>> menuItems = [
     {
       "title": "selfDevelopment".tr,
-      "desc":"Self Development Description",
+      "desc": "Self Development Description",
       "buttonTitle": "startToday".tr,
       "icon": ImageConstant.journalIcon
     },
     {
       "title": "transformPods".tr,
-      "desc":"Self Development Description",
+      "desc": "Self Development Description",
       "buttonTitle": "listenGrow".tr,
       "icon": ImageConstant.transformPodIcon
     },
-    {
+    /*  {
       "title": "rituals".tr,
       "desc":"Self Development Description",
       "buttonTitle": "beginToday".tr,
       "icon": ImageConstant.ritualIcon
-    },
-
+    },*/
   ];
   ValueNotifier<bool> isTutorialVideoVisible = ValueNotifier(false);
   ValueNotifier<bool> info = ValueNotifier(false);
 
   @override
   void initState() {
-  _lottieBgController = AnimationController(vsync: this);
-  _controller = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 200),
-  );
-  super.initState();
+    _lottieBgController = AnimationController(vsync: this);
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+    super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-
+    return Scaffold(
       body: SafeArea(
         child: Stack(
           children: [
@@ -71,21 +72,7 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
               child: Stack(
                 alignment: Alignment.topCenter,
                 children: [
-                  SizedBox(
-                    height: Dimens.d375,
-                    child: Lottie.asset(
-                        ImageConstant.homeScreenMeshLottie,
-                      controller: _lottieBgController,
-                      height: MediaQuery.of(context).size.height / 3,
-                      fit: BoxFit.fill,
-                      onLoaded: (composition) {
-                        _lottieBgController
-                          ..duration = composition.duration
-                          ..repeat();
-                      },
-                    ),
-                  ),
-                   Positioned(
+                  Positioned(
                     top: Dimens.d15,
                     left: Dimens.d0,
                     right: Dimens.d10,
@@ -119,39 +106,10 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
                   ),
                   Padding(
                     padding: const EdgeInsets.only(
-                      top: Dimens.d90,
+                      top: Dimens.d70,
                     ),
                     child: Column(
                       children: [
-                        RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            text: "welcomeToYourTransform".tr,
-                            style: Style.montserratRegular(fontSize: Dimens.d18,color: Colors.black,),
-                            children: [
-                              TextSpan(
-                                text: " RK!",
-                                style: Style.montserratRegular(
-                                  fontSize: Dimens.d18,color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontStyle: FontStyle.italic,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        Dimens.d25.spaceHeight,
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 35),
-                          child: AutoSizeText(
-                            "Your Transform tool-kit is a all in one collection of self development tools to help you on your mental health journey. Use the journaling feature to help clear your mind, listen to podcasts from our experts, explore meditations and sleep sounds and create daily habits to enhance your well being.",
-                            textAlign: TextAlign.center,
-                            wrapWords: false,
-                            maxLines: 3,
-                            style: Style.montserratRegular(fontSize: Dimens.d16, color:  ColorConstant.black),
-                          ),
-                        ),
-                        Dimens.d50.spaceHeight,
                         ReorderableListView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
@@ -168,10 +126,23 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
                                     if (menuItems[index]["title"] ==
                                         "selfDevelopment".tr) {
                                       Navigator.pushNamed(
-                                          context, AppRoutes.journalScreen)
+                                              context, AppRoutes.journalScreen)
                                           .then((value) {
                                         setState(() {});
                                       });
+                                    } else if (menuItems[index]["title"] ==
+                                        "transformPods".tr) {
+                                      Navigator.push(context, MaterialPageRoute(
+                                        builder: (context) {
+                                          return const TransformPodsScreen();
+                                        },
+                                      ));
+                                    } else {
+                                      /*  Navigator.push(context, MaterialPageRoute(
+                                        builder: (context) {
+                                          return const RitualsPage();
+                                        },
+                                      ));*/
                                     }
                                   },
                                   child: Padding(
@@ -186,8 +157,12 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
                                           width: double.maxFinite,
                                           decoration: BoxDecoration(
                                               borderRadius:
-                                              BorderRadius.circular(25.0),
-                                              color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.white,
+                                                  BorderRadius.circular(25.0),
+                                              color: themeController
+                                                      .isDarkMode.value
+                                                  ? ColorConstant
+                                                      .textfieldFillColor
+                                                  : ColorConstant.white,
                                               border: Border.all(
                                                   color: Colors.black
                                                       .withOpacity(0.2))),
@@ -199,36 +174,58 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
                                           ),
                                           child: Column(
                                             crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Dimens.d10.spaceHeight,
                                               AutoSizeText(
                                                 menuItems[index]["title"],
                                                 style: Style.montserratMedium(
-                                                    fontSize: 15,
-                                                  ),
+                                                  fontSize: 15,
+                                                ),
                                               ),
                                               Dimens.d10.spaceHeight,
                                               AutoSizeText(
                                                 menuItems[index]["desc"],
                                                 style: Style.montserratRegular(
-                                                    fontSize: 12.0,
-                                                    ),
+                                                  fontSize: 12.0,
+                                                ),
                                               ),
                                               Dimens.d15.spaceHeight,
                                               CommonElevatedButton(
                                                 title: menuItems[index]
-                                                ["buttonTitle"],
-                                             onTap: () {
-
-                                             },
+                                                    ["buttonTitle"],
+                                                onTap: () {
+                                                  if (menuItems[index]
+                                                          ["title"] ==
+                                                      "selfDevelopment".tr) {
+                                                    Navigator.pushNamed(
+                                                            context,
+                                                            AppRoutes
+                                                                .journalScreen)
+                                                        .then((value) {
+                                                      setState(() {});
+                                                    });
+                                                  } else if (menuItems[index]
+                                                          ["title"] ==
+                                                      "transformPods".tr) {
+                                                    Navigator.push(context,
+                                                        MaterialPageRoute(
+                                                      builder: (context) {
+                                                        return const TransformPodsScreen();
+                                                      },
+                                                    ));
+                                                  } else {
+                                                    /*   Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                                      return const RitualsPage();
+                                                    },));*/
+                                                  }
+                                                },
                                                 height: 26.0,
-
                                                 textStyle:
-                                                Style.montserratRegular(
-                                                  fontSize: 14.0,
-                                                  color: ColorConstant.white
-                                                ),
+                                                    Style.montserratRegular(
+                                                        fontSize: 14.0,
+                                                        color: ColorConstant
+                                                            .white),
                                               ),
                                               Dimens.d10.spaceHeight,
                                             ],
@@ -241,9 +238,12 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
                                           child: Container(
                                             decoration: BoxDecoration(
                                                 borderRadius:
-                                                BorderRadius.circular(
-                                                    25.0),
-                                                color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.white,
+                                                    BorderRadius.circular(25.0),
+                                                color: themeController
+                                                        .isDarkMode.value
+                                                    ? ColorConstant
+                                                        .textfieldFillColor
+                                                    : ColorConstant.white,
                                                 border: Border.all(
                                                     color: Colors.black
                                                         .withOpacity(0.2))),
@@ -255,7 +255,10 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
                                                 menuItems[index]["icon"],
                                                 height: 40,
                                                 width: 40,
-                                                color: themeController.isDarkMode.value ? ColorConstant.white : ColorConstant.black,
+                                                color: themeController
+                                                        .isDarkMode.value
+                                                    ? ColorConstant.white
+                                                    : ColorConstant.black,
                                               ),
                                             ),
                                           ),
@@ -264,11 +267,13 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
                                             padding: const EdgeInsets.only(
                                                 top: 15, left: 15),
                                             child: SvgPicture.asset(
-                                              ImageConstant.menueIcon,
-                                              height: 15,
-                                              width: 15,
-                                               color: themeController.isDarkMode.value ? ColorConstant.white : ColorConstant.black
-                                            ))
+                                                ImageConstant.menueIcon,
+                                                height: 15,
+                                                width: 15,
+                                                color: themeController
+                                                        .isDarkMode.value
+                                                    ? ColorConstant.white
+                                                    : ColorConstant.black))
                                       ],
                                     ),
                                   ),
@@ -294,23 +299,23 @@ class _ToolsScreenState extends State<ToolsScreen> with TickerProviderStateMixin
             ),
             info.value
                 ? Padding(
-              padding: EdgeInsets.only(top: Dimens.d110.h),
-              child: SizedBox(
-                child: ScreenInfoWidget(
-                  info: info,
-                  controller: _controller,
-                  isTutorialVideoVisible: isTutorialVideoVisible,
-                  screenTitle: "welcomeToTools".tr,
-                  screenHeading:
-                  "Use this self reflection fetaure to pratice the art of gratitude, clear unwanted fellings from your life, set goals and help you feel more clam and contect." ??
-                      '',
-                  screenDesc:
-                  "Use this self reflection fetaure to pratice the art of gratitude," ??
-                      '',
-                  onVideoViewTap: () {},
-                ),
-              ),
-            )
+                    padding: EdgeInsets.only(top: Dimens.d110.h),
+                    child: SizedBox(
+                      child: ScreenInfoWidget(
+                        info: info,
+                        controller: _controller,
+                        isTutorialVideoVisible: isTutorialVideoVisible,
+                        screenTitle: "welcomeToTools".tr,
+                        screenHeading:
+                            "Use this self reflection fetaure to pratice the art of gratitude, clear unwanted fellings from your life, set goals and help you feel more clam and contect." ??
+                                '',
+                        screenDesc:
+                            "Use this self reflection fetaure to pratice the art of gratitude," ??
+                                '',
+                        onVideoViewTap: () {},
+                      ),
+                    ),
+                  )
                 : const SizedBox(),
           ],
         ),

@@ -11,6 +11,7 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/image_utills.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/home_screen/widgets/add_image_gratitude.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
@@ -47,7 +48,7 @@ class _TodayCleanseScreenState extends State<TodayCleanseScreen> {
   int gratitudeAddedCount = 0;
 
   File? selectedImage;
-
+  ThemeController themeController = Get.find<ThemeController>();
   @override
   void initState() {
     super.initState();
@@ -57,9 +58,12 @@ class _TodayCleanseScreenState extends State<TodayCleanseScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: themeController.isDarkMode.value
+            ? ColorConstant.black
+            : ColorConstant.backGround,
         resizeToAvoidBottomInset: true,
         appBar: CustomAppBar(
-          title:"Add Cleanse",
+          title: "addCleanse".tr,
           /*   action: !(widget.isFromMyGratitude)
             ? Row(children: [
           GestureDetector(

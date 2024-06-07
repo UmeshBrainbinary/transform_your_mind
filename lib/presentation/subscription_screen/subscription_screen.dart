@@ -1,33 +1,223 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
+import 'package:transform_your_mind/core/utils/extension_utils.dart';
+import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_gratitude_page.dart';
+import 'package:transform_your_mind/presentation/subscription_screen/subscription_controller.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
+import 'package:transform_your_mind/widgets/common_elevated_button.dart';
+import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
-class SubscriptionScreen extends StatelessWidget {
-   SubscriptionScreen({super.key});
+class SubscriptionScreen extends StatefulWidget {
+  bool? skip;
+
+  SubscriptionScreen({super.key, this.skip,});
+
+  @override
+  State<SubscriptionScreen> createState() => _SubscriptionScreenState();
+}
+
+class _SubscriptionScreenState extends State<SubscriptionScreen> {
+  SubscriptionController subscriptionController =
+      Get.put(SubscriptionController());
 
   ThemeController themeController = Get.find<ThemeController>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GestureDetector(onTap: () {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-          return const AddGratitudePage(
-            registerUser: true,
-            isFromMyGratitude: true,
-            isSaved: true,);
-        },));
-      },
-        child: Center(
-          child:   Text("Skip", style:Style.montserratRegular(
-            fontSize: Dimens.d15,
-            color: themeController.isDarkMode.value ? ColorConstant.white : ColorConstant.black,
-          ),)
+      backgroundColor: themeController.isDarkMode.value
+          ? ColorConstant.black
+          : ColorConstant.backGround,
+      appBar: CustomAppBar(
+        title: "subscription".tr,
+        showBack: widget.skip! ? false : true,
+        action: widget.skip!
+            ? Row(children: [
+                GestureDetector(
+                    onTap: () {
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                        return const AddGratitudePage(
+                          registerUser: true,
+                          isFromMyGratitude: true,
+                          isSaved: true,);
+                      },));
+                    },
+                    child: Text(
+                      "skip".tr,
+                      style: Style.montserratRegular(
+                          color: themeController.isDarkMode.value
+                              ? ColorConstant.white
+                              : ColorConstant.black),
+                    )),
+                Dimens.d20.spaceWidth,
+              ])
+            : const SizedBox(),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Dimens.d22.spaceHeight,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Dimens.d45),
+              child: Text(
+                "Choose a subscription plan to unlock all the functionality’s of the application.",
+                textAlign: TextAlign.center,
+                style: Style.cormorantGaramondSemiBold(
+                  fontSize: Dimens.d15,
+                ),
+              ),
+            ),
+            Dimens.d20.spaceHeight,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Dimens.d45),
+              child: Text(
+                "Subscribe now and receive a 3-day free trial to access all the features of TransformYourMind",
+                textAlign: TextAlign.center,
+                style: Style.montserratRegular(
+                  color: ColorConstant.themeColor,
+                  fontSize: Dimens.d12,
+                ),
+              ),
+            ),
+            Dimens.d20.spaceHeight,
+            selectPlan()
+          ],
         ),
+      ),
+    );
+  }
+
+  Widget selectPlan() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Select plan",
+            textAlign: TextAlign.center,
+            style: Style.cormorantGaramondBold(
+              fontSize: Dimens.d18,
+            ),
+          ),
+          Dimens.d10.spaceHeight,
+          Text(
+            "We are giving discounts based on the plan user has selected. 3 days free trial available on every plan. you can cancel your subscription at any time.",
+            style: Style.montserratRegular(
+              fontSize: Dimens.d12,
+            ),
+          ),
+          Dimens.d30.spaceHeight,
+          SingleChildScrollView(
+            child: Obx(
+              () => ListView.builder(
+                itemCount: subscriptionController.selectPlan.length,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  var data = subscriptionController.selectPlan[index];
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        for (int i = 0;
+                            i < subscriptionController.plan.length;
+                            i++) {
+                          subscriptionController.plan[i] = i == index;
+                        }
+                      });
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 15),
+                      padding: const EdgeInsets.all(10.0),
+                      decoration: BoxDecoration(
+                          color: subscriptionController.plan[index] == true
+                              ? ColorConstant.color7C9EA7.withOpacity(0.20)
+                              : ColorConstant.white.withOpacity(0.9),
+                          border: Border.all(
+                              color: subscriptionController.plan[index] == true
+                                  ? ColorConstant.themeColor
+                                  : ColorConstant.colorE3E1E1,
+                              width: 1),
+                          borderRadius: BorderRadius.circular(15)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              subscriptionController.plan[index] == true
+                                  ? SvgPicture.asset(
+                                      ImageConstant.subscriptionCheck,
+                                      height: Dimens.d24,
+                                      width: Dimens.d24,
+                                    )
+                                  : Container(
+                                      height: Dimens.d24,
+                                      width: Dimens.d24,
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                              color:
+                                                  ColorConstant.colorE3E1E1)),
+                                    ),
+                              Dimens.d10.spaceWidth,
+                              Text(
+                                data["plan"],
+                                style: Style.montserratBold(fontSize: 14),
+                              )
+                            ],
+                          ),
+                          Dimens.d5.spaceHeight,
+                          Padding(
+                            padding: const EdgeInsets.only(left: 35),
+                            child: Text(
+                              data["des"],
+                              style: Style.montserratSemiBold(
+                                  fontSize: 13,
+                                  color: ColorConstant.color797777),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+          Dimens.d40.spaceHeight,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30.0),
+            child: CommonElevatedButton(
+              title: "Purchase",
+              onTap: () {},
+            ),
+          ),
+          Dimens.d20.spaceHeight,
+          Center(
+            child: Text(
+              "Restore Purchase",
+              textAlign: TextAlign.center,
+              style: Style.cormorantGaramondBold(
+                fontSize: Dimens.d18,
+              ),
+            ),
+          ),
+          Dimens.d33.spaceHeight,
+          Text(
+            textAlign: TextAlign.center,
+            "If you don’t cancel before the trial ends. you will be automatically charged based on selected plan until you cancel.",
+            style: Style.montserratRegular(
+              fontSize: Dimens.d11,
+            ),
+          ),
+          Dimens.d40.spaceHeight,
+        ],
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
@@ -10,12 +11,13 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/presentation/home_screen/home_message_page.dart';
 import 'package:transform_your_mind/presentation/home_screen/widgets/cleanse_button.dart';
 import 'package:transform_your_mind/presentation/home_screen/widgets/home_widget.dart';
 import 'package:transform_your_mind/presentation/home_screen/widgets/todays_gratitude.dart';
 import 'package:transform_your_mind/presentation/home_screen/widgets/todays_rituals.dart';
+import 'package:transform_your_mind/presentation/subscription_screen/subscription_screen.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
-import 'package:transform_your_mind/widgets/bg_oval_custom_painter.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:transform_your_mind/widgets/custom_view_controller.dart';
 
@@ -44,6 +46,10 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   void initState() {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.white, // Status bar background color
+      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+    ));
     _lottieBgController = AnimationController(vsync: this);
     Future.delayed(
       const Duration(milliseconds: 100),
@@ -149,7 +155,13 @@ class _HomeScreenState extends State<HomeScreen>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) {
+                                return const HomeMessagePage();
+                              },
+                            ));
+                          },
                           child: SvgPicture.asset(
                             ImageConstant.icAddRounded,
                             width: Dimens.d46,
@@ -159,7 +171,13 @@ class _HomeScreenState extends State<HomeScreen>
                         ),
                         Dimens.d15.spaceWidth,
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) {
+                                return const HomeMessagePage();
+                              },
+                            ));
+                          },
                           child: CircleAvatar(
                             backgroundColor: ColorConstant.themeColor,
                             radius: Dimens.d23,
@@ -408,7 +426,15 @@ class _HomeScreenState extends State<HomeScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: List.generate(10, (index) {
               return GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) {
+                        return SubscriptionScreen(
+                          skip: false,
+                        );
+                      },
+                    ));
+                  },
                   child: const Padding(
                     padding: EdgeInsets.only(right: 20.0),
                     child: BookmarkListTile(),

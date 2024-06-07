@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'package:transform_your_mind/core/common_widget/bg_semi_circle_texture_painter.dart';
+import 'package:transform_your_mind/core/common_widget/common_gradiant_container.dart';
 import 'package:transform_your_mind/core/common_widget/common_text_button.dart';
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
@@ -8,7 +8,6 @@ import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
-import 'package:transform_your_mind/presentation/rituals_screen/rituals_screen.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 

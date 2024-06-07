@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:transform_your_mind/core/common_widget/common_gradiant_container.dart';
@@ -8,9 +9,9 @@ import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
-import 'package:transform_your_mind/presentation/explore_screen/widget/home_app_bar.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
+import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 import '../../core/utils/style.dart';
 
@@ -25,7 +26,7 @@ class _JournalScreenState extends State<JournalScreen>
     with SingleTickerProviderStateMixin {
   List<JournalData> journalList = [
     JournalData(
-      title: "gratitude".tr,
+      title: "gratitudeJournal".tr,
       lottie: ImageConstant.lottieSquare,
       route: AppRoutes.myGratitudePage,
     ),
@@ -35,9 +36,19 @@ class _JournalScreenState extends State<JournalScreen>
       route: AppRoutes.myAffirmationPage,
     ),
     JournalData(
-      title: "dailyJournal".tr,
+      title: "affirmationAlarms".tr,
       lottie: ImageConstant.lottieStarOcean,
-      route: AppRoutes.myNotesPage,
+      route: AppRoutes.affirmationAlarmScreen,
+    ),
+    JournalData(
+      title: "motivational".tr,
+      lottie: ImageConstant.lottieHexagon,
+      route: AppRoutes.motivationalMessageScreen,
+    ),
+    JournalData(
+      title: "positiveMoments".tr,
+      lottie: ImageConstant.lottieSquircle,
+      route: AppRoutes.positiveScreen,
     ),
   ];
   ValueNotifier<bool> isTutorialVideoVisible = ValueNotifier(false);
@@ -71,7 +82,46 @@ class _JournalScreenState extends State<JournalScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
+        appBar: CustomAppBar(
+          title: "selfDevelopment".tr,
+          action: Row(
+            children: [
+              Dimens.d10.h.spaceWidth,
+              GestureDetector(
+                onTap: () async {
+                  setState(() {
+                    if (info.value == false) {
+                      info.value = true;
+                    } else {
+                      info.value = false;
+                    }
+                    ratingView = false;
+                  });
+                  isTutorialVideoVisible.value = !isTutorialVideoVisible.value;
+                  if (isTutorialVideoVisible.value) {
+                    _controller.forward();
+                  } else {
+                    //videoKeys[0].currentState?.pause();
+                    _controller.reverse();
+                  }
+                },
+                child: SvgPicture.asset(
+                  height: 25.h,
+                  ImageConstant.information,
+                ),
+              ),
+              Dimens.d10.h.spaceWidth,
+              GestureDetector(
+                onTap: () async {},
+                child: SvgPicture.asset(
+                  height: 25.h,
+                  ImageConstant.notification,
+                ),
+              ),
+              Dimens.d20.h.spaceWidth,
+            ],
+          ),
+        ),
         body: SafeArea(
           child: Stack(
             children: [
@@ -79,48 +129,17 @@ class _JournalScreenState extends State<JournalScreen>
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   children: [
-                    Dimens.d40.spaceHeight,
-                    HomeAppBar(
-                      back: true,
-                      ratings: ratingView,
-                      ratingViewUi: true,
-                      //title: i10n.journal,
-                      title: "",
-                      downloadShown: false,
-                      downloadWidget: const SizedBox(),
-                      isInfo: true,
-                      onRatingTap: () {
-                        setState(() {
-                          if (ratingView == true) {
-                            ratingView = false;
-                          } else {
-                            ratingView = true;
-                          }
-                        });
-                      },
-                      showMeIcon: false,
-                      onInfoTap: () {
-                        setState(() {
-                          if (info.value == false) {
-                            info.value = true;
-                          } else {
-                            info.value = false;
-                          }
-                          ratingView = false;
-                        });
-                        isTutorialVideoVisible.value =
-                            !isTutorialVideoVisible.value;
-                        if (isTutorialVideoVisible.value) {
-                          _controller.forward();
-                        } else {
-                          //videoKeys[0].currentState?.pause();
-                          _controller.reverse();
-                        }
-                      },
-                    ),
                     Dimens.d30.spaceHeight,
-                    //  welcomeTextTitle(title: "Welcome ${i10n.selfDevelopment}"),
-                    //  welcomeTextDescriptionTitle(title: i10n.welcomeSelfDesc),
+                    Padding(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: Dimens.d40),
+                      child: Text(
+                        textAlign: TextAlign.center,
+                        "Use our Self Development feature to practice the art of gratitude, clear unwanted feelings from your life, set goals & help you feel more calm & content.",
+                        style: Style.montserratRegular(fontSize: 13),
+                      ),
+                    ),
+                    Dimens.d21.spaceHeight,
                     NotificationListener<ScrollNotification>(
                       onNotification: (ScrollNotification scrollInfo) {
                         if (scrollInfo is UserScrollNotification) {
@@ -238,8 +257,8 @@ class _JournalScreenState extends State<JournalScreen>
               ),
               info.value
                   ? Padding(
-                      padding: EdgeInsets.only(top: Dimens.d110.h),
-                      child: SizedBox(
+                      padding: EdgeInsets.only(top: Dimens.d10.h),
+                      child: Container(
                         child: ScreenInfoWidget(
                           controller: _controller,
                           info: info,

@@ -1,15 +1,14 @@
-import 'dart:ffi';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
-
+import 'package:transform_your_mind/theme/theme_controller.dart';
 
 /// this widget used for showing information of particular screen with it's text
 /// and video from API
@@ -25,15 +24,14 @@ class ScreenInfoWidget extends StatefulWidget {
 
   const ScreenInfoWidget({
     required this.isTutorialVideoVisible,
-
     required this.onVideoViewTap,
-
     required this.controller,
     required this.screenTitle,
     required this.screenHeading,
     required this.screenDesc,
     this.showVideoIcon = true,
-    Key? key, required this.info,
+    Key? key,
+    required this.info,
   }) : super(key: key);
 
   @override
@@ -44,6 +42,7 @@ class _ScreenInfoWidgetState extends State<ScreenInfoWidget>
     with TickerProviderStateMixin {
   ValueNotifier<bool> isTextVisible = ValueNotifier(true);
   late AnimationController _controller;
+  ThemeController themeController = Get.find<ThemeController>();
 
   @override
   void initState() {
@@ -78,7 +77,7 @@ class _ScreenInfoWidgetState extends State<ScreenInfoWidget>
               return Container(
                 padding: EdgeInsets.only(
                   bottom: _controller.status == AnimationStatus.forward ||
-                      widget.isTutorialVideoVisible.value
+                          widget.isTutorialVideoVisible.value
                       ? 20
                       : 0.0,
                   left: 20,
@@ -106,7 +105,7 @@ class _ScreenInfoWidgetState extends State<ScreenInfoWidget>
             child: GestureDetector(
               onTap: () {
                 widget.isTutorialVideoVisible.value =
-                !widget.isTutorialVideoVisible.value;
+                    !widget.isTutorialVideoVisible.value;
                 widget.info.value = !widget.info.value;
                 if (widget.isTutorialVideoVisible.value) {
                   _controller.forward();
@@ -146,9 +145,10 @@ class _ScreenInfoWidgetState extends State<ScreenInfoWidget>
   Widget tutorialTextView() {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: Colors.white,
-      ),
+          borderRadius: BorderRadius.circular(20),
+          color: themeController.isDarkMode.value
+              ? ColorConstant.textfieldFillColor
+              : ColorConstant.white),
       padding: const EdgeInsets.all(18.0),
       child: SingleChildScrollView(
         child: Column(
@@ -163,10 +163,10 @@ class _ScreenInfoWidgetState extends State<ScreenInfoWidget>
                   maxLines: 1,
                   style: Style.montserratRegular(fontSize: Dimens.d20),
                 ),
-
                 if (widget.showVideoIcon) ...[
                   Dimens.d10.spaceWidth,
-                  /*(widget.tutorialVideoData.videoUrl != null)?*/ GestureDetector(
+                  /*(widget.tutorialVideoData.videoUrl != null)?*/
+                  GestureDetector(
                     onTap: () {
                       isTextVisible.value = !isTextVisible.value;
                     },
@@ -175,7 +175,7 @@ class _ScreenInfoWidgetState extends State<ScreenInfoWidget>
                       height: Dimens.d24.h,
                       width: Dimens.d24.h,
                     ),
-                  )/*:const SizedBox()*/
+                  ) /*:const SizedBox()*/
                 ]
               ],
             ),
@@ -203,7 +203,6 @@ class _ScreenInfoWidgetState extends State<ScreenInfoWidget>
   }
 }
 
-
 class AddRatingsView extends StatefulWidget {
   final String screenTitle;
   final String screenHeading;
@@ -211,21 +210,24 @@ class AddRatingsView extends StatefulWidget {
   final bool showVideoIcon;
   final int initialRating;
   final Function(int) onRatingChanged;
-  const AddRatingsView({super.key,
-    required this.screenTitle,
-    required this.screenHeading,
-    required this.screenDesc,
-    this.showVideoIcon = true,
-    this.initialRating=0,
-    required this.onRatingChanged});
+
+  const AddRatingsView(
+      {super.key,
+      required this.screenTitle,
+      required this.screenHeading,
+      required this.screenDesc,
+      this.showVideoIcon = true,
+      this.initialRating = 0,
+      required this.onRatingChanged});
 
   @override
   State<AddRatingsView> createState() => _AddRatingsViewState();
 }
 
-class _AddRatingsViewState extends State<AddRatingsView>   with TickerProviderStateMixin {
+class _AddRatingsViewState extends State<AddRatingsView>
+    with TickerProviderStateMixin {
   ValueNotifier<bool> isTextVisible = ValueNotifier(true);
-  int? _currentRating ;
+  int? _currentRating;
 
   @override
   void initState() {
@@ -248,12 +250,10 @@ class _AddRatingsViewState extends State<AddRatingsView>   with TickerProviderSt
               left: 20,
               right: 20,
             ),
-            child:SizedBox(
-              //height: getHeight(MediaQuery.of(context).size.width),
-                child: tutorialTextView()
-            ),
+            child: SizedBox(
+                //height: getHeight(MediaQuery.of(context).size.width),
+                child: tutorialTextView()),
           ),
-
         ],
       ),
     );
@@ -262,7 +262,8 @@ class _AddRatingsViewState extends State<AddRatingsView>   with TickerProviderSt
   Widget tutorialTextView() {
     return Container(
       height: Dimens.d190.h,
-      decoration: BoxDecoration(border: Border.all(color: Colors.black.withOpacity(0.20)),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black.withOpacity(0.20)),
         borderRadius: BorderRadius.circular(20),
         color: Colors.white,
       ),
@@ -272,7 +273,6 @@ class _AddRatingsViewState extends State<AddRatingsView>   with TickerProviderSt
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Dimens.d5.spaceHeight,
-
           AutoSizeText(
             widget.screenTitle,
             maxLines: 1,
@@ -283,7 +283,8 @@ class _AddRatingsViewState extends State<AddRatingsView>   with TickerProviderSt
             widget.screenHeading,
             maxLines: 4,
             style: Style.montserratRegular(
-              fontSize: 11,color: Colors.black.withOpacity(0.8),
+              fontSize: 11,
+              color: Colors.black.withOpacity(0.8),
               fontWeight: FontWeight.w300,
             ),
           ),
@@ -298,38 +299,38 @@ class _AddRatingsViewState extends State<AddRatingsView>   with TickerProviderSt
             ),
           ),
           Dimens.d15.spaceHeight,
-
           Row(
             mainAxisSize: MainAxisSize.min,
             children: List.generate(5, (index) {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 3.0),
                 child: GestureDetector(
-                  onTap: () => _setRating(index + 1,widget.initialRating),
-                  child:index < _currentRating! ?SvgPicture.asset(
-                    ImageConstant.ratingFillSvg,
-                    height: Dimens.d18.h,
-                    width: Dimens.d18,
-                  ):SvgPicture.asset(
-                    ImageConstant.ratingNoFillSvg,
-                    height: Dimens.d18.h,
-                    width: Dimens.d18,
-                  ),
+                  onTap: () => _setRating(index + 1, widget.initialRating),
+                  child: index < _currentRating!
+                      ? SvgPicture.asset(
+                          ImageConstant.ratingFillSvg,
+                          height: Dimens.d18.h,
+                          width: Dimens.d18,
+                        )
+                      : SvgPicture.asset(
+                          ImageConstant.ratingNoFillSvg,
+                          height: Dimens.d18.h,
+                          width: Dimens.d18,
+                        ),
                 ),
               );
             }),
           ),
           Dimens.d7.spaceHeight,
-
         ],
       ),
     );
   }
+
   void _setRating(int rating, int initialRating) {
     setState(() {
       _currentRating = rating;
       initialRating = _currentRating!;
-
     });
     widget.onRatingChanged(_currentRating!);
   }

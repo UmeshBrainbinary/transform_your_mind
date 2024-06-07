@@ -27,8 +27,8 @@ class _AccountData {
   static get getAccountData => [
     _AccountData(
       prefixIcon:   ImageConstant.edit,
-      title: "editProfile".tr,
-      //suffixIcon: themeManager.lottieRightArrow,
+          title: "personalInformation".tr,
+          //suffixIcon: themeManager.lottieRightArrow,
     ),
     _AccountData(
       prefixIcon: ImageConstant.lock,
@@ -37,8 +37,8 @@ class _AccountData {
     ),
     _AccountData(
       prefixIcon: ImageConstant.privacyPolicy,
-      title: "privacyPolicy".tr,
-      //suffixIcon: themeManager.lottieRightArrow,
+          title: "privacySettings".tr,
+          //suffixIcon: themeManager.lottieRightArrow,
     ),
   ];
 }

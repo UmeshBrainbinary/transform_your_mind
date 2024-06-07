@@ -356,8 +356,8 @@ class RegisterScreen extends StatelessWidget {
 
                                                await PrefService.setValue(PrefKey.isLoginOrRegister, true);
 
-                                               Get.toNamed(AppRoutes.dashBoardScreen);
-
+                                               Get.toNamed(AppRoutes
+                                                   .selectYourFocusPage);
 
                                                // registerController.nameController.clear();
                                                // registerController.emailController.clear();
@@ -378,7 +378,7 @@ class RegisterScreen extends StatelessWidget {
                                     children: [
                                       TextSpan(
                                         text: "alreadyHaveAnAccount".tr,
-                                        style: Style.montserratRegular(),
+                                        style: Style.montserratRegular(color:themeController.isDarkMode.value? ColorConstant.white: ColorConstant.black),
                                       ),
                                       const WidgetSpan(
                                         child: Padding(

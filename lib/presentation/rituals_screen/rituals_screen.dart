@@ -1,20 +1,9 @@
-import 'dart:async';
-
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:transform_your_mind/core/common_widget/category_drop_down.dart';
-import 'package:transform_your_mind/core/common_widget/custom_tab_bar.dart';
+import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
-import 'package:transform_your_mind/core/common_widget/no_data_available.dart';
-import 'package:transform_your_mind/core/common_widget/on_loading_bottom_indicator.dart';
-import 'package:transform_your_mind/core/common_widget/ritual_tile.dart';
-import 'package:transform_your_mind/core/common_widget/screen_info_widget.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
-import 'package:transform_your_mind/core/common_widget/tab_text.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
@@ -22,22 +11,14 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/explore_screen/widget/home_app_bar.dart';
-import 'package:transform_your_mind/presentation/rituals_screen/widget/edit_ritual_dialog_widget.dart';
-import 'package:transform_your_mind/presentation/rituals_screen/widget/rituals_grid_shimmer_widget.dart';
-import 'package:transform_your_mind/presentation/rituals_screen/widget/rituals_shimmer_widget.dart';
-import 'package:transform_your_mind/widgets/app_confirmation_dialog.dart';
-import 'package:transform_your_mind/widgets/common_elevated_button.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
-import 'package:transform_your_mind/widgets/divider.dart';
-
-
 
 bool isRitualUpdated = false;
 bool isRitualShowPlayer = false;
 
 class RitualsPage extends StatefulWidget {
   final int? ritualPage;
-
 
   const RitualsPage({Key? key, this.ritualPage = 0}) : super(key: key);
 
@@ -47,70 +28,68 @@ class RitualsPage extends StatefulWidget {
 
 class _RitualsPageState extends State<RitualsPage>
     with TickerProviderStateMixin {
-  late TabController _tabController;
-  final ValueNotifier<double> _currentTabIndex = ValueNotifier(0.0);
-  final TextEditingController searchController = TextEditingController();
-  final FocusNode searchFocus = FocusNode();
+  ThemeController themeController = Get.find<ThemeController>();
+  int _currentTabIndex = 0;
+  final TextEditingController ownRitualsController = TextEditingController();
+  final FocusNode ownRitualsFocus = FocusNode();
 
-  List listOfRituals = [];
   List listOfMyRituals = [];
-
-  bool _isLoading = false;
-  bool _isLoadingMyRituals = false;
-  final RefreshController _refreshControllerShoorahRituals =
-  RefreshController(initialRefresh: false);
-  final RefreshController _refreshControllerMyRituals =
-  RefreshController(initialRefresh: false);
-  int pageNumber = 1;
-  int totalItemCountOfRituals = 0;
-  int pageNumberMyRituals = 1;
-  int totalItemCountOfMyRituals = 0;
-  int itemIndexToRemove = -1;
-  Timer? _debounce;
-  Timer? _debounceForAdd;
+  List<Map<String, dynamic>> quickAccessList = [
+    {
+      "title": "meditation".tr,
+    },
+    {
+      "title": "sleep".tr,
+    },
+    {
+      "title": "transformPods".tr,
+    },
+    {
+      "title": "journal".tr,
+    },
+    {
+      "title": "journal".tr,
+    },
+    {
+      "title": "journal".tr,
+    },
+    {
+      "title": "journal".tr,
+    },
+    {
+      "title": "journal".tr,
+    },
+    {
+      "title": "journal".tr,
+    },
+  ];
   bool showLock = false;
 
   int ritualAddedCount = 0;
 
-
-  /// animated list key
-
-  final GlobalKey<AnimatedListState> _shoorahRitualsListKey =
-  GlobalKey<AnimatedListState>();
-  final GlobalKey<AnimatedListState> _myRitualListKey =
-  GlobalKey<AnimatedListState>();
-
   ValueNotifier selectedCategory = ValueNotifier(null);
-  List categoryList = [];
+  List categoryList = [
+    {"title": "Self-Esteem"},
+    {"title": "Health"},
+    {"title": "Sleep"},
+    {"title": "Self Love"},
+    {"title": "Hobbies"},
+  ];
+  TextEditingController searchController = TextEditingController();
+  FocusNode searchFocusNode = FocusNode();
 
-  final GlobalKey<AnimatedListState> _userDraftRitualKey =
-  GlobalKey<AnimatedListState>();
-  final RefreshController _refreshControllerUserRitualDraft =
-  RefreshController(initialRefresh: false);
   List userDraftRitualsList = [];
-  final TextEditingController _userRitualController = TextEditingController();
-  final FocusNode _userRitualFocus = FocusNode();
-
+  List? _filteredBookmarks;
   int perPageCount = 100;
   bool ratingView = false;
-  int initialRating=0;
+  int initialRating = 0;
   ValueNotifier<bool> isTutorialVideoVisible = ValueNotifier(false);
   late AnimationController _controller;
+
   @override
   void initState() {
     super.initState();
 
-    /// Fetch categories for rituals
-
-    //  var value = SharedPrefUtils.getValue(SharedPrefUtilsKeys.selectedFocusList, '');
-    // _filteredFocusIds = value.isNotEmpty ? List<String>.from(jsonDecode(value)) : [];
-    _tabController = TabController(
-        length: 2, vsync: this, initialIndex: widget.ritualPage ?? 0);
-    _currentTabIndex.value = (widget.ritualPage)?.toDouble() ?? 0.0;
-
-
-
-    _fetchInitialRecords();
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
@@ -119,122 +98,27 @@ class _RitualsPageState extends State<RitualsPage>
     if (isTutorialVideoVisible.value) {
       _controller.forward();
     }
-
   }
 
-  @override
-  void dispose() {
-    _refreshControllerShoorahRituals.dispose();
-    _refreshControllerMyRituals.dispose();
-    _tabController.dispose();
-    super.dispose();
+  searchBookmarks(String query, List bookmarks) {
+    return bookmarks
+        .where((bookmark) =>
+            bookmark['title']!.toLowerCase().contains(query.toLowerCase()))
+        .toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body:ValueListenableBuilder(
-        valueListenable: _currentTabIndex,
-        builder: (context, value, child) {
-          return Stack(
-            children: [
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  child!,
-                  Dimens.d10.spaceHeight,
-                 // welcomeTextTitle(title: "Welcome To Rituals"),
-                 // welcomeTextDescriptionTitle(title: i10n.welcomeRitualsDesc),
-                  LayoutContainer(
-                    vertical: 0,
-                    child: Column(
-                      children: [
-                        CustomTabBar(
-                          bgColor: ColorConstant.themeColor
-                              .withOpacity(Dimens.d0_1),
-                          padding: EdgeInsets.zero,
-                          labelPadding: EdgeInsets.zero,
-                          tabBarIndicatorSize: TabBarIndicatorSize.label,
-                          listOfItems: [
-                            TabText(
-                              text: "myRituals".tr,
-                              value: Dimens.d1,
-                              selectedIndex: _currentTabIndex.value,
-                              padding: Dimens.d15.paddingAll,
-                              textHeight: Dimens.d1_2,
-                              fontSize: Dimens.d16,
-                            ),
-                            TabText(
-                              text: "transformRituals".tr,
-                              value: Dimens.d0,
-                              selectedIndex: _currentTabIndex.value,
-                              padding: Dimens.d15.paddingAll,
-                              textHeight: Dimens.d1_32,
-                              fontSize: Dimens.d16,
-                            ),
-                          ],
-                          tabController: _tabController,
-                          onTapCallBack: (value) {
-                            if (_currentTabIndex.value == value.toDouble()) {
-                              return;
-                            }
-                            FocusManager.instance.primaryFocus?.unfocus();
-                            _currentTabIndex.value = value.toDouble();
-                          },
-                          unSelectedLabelColor: ColorConstant.textGreyColor,
-                        ),
-                      ],
-                    ),
-                  ),
-                  _getTabListOfRituals(),
-                ],
-              ),
-              ratingView
-                  ? Padding(
-                padding:  EdgeInsets.only(top: Dimens.d110.h),
-                child: AddRatingsView(
-                  onRatingChanged: (p0) {
-                    initialRating = p0;
-                   // _exploreBloc.add(AddFeatureRatingEvent( addFeatureRatingRequestModel:
-                   // AddFeatureRatingRequestModel(contentType:2 ,rating: p0)));
-                  },
-                  initialRating: initialRating,
-                  screenTitle:"giveYourRating".tr,
-                  screenHeading: 'We genuinely value your input and strive to continuously improve our services.',
-                  screenDesc: 'Please take a moment to rate your experience with Shoorah Rituals.',
-                ),
-              )
-                  : const SizedBox(),
-        /*      (tutorialVideoData?.sId != null)? ratingView
-                  ? const SizedBox()
-                  :Padding(
-                padding:  EdgeInsets.only(top: Dimens.d110.h),
-                child: SizedBox(height: Dimens.d210.h,
-                  child: ScreenInfoWidget(
-                    videoStateKey: videoKeys[5],
-                    controller: _controller,
-                    isTutorialVideoVisible: isTutorialVideoVisible,
-                    tutorialVideoData:
-                    tutorialVideoData ?? TutorialVideoData(),
-                    screenTitle: "Welcome to Rituals",
-                    screenHeading: tutorialVideoData?.heading ?? '',
-                    screenDesc: tutorialVideoData?.subHeading ?? '',
-                    showVideoIcon: (tutorialVideoData?.videoUrl != null)?true:false,
-                    onVideoViewTap: () {
-                      SharedPrefUtils.setValue(
-                          SharedPrefUtilsKeys.ritualAddedCount, 5);
-                    },
-                  ),
-                ),
-              ):const SizedBox(),*/
-            ],
-          );
-        },
-        child:Padding(
-          padding: const EdgeInsets.only(top: 30.0),
-          child: HomeAppBar(downloadWidget: const SizedBox(),downloadShown: true,
-            title:"",
+        body: Padding(
+      padding: const EdgeInsets.only(top: 30.0, right: 20.0, left: 20.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          HomeAppBar(
+            downloadWidget: const SizedBox(),
+            downloadShown: true,
+            title: "",
             isInfo: false,
             showMeIcon: false,
             ratings: ratingView,
@@ -252,766 +136,591 @@ class _RitualsPageState extends State<RitualsPage>
               setState(() {
                 ratingView = false;
               });
-              isTutorialVideoVisible.value =
-              !isTutorialVideoVisible.value;
+              isTutorialVideoVisible.value = !isTutorialVideoVisible.value;
               if (isTutorialVideoVisible.value) {
                 _controller.forward();
               } else {
-               // videoKeys[6].currentState?.pause();
+                // videoKeys[6].currentState?.pause();
                 _controller.reverse();
               }
-            }, back: true,
+            },
+            back: true,
           ),
+          Dimens.d10.spaceHeight,
+          Row(
+            children: [
+              const Spacer(),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _currentTabIndex = 0;
+                  });
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: Dimens.d14),
+                  height: Dimens.d38,
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                          color: _currentTabIndex == 0
+                              ? ColorConstant.transparent
+                              : themeController.isDarkMode.value
+                                  ? ColorConstant.white
+                                  : ColorConstant.black,
+                          width: 0.5),
+                      borderRadius: BorderRadius.circular(33),
+                      color: _currentTabIndex == 0
+                          ? ColorConstant.themeColor
+                          : ColorConstant.transparent),
+                  child: Center(
+                    child: Text(
+                      "myRituals".tr,
+                      style: Style.montserratRegular(
+                          fontSize: Dimens.d14,
+                          color: _currentTabIndex == 0
+                              ? ColorConstant.white
+                              : themeController.isDarkMode.value
+                                  ? ColorConstant.white
+                                  : ColorConstant.black),
+                    ),
+                  ),
+                ),
+              ),
+              const Spacer(),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _currentTabIndex = 1;
+                  });
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: Dimens.d34),
+                  height: Dimens.d38,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(33),
+                      border: Border.all(
+                          color: _currentTabIndex == 1
+                              ? ColorConstant.transparent
+                              : themeController.isDarkMode.value
+                                  ? ColorConstant.white
+                                  : ColorConstant.black,
+                          width: 0.5),
+                      color: _currentTabIndex == 1
+                          ? ColorConstant.themeColor
+                          : ColorConstant.transparent),
+                  child: Center(
+                    child: Text(
+                      "transformRituals".tr,
+                      style: Style.montserratRegular(
+                          fontSize: Dimens.d14,
+                          color: _currentTabIndex == 1
+                              ? ColorConstant.white
+                              : themeController.isDarkMode.value
+                                  ? ColorConstant.white
+                                  : ColorConstant.black),
+                    ),
+                  ),
+                ),
+              ),
+              const Spacer(),
+            ],
+          ),
+          //________________________ rituals view _________________
+          tabChangeView()
+        ],
+      ),
+    ));
+  }
+
+  Widget tabChangeView() {
+    return _currentTabIndex == 0 ? myRituals() : transformRituals();
+  }
+
+  Widget myRituals() {
+    return Expanded(
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Dimens.d10.spaceHeight,
+            Text("myDrafts".tr,
+                style: Style.cormorantGaramondBold(
+                  fontSize: Dimens.d20,
+                )),
+            Dimens.d10.spaceHeight,
+            userDraftRitualsList.isNotEmpty
+                ? ListView.builder(
+                    itemCount: userDraftRitualsList.length,
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    padding: EdgeInsets.zero,
+                    itemBuilder: (context, index) {
+                      return Slidable(
+                        closeOnScroll: true,
+                        key: const ValueKey<String>("" ?? ""),
+                        endActionPane: ActionPane(
+                          motion: const ScrollMotion(),
+                          dragDismissible: false,
+                          extentRatio: 0.26,
+                          children: [
+                            Dimens.d20.spaceWidth,
+                            GestureDetector(
+                              onTap: () {
+                                userDraftRitualsList.removeAt(index);
+                                setState(() {});
+                              },
+                              child: Container(
+                                width: Dimens.d40,
+                                decoration: BoxDecoration(
+                                  color: ColorConstant.deleteRed,
+                                  borderRadius: Dimens.d16.radiusAll,
+                                ),
+                                alignment: Alignment.center,
+                                child: SvgPicture.asset(
+                                  ImageConstant.icDeleteWhite,
+                                  width: Dimens.d24,
+                                  height: Dimens.d24,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 15),
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 0, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: ColorConstant.themeColor,
+                            borderRadius: BorderRadius.circular(22),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  userDraftRitualsList[index]["title"],
+                                  maxLines: 3,
+                                  style: Style.montserratRegular(
+                                      fontSize: Dimens.d14,
+                                      color: ColorConstant.white),
+                                ),
+                              ),
+                              GestureDetector(
+                                  onTap: () {},
+                                  child:
+                                      SvgPicture.asset(ImageConstant.editTools))
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  )
+                : Center(
+                    child: Text(
+                      "No Data",
+                      style: Style.montserratRegular(
+                          fontSize: Dimens.d14,
+                          color: themeController.isDarkMode.value
+                              ? ColorConstant.white
+                              : ColorConstant.black),
+                    ),
+                  ),
+            Dimens.d10.spaceHeight,
+            Text("myRituals".tr,
+                style: Style.cormorantGaramondBold(
+                  fontSize: Dimens.d20,
+                )),
+            Dimens.d10.spaceHeight,
+            listOfMyRituals.isNotEmpty
+                ? ListView.builder(
+                    itemCount: listOfMyRituals.length,
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    padding: EdgeInsets.zero,
+                    itemBuilder: (context, index) {
+                      return Slidable(
+                        closeOnScroll: true,
+                        key: const ValueKey<String>("" ?? ""),
+                        endActionPane: ActionPane(
+                          motion: const ScrollMotion(),
+                          dragDismissible: false,
+                          extentRatio: 0.26,
+                          children: [
+                            Dimens.d20.spaceWidth,
+                            GestureDetector(
+                              onTap: () {
+                                listOfMyRituals.removeAt(index);
+                                setState(() {});
+                              },
+                              child: Container(
+                                width: Dimens.d40,
+                                decoration: BoxDecoration(
+                                  color: ColorConstant.deleteRed,
+                                  borderRadius: Dimens.d16.radiusAll,
+                                ),
+                                alignment: Alignment.center,
+                                child: SvgPicture.asset(
+                                  ImageConstant.icDeleteWhite,
+                                  width: Dimens.d24,
+                                  height: Dimens.d24,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 15),
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 0, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: ColorConstant.themeColor,
+                            borderRadius: BorderRadius.circular(22),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  listOfMyRituals[index]["title"],
+                                  maxLines: 3,
+                                  style: Style.montserratRegular(
+                                      fontSize: Dimens.d14,
+                                      color: ColorConstant.white),
+                                ),
+                              ),
+                              GestureDetector(
+                                  onTap: () {},
+                                  child:
+                                      SvgPicture.asset(ImageConstant.editTools))
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  )
+                : Center(
+                    child: Text(
+                      "No Data",
+                      style: Style.montserratRegular(
+                          fontSize: Dimens.d14,
+                          color: themeController.isDarkMode.value
+                              ? ColorConstant.white
+                              : ColorConstant.black),
+                    ),
+                  )
+          ],
         ),
-      )
+      ),
     );
   }
 
-  Widget _getTabListOfRituals() {
-    if (_currentTabIndex.value == 0.0) {
-      return (_isLoadingMyRituals && pageNumberMyRituals == 1)
-          ? const Padding(
-        padding: EdgeInsets.symmetric(vertical: 20.0),
-        child: RitualsShimmer(),
-      )
-          : (listOfMyRituals.isNotEmpty || userDraftRitualsList.isNotEmpty)
-          ? Expanded(
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 50.0),
-          child: ListView(
-            shrinkWrap: true,
-            children: [
-              _getUserRitualsDraft(),
-              _getRitualsList(),
-            ],
-          ),
-        ),
-      )
-          : Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          NoDataAvailable(
-            message: "addMoreRitualsToDailyRoutine".tr,
-            showBottomHeight: false,
-          ),
-        ],
-      );
-    } else {
-      return (_isLoading && pageNumber == 1)
-          ? const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-        child: RitualsGridShimmer(),
-      )
-          : (listOfRituals.isNotEmpty)
-          ? Expanded(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  children: [
-                    Dimens.d10.spaceHeight,
-                    AutoSizeText(
-                      "addYourOwnRitual".tr,
-                      textAlign: TextAlign.center,
-                      style: Style.montserratBold(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w600,
+  Widget transformRituals() {
+    return Expanded(
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Dimens.d15.spaceHeight,
+            Text(
+                "Add your rituals to unleash your inner champion & conquer your day!",
+                textAlign: TextAlign.center,
+                style: Style.cormorantGaramondBold(fontSize: Dimens.d18)),
+            Dimens.d15.spaceHeight,
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(25),
+                boxShadow: [
+                  BoxShadow(
+                    color: ColorConstant.colorBFD0D4.withOpacity(0.5),
+                    // Shadow color with transparency
+                    blurRadius: 8.0,
+                    // Blur the shadow for a smoother effect
+                    spreadRadius: 0.5, // Spread the shadow slightly
+                  ),
+                ],
+              ),
+              child: CommonTextField(
+                hintText: "writeYourOwnRitual".tr,
+                controller: ownRitualsController,
+                focusNode: ownRitualsFocus,
+                prefixLottieIcon: ImageConstant.lottieSearch,
+                textInputAction: TextInputAction.done,
+                onChanged: (value) {
+                  setState(() {});
+                },
+              ),
+            ),
+            Dimens.d20.spaceHeight,
+            Row(
+              children: [
+                const Spacer(),
+                GestureDetector(
+                  onTap: () {
+                    if (ownRitualsController.text.isNotEmpty) {
+                      userDraftRitualsList
+                          .add({"title": ownRitualsController.text});
+                      setState(() {
+                        ownRitualsController.clear();
+                      });
+                    } else {
+                      showSnackBarError(
+                          context, "pleaseWriteYourOwnRituals".tr);
+                    }
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        border: Border.all(
+                            color: themeController.isDarkMode.value
+                                ? ColorConstant.white.withOpacity(0.5)
+                                : ColorConstant.black.withOpacity(0.5))),
+                    child: Text(
+                      "drafts".tr,
+                      style: Style.montserratRegular(
+                          fontSize: Dimens.d18,
+                          color: themeController.isDarkMode.value
+                              ? ColorConstant.white
+                              : ColorConstant.black),
+                    ),
+                  ),
+                ),
+                const Spacer(),
+                GestureDetector(
+                  onTap: () {
+                    if (ownRitualsController.text.isNotEmpty) {
+                      listOfMyRituals.add({"title": ownRitualsController.text});
+                      setState(() {
+                        ownRitualsController.clear();
+                      });
+                    } else {
+                      showSnackBarError(
+                          context, "pleaseWriteYourOwnRituals".tr);
+                    }
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        color: ColorConstant.themeColor),
+                    child: Text(
+                      "save".tr,
+                      style: Style.montserratRegular(
+                          fontSize: Dimens.d18, color: ColorConstant.white),
+                    ),
+                  ),
+                ),
+                const Spacer(),
+              ],
+            ),
+            Dimens.d10.spaceHeight,
+            Text("Explore Transform Rituals",
+                textAlign: TextAlign.center,
+                style: Style.cormorantGaramondBold(fontSize: Dimens.d18)),
+            Dimens.d10.spaceHeight,
+            LayoutContainer(
+              horizontal: 0,
+              child: Row(
+                children: [
+                  _buildCategoryDropDown(context),
+                  Dimens.d10.spaceWidth,
+                  Expanded(
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 5),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        boxShadow: [
+                          BoxShadow(
+                            color: ColorConstant.colorBFD0D4.withOpacity(0.5),
+                            // Shadow color with transparency
+                            blurRadius: 8.0,
+                            // Blur the shadow for a smoother effect
+                            spreadRadius: 0.5, // Spread the shadow slightly
+                          ),
+                        ],
                       ),
-                      maxLines: 2,
+                      child: CommonTextField(
+                        hintText: "search".tr,
+                        controller: searchController,
+                        focusNode: searchFocusNode,
+                        prefixLottieIcon: ImageConstant.lottieSearch,
+                        textInputAction: TextInputAction.done,
+                        onChanged: (value) {
+                          setState(() {
+                            _filteredBookmarks =
+                                searchBookmarks(value, quickAccessList);
+                          });
+                        },
+                      ),
                     ),
-                    Dimens.d20.spaceHeight,
-                    CommonTextField(
-                      hintText: "writeYourOwnRitual".tr,
-                      controller: _userRitualController,
-                      focusNode: _userRitualFocus,
-                      textInputAction: TextInputAction.done,
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
+              child: GridView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    // 3 items per row
+                    childAspectRatio: 1.1,
+                    crossAxisSpacing: 20,
+                    mainAxisSpacing: 20 // Set the aspect ratio as needed
                     ),
-                    LayoutContainer(
-                      child: Row(
+                itemCount: quickAccessList.length,
+                // Total number of items
+                itemBuilder: (BuildContext context, int index) {
+                  // Generating items for the GridView
+                  return GestureDetector(
+                    onTap: () {
+                      listOfMyRituals
+                          .add({"title": quickAccessList[index]["title"]});
+                      setState(() {});
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(9),
+                          color: themeController.isDarkMode.value
+                              ? ColorConstant.textfieldFillColor
+                              : ColorConstant.themeColor),
+                      child: Stack(
+                        alignment: Alignment.bottomRight,
                         children: [
-                          Expanded(
-                            child: CommonElevatedButton(
-                              title: "draft".tr,
-                              outLined: true,
-                              textStyle: Style.montserratRegular(
-                                  color: ColorConstant.textDarkBlue),
-                              onTap: () =>
-                                  _addUserRitual(isSaved: false),
+                          Center(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Listen to a podcast",
+                                  // Displaying item index
+                                  style: Style.montserratRegular(
+                                      fontSize: 12, color: ColorConstant.white),
+                                ),
+                              ],
                             ),
                           ),
-                          Dimens.d20.spaceWidth,
-                          Expanded(
-                            child: CommonElevatedButton(
-                              title: "save".tr,
-                              onTap: () =>
-                                  _addUserRitual(isSaved: true),
-                            ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: GestureDetector(
+                                onTap: () {
+                                  listOfMyRituals.add({
+                                    "title": quickAccessList[index]["title"]
+                                  });
+                                  setState(() {});
+                                },
+                                child: SvgPicture.asset(
+                                  ImageConstant.icEmoji,
+                                  height: 25,
+                                  width: 25,
+                                )),
                           ),
                         ],
                       ),
                     ),
-                    AutoSizeText(
-                      "exploreTransformRituals".tr,
-                      textAlign: TextAlign.center,
-                      style: Style.montserratBold(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      maxLines: 1,
-                    ),
-                    Dimens.d20.spaceHeight,
-                  ],
-                ),
+                  );
+                },
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  children: [
-                    _buildCategoryDropDown(context),
-                    Dimens.d10.spaceWidth,
-                    Expanded(
-                      child: CommonTextField(
-                        hintText: "search".tr,
-                        controller: searchController,
-                        focusNode: searchFocus,
-                        prefixLottieIcon: ImageConstant.lottieSearch,
-                        textInputAction: TextInputAction.done,
-                        onChanged: _onSearchChanged,
-                        showMultipleSuffix:
-                        searchController.text.isNotEmpty
-                            ? true
-                            : false,
-                        suffixLottieIcon2:
-                        searchController.text.isNotEmpty
-                            ? ImageConstant.lottieClose
-                            : null,
-                        suffixTap2: () {
-                          searchController.text = '';
-                          setState(() {});
-                          _onSearchChanged(searchController.text);
-                          searchFocus.unfocus();
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Dimens.d20.h.spaceHeight,
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20.0),
-                child: Container(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: Dimens.d20,
-                  ),
-                  child: StatefulBuilder(
-                    builder: (BuildContext context,
-                        void Function(void Function())
-                        setState) =>
-                        Wrap(
-                          spacing: 20,
-                          runSpacing: 20,
-                          alignment: WrapAlignment.start,
-                          children:
-                          listOfRituals.mapIndexed((index, data) {
-                            return ShoorahRitualTileWidget(
-                              data,
-                                  () {
-                               /* _ritualsBloc.add(
-                                  AddMyRitualsEvent(
-                                    addMyRitualsRequest:
-                                    AddMyRitualsRequest(
-                                      ritualIds: [data.id ?? ''],
-                                    ),
-                                  ),
-                                );*/
-                                listOfRituals.removeAt(index);
-                                if (mounted) setState(() {});
-                              },
-                            );
-                          }).toList(),
-                        ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      )
-          : Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          NoDataAvailable(
-            message: "selectMoreFocusToFindNewRituals".tr,
-            showBottomHeight: false,
-          ),
-          const Spacer()
-        ],
-      );
-    }
-  }
-
-  void _refreshMyRitualsList() {
-    pageNumberMyRituals = 1;
-    listOfMyRituals.clear();
- /*   _ritualsBloc.add(
-      GetMyRitualsEvent(
-        paginationRequest: PaginationRequest(
-          page: pageNumberMyRituals,
-          perPage: perPageCount,
-          searchKey:
-          searchController.text.isNotEmpty ? searchController.text : null,
-        ),
-      ),
-    );*/
-  }
-
-  void _refreshShoorahList() {
-    pageNumber = 1;
-    listOfRituals.clear();
-/*    _ritualsBloc.add(
-      GetShoorahRitualsEvent(
-        paginationRequest: PaginationRequest(
-          page: pageNumber,
-          perPage: perPageCount,
-          searchKey:
-          searchController.text.isNotEmpty ? searchController.text : null,
-          categoryId: selectedCategory.value?.id,
-        ),
-      ),
-    );*/
-  }
-
-  _buildMyRitualTile(
-      BuildContext context,
-      int index,
-
-      animation,
-      Function(String id) secondaryBtnAction, {
-        bool isDraft = false,
-      }) {
-    return Column(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: SizeTransition(
-            axis: Axis.vertical,
-            sizeFactor: animation,
-            child: RitualTile(
-              onTap: () {
-                showAppConfirmationDialog(
-                  context: context,
-                  message: "yourSelectedRitualHasBeenDelete".tr,
-                  primaryBtnTitle: "no".tr,
-                  secondaryBtnTitle: "yes".tr,
-                  secondaryBtnAction: () => secondaryBtnAction("" ?? ''),
-                );
-              },
-              title: "ritualsName".tr ?? '',
-              subTitle: "ritualsName".tr   ?? '',
-              multiSubTitle: ["rituals Name" ],
-              showDelete: true,
-              image: '',
-              showEdit: isDraft ? isDraft : false,
-              onEditTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return Dialog(
-                      backgroundColor: Colors.transparent,
-                      alignment: Alignment.center,
-                      insetPadding: Dimens.d20.paddingAll,
-                      child: Container(
-                        padding: Dimens.d20.paddingAll,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: Dimens.d16.radiusAll,
-                        ),
-                        child: EditRitualDialogWidget(
-                          onDraftTap: (newRitualText) {
-                            Navigator.of(context).pop();
-                            _updateUserRitual(
-                              newRitualText.trim(),
-                              "",
-                              isSaved: false,
-                            );
-                          },
-                          onSaveTap: (newRitualText) {
-                            Navigator.of(context).pop();
-                            _updateUserRitual(
-                              newRitualText.trim(),
-                              "",
-                              isSaved: true,
-                            );
-                          },
-                          onDeleteTap: () {
-                            Navigator.of(context).pop();
-                            showAppConfirmationDialog(
-                              context: context,
-                              message: "yourSelectedRitualHasBeenDelete".tr,
-                              primaryBtnTitle: "no".tr,
-                              secondaryBtnTitle: "yes".tr,
-                              secondaryBtnAction: () =>
-                                  secondaryBtnAction("" ?? ''),
-                            );
-                          },
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-              // color: AppColors.deleteRedLight,
             ),
-          ),
+          ],
         ),
-        if (index < listOfMyRituals.length - 1)
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: Dimens.d20),
-            child: DividerWidget(),
-          )
-      ],
+      ),
     );
-  }
-
-  _buildShoorahRitualsTile(
-      BuildContext context, int index, animation) {
-    return Column(
-      children: [
-        SizeTransition(
-          axis: Axis.vertical,
-          sizeFactor: animation,
-          child: RitualTile(
-            onTap: () {
-              if (_debounceForAdd?.isActive ?? false) _debounceForAdd?.cancel();
-              itemIndexToRemove = index;
-              setState(() {});
-              _debounceForAdd = Timer(const Duration(milliseconds: 200), () {
-                final retVal = listOfRituals.removeAt(itemIndexToRemove);
-
-                _shoorahRitualsListKey.currentState?.removeItem(index,
-                        (_, animation) {
-                      return _buildShoorahRitualsTile(
-                          context, index, retVal, );
-                    }, duration: const Duration(milliseconds: 200));
-                itemIndexToRemove = -1;
-
-            /*    _ritualsBloc.add(
-                  AddMyRitualsEvent(
-                    addMyRitualsRequest: AddMyRitualsRequest(
-                      ritualIds: [data.id ?? ''],
-                    ),
-                  ),
-                );*/
-              });
-            },
-            title: "sadfsdf" ?? '',
-            subTitle: "Sdafds",
-            multiSubTitle: ["sdfsd"],
-            image: itemIndexToRemove != index
-                ? ImageConstant.imgAddRounded
-                : ImageConstant.imgAddRounded,
-            showEdit: true,
-            onEditTap: () {},
-          ),
-        ),
-        if (index < listOfRituals.length - 1)
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: Dimens.d20),
-            child: DividerWidget(),
-          )
-      ],
-    );
-  }
-
-  void _onSearchChanged(String query) {
-    if (_debounce?.isActive ?? false) _debounce?.cancel();
-    _debounce = Timer(const Duration(milliseconds: 500), () {
-      // do something with query
-      pageNumber = 1;
-      pageNumberMyRituals = 1;
-/*      _ritualsBloc.add(
-        GetShoorahRitualsEvent(
-          paginationRequest: PaginationRequest(
-            page: pageNumber,
-            perPage: perPageCount,
-            searchKey: (query.isNotEmpty) ? query : null,
-            categoryId: selectedCategory.value?.id,
-          ),
-          isSearchQuery: true,
-          isSearchFiltered: true,
-        ),
-      );
-      _ritualsBloc.add(
-        GetMyRitualsEvent(
-          paginationRequest: PaginationRequest(
-            page: pageNumberMyRituals,
-            perPage: perPageCount,
-            searchKey: (query.isNotEmpty) ? query : null,
-          ),
-          isSearchQuery: true,
-          isSearchFiltered: true,
-        ),
-      );*/
-    });
   }
 
   Widget _buildCategoryDropDown(BuildContext context) {
     return Expanded(
-      child: CategoryDropDown(
-        key: UniqueKey(),
-        categoryList: List.from(categoryList),
-        selectedCategory: selectedCategory,
-        onSelected: () {
-          _fetchInitialRecords();
-        },
-      ),
-    );
-  }
-
-  Widget _getUserRitualsDraft() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Dimens.d10.spaceHeight,
-        Padding(
-          padding: const EdgeInsets.only(left: Dimens.d20),
-          child: AutoSizeText(
-            "myDrafts".tr,
-            style: Style.montserratBold(
-              fontSize: 16.0,
-              fontWeight: FontWeight.bold,
-            ),
-            maxLines: 1,
-          ),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: ColorConstant.lightGrey),
+          borderRadius: BorderRadius.circular(30),
+          color: ColorConstant.themeColor,
         ),
-        Dimens.d10.spaceHeight,
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: Dimens.d20),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: Dimens.d15.radiusAll,
-          ),
-          child: AnimatedList(
-            key: _userDraftRitualKey,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            padding: EdgeInsets.zero,
-            initialItemCount: userDraftRitualsList.length,
-            itemBuilder: (context, index, animation) {
-              if (index < userDraftRitualsList.length) {
-                final data = userDraftRitualsList[index];
-                return _buildMyRitualTile(
-                  context,
-                  index,
-                  data,
-                  isDraft: true,
-                      (id) {
-                    Navigator.pop(context);
-                    final retVal = userDraftRitualsList.removeAt(index);
-                    _userDraftRitualKey.currentState?.removeItem(index,
-                            (_, animation) {
-                          return _buildMyRitualTile(
-                              context, index, retVal,
-                              isDraft: true, (id) {
-                        /*    _userRitualsDraftBloc.add(
-                              DeleteMyRitualsEvent(
-                                ritualId: id,
-                              ),
-                            );*/
-                          });
-                        }, duration: const Duration(milliseconds: 200));
-                  /*  _userRitualsDraftBloc.add(
-                      DeleteMyRitualsEvent(
-                        ritualId: id,
-                      ),
-                    );*/
-                  },
-                );
-              } else {
-                return const SizedBox.shrink();
-              }
-            },
-          ),
-        ),
-        Dimens.d10.spaceHeight,
-      ],
-    );
-  }
-
-  Widget _getRitualsList() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Dimens.d10.spaceHeight,
-        Padding(
-          padding: const EdgeInsets.only(left: Dimens.d20),
-          child: AutoSizeText(
-            "myRituals".tr,
-            style: Style.montserratBold(
-              fontSize: 16.0,
-              fontWeight: FontWeight.bold,
-            ),
-            maxLines: 1,
-          ),
-        ),
-        Dimens.d10.spaceHeight,
-        true
-            ? Container(
-          margin: const EdgeInsets.symmetric(horizontal: Dimens.d20),
-          decoration: BoxDecoration(
-            color:Colors.white,
-            borderRadius: Dimens.d15.radiusAll,
-          ),
-          child: AnimatedList(
-            key: _myRitualListKey,
-            shrinkWrap: true,
-            padding: EdgeInsets.zero,
-            initialItemCount: listOfMyRituals.length,
-            physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index, animation) {
-              if (index < listOfMyRituals.length) {
-                final data = listOfMyRituals[index];
-                return _buildMyRitualTile(
-                  context,
-                  index,
-                  data,
-                                        (id) {
-                    Navigator.pop(context);
-                    final retVal = listOfMyRituals.removeAt(index);
-                    _myRitualListKey.currentState?.removeItem(index,
-                            (_, animation) {
-                          return _buildMyRitualTile(
-                              context, index, retVal, (id) {
-                         /*   _ritualsBloc.add(
-                              DeleteMyRitualsEvent(
-                                ritualId: id,
-                              ),
-                            );*/
-                          });
-                        }, duration: const Duration(milliseconds: 200));
-                /*    _ritualsBloc.add(
-                      DeleteMyRitualsEvent(
-                        ritualId: id,
-                      ),
-                    );*/
-                  },
-                );
-              } else {
-                return const SizedBox();
-              }
-            },
-          ),
-        )
-            : SmartRefresher(
-          key: const ValueKey('myRituals'),
-          controller: _refreshControllerMyRituals,
-          enablePullUp: true,
-          enablePullDown: true,
-          footer: const OnLoadingFooter(),
-          physics: const NeverScrollableScrollPhysics(),
-          onLoading: () {
-            if (listOfMyRituals.length < totalItemCountOfMyRituals &&
-                (pageNumberMyRituals <
-                    (totalItemCountOfMyRituals / 10).ceil())) {
-              pageNumberMyRituals += 1;
-          /*    _ritualsBloc.add(
-                GetMyRitualsEvent(
-                  paginationRequest: PaginationRequest(
-                    page: pageNumberMyRituals,
-                    perPage: perPageCount,
-                    searchKey: searchController.text.isNotEmpty
-                        ? searchController.text
-                        : null,
-                  ),
-                ),
-              );*/
-              _refreshControllerMyRituals.loadComplete();
-            } else {
-              _refreshControllerMyRituals.loadComplete();
+        child: DropdownButton(
+          value: selectedCategory.value,
+          borderRadius: BorderRadius.circular(30),
+          onChanged: (value) {
+            {
+              setState(() {
+                selectedCategory.value = value;
+              });
             }
           },
-          onRefresh: () {
-            _refreshMyRitualsList();
-            _refreshControllerMyRituals.loadComplete();
+          selectedItemBuilder: (_) {
+            return categoryList.map<Widget>((item) {
+              bool isSelected =
+                  selectedCategory.value?["title"] == item["title"];
+              return Padding(
+                padding: const EdgeInsets.only(left: 18, top: 17),
+                child: Text(
+                  item["title"] ?? '',
+                  style: Style.montserratRegular(
+                    fontSize: Dimens.d14,
+                    color: Colors.white,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                  ),
+                ),
+              );
+            }).toList();
           },
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: Dimens.d20),
-            decoration: BoxDecoration(
+          style: Style.montserratRegular(
+            fontSize: Dimens.d14,
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+          ),
+          hint: Padding(
+            padding: const EdgeInsets.only(left: 15),
+            child: Text(
+              "selectCategory".tr,
+              style: Style.montserratRegular(
+                  fontSize: Dimens.d14, color: Colors.white),
+            ),
+          ),
+          icon: Padding(
+            padding: const EdgeInsets.only(right: 15),
+            child: SvgPicture.asset(
+              ImageConstant.icDownArrow,
+              height: 20,
               color: Colors.white,
-              borderRadius: Dimens.d15.radiusAll,
-            ),
-            child: AnimatedList(
-              key: _myRitualListKey,
-              shrinkWrap: true,
-              padding: EdgeInsets.zero,
-              initialItemCount: listOfMyRituals.length,
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index, animation) {
-                if (index < listOfMyRituals.length) {
-                  final data = listOfMyRituals[index];
-                  return _buildMyRitualTile(
-                    context,
-                    index,
-                    data,
-
-                        (id) {
-                      Navigator.pop(context);
-                      final retVal = listOfMyRituals.removeAt(index);
-                      _myRitualListKey.currentState?.removeItem(index,
-                              (_, animation) {
-                            return _buildMyRitualTile(
-                                context, index, retVal, (id) {
-                         /*     _ritualsBloc.add(
-                                DeleteMyRitualsEvent(
-                                  ritualId: id,
-                                ),
-                              );*/
-                            });
-                          }, duration: const Duration(milliseconds: 200));
-                     /* _ritualsBloc.add(
-                        DeleteMyRitualsEvent(
-                          ritualId: id,
-                        ),
-                      );*/
-                    },
-                  );
-                } else {
-                  return const SizedBox();
-                }
-              },
             ),
           ),
-        ),
-      ],
-    );
-  }
-
-  void _fetchInitialRecords() {
-    pageNumber = 1;
-    listOfMyRituals.clear();
-    listOfRituals.clear();
-/*    _ritualsBloc
-      ..add(
-        GetMyRitualsEvent(
-          paginationRequest: PaginationRequest(
-            page: pageNumberMyRituals,
-            perPage: perPageCount,
+          elevation: 16,
+          itemHeight: 50,
+          menuMaxHeight: 350.h,
+          underline: const SizedBox(
+            height: 0,
           ),
-        ),
-      )
-      ..add(
-        GetShoorahRitualsEvent(
-          paginationRequest: PaginationRequest(
-            page: pageNumber,
-            perPage: perPageCount,
-            categoryId: selectedCategory.value?.id,
-          ),
-        ),
-      );*/
-  }
-
-  void _addUserRitual({bool isSaved = true}) {
-    if (_userRitualController.text.isEmpty) {
-      showSnackBarError(context, "pleaseAddOwnRituals".tr);
-      return;
-    }
-  /*  _ritualsBloc.add(
-      AddUserRitualsEvent(
-        addUserRitualsRequest: AddUserRitualsRequest(
-            ritualName: _userRitualController.text.trim(), isSaved: isSaved),
-      ),
-    );*/
-    _userRitualController.clear();
-    _userRitualFocus.unfocus();
-  }
-
-  void _updateUserRitual(
-      String customRitualTitle,
-      String ritualId, {
-        bool isSaved = true,
-      }) {
-    if (customRitualTitle.isEmpty) {
-      showSnackBarError(context, "pleaseAddOwnRituals".tr);
-      return;
-    }
-  /*  _ritualsBloc.add(
-      AddUserRitualsEvent(
-        addUserRitualsRequest: AddUserRitualsRequest(
-          ritualName: customRitualTitle.trim(),
-          isSaved: isSaved,
-          ritualId: ritualId,
-        ),
-      ),
-    );*/
-  }
-}
-
-class ShoorahRitualTileWidget extends StatelessWidget {
-
-  final int index;
-  final VoidCallback onAdd;
-
-  const ShoorahRitualTileWidget(
-
-      this.index,
-      this.onAdd, {
-        super.key,
-      });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: getTileWidth(context),
-      height: getTileWidth(context),
-      decoration: BoxDecoration(
-        color:
-        index.isOdd ?ColorConstant.colorThemed4 : ColorConstant.colorThemed7,
-        borderRadius: const BorderRadius.all(Radius.circular(20)),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: Dimens.d10),
-      child: Stack(
-        children: [
-          Align(
-            alignment: Alignment.center,
-            child: AutoSizeText(
-              "ritualName".tr ?? '',
-              textAlign: TextAlign.center,
-              style: Style.montserratBold(
-                fontSize: Dimens.d16,
-                fontWeight: FontWeight.normal,
-                color: Colors.white,
+          isExpanded: true,
+          dropdownColor: ColorConstant.colorECF1F3,
+          items: categoryList.map<DropdownMenuItem>((item) {
+            bool isSelected = selectedCategory.value?["title"] == item["title"];
+            return DropdownMenuItem(
+              value: item,
+              child: AnimatedBuilder(
+                animation: selectedCategory,
+                builder: (BuildContext context, Widget? child) {
+                  return child!;
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(
+                    item["title"] ?? '',
+                    style: Style.montserratRegular(
+                      fontSize: Dimens.d14,
+                      color: ColorConstant.textGreyColor,
+                      fontWeight:
+                          isSelected ? FontWeight.bold : FontWeight.w500,
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-          Positioned(
-            bottom: 18,
-            right: 10,
-            child: GestureDetector(
-              onTap: onAdd,
-              child: SvgPicture.asset(
-                ImageConstant.icEmoji,
-                height: Dimens.d20,
-                width: Dimens.d20,
-              ),
-            ),
-          ),
-        ],
+            );
+          }).toList(),
+        ),
       ),
     );
   }
-
-  double getTileWidth(BuildContext context) =>
-      MediaQuery.sizeOf(context).width / 2 - Dimens.d32;
-}
-
-getHeight(width) {
-  return ((1080 / 1920) * (width - 40));
 }

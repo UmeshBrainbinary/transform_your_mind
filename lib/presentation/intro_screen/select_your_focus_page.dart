@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-
 import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/custom_chip.dart';
 import 'package:transform_your_mind/core/common_widget/select_focus_button.dart';
@@ -107,7 +105,7 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
             isLeft: false,
             top: Dimens.d100.h,
             height: Dimens.d230.h,
-          ) : SizedBox(),
+          ) : const SizedBox(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
             child: Column(
@@ -151,7 +149,8 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
                       },));
                       // Implement your save or next functionality here
                     } else {
-                      showSnackBarError(context, 'Please add more then 5  Focuses');
+                      showSnackBarError(
+                          context, 'Please add more than 5  Focuses');
                     }
                   },
                 ),

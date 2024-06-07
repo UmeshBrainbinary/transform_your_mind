@@ -1,11 +1,12 @@
 
 import 'package:get/get.dart';
+import 'package:transform_your_mind/presentation/affirmation_alarm_screen/affirmation_alarm_screen.dart';
+import 'package:transform_your_mind/presentation/affirmation_alarm_screen/binding/affirmation_alarm_binding.dart';
 import 'package:transform_your_mind/presentation/auth/forgot_password_screen/binding/forgot_binding.dart';
 import 'package:transform_your_mind/presentation/auth/forgot_password_screen/forgot_password_screen.dart';
 import 'package:transform_your_mind/presentation/auth/forgot_password_screen/new_password_screen.dart';
 import 'package:transform_your_mind/presentation/auth/forgot_password_screen/verification_screen.dart';
 import 'package:transform_your_mind/presentation/auth/login_screen/binding/login_binding.dart';
-import 'package:transform_your_mind/presentation/auth/login_screen/login_controller.dart';
 import 'package:transform_your_mind/presentation/auth/login_screen/login_screen.dart';
 import 'package:transform_your_mind/presentation/auth/ragister_screen/binding/register_binding.dart';
 import 'package:transform_your_mind/presentation/auth/ragister_screen/register_screen.dart';
@@ -40,9 +41,17 @@ import 'package:transform_your_mind/presentation/me_screen/screens/setting_scree
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/privacy_policy_screen/privacy_policy_screen.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/binding/setting_binding.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/setting_screen.dart';
-
+import 'package:transform_your_mind/presentation/motivational_message/binding/motivational_binding.dart';
+import 'package:transform_your_mind/presentation/motivational_message/motivational_message.dart';
+import 'package:transform_your_mind/presentation/positive_moment/binding/positive_binding.dart';
+import 'package:transform_your_mind/presentation/positive_moment/positive_controller.dart';
+import 'package:transform_your_mind/presentation/positive_moment/positive_screen.dart';
+import 'package:transform_your_mind/presentation/profile_screen/binding/profile_binding.dart';
+import 'package:transform_your_mind/presentation/profile_screen/profile_screen.dart';
 import 'package:transform_your_mind/presentation/splash_screen/binding/splash_binding.dart';
 import 'package:transform_your_mind/presentation/splash_screen/splash_screen.dart';
+import 'package:transform_your_mind/presentation/subscription_screen/binding/subscription_binding.dart';
+import 'package:transform_your_mind/presentation/subscription_screen/subscription_screen.dart';
 import 'package:transform_your_mind/presentation/today_cleanse_screen/binding/cleanse_binding.dart';
 import 'package:transform_your_mind/presentation/today_cleanse_screen/today_cleanse_screen.dart';
 import 'package:transform_your_mind/presentation/today_gratitude_screen/binding/gratitude_binding.dart';
@@ -82,9 +91,12 @@ class AppRoutes {
   static const String changePassword = '/change_password_screen';
   static const String notificationSetting = '/notification_setting_screen';
   static const String privacyPolicy = '/privacy_policy_screen';
-  static const String personalisationsScreen = '/personalisations_screen';
-
-
+  static const String personalizationScreen = '/personalizationScreen';
+  static const String profileScreen = '/profileScreen';
+  static const String subscriptionScreen = '/subscriptionScreen';
+  static const String motivationalMessageScreen = '/motivationalMessageScreen';
+  static const String affirmationAlarmScreen = '/affirmationAlarmScreen';
+  static const String positiveScreen = '/positiveScreen';
 
   static List<GetPage> pages = [
 
@@ -216,7 +228,7 @@ class AppRoutes {
     GetPage(
       transition: Transition.rightToLeft,
         name: fullScreenImage,
-        page: () =>  ViewFullScreenImage(),
+      page: () => const ViewFullScreenImage(),
     ),
     GetPage(
       transition: Transition.rightToLeft,
@@ -230,7 +242,7 @@ class AppRoutes {
     GetPage(
       transition: Transition.rightToLeft,
       name: privacyPolicy,
-      page: () =>  PrivacyPolicyScreen(),
+      page: () => const PrivacyPolicyScreen(),
       bindings: [
         PrivacyPolicyBinding(),
       ],
@@ -325,11 +337,43 @@ class AppRoutes {
 
     GetPage(
       transition: Transition.rightToLeft,
-      name: personalisationsScreen,
-      page: () => PersonalisationsScreen(),
+      name: personalizationScreen,
+      page: () => PersonalizationScreenScreen(),
       bindings: [
         PersonalisationsBinding()
       ],
+    ),
+
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: profileScreen,
+      page: () => const ProfileScreen(),
+      bindings: [ProfileBinding()],
+    ),
+
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: subscriptionScreen,
+      page: () =>  SubscriptionScreen(skip: false),
+      bindings: [SubscriptionBinding()],
+    ),
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: motivationalMessageScreen,
+      page: () =>  const MotivationalMessageScreen(),
+      bindings: [MotivationalBinding()],
+    ),
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: affirmationAlarmScreen,
+      page: () =>  const AffirmationAlarmScreen(),
+      bindings: [AffirmationAlarmBinding()],
+    ),
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: positiveScreen,
+      page: () =>   const PositiveScreen(),
+      bindings: [PositiveBinding()],
     ),
 
     ///

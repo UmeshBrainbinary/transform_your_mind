@@ -40,6 +40,7 @@ class CommonTextField extends StatefulWidget {
   final int? minLines;
   final int? maxLength;
   final double? heightFactor;
+  final double? borderRadius;
   final Widget? prefix;
   final Widget? suffix;
   final Color? filledColor;
@@ -88,8 +89,9 @@ class CommonTextField extends StatefulWidget {
       this.heightFactor = 2.1,
       this.transform,
       this.validator,
-        this.autovalidateMode,
-      })
+    this.borderRadius = Dimens.d26,
+    this.autovalidateMode,
+  })
       : super(key: key);
 
   @override
@@ -147,6 +149,7 @@ class _CommonTextFieldState extends State<CommonTextField>
       autovalidateMode: AutovalidateMode.onUserInteraction,
       controller: widget.controller,
       obscureText: widget.isSecure,
+      focusNode: widget.focusNode,
       inputFormatters: widget.inputFormatters ?? [],
       textInputAction: widget.textInputAction ?? TextInputAction.done,
       keyboardType: widget.keyboardType ?? TextInputType.text,
@@ -174,9 +177,9 @@ class _CommonTextFieldState extends State<CommonTextField>
               ),
           border: OutlineInputBorder(
             borderSide: BorderSide.none,
-            borderRadius: Dimens.d26.radiusAll,
-          ),
-          contentPadding: EdgeInsets.only(
+          borderRadius: widget.borderRadius?.radiusAll ?? Dimens.d26.radiusAll,
+        ),
+        contentPadding: EdgeInsets.only(
             top: Dimens.d14,
             bottom: Dimens.d14,
             left: Dimens.d20,
@@ -187,37 +190,8 @@ class _CommonTextFieldState extends State<CommonTextField>
           ),
           prefixIcon: widget.prefixIcon,
           suffixIcon: widget.suffixIcon,
-          // widget.showMultipleSuffix
-          //     ? Row(
-          //         mainAxisSize: MainAxisSize.min,
-          //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //         children: [
-          //           _iconButton(widget.suffixIcon, widget.suffixTap2,
-          //                   widget.suffixLottieIcon2,
-          //                   multiIcon: true) ??
-          //               const SizedBox.shrink(),
-          //           _iconButton(widget.suffixIcon, widget.suffixTap,
-          //                   widget.suffixLottieIcon,
-          //                   multiIcon: true) ??
-          //               const SizedBox.shrink(),
-          //         ],
-          //       )
-          //     : (widget.suffixIcon != null || widget.suffixLottieIcon != null)
-          //         ? _iconButton(widget.suffixIcon, widget.suffixTap,
-          //             widget.suffixLottieIcon)
-          //         : null,
-          // prefixIcon: (widget.prefixIcon != null ||
-          //         widget.prefixLottieIcon != null)
-          //     ? Container(
-          //         transform:
-          //             widget.transform ?? Matrix4.translationValues(0, 0, 0),
-          //         child: _iconButton(widget.prefixIcon, widget.prefixTap,
-          //             widget.prefixLottieIcon,
-          //             heightFactor: widget.heightFactor),
-          //       )
-          //     : null,
-          prefix: widget.prefix,
-          suffix: widget.suffix,
+        prefix: widget.prefix,
+        suffix: widget.suffix,
 
         errorStyle: Style.montserratRegular(color: ColorConstant.colorFF0000, fontSize: Dimens.d12),
         errorMaxLines: 2,

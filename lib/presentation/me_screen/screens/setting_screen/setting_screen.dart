@@ -7,7 +7,6 @@ import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
-import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/auth/login_screen/login_controller.dart';
 import 'package:transform_your_mind/presentation/auth/ragister_screen/register_controller.dart';
@@ -19,270 +18,210 @@ import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 class SettingScreen extends StatelessWidget {
-   SettingScreen({super.key});
+  SettingScreen({super.key});
 
-   SettingController settingController = Get.put(SettingController());
-   ThemeController themeController = Get.find<ThemeController>();
+  SettingController settingController = Get.put(SettingController());
+  ThemeController themeController = Get.find<ThemeController>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: themeController.isDarkMode.value ? ColorConstant.black : ColorConstant.backGround,
+      backgroundColor: themeController.isDarkMode.value
+          ? ColorConstant.black
+          : ColorConstant.backGround,
       appBar: CustomAppBar(
-      title: "settings".tr,
-        action: Row(
-          children: [
-            GestureDetector(
-                onTap: () {},
-                child: SvgPicture.asset(ImageConstant.notification, height: Dimens.d30, width: Dimens.d30)
-            ),
-            Dimens.d20.spaceWidth
-          ],
-        )
-    ),
+        title: "settings".tr,
+      ),
       body: Stack(
         children: [
-         /* Positioned(
-            top: Dimens.d120,
-            right: 0,
-            left:  null,
-            child: Image.asset(ImageConstant.bgStar, height: Dimens.d253),
-          ),*/
-           Padding(
-               padding: Dimens.d20.paddingHorizontal,
-             child: Column(
-               crossAxisAlignment: CrossAxisAlignment.start,
-               children: [
-                 Expanded(
-                   child: ListView(
-                     shrinkWrap: true,
-                     physics: const ClampingScrollPhysics(),
-                     padding: const EdgeInsets.only(bottom: 50, top: 30),
-                     children: [
-                       Container(
-                         decoration: BoxDecoration(
-                           color: ColorConstant.transparent,
-                           borderRadius: BorderRadius.circular(Dimens.d16),
-                         ),
-                         child: ListView.separated(
-                           physics: const NeverScrollableScrollPhysics(),
-                           shrinkWrap: true,
-                           clipBehavior: Clip.none,
-                           padding: EdgeInsets.zero,
-                           itemBuilder: (context, index) {
-                             var data = settingController.settingsData[index];
-                             return
-                             //   index == 1
-                             //     ?  Container(
-                             //   margin: const EdgeInsets.symmetric(horizontal: 1.2),
-                             //   decoration: BoxDecoration(
-                             //       color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.white,
-                             //       borderRadius: BorderRadius.circular(50),
-                             //       boxShadow: [
-                             //         BoxShadow(
-                             //             color: ColorConstant.grey.withOpacity(0.1),
-                             //             blurRadius: 5,spreadRadius: 1
-                             //         )
-                             //       ]
-                             //   ),
-                             //   padding: const EdgeInsets.symmetric(
-                             //     horizontal: Dimens.d10,
-                             //     vertical: Dimens.d10,
-                             //   ),
-                             //   child: Row(
-                             //     mainAxisSize: MainAxisSize.min,
-                             //     children: [
-                             //
-                             //       Container(
-                             //         height: Dimens.d50.h,
-                             //         width: Dimens.d50,
-                             //         padding: const EdgeInsets.all(10),
-                             //         decoration: BoxDecoration(
-                             //           color: ColorConstant.themeColor,
-                             //           shape: BoxShape.circle,),
-                             //         child: SvgPicture.asset(
-                             //           ImageConstant.settingsPersonalization,
-                             //           color: ColorConstant.white,
-                             //         ),
-                             //       ),
-                             //       Dimens.d12.spaceWidth,
-                             //       Text(
-                             //         "theme".tr,
-                             //         style: Style.montserratMedium().copyWith(
-                             //           letterSpacing: Dimens.d0_16,
-                             //         ),
-                             //       ),
-                             //       Spacer(),
-                             //       CustomSwitch(
-                             //         value: themeController.isDarkMode.value,
-                             //         onChanged: (value) async{
-                             //           themeController.switchTheme();
-                             //           Get.forceAppUpdate();
-                             //         },
-                             //         width: 50.0,
-                             //         height: 25.0,
-                             //         activeColor: ColorConstant.themeColor,
-                             //         inactiveColor: ColorConstant.backGround,
-                             //       ),
-                             //
-                             //     ],
-                             //   ),
-                             // )
-                             //   :
-                             SettingListItem(
-                               isSettings: true,
-                               prefixIcon: data.prefixIcon,
-                               title: data.title,
-                               //suffixIcon: data.suffixIcon,
-                               onTap: () {
-                                  if(index==0){
-                                    Get.toNamed(AppRoutes.notificationSetting);
-                                  } else if(index==1){
-                                    Get.toNamed(AppRoutes.personalisationsScreen);
-                                  } else if(index==2){
-                                   Get.toNamed(AppRoutes.accountScreen);
-                                 }
-                               },
-                             );
-                           },
-                           separatorBuilder: (context, index) => Padding(
-                             padding: Dimens.d20.paddingHorizontal,
-                             child: const SizedBox(height: 15,),
-                           ),
-                           itemCount: settingController.settingsData.length,
-                         ),
-                       ),
-                     ],
-                   ),
-                 ),
-                 Center(
-                   child: CommonElevatedButton(
-                     title: "logout".tr,
-                     // textStyle: Style.montserratMedium(
-                     //   color: ColorConstant.white,
-                     //   fontSize: Dimens.d14,
-                     // ),
-                     onTap: () {
-                       showAppConfirmationDialog(
-                         context: context,
-                         message: "areYouSureWantToLogout?".tr,
-                         primaryBtnTitle: "no".tr,
-                         secondaryBtnTitle: "yes".tr,
-                         secondaryBtnAction: () {
+          Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.only(top: Dimens.d100),
+                child: SvgPicture.asset(ImageConstant.profile1),
+              )),
+          Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: Dimens.d120),
+                child: SvgPicture.asset(ImageConstant.profile2),
+              )),
+          Padding(
+            padding: Dimens.d20.paddingHorizontal,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: ListView(
+                    shrinkWrap: true,
+                    physics: const ClampingScrollPhysics(),
+                    padding: const EdgeInsets.only(bottom: 50, top: 30),
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: ColorConstant.transparent,
+                          borderRadius: BorderRadius.circular(Dimens.d16),
+                        ),
+                        child: ListView.separated(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          clipBehavior: Clip.none,
+                          padding: EdgeInsets.zero,
+                          itemBuilder: (context, index) {
+                            var data = settingController.settingsData[index];
+                            return SettingListItem(
+                              setting: data.settings,
+                              isSettings: true,
+                              prefixIcon: data.prefixIcon,
+                              title: data.title,
+                              suffixIcon: data.suffixIcon,
+                              onTap: () {
+                                if (index == 0) {
+                                  Get.toNamed(AppRoutes.notificationSetting);
+                                } else if (index == 1) {
+                                  Get.toNamed(AppRoutes.subscriptionScreen);
+                                } else if (index == 2) {
+                                  Get.toNamed(AppRoutes.accountScreen);
+                                } else if (index == 4) {
+                                  Get.toNamed(AppRoutes.personalizationScreen);
+                                }
+                              },
+                            );
+                          },
+                          separatorBuilder: (context, index) => Padding(
+                            padding: Dimens.d20.paddingHorizontal,
+                            child: const SizedBox(
+                              height: 15,
+                            ),
+                          ),
+                          itemCount: settingController.settingsData.length,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Center(
+                  child: CommonElevatedButton(
+                    title: "logout".tr,
+                    // textStyle: Style.montserratMedium(
+                    //   color: ColorConstant.white,
+                    //   fontSize: Dimens.d14,
+                    // ),
+                    onTap: () {
+                      showAppConfirmationDialog(
+                        context: context,
+                        message: "areYouSureWantToLogout?".tr,
+                        primaryBtnTitle: "no".tr,
+                        secondaryBtnTitle: "yes".tr,
+                        secondaryBtnAction: () {
+                          RegisterController registerController =
+                              Get.put(RegisterController());
+                          registerController.nameController.clear();
+                          registerController.emailController.clear();
+                          registerController.passwordController.clear();
+                          registerController.dobController.clear();
+                          registerController.genderController.clear();
+                          registerController.imageFile.value = null;
 
+                          if (PrefService.getBool(PrefKey.isRemember) ==
+                              false) {
+                            LoginController loginController =
+                                Get.put(LoginController());
+                            loginController.emailController.clear();
+                            loginController.passwordController.clear();
+                            loginController.rememberMe.value = false;
+                          }
 
-
-                           RegisterController registerController = Get.put(RegisterController());
-                           registerController.nameController.clear();
-                           registerController.emailController.clear();
-                           registerController.passwordController.clear();
-                           registerController.dobController.clear();
-                           registerController.genderController.clear();
-                           registerController.imageFile.value = null;
-
-    if(PrefService.getBool(PrefKey.isRemember) == false) {
-      LoginController loginController = Get.put(LoginController());
-      loginController.emailController.clear();
-      loginController.passwordController.clear();
-      loginController.rememberMe.value = false;
-    }
-
-
-
-                           Get.offAllNamed(AppRoutes.loginScreen);
-                           PrefService.setValue(PrefKey.isLoginOrRegister, false);
-                         },
-                       );
-                     },
-                   ),
-                 ),
-                 Dimens.d30.spaceHeight,
-               ],
-             ),
-           )
+                          Get.offAllNamed(AppRoutes.loginScreen);
+                          PrefService.setValue(
+                              PrefKey.isLoginOrRegister, false);
+                        },
+                      );
+                    },
+                  ),
+                ),
+                Dimens.d30.spaceHeight,
+              ],
+            ),
+          )
         ],
       ),
     );
   }
 }
 
-
-
-
 class SettingListItem extends StatelessWidget {
   SettingListItem({
-    Key? key,
+    super.key,
     required this.prefixIcon,
     required this.title,
-    //required this.suffixIcon,
+    required this.suffixIcon,
     required this.isSettings,
     this.onTap,
-  }) : super(key: key);
+    this.setting,
+  });
 
   final String prefixIcon;
   final String title;
-  //final String suffixIcon;
+  final String suffixIcon;
   final bool isSettings;
   final VoidCallback? onTap;
+  final Widget? setting;
 
   ThemeController themeController = Get.find<ThemeController>();
 
   @override
   Widget build(BuildContext context) {
-    return
-
-      GestureDetector(
-        onTap: onTap,
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 1.2),
-          decoration: BoxDecoration(
-              color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.white,
-              borderRadius: BorderRadius.circular(50),
-              boxShadow: [
-                BoxShadow(
-                    color: ColorConstant.grey.withOpacity(0.1),
-                    blurRadius: 5,spreadRadius: 1
-                )
-              ]
-          ),
-          padding: const EdgeInsets.symmetric(
-            horizontal: Dimens.d10,
-            vertical: Dimens.d10,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-
-              Container(
-                height: Dimens.d50.h,
-                width: Dimens.d50,
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: ColorConstant.themeColor,
-                  shape: BoxShape.circle,),
-                child: SvgPicture.asset(
-                  prefixIcon,
-                  color: ColorConstant.white,
-                ),
-              ),
-              Dimens.d12.spaceWidth,
-              Expanded(
-                child: Text(
-                  title,
-                  style: Style.montserratMedium().copyWith(
-                    letterSpacing: Dimens.d0_16,
-                  ),
-                ),
-              ),
-
-            ],
-          ),
+    String theme =
+        PrefService.getBool(PrefKey.theme) ? "Dark Mode" : "Light Mode";
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 1.2),
+        decoration: BoxDecoration(
+          color: themeController.isDarkMode.value
+              ? ColorConstant.textfieldFillColor
+              : ColorConstant.white,
+          borderRadius: BorderRadius.circular(50),
         ),
-      );
-
+        padding: const EdgeInsets.symmetric(
+          horizontal: Dimens.d10,
+          vertical: Dimens.d5,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Dimens.d12.spaceWidth,
+            Expanded(
+              child: Text(
+                title == "Light Mode" ? theme : title.tr,
+                style: Style.montserratMedium().copyWith(
+                  letterSpacing: Dimens.d0_16,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                child: setting,
+              ),
+            ),
+            title != "Light Mode"
+                ? title != "Dark Mode"
+                    ? Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SvgPicture.asset(suffixIcon,
+                            color: themeController.isDarkMode.value
+                                ? ColorConstant.white
+                                : ColorConstant.black),
+                      )
+                    : const SizedBox()
+                : const SizedBox(),
+          ],
+        ),
+      ),
+    );
   }
-
-
 }
 
 class CustomSwitch extends StatefulWidget {
@@ -333,7 +272,7 @@ class _CustomSwitchState extends State<CustomSwitch> {
         ),
         child: Row(
           mainAxisAlignment:
-          _value ? MainAxisAlignment.end : MainAxisAlignment.start,
+              _value ? MainAxisAlignment.end : MainAxisAlignment.start,
           children: <Widget>[
             Container(
               width: widget.height - 2,
@@ -350,4 +289,3 @@ class _CustomSwitchState extends State<CustomSwitch> {
     );
   }
 }
-

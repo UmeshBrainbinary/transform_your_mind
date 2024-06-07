@@ -1,13 +1,12 @@
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:network_services/apiServices/networkService/network_service.dart';
+import 'package:transform_your_mind/core/common_widget/common_gradiant_container.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
-import 'package:transform_your_mind/presentation/rituals_screen/rituals_screen.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:video_player/video_player.dart';
 

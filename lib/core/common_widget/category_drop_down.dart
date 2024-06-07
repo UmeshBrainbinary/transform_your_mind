@@ -120,7 +120,6 @@ class CategoryDropDown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ScrollController scrollController = ScrollController();
 
     return Container(
       decoration: BoxDecoration(
@@ -128,116 +127,89 @@ class CategoryDropDown extends StatelessWidget {
         borderRadius: BorderRadius.circular(30),
         color: ColorConstant.themeColor,
       ),
-      child: Theme(
-        data: ThemeData(highlightColor: Colors.red,platform: TargetPlatform.iOS
-          // Customize your theme properties here
-        ),
-        child: ScrollbarTheme(
-          data: ScrollbarThemeData(
-            interactive: true,
-
-            trackVisibility: MaterialStateProperty.all(true),
-            thumbVisibility: MaterialStateProperty.all(true),
-            thumbColor: MaterialStateProperty.all(ColorConstant.textGreyColor),
-            // Customize thumb color
-            radius:
-                const Radius.circular(8), // Customize the scrollbar thumb radius
-            // Add more properties as needed
-          ),
-          child: Scrollbar(
-            trackVisibility: true,
-            interactive: true,
-            thickness: 3.0,
-            thumbVisibility: true,
-            controller: scrollController,
-            child: DropdownButton(
-              value: selectedCategory.value,
-              borderRadius: BorderRadius.circular(30),
-              onChanged: (value) {
-                {
-                  bool isSelected = selectedCategory.value?.id == value?.id;
-                  if (isSelected) {
-                    selectedCategory.value = null;
-                  } else {
-                    selectedCategory.value = value;
-                  }
-                  onSelected();
-                }
-              },
-              selectedItemBuilder: (_) {
-                return categoryList.map<Widget>(( item) {
-                  bool isSelected = selectedCategory.value?.id == item.id;
-                  return Padding(
-                    padding: const EdgeInsets.only(left: 18, top: 17),
-                    child: Text(
-                      item.name ?? '',
-                      style: Style.montserratRegular(
-                        fontSize: Dimens.d14,
-                        color: Colors.white,
-                        fontWeight:
-                            isSelected ? FontWeight.bold : FontWeight.w500,
-                      ),
-                    ),
-                  );
-                }).toList();
-              },
-              style: Style.montserratRegular(
-                fontSize: Dimens.d14,
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-              ),
-              hint: Padding(
-                padding: const EdgeInsets.only(left: 15),
-                child: Text(
-                  "selectCategory".tr,
-                  style: Style.montserratRegular(
-                      fontSize: Dimens.d14, color: Colors.white),
-                ),
-              ),
-              icon: Padding(
-                padding: const EdgeInsets.only(right: 15),
-                child: SvgPicture.asset(
-                  ImageConstant.icDownArrow,
-                  height: 20,
+      child: DropdownButton(
+        value: selectedCategory.value,
+        borderRadius: BorderRadius.circular(30),
+        onChanged: (value) {
+          {
+            bool isSelected =
+                selectedCategory.value?["title"] == value?["title"];
+            if (isSelected) {
+              selectedCategory.value = null;
+            } else {
+              selectedCategory.value = value;
+            }
+            onSelected();
+          }
+        },
+        selectedItemBuilder: (_) {
+          return categoryList.map<Widget>((item) {
+            bool isSelected = selectedCategory.value?["title"] == item["title"];
+            return Padding(
+              padding: const EdgeInsets.only(left: 18, top: 17),
+              child: Text(
+                item["title"] ?? '',
+                style: Style.montserratRegular(
+                  fontSize: Dimens.d14,
                   color: Colors.white,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                 ),
               ),
-              elevation: 16,
-              itemHeight: 50,
-              menuMaxHeight: 350.h,
-              underline: const SizedBox(
-                height: 0,
-              ),
-              isExpanded: true,
-              dropdownColor: ColorConstant.colorThemed1,
-              items: categoryList.map<DropdownMenuItem>(
-                  (item) {
-                bool isSelected = selectedCategory.value?.id == item.id;
-                return DropdownMenuItem(
-                  value: item,
-                  child: AnimatedBuilder(
-                    animation: selectedCategory,
-                    builder: (BuildContext context, Widget? child) {
-                      return child!;
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Text(
-                        item.name ?? '',
-                        style: Style.montserratRegular(
-                          fontSize: Dimens.d14,
-                          color: ColorConstant.textGreyColor,
-                          fontWeight:
-                              isSelected ? FontWeight.bold : FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
+            );
+          }).toList();
+        },
+        style: Style.montserratRegular(
+          fontSize: Dimens.d14,
+          color: Colors.white,
+          fontWeight: FontWeight.w500,
+        ),
+        hint: Padding(
+          padding: const EdgeInsets.only(left: 15),
+          child: Text(
+            "selectCategory".tr,
+            style: Style.montserratRegular(
+                fontSize: Dimens.d14, color: Colors.white),
           ),
         ),
+        icon: Padding(
+          padding: const EdgeInsets.only(right: 15),
+          child: SvgPicture.asset(
+            ImageConstant.icDownArrow,
+            height: 20,
+            color: Colors.white,
+          ),
+        ),
+        elevation: 16,
+        itemHeight: 50,
+        menuMaxHeight: 350.h,
+        underline: const SizedBox(
+          height: 0,
+        ),
+        isExpanded: true,
+        dropdownColor: ColorConstant.colorECF1F3,
+        items: categoryList.map<DropdownMenuItem>((item) {
+          bool isSelected = selectedCategory.value?["title"] == item["title"];
+          return DropdownMenuItem(
+            value: item,
+            child: AnimatedBuilder(
+              animation: selectedCategory,
+              builder: (BuildContext context, Widget? child) {
+                return child!;
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  item["title"] ?? '',
+                  style: Style.montserratRegular(
+                    fontSize: Dimens.d14,
+                    color: ColorConstant.textGreyColor,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+          );
+        }).toList(),
       ),
     );
   }

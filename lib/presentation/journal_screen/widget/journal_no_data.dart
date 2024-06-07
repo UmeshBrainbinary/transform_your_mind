@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:lottie/lottie.dart';
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
@@ -36,10 +37,10 @@ class JournalNoDataWidget extends StatelessWidget {
           Dimens.d20.spaceHeight,
           GestureDetector(
             onTap: () => onClick(),
-            child: Lottie.asset(
-              ImageConstant.lottieNavAdd,
-              fit: BoxFit.fill,
-              height: Dimens.d80.h,
+            child: SvgPicture.asset(
+              ImageConstant.addTools,
+              height: Dimens.d50,
+              width: Dimens.d50,
             ),
           ),
           Dimens.d20.spaceHeight,

@@ -1,5 +1,6 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
+    as picker;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
@@ -13,16 +14,13 @@ import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/core/utils/toast_message.dart';
 import 'package:transform_your_mind/core/utils/validation_functions.dart';
-
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/edit_profile_screen/edit_profile_controller.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/edit_profile_screen/widget/add_image.dart';
-import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 import 'package:transform_your_mind/widgets/image_picker_action_sheet.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
 
 class EditProfileScreen extends StatefulWidget {
    EditProfileScreen({super.key});
@@ -51,8 +49,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Scaffold(
         backgroundColor: themeController.isDarkMode.value ? ColorConstant.black : ColorConstant.backGround,
       appBar: CustomAppBar(
-        title: "editProfile".tr,
-      ),
+          title: "personalInformation".tr,
+        ),
       body: SafeArea(
 
           child:  Padding(
@@ -317,32 +315,35 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         child: Obx(
               () => (editProfileController.loader.value)
               ? const LoadingButton()
-              : CommonElevatedButton(
-            title: "save".tr,
-            onTap: () async {
-              FocusScope.of(context).unfocus();
+              : Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Dimens.d50),
+                child: CommonElevatedButton(
+                      title: "update".tr,
+                      onTap: () async {
+                FocusScope.of(context).unfocus();
 
-              editProfileController.loader.value = true;
-
-
-              if(editProfileController.imageFile.value == null){
-                errorToast("pleaseAddImage".tr);
-              }  else{
-                if (_formKey.currentState!.validate() ) {
+                editProfileController.loader.value = true;
 
 
-
-
-                  Get.back();
+                if(editProfileController.imageFile.value == null){
+                  errorToast("pleaseAddImage".tr);
+                }  else{
+                  if (_formKey.currentState!.validate() ) {
 
 
 
 
+                    Get.back();
+
+
+
+
+                  }
                 }
-              }
 
-              editProfileController.loader.value = false;                                          },
-          ),
+                editProfileController.loader.value = false;                                          },
+                          ),
+              ),
         ),
       )
     );

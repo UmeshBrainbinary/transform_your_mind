@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
-import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 
 
@@ -22,9 +21,10 @@ class ThemeController extends GetxController {
     await PrefService.setValue(PrefKey.isDarkTheme, isDarkMode);
   }
 
-  void switchTheme() {
+  Future<void> switchTheme() async {
     isDarkMode.value = !isDarkMode.value;
     Get.changeThemeMode(isDarkMode.value ? ThemeMode.dark : ThemeMode.light);
+    await PrefService.setValue(PrefKey.theme, isDarkMode.value);
     saveThemeToBox(isDarkMode.value);
     //setThemeWiseColor();
 }

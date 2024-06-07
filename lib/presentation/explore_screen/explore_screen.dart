@@ -10,7 +10,9 @@ import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/explore_screen/explore_controller.dart';
 import 'package:transform_your_mind/presentation/explore_screen/screen/now_playing_screen/now_playing_screen.dart';
 import 'package:transform_your_mind/presentation/explore_screen/widget/home_app_bar.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
+import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_image_view.dart';
 
 class ExploreScreen extends StatefulWidget {
@@ -26,6 +28,13 @@ class _ExploreScreenState extends State<ExploreScreen>
   late final AnimationController _lottieBgController;
   late ScrollController scrollController = ScrollController();
   ValueNotifier<bool> showScrollTop = ValueNotifier(false);
+  TextEditingController ratingController = TextEditingController();
+  FocusNode ratingFocusNode = FocusNode();
+  int? _currentRating = 0;
+  TextEditingController searchController = TextEditingController();
+  FocusNode searchFocusNode = FocusNode();
+
+  ThemeController themeController = Get.find<ThemeController>();
 
   @override
   void initState() {
@@ -54,7 +63,6 @@ class _ExploreScreenState extends State<ExploreScreen>
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-
         floatingActionButton: ValueListenableBuilder(
           valueListenable: showScrollTop,
           builder: (context, value, child) {
@@ -80,13 +88,13 @@ class _ExploreScreenState extends State<ExploreScreen>
                   child: Container(
                     height: Dimens.d60,
                     width: Dimens.d60,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       color: ColorConstant.colorBFD0D4,
                     ),
                     padding: const EdgeInsets.all(4.0),
                     child: Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: ColorConstant.themeColor,
                       ),
@@ -124,34 +132,174 @@ class _ExploreScreenState extends State<ExploreScreen>
                         children: [
                           Dimens.d30.h.spaceHeight,
                           HomeAppBar(
-                            onInfoTap: (){},
+                            onInfoTap: () {},
+                            onRatingTap: () {
+                              _showAlertDialog(context);
+                            },
                             isInfo: false,
                             back: false,
+                            ratings: false,
+                            downloadShown: true,
                             title: "explore".tr,
                           ),
                           Dimens.d30.h.spaceHeight,
-                          const TransFormRitualsButton(),
+                          Container(
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color:
+                                      ColorConstant.themeColor.withOpacity(0.1),
+                                  blurRadius: Dimens.d8,
+                                )
+                              ],
+                            ),
+                            child: CommonTextField(
+                                onChanged: (value) {
+                                  setState(() {
+                                    exploreController.filteredList =
+                                        exploreController.filterList(value,
+                                            exploreController.exploreList);
+                                  });
+                                },
+                                suffixIcon: SvgPicture.asset(
+                                    ImageConstant.searchExplore,
+                                    height: 40,
+                                    width: 40),
+                                hintText: "search".tr,
+                                controller: searchController,
+                                focusNode: searchFocusNode),
+                          ),
+                          // const TransFormRitualsButton(),
                           Dimens.d20.h.spaceHeight,
                           Expanded(
-                              child: GridView.builder(
-                                  controller: scrollController,
-                                  padding:
-                                      const EdgeInsets.only(bottom: Dimens.d20),
-                                  physics: const BouncingScrollPhysics(),
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                    childAspectRatio: 0.71,
-                                    crossAxisCount: 2,
-                                    // Number of columns
-                                    crossAxisSpacing: 20,
+                              child: Obx(
+                            () => exploreController.filteredList!=null
+                                ? GridView.builder(
+                                    controller: scrollController,
+                                    padding: const EdgeInsets.only(
+                                        bottom: Dimens.d20),
+                                    physics: const BouncingScrollPhysics(),
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                      childAspectRatio: 0.71,
+                                      crossAxisCount: 2,
+                                      // Number of columns
+                                      crossAxisSpacing: 20,
+                                      // Spacing between columns
+                                      mainAxisSpacing:
+                                          20, // Spacing between rows
+                                    ),
+                                    itemCount:
+                                        exploreController.filteredList?.length??0,
+                                    itemBuilder: (context, index) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          searchFocusNode.unfocus();
+                                          _onTileClick(index, context);
+                                        },
+                                        child: Column(
+                                          children: [
+                                            Stack(
+                                              alignment: Alignment.topRight,
+                                              children: [
+                                                CustomImageView(
+                                                  imagePath: exploreController
+                                                          .filteredList![index]
+                                                      ['image'],
+                                                  height: Dimens.d135,
+                                                  radius:
+                                                      BorderRadius.circular(10),
+                                                  fit: BoxFit.cover,
+                                                ),
+                                                Align(
+                                                  alignment: Alignment.topRight,
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 10, top: 10),
+                                                    child: SvgPicture.asset(
+                                                        ImageConstant.play),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                            Dimens.d10.spaceHeight,
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  "Meditation",
+                                                  style: Style.montserratMedium(
+                                                    fontSize: Dimens.d12,
+                                                  ),
+                                                ),
+                                                const CircleAvatar(
+                                                  radius: 2,
+                                                  backgroundColor:
+                                                      ColorConstant.colorD9D9D9,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                      ImageConstant.rating,
+                                                      color: ColorConstant
+                                                          .colorFFC700,
+                                                      height: 10,
+                                                      width: 10,
+                                                    ),
+                                                    Text(
+                                                      "4.0" ?? '',
+                                                      style: Style
+                                                          .montserratMedium(
+                                                        fontSize: Dimens.d12,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SvgPicture.asset(
+                                                    ImageConstant
+                                                        .downloadCircle,
+                                                    height: Dimens.d25,
+                                                    width: Dimens.d25)
+                                              ],
+                                            ),
+                                            Dimens.d7.spaceHeight,
+                                            Text(
+                                              exploreController
+                                                  .filteredList![index]['title'],
+                                              maxLines: Dimens.d2.toInt(),
+                                              style: Style.montserratMedium(
+                                                  fontSize: Dimens.d14),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    })
+                                : GridView.builder(
+                                    controller: scrollController,
+                                    padding: const EdgeInsets.only(
+                                        bottom: Dimens.d20),
+                                    physics: const BouncingScrollPhysics(),
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                      childAspectRatio: 0.71,
+                                      crossAxisCount: 2,
+                                      // Number of columns
+                                      crossAxisSpacing: 20,
                                     // Spacing between columns
                                     mainAxisSpacing: 20, // Spacing between rows
                                   ),
-                                  itemCount: exploreController.exploreList.length,
-                                  itemBuilder: (context, index) {
-                                    return GestureDetector(
-                                      onTap: () {
-                                        _onTileClick(index, context);
+                                    itemCount:
+                                        exploreController.exploreList.length,
+                                    itemBuilder: (context, index) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          searchFocusNode.unfocus();
+
+                                          _onTileClick(index, context);
                                       },
                                       child: Column(
                                         children: [
@@ -159,65 +307,81 @@ class _ExploreScreenState extends State<ExploreScreen>
                                             alignment: Alignment.topRight,
                                             children: [
                                               CustomImageView(
-                                                imagePath:
-                                                exploreController.exploreList[index]['image'],
-                                                height: Dimens.d135,
-                                                radius:
-                                                    BorderRadius.circular(10),
-                                                fit: BoxFit.cover,
-                                              ),
-                                              Align(
-                                                alignment: Alignment.topRight,
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          right: 10, top: 10),
-                                                  child: SvgPicture.asset(
-                                                      ImageConstant.play),
+                                                  imagePath: exploreController
+                                                          .exploreList[index]
+                                                      ['image'],
+                                                  height: Dimens.d135,
+                                                  radius:
+                                                      BorderRadius.circular(10),
+                                                  fit: BoxFit.cover,
                                                 ),
-                                              )
+                                                Align(
+                                                  alignment: Alignment.topRight,
+                                                child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 10, top: 10),
+                                                    child: SvgPicture.asset(
+                                                        ImageConstant.play),
+                                                  ),
+                                                )
                                             ],
                                           ),
                                           Dimens.d10.spaceHeight,
                                           Row(
                                             mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                "Meditation",
-                                                style: Style.montserratMedium(
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  "Meditation",
+                                                  style: Style.montserratMedium(
                                                   fontSize: Dimens.d12,
                                                 ),
                                               ),
                                               const CircleAvatar(
                                                 radius: 2,
                                                 backgroundColor:
-                                                    ColorConstant.colorD9D9D9,
-                                              ),
-                                              Text(
-                                                "12:00" ?? '',
-                                                style: Style.montserratMedium(
-                                                  fontSize: Dimens.d12,
+                                                      ColorConstant.colorD9D9D9,
                                                 ),
-                                              ),
-                                              SvgPicture.asset(
-                                                  ImageConstant.downloadCircle,
+                                                Row(
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                      ImageConstant.rating,
+                                                      color: ColorConstant
+                                                          .colorFFC700,
+                                                      height: 10,
+                                                      width: 10,
+                                                    ),
+                                                    Text(
+                                                      "4.0" ?? '',
+                                                      style: Style
+                                                          .montserratMedium(
+                                                        fontSize: Dimens.d12,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SvgPicture.asset(
+                                                    ImageConstant.downloadCircle,
                                                   height: Dimens.d25,
                                                   width: Dimens.d25)
                                             ],
                                           ),
                                           Dimens.d7.spaceHeight,
                                           Text(
-                                            exploreController.exploreList[index]['title'],
-                                            maxLines: Dimens.d2.toInt(),
-                                            style: Style.montserratMedium(
-                                                fontSize: Dimens.d14),
-                                            overflow: TextOverflow.ellipsis,
+                                              exploreController
+                                                  .exploreList[index]['title'],
+                                              maxLines: Dimens.d2.toInt(),
+                                              style: Style.montserratMedium(
+                                                  fontSize: Dimens.d14),
+                                              overflow: TextOverflow.ellipsis,
                                           ),
                                         ],
                                       ),
                                     );
-                                  })),
+                                    }),
+                          )),
                         ],
                       ),
                     ),
@@ -235,7 +399,6 @@ class _ExploreScreenState extends State<ExploreScreen>
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(
@@ -244,7 +407,95 @@ class _ExploreScreenState extends State<ExploreScreen>
         ),
       ),
       builder: (BuildContext context) {
-        return NowPlayingScreen();
+        return const NowPlayingScreen();
+      },
+    );
+  }
+
+  void _showAlertDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              //backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(11.0), // Set border radius
+              ),
+              actions: <Widget>[
+                Dimens.d10.spaceHeight,
+                GestureDetector(
+                    onTap: () {
+                      Get.back();
+                    },
+                    child: SvgPicture.asset(ImageConstant.close,
+                        color: themeController.isDarkMode.value
+                            ? ColorConstant.white
+                            : ColorConstant.black)),
+                Dimens.d3.spaceHeight,
+                Center(
+                  child: Text("rateYourExperience".tr,
+                      textAlign: TextAlign.center,
+                      style: Style.cormorantGaramondBold(
+                        fontSize: Dimens.d22,
+                        fontWeight: FontWeight.w700,
+                      )),
+                ),
+                Dimens.d28.spaceHeight,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: List.generate(5, (index) {
+                    return GestureDetector(
+                        onTap: () {
+                          setState.call(() {
+                            _currentRating = index + 1;
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: SvgPicture.asset(
+                            index < _currentRating!
+                                ? ImageConstant.rating
+                                : ImageConstant.rating,
+                            color: index < _currentRating!
+                                ? ColorConstant.colorFFC700
+                                : ColorConstant.grey,
+                            height: Dimens.d26,
+                            width: Dimens.d26,
+                          ),
+                        ));
+                  }),
+                ),
+                Dimens.d22.spaceHeight,
+                CommonTextField(
+                    borderRadius: Dimens.d10,
+                    filledColor: ColorConstant.colorECECEC,
+                    hintText: "writeYourNote".tr,
+                    maxLines: 5,
+                    controller: ratingController,
+                    focusNode: ratingFocusNode),
+                Dimens.d18.spaceHeight,
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Dimens.d70.h),
+                  child: CommonElevatedButton(
+                    height: Dimens.d33,
+                    textStyle: Style.montserratRegular(
+                      fontSize: Dimens.d18,
+                      color: ColorConstant.white,
+                    ),
+                    title: "submit".tr,
+                    onTap: () {
+                      ratingController.clear();
+                      Get.back();
+                    },
+                  ),
+                )
+              ],
+            );
+          },
+        );
       },
     );
   }

@@ -2,18 +2,24 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
+    as picker;
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
+import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
+import 'package:transform_your_mind/core/utils/date_time.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/image_utills.dart';
+import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/presentation/home_screen/widgets/add_image_gratitude.dart';
-import 'package:transform_your_mind/presentation/journal_screen/widget/add_rituals_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/my_gratitude_page.dart';
+import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
@@ -26,7 +32,6 @@ class AddGratitudePage extends StatefulWidget {
   const AddGratitudePage(
       {Key? key, this.isSaved, this.isFromMyGratitude, this.registerUser})
       : super(key: key);
-  static const addGratitude = '/addGratitude';
 
   final bool? isFromMyGratitude;
   final bool? isSaved;
@@ -39,11 +44,13 @@ class AddGratitudePage extends StatefulWidget {
 class _AddGratitudePageState extends State<AddGratitudePage> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descController = TextEditingController();
+  final TextEditingController dateController = TextEditingController();
 
   ThemeController themeController = Get.find<ThemeController>();
 
   final FocusNode titleFocus = FocusNode();
   final FocusNode descFocus = FocusNode();
+  final FocusNode dateFocus = FocusNode();
   ValueNotifier<XFile?> imageFile = ValueNotifier(null);
   int maxLength = 50;
   int maxLengthDesc = 2000;
@@ -76,11 +83,6 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
             ? Row(children: [
                 GestureDetector(
                     onTap: () {
-                      /*                dashboardBloc.add(UpdateOnboardingStepEvent(
-                          request: OnboardingStep(onBoardStep: 5)));
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, AddGoalsPage.addGoals, (route) => false,
-                          arguments: {AppConstants.isFromMyGoals: false});*/
                     },
                     child: Text(
                       "skip".tr,
@@ -91,17 +93,16 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
               ])
             : widget.registerUser!
                 ? GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacement(context, MaterialPageRoute(
+                    onTap: () async {
+                      await PrefService.setValue(
+                          PrefKey.firstTimeRegister, true);
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, AppRoutes.dashBoardScreen, (route) => false);
+                      /*      Navigator.pushReplacement(context, MaterialPageRoute(
                         builder: (context) {
                           return const AddRitualsPage();
                         },
-                      ));
-                      /*                dashboardBloc.add(UpdateOnboardingStepEvent(
-                          request: OnboardingStep(onBoardStep: 5)));
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, AddGoalsPage.addGoals, (route) => false,
-                          arguments: {AppConstants.isFromMyGoals: false});*/
+                      ));*/
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(right: 20),
@@ -111,22 +112,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                             fontSize: Dimens.d15, color: themeController.isDarkMode.value ? ColorConstant.white : ColorConstant.black),
                       ),
                     ))
-                : /*widget.gratitudeData != null
-                ? LottieIconButton(
-                    icon: AppAssets.lottieDeleteAccount,
-                    onTap: () {
-                      _gratitudeBloc.add(
-                        DeleteGratitudeEvent(
-                            deleteGratitudeRequest: DeleteGratitudeRequest(
-                                userGratitudeId:
-                                    widget.gratitudeData?.userGratitudeId ??
-                                        ""),
-                            isFromDraft: true),
-                      );
-                    },
-                  )
-                :*/
-                const SizedBox.shrink(),
+                : const SizedBox.shrink(),
       ),
       body: LayoutBuilder(builder: (context, constraints) {
         return Stack(
@@ -141,7 +127,6 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Dimens.d10.spaceHeight,
                           ValueListenableBuilder(
                             valueListenable: imageFile,
                             builder: (context, value, child) {
@@ -161,15 +146,12 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                                   urlImage = null;
                                   _isImageRemoved = true;
                                   setState(() {});
-                                  /* _gratitudeBloc
-                                      .add(RefreshGratitudeEvent());*/
                                 },
                                 image: imageFile.value,
                                 imageURL: urlImage,
                               );
                             },
                           ),
-                          Dimens.d20.spaceHeight,
                           CommonTextField(
                             hintText: "enterTitle".tr,
                             labelText: "title".tr,
@@ -182,7 +164,6 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                               LengthLimitingTextInputFormatter(maxLength),
                             ],
                           ),
-                          Dimens.d16.spaceHeight,
                           CommonTextField(
                             hintText: "enterDescription".tr,
                             labelText: "description".tr,
@@ -201,7 +182,55 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                             keyboardType: TextInputType.multiline,
                             textInputAction: TextInputAction.newline,
                           ),
-                          Dimens.d20.spaceHeight,
+                          GestureDetector(
+                            onTap: () {
+                              descFocus.unfocus();
+                              titleFocus.unfocus();
+                              DateTime initialDate = dateController
+                                      .text.isNotEmpty
+                                  ? DateTimeUtils.parseDate(dateController.text,
+                                              format:
+                                                  DateTimeUtils.ddMMyyyyToParse)
+                                          .isAfter(DateTime.now())
+                                      ? DateTimeUtils.parseDate(
+                                          dateController.text,
+                                          format: DateTimeUtils.ddMMyyyyToParse)
+                                      : DateTime.now()
+                                  : DateTime.now();
+                              picker.DatePicker.showDatePicker(context,
+                                  showTitleActions: true,
+                                  minTime: DateTime.now()
+                                      .subtract(const Duration(days: 1)),
+                                  theme: picker.DatePickerTheme(
+                                      doneStyle: Style.montserratRegular(
+                                          color: ColorConstant.white),
+                                      cancelStyle: Style.montserratRegular(
+                                          color: ColorConstant.white),
+                                      itemStyle: Style.montserratRegular(
+                                          color: ColorConstant.white),
+                                      backgroundColor:
+                                          ColorConstant.themeColor),
+                                  maxTime: DateTime(2050),
+                                  onChanged: (date) {}, onConfirm: (date) {
+                                dateController.text =
+                                    DateTimeUtils.formatDate(date);
+                                FocusScope.of(context).unfocus();
+                              },
+                                  currentTime: initialDate,
+                                  locale: picker.LocaleType.en);
+                            },
+                            child: CommonTextField(
+                                enabled: false,
+                                labelText: "date".tr,
+                                suffixIcon: Padding(
+                                  padding: const EdgeInsets.all(13.0),
+                                  child:
+                                      SvgPicture.asset(ImageConstant.calendar),
+                                ),
+                                hintText: "DD/MM/YYYY",
+                                controller: dateController,
+                                focusNode: dateFocus),
+                          ),
                         ],
                       ),
                     ),
@@ -232,25 +261,6 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                               });
                               setState(() {});
                               Get.back();
-                              /*  _gratitudeBloc.add(
-                                AddGratitudeEvent(
-                                  addGratitudeRequest: AddGratitudeRequest(
-                                      userGratitudeId: widget
-                                          .gratitudeData?.userGratitudeId,
-                                      title: titleController.text.trim(),
-                                      description:
-                                      descController.text.trim(),
-                                      imageUrl: (imageFile.value != null)
-                                          ? 'image/${imageFile.value?.path.fileExtension ?? ''}'
-                                          : '',
-                                      imageFilePath: selectedImage?.path,
-                                      isSaved: false,
-                                      isImageDeleted:
-                                      (imageFile.value != null)
-                                          ? false
-                                          : _isImageRemoved),
-                                ),
-                              );*/
                             }
                           },
                         ),
@@ -273,25 +283,6 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                               });
                               setState(() {});
                               Get.back();
-                              /*   _gratitudeBloc.add(
-                                AddGratitudeEvent(
-                                  addGratitudeRequest: AddGratitudeRequest(
-                                      userGratitudeId: widget
-                                          .gratitudeData?.userGratitudeId,
-                                      title: titleController.text.trim(),
-                                      description:
-                                      descController.text.trim(),
-                                      imageUrl: (imageFile.value != null)
-                                          ? 'image/${imageFile.value?.path.fileExtension ?? ''}'
-                                          : '',
-                                      imageFilePath: selectedImage?.path,
-                                      isSaved: true,
-                                      isImageDeleted:
-                                      (imageFile.value != null)
-                                          ? false
-                                          : _isImageRemoved),
-                                ),
-                              );*/
                             }
                           },
                         ),

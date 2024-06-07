@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 Widget commonGradiantContainer({double? h, Color? color}) {
@@ -48,4 +47,8 @@ Widget commonGradiantContainerBottom({double? h, Color? color}) {
       ),
     ),
   );
+}
+
+getHeight(width) {
+  return ((1080 / 1920) * (width - 40));
 }

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:transform_your_mind/core/app_export.dart';
@@ -9,7 +8,6 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
-import 'package:transform_your_mind/core/utils/string_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/core/utils/validation_functions.dart';
 import 'package:transform_your_mind/presentation/auth/login_screen/login_controller.dart';
@@ -32,7 +30,7 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: themeController.isDarkMode.value ?  ColorConstant.black : ColorConstant.backGround,
-      appBar: CustomAppBar(
+      appBar: CustomAppBar(showBack: false,
         title: "login".tr,
       ),
       body: SafeArea(
@@ -143,9 +141,10 @@ class LoginScreen extends StatelessWidget {
                                            await PrefService.setValue(PrefKey.email, loginController.emailController.text);
                                            await PrefService.setValue(PrefKey.password, loginController.passwordController.text);
 
-                                            Get.toNamed(AppRoutes.selectYourFocusPage);
+                                           Get.toNamed(AppRoutes
+                                               .dashBoardScreen);
 
-                                           // loginController.emailController.clear();
+                                              // loginController.emailController.clear();
                                            // loginController.passwordController.clear();
                                            // loginController.rememberMe.value = false;
 
@@ -163,10 +162,12 @@ class LoginScreen extends StatelessWidget {
                                          TextSpan(
                                            text: "${"doNotHaveAnAccount".tr} ?",
                                            style: Style.montserratRegular(
-
-                                           ),
-                                         ),
-                                         const WidgetSpan(
+                                            color:
+                                                themeController.isDarkMode.value
+                                                    ? ColorConstant.white
+                                                    : ColorConstant.black),
+                                      ),
+                                      const WidgetSpan(
                                            child: Padding(
                                                padding:
                                                EdgeInsets.all(Dimens.d4)),

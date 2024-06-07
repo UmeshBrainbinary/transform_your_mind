@@ -11,7 +11,6 @@ import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
-import 'package:transform_your_mind/presentation/rituals_screen/rituals_screen.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/divider.dart';
@@ -79,7 +78,11 @@ class _TodaysRitualsState extends State<TodaysRituals> {
                                     child: Text(
                                     'Into Text',
                                       style: Style.montserratRegular(
-                                          fontSize: Dimens.d18),
+                                          fontSize: Dimens.d18,
+                                          color:
+                                              themeController.isDarkMode.value
+                                                  ? ColorConstant.white
+                                                  : ColorConstant.black),
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
@@ -98,7 +101,11 @@ class _TodaysRitualsState extends State<TodaysRituals> {
                             Dimens.d20.spaceHeight,
                             Text(
                               "Tick Once You Have Completed",
-                              style: Style.montserratRegular(fontSize: Dimens.d14),
+                              style: Style.montserratRegular(
+                                  fontSize: Dimens.d14,
+                                  color:  themeController.isDarkMode.value
+                                      ? ColorConstant.white
+                                      : ColorConstant.black),
                             ),
                             Dimens.d20.spaceHeight,
                           ],

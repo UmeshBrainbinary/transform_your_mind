@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
@@ -76,8 +75,8 @@ class _CommonElevatedButtonState extends State<CommonElevatedButton> {
                 widget.title,
                 textAlign: TextAlign.center,
                 style: widget.textStyle ??
-                    Style.cormorantGaramondBold(fontSize: Dimens.d23, color: ColorConstant.white
-                    ),
+                    Style.montserratRegular(
+                        fontSize: Dimens.d15, color: ColorConstant.white),
               ),
             ],
           ),

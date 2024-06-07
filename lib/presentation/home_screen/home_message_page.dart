@@ -1,6 +1,7 @@
 import 'dart:developer';
-import 'dart:math' as math;
 import 'dart:io';
+import 'dart:math' as math;
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
@@ -73,7 +74,7 @@ class _HomeMessagePageState extends State<HomeMessagePage> {
                       style: Style.montserratRegular(fontSize: Dimens.d38),
                     ),
                   ),
-                  Positioned(
+                  /*        Positioned(
                     bottom: 160.h,
                     child: Image.asset(
                       ImageConstant.splashLogo,
@@ -81,7 +82,7 @@ class _HomeMessagePageState extends State<HomeMessagePage> {
                       height: 30,
                       fit: BoxFit.contain,
                     ),
-                  ),
+                  ),*/
                 ],
               ),
             ),
