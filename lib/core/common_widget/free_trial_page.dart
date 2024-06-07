@@ -55,7 +55,7 @@ class _FreeTrialPageState extends State<FreeTrialPage>
             },
           ),
           const BgSemiCircleTexture(),
-          Padding(
+      /*    Padding(
             padding: const EdgeInsets.symmetric(
                 horizontal: Dimens.d105, vertical: Dimens.d115),
             child: SizedBox(
@@ -63,7 +63,7 @@ class _FreeTrialPageState extends State<FreeTrialPage>
               height: Dimens.d30,
               child: Image.asset(ImageConstant.splashLogo),
             ),
-          ),
+          ),*/
           Align(
             alignment: Alignment.bottomCenter,
             child: Column(
@@ -94,7 +94,7 @@ class _FreeTrialPageState extends State<FreeTrialPage>
                   title: "x1 journal input for all Journal features",
                 ),
                 const _DescriptionPoints(
-                  title: "x3 meditations, Shoorah pods or sleep sounds",
+                  title: "x3 meditations, Transform pods or sleep sounds",
                 ),
                 const _DescriptionPoints(
                   title: "Transform mood & emotions tracker",

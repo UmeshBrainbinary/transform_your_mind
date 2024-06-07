@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/custom_chip.dart';
@@ -18,7 +17,6 @@ import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 import '../me_screen/screens/setting_screen/Page/notification_setting_screen/widget/reminder_time_utils.dart';
-import '../me_screen/screens/setting_screen/Page/notification_setting_screen/widget/reminders_dialog.dart';
 
 class SelectYourAffirmationFocusPage extends StatefulWidget {
   const SelectYourAffirmationFocusPage({
@@ -101,15 +99,18 @@ class _SelectYourAffirmationFocusPageState
           Column(
             children: [
               Dimens.d40.spaceHeight,
-              AutoSizeText(
-                "chooseMinInterest".tr,
-                textAlign: TextAlign.center,
-                style: Style.montserratRegular(
-                    color: themeController.isDarkMode.value
-                        ? ColorConstant.white
-                        : ColorConstant.black,
-                    fontSize: Dimens.d14,
-                    fontWeight: FontWeight.w600),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: AutoSizeText(
+                  "chooseMinInterest".tr,
+                  textAlign: TextAlign.center,
+                  style: Style.montserratRegular(
+                      color: themeController.isDarkMode.value
+                          ? ColorConstant.white
+                          : ColorConstant.black,
+                      fontSize: Dimens.d14,
+                      fontWeight: FontWeight.w600),
+                ),
               ),
               Dimens.d24.spaceHeight,
               Expanded(

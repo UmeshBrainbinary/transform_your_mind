@@ -16,7 +16,11 @@ import 'package:transform_your_mind/presentation/home_screen/widgets/cleanse_but
 import 'package:transform_your_mind/presentation/home_screen/widgets/home_widget.dart';
 import 'package:transform_your_mind/presentation/home_screen/widgets/todays_gratitude.dart';
 import 'package:transform_your_mind/presentation/home_screen/widgets/todays_rituals.dart';
+import 'package:transform_your_mind/presentation/positive_moment/positive_screen.dart';
 import 'package:transform_your_mind/presentation/subscription_screen/subscription_screen.dart';
+import 'package:transform_your_mind/presentation/today_gratitude_screen/gratitude_screen.dart';
+import 'package:transform_your_mind/presentation/transform_pods_screen/transform_pods_screen.dart';
+import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:transform_your_mind/widgets/custom_view_controller.dart';
@@ -36,10 +40,10 @@ class _HomeScreenState extends State<HomeScreen>
   ValueNotifier<bool> showScrollTop = ValueNotifier(false);
   int? totalCountCleanse = 0;
   List<Map<String, dynamic>> quickAccessList = [
-    {"title": "meditation".tr, "icon": ImageConstant.calendar},
-    {"title": "sleep".tr, "icon": ImageConstant.calendar},
-    {"title": "transformPods".tr, "icon": ImageConstant.calendar},
-    {"title": "journal".tr, "icon": ImageConstant.calendar},
+    {"title": "Motivational".tr, "icon": ImageConstant.journalIcon},
+    {"title": "transformPods".tr, "icon": ImageConstant.transformPodIcon},
+    {"title": "gratitudeJournal".tr, "icon": ImageConstant.journalIcon},
+    {"title": "positiveMoments".tr, "icon": ImageConstant.transformPodIcon},
   ];
 
   ThemeController themeController = Get.find<ThemeController>();
@@ -317,7 +321,36 @@ class _HomeScreenState extends State<HomeScreen>
                         itemBuilder: (BuildContext context, int index) {
                           // Generating items for the GridView
                           return GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              if (quickAccessList[index]["title"] ==
+                                  "motivational".tr) {
+                                Navigator.pushNamed(
+                                        context, AppRoutes.motivationalMessageScreen)
+                                    .then((value) {
+                                  setState(() {});
+                                });
+                              } else if (quickAccessList[index]["title"] ==
+                                  "transformPods".tr) {
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) {
+                                    return const TransformPodsScreen();
+                                  },
+                                ));
+                              } else if(quickAccessList[index]["title"]=="gratitudeJournal".tr){
+                                Navigator.pushNamed(
+                                    context, AppRoutes.myGratitudePage)
+                                    .then((value) {
+                                  setState(() {});
+                                });
+
+                              }else{
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) {
+                                    return const PositiveScreen();
+                                  },
+                                ));
+                              }
+                            },
                             child: Container(
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(9),
@@ -348,7 +381,7 @@ class _HomeScreenState extends State<HomeScreen>
                       ),
                     ),
                   ),
-                  Dimens.d50.spaceHeight,
+                  Dimens.d10.spaceHeight,
                 ],
               ),
             ],
