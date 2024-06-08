@@ -310,127 +310,136 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 final data = affirmationList[index];
-                return GestureDetector(
-                    onTap: () {},
-                    child: Slidable(
-                      closeOnScroll: true,
-                      key: const ValueKey<String>("" ?? ""),
-                      endActionPane: ActionPane(
-                        motion: const ScrollMotion(),
-                        dragDismissible: false,
-                        extentRatio: 0.26,
+                return Slidable(
+                  closeOnScroll: true,
+                  key: const ValueKey<String>("" ?? ""),
+                  endActionPane: ActionPane(
+                    motion: const ScrollMotion(),
+                    dragDismissible: false,
+                    extentRatio: 0.26,
+                    children: [
+                      Dimens.d20.spaceWidth,
+                      GestureDetector(
+                        onTap: () {
+                          affirmationList.removeAt(index);
+                          _isSearching = affirmationList.isNotEmpty;
+                          setState(() {});
+                        },
+                        child: Container(
+                          width: Dimens.d65,
+                          margin: EdgeInsets.only(bottom: Dimens.d20.h),
+                          decoration: BoxDecoration(
+                            color: ColorConstant.deleteRed,
+                            borderRadius: Dimens.d16.radiusAll,
+                          ),
+                          alignment: Alignment.center,
+                          child: SvgPicture.asset(
+                            ImageConstant.icDeleteWhite,
+                            width: Dimens.d24,
+                            height: Dimens.d24,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  child: GestureDetector(onTap: () {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) {
+                        return AffirmationShareScreen(
+                          des: affirmationList[index]["des"],
+                          title: affirmationList[index]["title"],
+                        );
+                      },
+                    ));
+                  },
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: Dimens.d16),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: Dimens.d11, vertical: Dimens.d11),
+                      decoration: BoxDecoration(
+                        color: ColorConstant.white,
+                        borderRadius: Dimens.d16.radiusAll,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Dimens.d20.spaceWidth,
-                          GestureDetector(
-                            onTap: () {
-                              affirmationList.removeAt(index);
-                              _isSearching = affirmationList.isNotEmpty;
-                              setState(() {});
-                            },
-                            child: Container(
-                              width: Dimens.d65,
-                              margin: EdgeInsets.only(bottom: Dimens.d20.h),
-                              decoration: BoxDecoration(
-                                color: ColorConstant.deleteRed,
-                                borderRadius: Dimens.d16.radiusAll,
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  data["title"] ?? '',
+                                  style: Style.cormorantGaramondBold(
+                                          height: Dimens.d1_3.h,
+                                          fontSize: Dimens.d18,
+                                          color: Colors.black)
+                                      .copyWith(wordSpacing: Dimens.d4),
+                                  maxLines: 1,
+                                ),
                               ),
-                              alignment: Alignment.center,
-                              child: SvgPicture.asset(
-                                ImageConstant.icDeleteWhite,
-                                width: Dimens.d24,
-                                height: Dimens.d24,
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) {
+                                      return AddAffirmationPage(
+                                        isFromMyAffirmation: true,
+                                        title: data["title"],
+                                        isEdit: true,
+                                        des: data["des"],
+                                      );
+                                    },
+                                  )).then(
+                                    (value) {
+                                      setState(() {});
+                                      if (value != null && value is bool) {
+                                        value
+                                            ? affirmationList.clear()
+                                            : affirmationDraftList.clear();
+                                        setState(() {});
+                                      }
+                                    },
+                                  );
+                                },
+                                child: SvgPicture.asset(
+                                  ImageConstant.editTools,
+                                  height: Dimens.d18,
+                                  width: Dimens.d18,
+                                  color: ColorConstant.black,
+
+                                ),
                               ),
-                            ),
+                              Dimens.d10.spaceWidth,
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    like = !like;
+                                  });
+                                },
+                                child: SvgPicture.asset(
+                                  like
+                                      ? ImageConstant.likeRedTools
+                                      : ImageConstant.likeTools,
+                                  height: Dimens.d18,
+                                  width: Dimens.d18,
+                                  color: like?ColorConstant.deleteRed:ColorConstant.black,
+                                ),
+                              )
+                            ],
+                          ),
+                          Dimens.d10.spaceHeight,
+                          Text(
+                            data["des"] ?? '',
+                            style: Style.montserratRegular(
+                                    height: Dimens.d2,
+                                    fontSize: Dimens.d11,
+                                    color: Colors.black)
+                                .copyWith(wordSpacing: Dimens.d4),
+                            maxLines: 4,
                           ),
                         ],
                       ),
-                      child: Container(
-                        margin: const EdgeInsets.only(bottom: Dimens.d16),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: Dimens.d11, vertical: Dimens.d11),
-                        decoration: BoxDecoration(
-                          color: ColorConstant.white,
-                          borderRadius: Dimens.d16.radiusAll,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    data["title"] ?? '',
-                                    style: Style.cormorantGaramondBold(
-                                            height: Dimens.d1_3.h,
-                                            fontSize: Dimens.d18,
-                                            color: Colors.black)
-                                        .copyWith(wordSpacing: Dimens.d4),
-                                    maxLines: 1,
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(context, MaterialPageRoute(
-                                      builder: (context) {
-                                        return AddAffirmationPage(
-                                          isFromMyAffirmation: true,
-                                          title: data["title"],
-                                          isEdit: true,
-                                          des: data["des"],
-                                        );
-                                      },
-                                    )).then(
-                                      (value) {
-                                        setState(() {});
-                                        if (value != null && value is bool) {
-                                          value
-                                              ? affirmationList.clear()
-                                              : affirmationDraftList.clear();
-                                          setState(() {});
-                                        }
-                                      },
-                                    );
-                                  },
-                                  child: SvgPicture.asset(
-                                    ImageConstant.editTools,
-                                    height: Dimens.d18,
-                                    width: Dimens.d18,
-                                    color: ColorConstant.black,
-
-                                  ),
-                                ),
-                                Dimens.d10.spaceWidth,
-                                GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      like = !like;
-                                    });
-                                  },
-                                  child: SvgPicture.asset(
-                                    like
-                                        ? ImageConstant.likeRedTools
-                                        : ImageConstant.likeTools,
-                                    height: Dimens.d18,
-                                    width: Dimens.d18,
-                                    color: like?ColorConstant.deleteRed:ColorConstant.black,
-                                  ),
-                                )
-                              ],
-                            ),
-                            Dimens.d10.spaceHeight,
-                            Text(
-                              data["des"] ?? '',
-                              style: Style.montserratRegular(
-                                      height: Dimens.d2,
-                                      fontSize: Dimens.d11,
-                                      color: Colors.black)
-                                  .copyWith(wordSpacing: Dimens.d4),
-                              maxLines: 4,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ));
+                    ),
+                  ),
+                );
               },
             ),
           ],
@@ -459,120 +468,129 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                       shrinkWrap: true,
                       itemBuilder: (context, index) {
                         final data = affirmationDraftList[index];
-                        return GestureDetector(
-                            onTap: () {},
-                            child: Slidable(
-                              closeOnScroll: true,
-                              key: const ValueKey<String>("" ?? ""),
-                              endActionPane: ActionPane(
-                                motion: const ScrollMotion(),
-                                dragDismissible: false,
-                                extentRatio: 0.26,
+                        return Slidable(
+                          closeOnScroll: true,
+                          key: const ValueKey<String>("" ?? ""),
+                          endActionPane: ActionPane(
+                            motion: const ScrollMotion(),
+                            dragDismissible: false,
+                            extentRatio: 0.26,
+                            children: [
+                              Dimens.d20.spaceWidth,
+                              GestureDetector(
+                                onTap: () {
+                                  affirmationDraftList.removeAt(index);
+                                  _isSearching =
+                                      affirmationDraftList.isNotEmpty;
+                                  setState(() {});
+                                },
+                                child: Container(
+                                  width: Dimens.d65,
+                                  margin:
+                                      EdgeInsets.only(bottom: Dimens.d20.h),
+                                  decoration: BoxDecoration(
+                                    color: ColorConstant.deleteRed,
+                                    borderRadius: Dimens.d16.radiusAll,
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: SvgPicture.asset(
+                                    ImageConstant.icDeleteWhite,
+                                    width: Dimens.d24,
+                                    height: Dimens.d24,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          child: GestureDetector(onTap: () {
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) {
+                                return AffirmationShareScreen(
+                                  des: affirmationDraftList[index]["des"],
+                                  title: affirmationDraftList[index]["title"],
+                                );
+                              },
+                            ));
+                          },
+                            child: Container(
+                              margin:
+                                  const EdgeInsets.only(bottom: Dimens.d16),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: Dimens.d11,
+                                  vertical: Dimens.d11),
+                              decoration: BoxDecoration(
+                                color: ColorConstant.white,
+                                borderRadius: Dimens.d16.radiusAll,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Dimens.d20.spaceWidth,
-                                  GestureDetector(
-                                    onTap: () {
-                                      affirmationDraftList.removeAt(index);
-                                      _isSearching =
-                                          affirmationDraftList.isNotEmpty;
-                                      setState(() {});
-                                    },
-                                    child: Container(
-                                      width: Dimens.d65,
-                                      margin:
-                                          EdgeInsets.only(bottom: Dimens.d20.h),
-                                      decoration: BoxDecoration(
-                                        color: ColorConstant.deleteRed,
-                                        borderRadius: Dimens.d16.radiusAll,
+                                  Row(
+                                    children: [
+                                      SizedBox(
+                                        width: Dimens.d300,
+                                        child: Text(
+                                          data["title"] ?? '',
+                                          style: Style.cormorantGaramondBold(
+                                                  height: Dimens.d1_3.h,
+                                                  fontSize: Dimens.d18,
+                                                  color: Colors.black)
+                                              .copyWith(
+                                                  wordSpacing: Dimens.d4),
+                                          maxLines: 7,
+                                        ),
                                       ),
-                                      alignment: Alignment.center,
-                                      child: SvgPicture.asset(
-                                        ImageConstant.icDeleteWhite,
-                                        width: Dimens.d24,
-                                        height: Dimens.d24,
-                                      ),
-                                    ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(context,
+                                              MaterialPageRoute(
+                                            builder: (context) {
+                                              return AddAffirmationPage(
+                                                isFromMyAffirmation: true,
+                                                title: data["title"],
+                                                isEdit: true,
+                                                des: data["des"],
+                                              );
+                                            },
+                                          )).then(
+                                            (value) {
+                                              setState(() {});
+                                              if (value != null &&
+                                                  value is bool) {
+                                                value
+                                                    ? affirmationList.clear()
+                                                    : affirmationDraftList
+                                                        .clear();
+                                                setState(() {});
+                                              }
+                                            },
+                                          );
+                                        },
+                                        child: SvgPicture.asset(
+                                          ImageConstant.editTools,
+                                          height: Dimens.d18,
+                                          width: Dimens.d18,
+                                          color: ColorConstant.black,
+
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  Dimens.d10.spaceHeight,
+                                  Text(
+                                    data["des"] ?? '',
+                                    style: Style.montserratRegular(
+                                            height: Dimens.d2,
+                                            fontSize: Dimens.d11,
+                                            color: Colors.black)
+                                        .copyWith(wordSpacing: Dimens.d4),
+                                    maxLines: 4,
                                   ),
                                 ],
                               ),
-                              child: Container(
-                                margin:
-                                    const EdgeInsets.only(bottom: Dimens.d16),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: Dimens.d11,
-                                    vertical: Dimens.d11),
-                                decoration: BoxDecoration(
-                                  color: ColorConstant.white,
-                                  borderRadius: Dimens.d16.radiusAll,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        SizedBox(
-                                          width: Dimens.d300,
-                                          child: Text(
-                                            data["title"] ?? '',
-                                            style: Style.cormorantGaramondBold(
-                                                    height: Dimens.d1_3.h,
-                                                    fontSize: Dimens.d18,
-                                                    color: Colors.black)
-                                                .copyWith(
-                                                    wordSpacing: Dimens.d4),
-                                            maxLines: 7,
-                                          ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            Navigator.push(context,
-                                                MaterialPageRoute(
-                                              builder: (context) {
-                                                return AddAffirmationPage(
-                                                  isFromMyAffirmation: true,
-                                                  title: data["title"],
-                                                  isEdit: true,
-                                                  des: data["des"],
-                                                );
-                                              },
-                                            )).then(
-                                              (value) {
-                                                setState(() {});
-                                                if (value != null &&
-                                                    value is bool) {
-                                                  value
-                                                      ? affirmationList.clear()
-                                                      : affirmationDraftList
-                                                          .clear();
-                                                  setState(() {});
-                                                }
-                                              },
-                                            );
-                                          },
-                                          child: SvgPicture.asset(
-                                            ImageConstant.editTools,
-                                            height: Dimens.d18,
-                                            width: Dimens.d18,
-                                            color: ColorConstant.black,
-
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    Dimens.d10.spaceHeight,
-                                    Text(
-                                      data["des"] ?? '',
-                                      style: Style.montserratRegular(
-                                              height: Dimens.d2,
-                                              fontSize: Dimens.d11,
-                                              color: Colors.black)
-                                          .copyWith(wordSpacing: Dimens.d4),
-                                      maxLines: 4,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ));
+                            ),
+                          ),
+                        );
                       },
                       separatorBuilder: (context, index) =>
                           Dimens.d16.spaceWidth,
@@ -662,7 +680,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                             padding: const EdgeInsets.symmetric(
                                 horizontal: Dimens.d11, vertical: Dimens.d11),
                             decoration: BoxDecoration(
-                              color: ColorConstant.color3D5459,
+                              color: ColorConstant.white,
                               borderRadius: Dimens.d16.radiusAll,
                             ),
                             child: Column(
@@ -677,7 +695,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                         style: Style.cormorantGaramondBold(
                                                 height: Dimens.d1_3.h,
                                                 fontSize: Dimens.d18,
-                                                color: Colors.white)
+                                                color: Colors.black)
                                             .copyWith(wordSpacing: Dimens.d4),
                                         maxLines: 1,
                                       ),
@@ -694,6 +712,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                             : ImageConstant.likeTools,
                                         height: Dimens.d18,
                                         width: Dimens.d18,
+                                        color: like?ColorConstant.deleteRed:ColorConstant.black,
                                       ),
                                     )
                                   ],
@@ -704,7 +723,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                   style: Style.montserratRegular(
                                           height: Dimens.d2,
                                           fontSize: Dimens.d11,
-                                          color: Colors.white)
+                                          color: Colors.black)
                                       .copyWith(wordSpacing: Dimens.d4),
                                   maxLines: 4,
                                 ),
