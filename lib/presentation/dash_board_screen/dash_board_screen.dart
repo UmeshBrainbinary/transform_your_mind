@@ -27,14 +27,17 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    if(index != 2) {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
   }
 
   final List<Widget> pages = [
     const HomeScreen(),
     const ToolsScreen(),
+    Container(),
     ExploreScreen(),
     const ProfileScreen(),
   ];
@@ -124,6 +127,31 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 ),
               ),
               BottomNavigationBarItem(
+                icon: Visibility(
+                  visible: false,
+                  maintainState: true,
+                  maintainSize: true,
+                  maintainAnimation: true,
+                  child: SvgPicture.asset(
+                    ImageConstant.toolsUnSelected,
+                    height: Dimens.d20,
+                    width: Dimens.d20,
+                  ),
+                ),
+                label: ''.tr,
+                activeIcon: Visibility(
+                  visible: false,
+                  maintainState: true,
+                  maintainSize: true,
+                  maintainAnimation: true,
+                  child: SvgPicture.asset(
+                    ImageConstant.toolsSelected,
+                    height: Dimens.d20,
+                    width: Dimens.d20,
+                  ),
+                ),
+              ),
+              BottomNavigationBarItem(
                 icon: SvgPicture.asset(
                   ImageConstant.exploreDeSelected,
                   height: Dimens.d20,
@@ -168,7 +196,12 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               //color: Colors.black,
               fontSize: Dimens.d12,
             ),
-            onTap: _onItemTapped,
+            onTap: (v){
+              if(v !=2)
+                {
+                  _onItemTapped(v);
+                }
+            },
             showSelectedLabels: true,
             useLegacyColorScheme: false,
             type: BottomNavigationBarType.fixed,
