@@ -12,7 +12,9 @@ import 'package:transform_your_mind/presentation/dash_board_screen/dash_board_co
 import 'package:transform_your_mind/presentation/explore_screen/explore_screen.dart';
 import 'package:transform_your_mind/presentation/home_screen/home_screen.dart';
 import 'package:transform_your_mind/presentation/profile_screen/profile_screen.dart';
+import 'package:transform_your_mind/presentation/search_screen/search_screen.dart';
 import 'package:transform_your_mind/presentation/tools_screen/tools_screen.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 
 class DashBoardScreen extends StatefulWidget {
   DashBoardScreen({super.key});
@@ -23,7 +25,7 @@ class DashBoardScreen extends StatefulWidget {
 
 class _DashBoardScreenState extends State<DashBoardScreen> {
   DashBoardController dashBoardController = Get.put(DashBoardController());
-
+  ThemeController themeController = Get.put(ThemeController());
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
@@ -61,7 +63,11 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             foregroundColor: Colors.transparent,
             backgroundColor: Colors.transparent,
             elevation: 0.0,
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return const SearchScreen();
+              },));
+            },
             child: Stack(
               alignment: Alignment.center,
               children: [
@@ -82,7 +88,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color:themeController.isDarkMode.value ? ColorConstant.black :ColorConstant.white ,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
             boxShadow: [
               BoxShadow(

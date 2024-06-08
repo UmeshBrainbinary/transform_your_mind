@@ -33,6 +33,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final EditProfileController editProfileController = Get.put(EditProfileController());
+
   ThemeController themeController = Get.find<ThemeController>();
 
  bool _isImageRemoved = false;
@@ -105,7 +106,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     hintText: "enterName".tr,
                                     controller:
                                     editProfileController.nameController,
-                                    focusNode: FocusNode(),
+                                    focusNode: editProfileController.name,
                                     prefixIcon: Transform.scale(
                                       scale: 0.5,
                                       child:
@@ -124,7 +125,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     labelText: "email".tr,
                                     hintText: "enterEmail".tr,
                                     controller: editProfileController.emailController,
-                                    focusNode: FocusNode(),
+                                    focusNode: editProfileController.email,
                                     filledColor: themeController.isDarkMode.value ? ColorConstant.lightGrey2 : ColorConstant.lightGrey,
                                     prefixIcon: Image.asset(ImageConstant.email,
                                         scale: Dimens.d4),
@@ -145,7 +146,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     labelText: "dateOfBirth".tr,
                                     hintText: "DD/MM/YYYY",
                                     controller: editProfileController.dobController,
-                                    focusNode: FocusNode(),
+                                    focusNode: editProfileController.dob,
                                     prefixIcon: Transform.scale(
                                         scale: 0.5,
                                         child: SvgPicture.asset(
@@ -185,7 +186,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     hintText: "selectGender".tr,
                                     controller:
                                     editProfileController.genderController,
-                                    focusNode: FocusNode(),
+                                    focusNode: editProfileController.gender,
                                     prefixIcon: Transform.scale(
                                         scale: 0.5,
                                         child: SvgPicture.asset(
@@ -241,7 +242,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                               child: Container(
                                                 height: Dimens.d45,
                                                 width: Get.width,
-                                                padding: EdgeInsets.only(
+                                                padding: const EdgeInsets.only(
                                                     left: Dimens.d10,
                                                     top: Dimens.d12),
                                                 decoration: BoxDecoration(
@@ -255,7 +256,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                       .themeColor
                                                       : ColorConstant.white,
                                                   borderRadius: index == 0
-                                                      ? BorderRadius.only(
+                                                      ? const BorderRadius.only(
                                                       topLeft:
                                                       Radius.circular(
                                                           Dimens.d10),
@@ -263,7 +264,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                       Radius.circular(
                                                           Dimens.d10))
                                                       : index == 2
-                                                      ? BorderRadius.only(
+                                                      ? const BorderRadius.only(
                                                       bottomLeft: Radius
                                                           .circular(
                                                           Dimens
@@ -294,7 +295,41 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                               )),
                                         )),
                                   )
-                                      : SizedBox(),
+                                      : const SizedBox(),
+                                ),
+                                Dimens.d30.h.spaceHeight,
+                                Obx(
+                                      () => (editProfileController.loader.value)
+                                      ? const LoadingButton()
+                                      : Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: Dimens.d50),
+                                    child: CommonElevatedButton(
+                                      title: "update".tr,
+                                      onTap: () async {
+                                        FocusScope.of(context).unfocus();
+
+                                        editProfileController.loader.value = true;
+
+
+                                        if(editProfileController.imageFile.value == null){
+                                          errorToast("pleaseAddImage".tr);
+                                        }  else{
+                                          if (_formKey.currentState!.validate() ) {
+
+
+
+
+                                            Get.back();
+
+
+
+
+                                          }
+                                        }
+
+                                        editProfileController.loader.value = false;                                          },
+                                    ),
+                                  ),
                                 ),
                                 Dimens.d50.h.spaceHeight,
                               ],
@@ -310,42 +345,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ),
           ),
       ),
-      bottomNavigationBar: Padding(
-        padding: Dimens.d20.paddingAll,
-        child: Obx(
-              () => (editProfileController.loader.value)
-              ? const LoadingButton()
-              : Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Dimens.d50),
-                child: CommonElevatedButton(
-                      title: "update".tr,
-                      onTap: () async {
-                FocusScope.of(context).unfocus();
 
-                editProfileController.loader.value = true;
-
-
-                if(editProfileController.imageFile.value == null){
-                  errorToast("pleaseAddImage".tr);
-                }  else{
-                  if (_formKey.currentState!.validate() ) {
-
-
-
-
-                    Get.back();
-
-
-
-
-                  }
-                }
-
-                editProfileController.loader.value = false;                                          },
-                          ),
-              ),
-        ),
-      )
     );
   }
 }

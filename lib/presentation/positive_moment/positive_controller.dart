@@ -10,4 +10,8 @@ class PositiveController extends GetxController{
     {"title":"Happiness","img":"assets/images/positive_moment.png"},
     {"title":"Personal Growth","img":"assets/images/positive_moment.png"},
   ].obs;
+@override
+  void onInit() {
+    super.onInit();
+  }
 }

@@ -255,5 +255,17 @@
   "motivationalMessages": "Motivationsnachrichten",
   "hours": "Stunden",
   "minutes": "Minuten",
-  "seconds": "Sekunden"
+  "seconds": "Sekunden",
+  "comment": "Kommentar",
+  "rating": "Bewertung",
+  "enterComment": "Eingeben Kommentar",
+  "audioContent": "Audioinhalte",
+  "sendFeedback": "Feedback abschicken",
+  "support": "Unterstützung",
+  "troubleshootingGuides": "Anleitungen zur Fehlerbehebung",
+
+  "howYourRate": "Wie würden Sie Ihre Erfahrung bewerten?"
+
+
+
 }

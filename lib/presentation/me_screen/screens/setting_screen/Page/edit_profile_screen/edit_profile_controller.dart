@@ -14,7 +14,10 @@ class EditProfileController extends GetxController {
   TextEditingController emailController = TextEditingController();
   TextEditingController dobController = TextEditingController();
   TextEditingController genderController = TextEditingController();
-
+  FocusNode name = FocusNode();
+  FocusNode email = FocusNode();
+  FocusNode dob = FocusNode();
+  FocusNode gender = FocusNode();
   ValueNotifier<bool> securePass = ValueNotifier(true);
   ValueNotifier<XFile?> imageFile = ValueNotifier(null);
 

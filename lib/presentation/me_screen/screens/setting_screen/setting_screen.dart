@@ -11,6 +11,7 @@ import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/auth/login_screen/login_controller.dart';
 import 'package:transform_your_mind/presentation/auth/ragister_screen/register_controller.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/setting_controller.dart';
+import 'package:transform_your_mind/presentation/support_screen/support_screen.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/app_confirmation_dialog.dart';
@@ -82,8 +83,17 @@ class SettingScreen extends StatelessWidget {
                                   Get.toNamed(AppRoutes.subscriptionScreen);
                                 } else if (index == 2) {
                                   Get.toNamed(AppRoutes.accountScreen);
+                                } else if (index == 3) {
                                 } else if (index == 4) {
                                   Get.toNamed(AppRoutes.personalizationScreen);
+                                } else if (index == 5) {
+                                  Get.toNamed(AppRoutes.feedbackScreen);
+                                } else {
+                                  Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) {
+                                      return SupportScreen();
+                                    },
+                                  ));
                                 }
                               },
                             );

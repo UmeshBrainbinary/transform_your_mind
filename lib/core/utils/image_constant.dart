@@ -129,6 +129,10 @@ class ImageConstant {
   static  String imgRitualUnSelected= "$imagePath/img_unselected_ritual.png";
   static  String icUpArrow = "$iconHomePath/ic_up_arrow.svg";
   static  String journalIcon = "$iconPath/ic_journal_selected.svg";
+  static  String journalIconQuick = "$iconHomePath/ic_journal_quick.svg";
+  static  String podIconQuick = "$iconHomePath/ic_pod_quick.svg";
+  static  String sleepIconQuick = "$iconHomePath/ic_sleep_quick.svg";
+  static  String meditationIconQuick = "$iconHomePath/ic_meditation_quick.svg";
   static  String transformPodIcon = "$iconPath/ic_pod_selected.svg";
   static  String ritualIcon = "$iconPath/ic_rituals_selected.svg";
   static  String menueIcon = "$iconPath/ic_menu_icon_for_tools.svg";
@@ -156,6 +160,7 @@ class ImageConstant {
   static  String ratingFillSvg = "$iconPath/tran_star_fill.svg";
   static  String ratingNoFillSvg = "$iconPath/transform_star_no.svg";
   static  String imgTransformSemi = "$iconHomePath/img_transform_semi.png";
+  static  String transformYour = "$imagePath/transform_your_back.png";
   static  String imgAboutShapes = "$imagePath/img_about_shapes.png";
   static  String imgPlayButton = "$imagePath/img_play_button.png";
   static  String imgSelectFocus = "$imagePath/img_select_focus_bg.png";
@@ -181,6 +186,9 @@ class ImageConstant {
   static String select = "$iconPath/select.svg";
   static String alarm = "$iconPath/alarm.svg";
   static String moment = "$imagePath/moment.png";
+  static String upArrowFaq = "$iconPath/up_arrow.svg";
+  static String downArrowFaq = "$iconPath/down_arrow.svg";
+  static String bgImage = "$imagePath/background_image.png";
   static String closePositive = "$iconPath/close_positive.svg";
   static String subscriptionCheck = "$iconPath/subscription_check.svg";
   static String shapeAffirmationShare =

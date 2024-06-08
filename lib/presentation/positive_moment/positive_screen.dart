@@ -7,7 +7,7 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
-import 'package:transform_your_mind/presentation/journal_screen/widget/add_affirmation_page.dart';
+import 'package:transform_your_mind/presentation/positive_moment/add_positive_page.dart';
 import 'package:transform_your_mind/presentation/positive_moment/positive_controller.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
@@ -27,11 +27,10 @@ class _PositiveScreenState extends State<PositiveScreen> {
   PositiveController positiveController = Get.put(PositiveController());
   late ScrollController scrollController = ScrollController();
   ValueNotifier<bool> showScrollTop = ValueNotifier(false);
-
+  List? _filteredBookmarks;
   @override
   void initState() {
     scrollController.addListener(() {
-      //scroll listener
       double showOffset = 10.0;
 
       if (scrollController.offset > showOffset) {
@@ -40,7 +39,17 @@ class _PositiveScreenState extends State<PositiveScreen> {
         showScrollTop.value = false;
       }
     });
+    setState(() {
+      _filteredBookmarks = positiveController.positiveMomentList;
+    });
     super.initState();
+  }
+
+  searchBookmarks(String query, List bookmarks) {
+    return bookmarks
+        .where((bookmark) =>
+            bookmark['title']!.toLowerCase().contains(query.toLowerCase()))
+        .toList();
   }
 
   @override
@@ -80,9 +89,8 @@ class _PositiveScreenState extends State<PositiveScreen> {
               child: CommonTextField(
                   onChanged: (value) {
                     setState(() {
-                      /*  exploreController.filteredList =
-                        exploreController.filterList(value,
-                            exploreController.exploreList);*/
+                      _filteredBookmarks = searchBookmarks(
+                          value, positiveController.positiveMomentList);
                     });
                   },
                   suffixIcon: SvgPicture.asset(ImageConstant.searchExplore,
@@ -93,7 +101,66 @@ class _PositiveScreenState extends State<PositiveScreen> {
             ),
             Dimens.d30.h.spaceHeight,
             Expanded(
-              child: GridView.builder(
+              child:  _filteredBookmarks != null?
+              GridView.builder(
+                  controller: scrollController,
+                  padding: const EdgeInsets.only(bottom: Dimens.d20),
+                  physics: const BouncingScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    childAspectRatio: 1,
+                    crossAxisCount: 2,
+                    // Number of columns
+                    crossAxisSpacing: 20,
+                    // Spacing between columns
+                    mainAxisSpacing: 20, // Spacing between rows
+                  ),
+                  itemCount: _filteredBookmarks?.length??0,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        searchFocusNode.unfocus();
+                        _showAlertDialog(context);
+                        // _onTileClick(index, context);
+                      },
+                      child: Container(
+                        height: 156,
+                        width: 156,
+                        padding:
+                        const EdgeInsets.only(left: 10, right: 10, top: 10),
+                        decoration: BoxDecoration(
+                            color: ColorConstant.colorDCE9EE,
+                            borderRadius: BorderRadius.circular(18)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Image.asset(
+                              _filteredBookmarks?[index]
+                              ["img"]??"",
+                              height: 101,
+                              width: 138,
+                            ),
+                            /*      CustomImageView(
+                                      imagePath: positiveController
+                                          .positiveMomentList[index]['image'],
+                                      height: Dimens.d135,
+                                      radius: BorderRadius.circular(10),
+                                      fit: BoxFit.cover,
+                                    ),*/
+                            Dimens.d12.spaceHeight,
+                            Text(
+                              _filteredBookmarks?[index]
+                              ['title']??"",
+                              maxLines: Dimens.d2.toInt(),
+                              style:
+                              Style.montserratMedium(fontSize: Dimens.d14),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  })
+                  :GridView.builder(
                   controller: scrollController,
                   padding: const EdgeInsets.only(bottom: Dimens.d20),
                   physics: const BouncingScrollPhysics(),
@@ -221,7 +288,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
     } else {
       Navigator.push(context, MaterialPageRoute(
         builder: (context) {
-          return const AddAffirmationPage(
+          return const AddPositivePage(
             isFromMyAffirmation: true,
             isEdit: false,
           );

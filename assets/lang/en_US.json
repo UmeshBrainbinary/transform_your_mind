@@ -16,6 +16,8 @@
   "pleaseEnterValidPassword": "Password must contain at least one uppercase letter, one digit and one special character",
   "theEmailFieldIsRequired": "The email field is required.",
   "thePasswordFieldIsRequired": "The password field is required",
+  "theConfirmPasswordFieldIsRequired": "The Confirm password field is required",
+  "theNewPasswordFieldIsRequired": "The New password field is required",
   "theDateOfBirthFieldIsRequired" : "The date of birth field is required.",
   "theGenderFieldIsRequired" : "The gender field is required.",
   "explore": "Explore",
@@ -256,7 +258,15 @@
     "motivationalMessages": "Motivational Messages",
     "hours": "Hours",
     "minutes": "Minutes",
-    "seconds": "Seconds"
+    "seconds": "Seconds",
+    "enterComment": "Enter Comment",
+    "comment": "Comment",
+    "rating": "Rating",
+    "audioContent": "Audio Content",
+    "sendFeedback": "Send Feedback",
+    "support": "Support",
+    "troubleshootingGuides": "Troubleshooting guides",
+    "howYourRate": "How would you rate your experience?"
 
 
 

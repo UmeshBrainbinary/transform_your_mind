@@ -41,7 +41,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Dimens.d30.spaceHeight,
-                  commonText("account"),
+               /*   commonText("account"),
                   Dimens.d20.spaceHeight,
                   Container(
                     decoration: BoxDecoration(
@@ -79,8 +79,8 @@ class PrivacyPolicyScreen extends StatelessWidget {
                       ),
                       itemCount: controller.privacyData.length,
                     ),
-                  ),
-                  Dimens.d30.spaceHeight,
+                  ),*/
+
                   commonText("PrivacyPolicy"),
                   Dimens.d10.spaceHeight,
                   Text(

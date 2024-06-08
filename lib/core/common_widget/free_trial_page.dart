@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:transform_your_mind/core/common_widget/bg_semi_circle_texture_painter.dart';
@@ -27,6 +28,10 @@ class _FreeTrialPageState extends State<FreeTrialPage>
   @override
   void initState() {
     super.initState();
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.white, // Status bar background color
+      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+    ));
     _lottieBgController = AnimationController(vsync: this);
     _lottieFWController = AnimationController(vsync: this);
   }
@@ -43,7 +48,7 @@ class _FreeTrialPageState extends State<FreeTrialPage>
     return Scaffold(
       body: Stack(
         children: [
-          Lottie.asset(
+      /*    Lottie.asset(
             ImageConstant.homeScreenMeshLottie,
             controller: _lottieBgController,
             height: MediaQuery.of(context).size.height / 3,
@@ -53,17 +58,17 @@ class _FreeTrialPageState extends State<FreeTrialPage>
                 ..duration = composition.duration
                 ..repeat();
             },
-          ),
+          ),*/
           const BgSemiCircleTexture(),
-      /*    Padding(
+          Padding(
             padding: const EdgeInsets.symmetric(
                 horizontal: Dimens.d105, vertical: Dimens.d115),
             child: SizedBox(
               width: Dimens.d200,
-              height: Dimens.d30,
+              height: Dimens.d120,
               child: Image.asset(ImageConstant.splashLogo),
             ),
-          ),*/
+          ),
           Align(
             alignment: Alignment.bottomCenter,
             child: Column(
@@ -75,7 +80,7 @@ class _FreeTrialPageState extends State<FreeTrialPage>
                   "Welcome to Transform.....you\'re all set to get started.\n\nYour Transform Basic package is now live.",
                   style: Style.montserratRegular(
                     fontSize: Dimens.d15,
-                    color: Colors.white,
+
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -85,7 +90,7 @@ class _FreeTrialPageState extends State<FreeTrialPage>
                   "This means you have access to....",
                   style: Style.montserratRegular(
                       fontSize: Dimens.d12,
-                      color: Colors.white,
+
                       fontWeight: FontWeight.w500),
                   textAlign: TextAlign.center,
                 ),
@@ -103,12 +108,11 @@ class _FreeTrialPageState extends State<FreeTrialPage>
                   title: "Focused affirmations up to x10 per day",
                 ),
                 const Spacer(),
+                Dimens.d20.spaceHeight,
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
                   child: CommonElevatedButton(
-                    buttonColor: Colors.white,
-                    textStyle: Style.cormorantGaramondBold(
-                        fontSize: Dimens.d23, color: ColorConstant.themeColor),
+
                     title: "Premium Access to all features",
                     onTap: () {
                       Navigator.pushReplacement(context, MaterialPageRoute(
@@ -147,7 +151,7 @@ class _DescriptionPoints extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          SvgPicture.asset(ImageConstant.icTick),
+          SvgPicture.asset(ImageConstant.icTick,color: ColorConstant.black,),
           Dimens.d6.spaceWidth,
           Expanded(
             child: Align(
@@ -156,7 +160,7 @@ class _DescriptionPoints extends StatelessWidget {
                 title,
                 style: Style.montserratRegular(
                   fontSize: Dimens.d14,
-                  color: Colors.white,
+
                 ),
               ),
             ),

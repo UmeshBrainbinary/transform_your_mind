@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
@@ -61,7 +62,10 @@ class _JournalScreenState extends State<JournalScreen>
   @override
   void initState() {
     super.initState();
-
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.white, // Status bar background color
+      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+    ));
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
@@ -84,43 +88,7 @@ class _JournalScreenState extends State<JournalScreen>
     return Scaffold(
         appBar: CustomAppBar(
           title: "selfDevelopment".tr,
-          action: Row(
-            children: [
-              Dimens.d10.h.spaceWidth,
-              GestureDetector(
-                onTap: () async {
-                  setState(() {
-                    if (info.value == false) {
-                      info.value = true;
-                    } else {
-                      info.value = false;
-                    }
-                    ratingView = false;
-                  });
-                  isTutorialVideoVisible.value = !isTutorialVideoVisible.value;
-                  if (isTutorialVideoVisible.value) {
-                    _controller.forward();
-                  } else {
-                    //videoKeys[0].currentState?.pause();
-                    _controller.reverse();
-                  }
-                },
-                child: SvgPicture.asset(
-                  height: 25.h,
-                  ImageConstant.information,
-                ),
-              ),
-              Dimens.d10.h.spaceWidth,
-              GestureDetector(
-                onTap: () async {},
-                child: SvgPicture.asset(
-                  height: 25.h,
-                  ImageConstant.notification,
-                ),
-              ),
-              Dimens.d20.h.spaceWidth,
-            ],
-          ),
+
         ),
         body: SafeArea(
           child: Stack(

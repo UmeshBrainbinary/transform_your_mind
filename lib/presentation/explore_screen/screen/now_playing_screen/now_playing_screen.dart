@@ -106,6 +106,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                     leading: GestureDetector(
                         onTap: () {
                           Get.back();
+                          _audioPlayerService.pause();
                         },
                         child: const Icon(
                           Icons.close,

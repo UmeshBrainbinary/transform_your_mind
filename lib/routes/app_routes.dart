@@ -14,6 +14,8 @@ import 'package:transform_your_mind/presentation/dash_board_screen/binding/dash_
 import 'package:transform_your_mind/presentation/dash_board_screen/dash_board_screen.dart';
 import 'package:transform_your_mind/presentation/explore_screen/binding/explore_binding.dart';
 import 'package:transform_your_mind/presentation/explore_screen/explore_screen.dart';
+import 'package:transform_your_mind/presentation/feedback_screen/binding/feedback_binding.dart';
+import 'package:transform_your_mind/presentation/feedback_screen/feedback_screen.dart';
 import 'package:transform_your_mind/presentation/home_screen/binding/home_binding.dart';
 import 'package:transform_your_mind/presentation/home_screen/home_screen.dart';
 import 'package:transform_your_mind/presentation/intro_screen/about_page.dart';
@@ -97,6 +99,7 @@ class AppRoutes {
   static const String motivationalMessageScreen = '/motivationalMessageScreen';
   static const String affirmationAlarmScreen = '/affirmationAlarmScreen';
   static const String positiveScreen = '/positiveScreen';
+  static const String feedbackScreen = '/feedbackScreen';
 
   static List<GetPage> pages = [
 
@@ -374,6 +377,12 @@ class AppRoutes {
       name: positiveScreen,
       page: () =>   const PositiveScreen(),
       bindings: [PositiveBinding()],
+    ),
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: feedbackScreen,
+      page: () => const FeedbackScreen(),
+      bindings: [FeedbackBinding()],
     ),
 
     ///

@@ -40,8 +40,11 @@ class MotivationalMessageScreen extends StatelessWidget {
                     return Container(
                       margin: const EdgeInsets.only(bottom: 15),
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(20),
+                        image: const DecorationImage(
+                            image: NetworkImage(
+                                "https://farm3.staticflickr.com/2220/1572613671_7311098b76_z_d.jpg"),
+                            fit: BoxFit.cover),
+                        borderRadius: BorderRadius.circular(20),
                       ),
                       child: Stack(
                         children: [

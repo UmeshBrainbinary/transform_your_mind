@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -5,10 +6,12 @@ import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_affirmation_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/my_affirmation_page.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
+import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 class AlarmListScreen extends StatefulWidget {
@@ -20,6 +23,10 @@ class AlarmListScreen extends StatefulWidget {
 
 class _AlarmListScreenState extends State<AlarmListScreen> {
   ThemeController themeController = Get.find<ThemeController>();
+  bool am = true;
+  bool pm = false;
+  Duration selectedDuration = const Duration(hours: 0, minutes: 0, seconds: 0);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,7 +76,9 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                         Dimens.d10.spaceWidth,
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(
+                            _showAlertDialog(context);
+
+                            /*       Navigator.push(context, MaterialPageRoute(
                               builder: (context) {
                                 return AddAffirmationPage(
                                   isEdit: true,
@@ -78,7 +87,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                                   isFromMyAffirmation: true,
                                 );
                               },
-                            ));
+                            ));*/
                           },
                           child: SvgPicture.asset(
                             ImageConstant.editTools,
@@ -214,4 +223,138 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
       ],),
     );
   }
+  void _showAlertDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              //backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(11.0), // Set border radius
+              ),
+              actions: <Widget>[
+                Dimens.d18.spaceHeight,
+                Row(
+                  children: [
+                    Text(
+                      "New Alarms".tr,
+                      style: Style.cormorantGaramondBold(fontSize: 20),
+                    ),
+                    const Spacer(),
+                    Container(
+                      width: Dimens.d100,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(17),
+                          border: Border.all(color: ColorConstant.colorBFBFBF)),
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              setState.call(() {
+                                am = true;
+                                pm = false;
+                              });
+                            },
+                            child: Container(
+                                width: Dimens.d49,
+                                decoration: BoxDecoration(
+                                    color: am == true
+                                        ? ColorConstant.themeColor
+                                        : ColorConstant.white,
+                                    borderRadius: BorderRadius.circular(17)),
+                                child: Center(
+                                  child: Text(
+                                    "AM",
+                                    style: Style.montserratRegular(
+                                        fontSize: 12,
+                                        color: am == true
+                                            ? ColorConstant.white
+                                            : ColorConstant.black),
+                                  ),
+                                )),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              setState.call(() {
+                                am = false;
+                                pm = true;
+                              });
+                            },
+                            child: Container(
+                                width: Dimens.d49,
+                                decoration: BoxDecoration(
+                                    color: pm == true
+                                        ? ColorConstant.themeColor
+                                        : ColorConstant.white,
+                                    borderRadius: BorderRadius.circular(17)),
+                                child: Center(
+                                  child: Text(
+                                    "PM",
+                                    style: Style.montserratRegular(
+                                        fontSize: 12,
+                                        color: pm == true
+                                            ? ColorConstant.white
+                                            : ColorConstant.black),
+                                  ),
+                                )),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                Dimens.d26.spaceHeight,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "hours".tr,
+                      style: Style.montserratRegular(fontSize: 12),
+                    ),
+                    Text(
+                      "minutes".tr,
+                      style: Style.montserratRegular(fontSize: 12),
+                    ),
+                    Text(
+                      "seconds".tr,
+                      style: Style.montserratRegular(fontSize: 12),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 100,
+                  width: Get.width,
+                  child: CupertinoTimerPicker(
+                    backgroundColor: Colors.transparent,
+                    mode: CupertinoTimerPickerMode.hms,
+                    initialTimerDuration: selectedDuration,
+                    onTimerDurationChanged: (Duration newDuration) {
+                      setState(() {
+                        selectedDuration = newDuration;
+                      });
+                    },
+                  ),
+                ),
+                Dimens.d26.spaceHeight,
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Dimens.d70.h),
+                  child: CommonElevatedButton(
+                    textStyle: Style.montserratRegular(
+                        fontSize: Dimens.d12, color: ColorConstant.white),
+                    title: "save".tr,
+                    onTap: () {
+                      Get.back();
+                    },
+                  ),
+                )
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
 }

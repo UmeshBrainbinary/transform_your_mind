@@ -98,7 +98,7 @@ class ChangePasswordScreen extends StatelessWidget {
                                           controller: changePasswordController.newPController,
                                           validator: (value) {
                                             if (value == "") {
-                                              return "thePasswordFieldIsRequired".tr;
+                                              return "theNewPasswordFieldIsRequired".tr;
                                             } else if(!isValidPassword(value, isRequired: true)){
                                               return "pleaseEnterValidPassword".tr;
                                             }
@@ -137,7 +137,7 @@ class ChangePasswordScreen extends StatelessWidget {
                                           controller: changePasswordController.confirmPController,
                                           validator: (value) {
                                             if (value == "") {
-                                              return "thePasswordFieldIsRequired".tr;
+                                              return "theConfirmPasswordFieldIsRequired".tr;
                                             } else if(value != changePasswordController.newPController.text){
                                               return "passwordsDoNotMatch".tr;
                                             } else if(!isValidPassword(value, isRequired: true)){

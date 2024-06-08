@@ -98,7 +98,7 @@ class _HomeAppBarState extends State<HomeAppBar> with TickerProviderStateMixin {
                     ),
                   )
                 : const SizedBox(),
-            widget.downloadShown!
+         /*   widget.downloadShown!
                 ? GestureDetector(
                     onTap: () {},
                     child: SvgPicture.asset(ImageConstant.download,
@@ -110,7 +110,7 @@ class _HomeAppBarState extends State<HomeAppBar> with TickerProviderStateMixin {
               onTap: widget.onInfoTap!,
               child: SvgPicture.asset(ImageConstant.information,
                   height: Dimens.d25, width: Dimens.d25),
-            ),
+            ),*/
             Dimens.d10.h.spaceWidth,
             GestureDetector(
               onTap: () {

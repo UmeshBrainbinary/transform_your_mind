@@ -7,6 +7,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:transform_your_mind/core/app_export.dart';
+import 'package:transform_your_mind/core/common_widget/app_common_dialog.dart';
 import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
 import 'package:transform_your_mind/core/common_widget/on_loading_bottom_indicator.dart';
@@ -61,6 +62,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
 
   @override
   void initState() {
+
     super.initState();
   }
 

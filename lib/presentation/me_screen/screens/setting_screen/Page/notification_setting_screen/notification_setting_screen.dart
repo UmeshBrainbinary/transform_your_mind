@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
@@ -10,6 +11,7 @@ import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/notification_setting_screen/notification_setting_controller.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/notification_setting_screen/widget/reminder_time_utils.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/notification_setting_screen/widget/reminders_dialog.dart';
+import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/setting_screen.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
@@ -57,7 +59,13 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
    ReminderPeriod? ritualsReminderPeriod;
    ReminderPeriod? shuruReminderPeriod;
    ReminderPeriod? moodReminderPeriod;
-
+@override
+  void initState() {
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.white, // Status bar background color
+    statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+  ));    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,7 +88,48 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
                   ListView(
                     physics: const ClampingScrollPhysics(),
                     children: [
-                      CommonTextField(
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 1.2),
+                        decoration: BoxDecoration(
+                          color: themeController.isDarkMode.value
+                              ? ColorConstant.textfieldFillColor
+                              : ColorConstant.white,
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: Dimens.d10,
+                          vertical: Dimens.d5,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Dimens.d12.spaceWidth,
+                            Expanded(
+                              child: Text(
+                                "affirmation".tr,
+                                style: Style.montserratMedium().copyWith(
+                                  letterSpacing: Dimens.d0_16,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: CustomSwitch(
+                                value: themeController.isDarkMode.value,
+                                onChanged: (value) async {
+
+                                },
+                                width: 50.0,
+                                height: 25.0,
+                                activeColor: ColorConstant.themeColor,
+                                inactiveColor: ColorConstant.backGround,
+                              ),
+                            ),
+
+                          ],
+                        ),
+                      ),
+                     /* CommonTextField(
                         hintText: "10timeInADay".tr,
                         controller: affirmationController,
                         focusNode: affirmationFocus,
@@ -113,9 +162,50 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
                               isAffirmations: true,
                               label: "affirmationsReminder".tr);
                         },
-                      ),
+                      ),*/
                       Dimens.d16.h.spaceHeight,
-                      CommonTextField(
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 1.2),
+                        decoration: BoxDecoration(
+                          color: themeController.isDarkMode.value
+                              ? ColorConstant.textfieldFillColor
+                              : ColorConstant.white,
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: Dimens.d10,
+                          vertical: Dimens.d5,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Dimens.d12.spaceWidth,
+                            Expanded(
+                              child: Text(
+                                "motivational".tr,
+                                style: Style.montserratMedium().copyWith(
+                                  letterSpacing: Dimens.d0_16,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: CustomSwitch(
+                                value: themeController.isDarkMode.value,
+                                onChanged: (value) async {
+
+                                },
+                                width: 50.0,
+                                height: 25.0,
+                                activeColor: ColorConstant.themeColor,
+                                inactiveColor: ColorConstant.backGround,
+                              ),
+                            ),
+
+                          ],
+                        ),
+                      ),
+                     /* CommonTextField(
                         hintText: "10timeInADay".tr,
                         controller: meditationController,
                         focusNode: meditationFocus,
@@ -211,12 +301,9 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
                               label: "ritualsReminder".tr);
                         },
                       ),
-                      Dimens.d16.h.spaceHeight,
+                      Dimens.d16.h.spaceHeight,*/
 
-
-                      SizedBox(
-                        height: 30.h,
-                      ),
+                      Dimens.d30.spaceHeight,
                       // (state is RemindersUpdateLoadingState)
                       //     ? const LoadingButton()
                       //     :

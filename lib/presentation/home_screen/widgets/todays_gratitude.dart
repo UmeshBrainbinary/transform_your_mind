@@ -75,7 +75,7 @@ class _TodaysGratitudeState extends State<TodaysGratitude> {
                           Expanded(
                             child: GestureDetector(
                               onTap: () {
-                                Get.toNamed(AppRoutes.gratitudeScreen);
+                                Get.toNamed(AppRoutes.addGratitudePage);
                               },
                               child: CommonTextField(
                                 controller: titleController,

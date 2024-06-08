@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:transform_your_mind/core/common_widget/app_common_dialog.dart';
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -12,6 +13,7 @@ import 'package:transform_your_mind/presentation/explore_screen/explore_controll
 import 'package:transform_your_mind/presentation/explore_screen/screen/now_playing_screen/now_playing_screen.dart';
 import 'package:transform_your_mind/presentation/explore_screen/widget/home_app_bar.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
+import 'package:transform_your_mind/widgets/custom_appbar.dart';
 import 'package:transform_your_mind/widgets/custom_image_view.dart';
 
 class TransformPodsScreen extends StatefulWidget {
@@ -43,6 +45,8 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
 
   @override
   void initState() {
+
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
@@ -64,12 +68,13 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CustomAppBar(title: "transformPods".tr,showBack: true,),
         body: Padding(
-      padding: const EdgeInsets.only(top: 30.0, right: 20.0, left: 20.0),
+      padding: const EdgeInsets.only( right: 20.0, left: 20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          HomeAppBar(
+         /* HomeAppBar(
             downloadWidget: const SizedBox(),
             downloadShown: true,
             title: "",
@@ -99,8 +104,7 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
               }
             },
             back: true,
-          ),
-          Dimens.d20.h.spaceHeight,
+          ),*/
           LayoutContainer(
             horizontal: 0,
             child: Row(

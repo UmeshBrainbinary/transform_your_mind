@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:transform_your_mind/core/common_widget/app_common_dialog.dart';
 
 class MotivationalController extends GetxController{
   List motivationalList = [
@@ -8,4 +9,9 @@ class MotivationalController extends GetxController{
     {"title":"“ Always keep your dignity and be true to yourself ”","img":"assets/images/motivational.png"},
     {"title":"“ You are the master of your own earthly destiny just as surely as you have the power to control your own thoughts ”","img":"assets/images/motivational.png"},
   ];
+
+  @override
+  void onInit() {
+    super.onInit();
+  }
 }

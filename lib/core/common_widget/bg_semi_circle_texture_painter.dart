@@ -32,7 +32,7 @@ class _BackGroundSemiCircleTexturePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     Paint middleCirclePaint = Paint()
-      ..color = ColorConstant.themeColor
+      ..color = ColorConstant.colorbfd0d4.withOpacity(0.5)
       ..style = PaintingStyle.fill;
 
     canvas.drawCircle(

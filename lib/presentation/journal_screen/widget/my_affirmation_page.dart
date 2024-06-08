@@ -142,7 +142,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //backgroundColor: themeController.isDarkMode.value ? ColorConstant.black : ColorConstant.backGround,
+      backgroundColor: themeController.isDarkMode.value ? ColorConstant.black : ColorConstant.backGround,
       appBar: CustomAppBar(
         showBack: true,
         title: "myAffirmation".tr,
@@ -167,12 +167,18 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
         width: Get.width,
         child: Stack(
           children: [
-            BackGroundContainer(
-              image: ImageConstant.homeBgBookmarks,
-              isLeft: true,
-              top: Dimens.d251,
-              height: Dimens.d289,
-            ),
+            Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: Dimens.d100),
+                  child: SvgPicture.asset(ImageConstant.profile1),
+                )),
+            Align(
+                alignment: Alignment.bottomLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: Dimens.d120),
+                  child: SvgPicture.asset(ImageConstant.profile2),
+                )),
             LayoutContainer(
               vertical: 0,
               child: Column(
@@ -343,7 +349,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                         padding: const EdgeInsets.symmetric(
                             horizontal: Dimens.d11, vertical: Dimens.d11),
                         decoration: BoxDecoration(
-                          color: ColorConstant.color3D5459,
+                          color: ColorConstant.white,
                           borderRadius: Dimens.d16.radiusAll,
                         ),
                         child: Column(
@@ -357,7 +363,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                     style: Style.cormorantGaramondBold(
                                             height: Dimens.d1_3.h,
                                             fontSize: Dimens.d18,
-                                            color: Colors.white)
+                                            color: Colors.black)
                                         .copyWith(wordSpacing: Dimens.d4),
                                     maxLines: 1,
                                   ),
@@ -389,6 +395,8 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                     ImageConstant.editTools,
                                     height: Dimens.d18,
                                     width: Dimens.d18,
+                                    color: ColorConstant.black,
+
                                   ),
                                 ),
                                 Dimens.d10.spaceWidth,
@@ -404,6 +412,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                         : ImageConstant.likeTools,
                                     height: Dimens.d18,
                                     width: Dimens.d18,
+                                    color: like?ColorConstant.deleteRed:ColorConstant.black,
                                   ),
                                 )
                               ],
@@ -414,7 +423,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                               style: Style.montserratRegular(
                                       height: Dimens.d2,
                                       fontSize: Dimens.d11,
-                                      color: Colors.white)
+                                      color: Colors.black)
                                   .copyWith(wordSpacing: Dimens.d4),
                               maxLines: 4,
                             ),
@@ -493,7 +502,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                     horizontal: Dimens.d11,
                                     vertical: Dimens.d11),
                                 decoration: BoxDecoration(
-                                  color: ColorConstant.color3D5459,
+                                  color: ColorConstant.white,
                                   borderRadius: Dimens.d16.radiusAll,
                                 ),
                                 child: Column(
@@ -508,7 +517,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                             style: Style.cormorantGaramondBold(
                                                     height: Dimens.d1_3.h,
                                                     fontSize: Dimens.d18,
-                                                    color: Colors.white)
+                                                    color: Colors.black)
                                                 .copyWith(
                                                     wordSpacing: Dimens.d4),
                                             maxLines: 7,
@@ -544,6 +553,8 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                             ImageConstant.editTools,
                                             height: Dimens.d18,
                                             width: Dimens.d18,
+                                            color: ColorConstant.black,
+
                                           ),
                                         )
                                       ],
@@ -554,7 +565,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                       style: Style.montserratRegular(
                                               height: Dimens.d2,
                                               fontSize: Dimens.d11,
-                                              color: Colors.white)
+                                              color: Colors.black)
                                           .copyWith(wordSpacing: Dimens.d4),
                                       maxLines: 4,
                                     ),

@@ -47,10 +47,6 @@ class _AddImageEditWidgetState extends State<AddImageEditWidget> {
               widget.imageURL!=null
                   ? GestureDetector(
                       onTap: () {
-                        Get.toNamed(AppRoutes.fullScreenImage, arguments: {
-                          "imageUrl": widget.image?.path ?? '',
-                          "isNetworkImage": false
-                        });
                       },
                       child: Container(
                         margin: const EdgeInsets.only(top: Dimens.d30),
@@ -67,10 +63,7 @@ class _AddImageEditWidgetState extends State<AddImageEditWidget> {
                     )
                   : GestureDetector(
                       onTap: () {
-                        Get.toNamed(AppRoutes.fullScreenImage, arguments: {
-                          "imageUrl": widget.image?.path ?? '',
-                          "isNetworkImage": false
-                        });
+
                       },
                       child: Container(
                         margin: const EdgeInsets.only(top: Dimens.d30),
@@ -85,76 +78,6 @@ class _AddImageEditWidgetState extends State<AddImageEditWidget> {
                                 color: ColorConstant.themeColor, width: 2)),
                       ),
                     ),
-              /*   ClipRRect(
-                borderRadius: Dimens.d16.radiusAll,
-                child: Container(
-                  alignment: Alignment.topLeft,
-                  height: Dimens.d80,
-                  width: Dimens.d80,
-                  child: widget.image != null
-                      ? GestureDetector(
-                    onTap: () {
-
-                      Get.toNamed(AppRoutes.fullScreenImage, arguments: {
-                        "imageUrl": widget.image?.path ?? '',
-                        "isNetworkImage": false
-                      });
-
-
-                    },
-                    child: Hero(
-                      tag: widget.image?.path ?? '',
-                      child: Image.file(
-                        File(widget.image?.path ?? ""),
-                        fit: BoxFit.cover,
-                        height: Dimens.d80,
-                        width: Dimens.d80,
-                      ),
-                    ),
-                  )
-                      : (widget.imageURL != null)
-                      ? GestureDetector(
-                    onTap: () {
-
-
-
-                      Get.toNamed(AppRoutes.fullScreenImage, arguments: {
-                        "imageUrl": widget.image?.path ?? '',
-                        "isNetworkImage": true
-                      });
-                    },
-                    child: Hero(
-                      tag: widget.imageURL ?? '',
-                      child: CommonLoadImage(
-                        url: widget.imageURL ?? '',
-                        height: Dimens.d80,
-                        width: Dimens.d80,
-                      ),
-                    ),
-                  )
-                      : (widget.imageURL?.isNotEmpty ?? false)
-                      ? const SizedBox()
-                      : Material(
-                    color: ColorConstant.transparent,
-                    child: InkWell(
-                      onTap: widget.onTap,
-                      borderRadius: Dimens.d16.radiusAll,
-                      child: Container(
-                        height: Dimens.d80,
-                        width: Dimens.d80,
-                        decoration: BoxDecoration(
-                          borderRadius: Dimens.d16.radiusAll,
-                        ),
-                        child: SvgPicture.asset(
-                          ImageConstant.editAdd,
-                          fit: BoxFit.fill,
-                          color: ColorConstant.themeColor,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),*/
               if ((widget.image != null || widget.imageURL != null) &&
                   !widget.hideDelete)
                 Padding(
