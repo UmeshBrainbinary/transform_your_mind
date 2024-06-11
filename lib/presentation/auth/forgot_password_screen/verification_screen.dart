@@ -14,7 +14,8 @@ import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 class VerificationsScreen extends StatelessWidget {
-   VerificationsScreen({super.key});
+  bool? forgot;
+   VerificationsScreen({super.key,this.forgot});
   final ForgotController forgotController = Get.put(ForgotController());
 
    ThemeController themeController = Get.find<ThemeController>();
@@ -104,7 +105,11 @@ class VerificationsScreen extends StatelessWidget {
 
                                     FocusScope.of(context).unfocus();
                                     if(forgotController.otpController.text.isNotEmpty){
-                                      forgotController.onTapOtpVerify(context);
+                                      if(forgot==true){
+
+                                      }else{
+                                        forgotController.onTapOtpVerify(context);
+                                      }
                                     } else{
                                       errorToast("pleaseEnterVerificationCode".tr);
                                     }

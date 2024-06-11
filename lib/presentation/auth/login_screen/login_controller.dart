@@ -79,7 +79,7 @@ class LoginController extends GetxController {
         debugPrint("loginModel $loginModel");
         PrefService.setValue(PrefKey.token, loginModel.meta!.token);
         PrefService.setValue(PrefKey.userId, loginModel.data!.id);
-        showSnackBarSuccess(context, "login Success");
+        showSnackBarSuccess(context, "login Successfully");
       } else {
         loader.value = false;
 

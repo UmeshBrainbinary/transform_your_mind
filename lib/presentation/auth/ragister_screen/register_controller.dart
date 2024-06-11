@@ -13,6 +13,7 @@ import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/model_class/register_model.dart';
+import 'package:transform_your_mind/presentation/auth/forgot_password_screen/verification_screen.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 
 class RegisterController extends GetxController{
@@ -81,7 +82,9 @@ class RegisterController extends GetxController{
       loader.value = false;
       PrefService.setValue(PrefKey.email, emailController.text);
       showSnackBarSuccess(context, "User registered successfully!");
-      Get.toNamed(AppRoutes.verificationsScreen);
+     Navigator.push(context, MaterialPageRoute(builder: (context) {
+       return VerificationsScreen(forgot: false,);
+     },));
       debugPrint(await response.stream.bytesToString());
     }
     else {
