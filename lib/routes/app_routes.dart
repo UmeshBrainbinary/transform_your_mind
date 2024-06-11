@@ -298,7 +298,7 @@ class AppRoutes {
     GetPage(
       transition: Transition.rightToLeft,
       name: addGratitudePage,
-      page: () =>  const AddGratitudePage( isFromMyGratitude: true,registerUser: false,),
+      page: () =>   AddGratitudePage( isFromMyGratitude: true,registerUser: false,),
       bindings: [
         JournalBinding(),
       ],

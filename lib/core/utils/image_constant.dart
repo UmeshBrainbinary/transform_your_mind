@@ -183,6 +183,7 @@ class ImageConstant {
   static String successTools = "$iconPath/success_tools.svg";
   static String affirmationSuccessTools = "$iconPath/affirmation_success_icon.svg";
   static String success = "$iconPath/Success.svg";
+  static String deleteAffirmation = "$iconPath/delete_affirmation.svg";
   static String logOut = "$iconPath/logout.svg";
   static String unSelect = "$iconPath/unselect.svg";
   static String select = "$iconPath/select.svg";
@@ -200,6 +201,7 @@ class ImageConstant {
   static String addAffirmation = "$iconPath/add_affirmation.svg";
   static String soundMax = "$iconPath/sound_max.svg";
   static String soundMute = "$iconPath/sound_mute.svg";
+  static String filterPositive = "$iconPath/filter_positive_moment.svg";
   static String subscriptionCheck = "$iconPath/subscription_check.svg";
   static String shapeAffirmationShare =
       "$imagePath/shape_affirmation_share.svg";

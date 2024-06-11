@@ -264,6 +264,12 @@
   "pleaseEnterTitle": "Das Titelfeld ist erforderlich.",
   "pleaseEnterDescription": "Das Feld Beschreibung ist erforderlich.",
   "today'sAffirmation": "heute  Affirmationen",
+  "successfullyGratitude": "Fügen Sie Ihre Dankbarkeit erfolgreich hinzu",
+  "affirmationSuccessfully": "Bestätigung erfolgreich aktualisiert",
+  "editGratitude": "Bearbeiten Sie Dankbarkeit",
+  "gratitudeUpdated": "Dankbarkeit wurde erfolgreich aktualisiert",
+
+  "successfullyAffirmation": "Fügen Sie Ihre Bestätigung erfolgreich hinzu",
   "WellDone": "Gut gemacht, Sie haben heute alle Ihre Affirmationen vervollständigt."
 
 }

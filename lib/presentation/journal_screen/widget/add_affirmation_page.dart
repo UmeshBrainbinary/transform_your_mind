@@ -6,6 +6,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
@@ -203,7 +204,9 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                                               };
                                               affirmationList[widget.index!] =
                                                   newAffirmation;
-                                              _showAlertDialog(context);
+                                              showSnackBarSuccess(context, "affirmationSuccessfully".tr);
+
+                                              //_showAlertDialog(context);
                                             } else {
                                               affirmationList.add({
                                                 "title": titleController.text,
@@ -211,7 +214,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                                                 "image": imageFile.value,
                                                 "createdOn": "",
                                               });
-
+                                             showSnackBarSuccess(context, "successfullyAffirmation".tr);
                                               setState(() {});
                                               Get.back();
                                             }

@@ -259,6 +259,7 @@
     "rating": "Rating",
     "audioContent": "Audio Content",
     "sendFeedback": "Send Feedback",
+    "editGratitude": "Edit Gratitude",
     "support": "Support",
     "yourGratitude": "Your Gratitude",
     "today'sAffirmation": "Today's Affirmation",
@@ -267,5 +268,9 @@
     "pleaseEnterDate": "The date field is required.",
     "pleaseEnterDescription": "The Description field is required.",
     "howYourRate": "How would you rate your experience?",
+    "successfullyGratitude": "Successfully add in your gratitude",
+    "gratitudeUpdated": "Gratitude updated successfully",
+    "successfullyAffirmation": "Successfully add in your affirmation",
+    "affirmationSuccessfully": "Affirmation updated successfully",
     "WellDone": "Well done, you completed all your affirmations today."
 }

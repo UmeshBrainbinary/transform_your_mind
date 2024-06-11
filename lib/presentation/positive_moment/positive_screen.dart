@@ -11,6 +11,7 @@ import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/positive_moment/add_positive_page.dart';
 import 'package:transform_your_mind/presentation/positive_moment/positive_controller.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
+import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
@@ -50,6 +51,13 @@ class _PositiveScreenState extends State<PositiveScreen> {
     super.initState();
   }
 
+  List positiveMoment = [
+    "weekly",
+    "monthly",
+    "3 months ",
+    "6 months",
+    "yearly"
+  ];
   searchBookmarks(String query, List bookmarks) {
     return bookmarks
         .where((bookmark) =>
@@ -83,27 +91,40 @@ class _PositiveScreenState extends State<PositiveScreen> {
           child: Column(
             children: [
               Dimens.d15.h.spaceHeight,
-              Container(
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: ColorConstant.themeColor.withOpacity(0.1),
-                      blurRadius: Dimens.d8,
-                    )
-                  ],
-                ),
-                child: CommonTextField(
-                    onChanged: (value) {
-                      setState(() {
-                        _filteredBookmarks = searchBookmarks(
-                            value, positiveController.positiveMomentList);
-                      });
-                    },
-                    suffixIcon: SvgPicture.asset(ImageConstant.searchExplore,
-                        height: 40, width: 40),
-                    hintText: "search".tr,
-                    controller: searchController,
-                    focusNode: searchFocusNode),
+              Row(
+                children: [
+                  Container(
+                    width: Get.width - 100,
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: ColorConstant.themeColor.withOpacity(0.1),
+                          blurRadius: Dimens.d8,
+                        )
+                      ],
+                    ),
+                    child: CommonTextField(
+                        onChanged: (value) {
+                          setState(() {
+                            _filteredBookmarks = searchBookmarks(
+                                value, positiveController.positiveMomentList);
+                          });
+                        },
+                        suffixIcon: Padding(
+                          padding: const EdgeInsets.all(7.0),
+                          child: SvgPicture.asset(ImageConstant.searchExplore),
+                        ),
+                        hintText: "search".tr,
+                        controller: searchController,
+                        focusNode: searchFocusNode),
+                  ),
+                  Dimens.d10.spaceWidth,
+                  GestureDetector(
+                      onTap: () {
+                        _showAlertDialogFilter(context);
+                      },
+                      child: SvgPicture.asset(ImageConstant.filterPositive))
+                ],
               ),
               Dimens.d30.h.spaceHeight,
               Expanded(
@@ -275,6 +296,68 @@ class _PositiveScreenState extends State<PositiveScreen> {
                 ),
                 Dimens.d22.spaceHeight,
               ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showAlertDialogFilter(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              //backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(11.0), // Set border radius
+              ),
+              content: Column(mainAxisSize: MainAxisSize.min,
+                children: [
+                  Dimens.d5.spaceHeight,
+                  GestureDetector(
+                      onTap: () {
+                        Get.back();
+                      },
+                      child: Align(
+                        alignment: Alignment.topRight,
+                        child: SvgPicture.asset(
+                          ImageConstant.closePositive,
+                          height: 28,
+                          width: 28,
+                        ),
+                      )),
+                  Dimens.d10.spaceHeight,
+                  SizedBox(
+                    height: Dimens.d150,
+                    width: Dimens.d100,
+                    child: ListView.builder(
+                      itemCount: positiveMoment.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 10.0),
+                          child: Center(
+                              child: Text(
+                            positiveMoment[index],
+                            style: Style.montserratRegular(fontSize: 18),
+                          )),
+                        );
+                      },
+                    ),
+                  ),
+                  Dimens.d10.spaceHeight,
+                  Padding(
+                    padding:EdgeInsets.symmetric(horizontal: 40),
+                    child: CommonElevatedButton(
+                      height: 30,
+                      title: "submit".tr,
+                      onTap: () {},
+                    ),
+                  )
+                ],
+              ),
             );
           },
         );

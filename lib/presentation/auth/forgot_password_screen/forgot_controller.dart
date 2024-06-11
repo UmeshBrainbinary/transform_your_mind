@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -7,7 +6,6 @@ import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
-import 'package:transform_your_mind/model_class/common_model.dart';
 import 'package:transform_your_mind/model_class/verify_model.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 

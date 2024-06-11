@@ -107,11 +107,8 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                         Dimens.d10.spaceWidth,
                         GestureDetector(
                           onTap: () {
-                            affirmationList.removeAt(index);
-                            setState(() {
-
-                            });
-                          },
+                                _showAlertDialogDelete(context, index, true);
+                              },
                           child: SvgPicture.asset(
                             ImageConstant.delete,
                             height: 18,
@@ -197,11 +194,8 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                         Dimens.d10.spaceWidth,
                         GestureDetector(
                           onTap: () {
-                            affirmationDraftList.removeAt(index);
-                            setState(() {
-
-                            });
-                          },
+                                _showAlertDialogDelete(context, index, false);
+                              },
                           child: SvgPicture.asset(
                             ImageConstant.delete,
                             height: 18,
@@ -230,6 +224,85 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
           ),
         ),
       ],),
+    );
+  }
+
+  void _showAlertDialogDelete(BuildContext context, int index, bool value) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          //backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(11.0), // Set border radius
+          ),
+          actions: <Widget>[
+            Dimens.d18.spaceHeight,
+            Align(
+                alignment: Alignment.topRight,
+                child: GestureDetector(
+                    onTap: () {
+                      Get.back();
+                    },
+                    child: SvgPicture.asset(
+                      ImageConstant.close,
+                    ))),
+            Center(
+                child: SvgPicture.asset(
+              ImageConstant.deleteAffirmation,
+              height: Dimens.d140,
+              width: Dimens.d140,
+            )),
+            Dimens.d20.spaceHeight,
+            Center(
+              child: Text(
+                  textAlign: TextAlign.center,
+                  "Are you sure want to delete affirmation alarms ?".tr,
+                  style: Style.montserratRegular(
+                    fontSize: Dimens.d14,
+                  )),
+            ),
+            Dimens.d24.spaceHeight,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                CommonElevatedButton(
+                  height: 33,
+                  textStyle: Style.montserratRegular(
+                      fontSize: Dimens.d12, color: ColorConstant.white),
+                  title: "Delete".tr,
+                  onTap: () {
+                    setState(() {
+                      if (value == true) {
+                        affirmationList.removeAt(index);
+                      } else {
+                        affirmationDraftList.removeAt(index);
+                      }
+                    });
+                    Get.back();
+                  },
+                ),
+                Container(
+                  height: 33,
+                  margin: const EdgeInsets.symmetric(horizontal: 5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 21,
+                  ),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(80),
+                      border: Border.all(color: ColorConstant.themeColor)),
+                  child: Center(
+                    child: Text(
+                      "cancel".tr,
+                      style: Style.montserratRegular(fontSize: 14),
+                    ),
+                  ),
+                )
+              ],
+            )
+          ],
+        );
+      },
     );
   }
 

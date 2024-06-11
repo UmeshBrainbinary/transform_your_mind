@@ -23,6 +23,7 @@ import 'package:transform_your_mind/presentation/journal_screen/widget/journal_n
 import 'package:transform_your_mind/presentation/journal_screen/widget/journal_shimmer_widget.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
+import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
@@ -114,12 +115,6 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                     padding: const EdgeInsets.only(bottom: Dimens.d120),
                     child: SvgPicture.asset(ImageConstant.profile2),
                   )),
-              /*         BackGroundContainer(
-                image: ImageConstant.homeBgBookmarks,
-                isLeft: true,
-                top: Dimens.d251,
-                height: Dimens.d289,
-              ),*/
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -196,9 +191,46 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                                               showDelete: true,
                                                               onDeleteTapCallback:
                                                                   () {
-                                                                gratitudeDraftList
+                                                                Navigator.push(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                  builder:
+                                                                      (context) {
+                                                                    return AddGratitudePage(
+                                                                      description:
+                                                                          data[
+                                                                              "des"],
+                                                                      title: data[
+                                                                          "title"],
+                                                                      date: data[
+                                                                              "createdOn"] ??
+                                                                          '',
+                                                                      edit:
+                                                                          true,
+                                                                      isFromMyGratitude:
+                                                                          true,
+                                                                      registerUser:
+                                                                          false,
+                                                                      isSaved:
+                                                                          true,
+                                                                    );
+                                                                  },
+                                                                )).then(
+                                                                  (value) {
+                                                                    if (value !=
+                                                                            null &&
+                                                                        value
+                                                                            is bool) {
+                                                                      _refreshGratitudeList(
+                                                                          value);
+                                                                    }
+                                                                    setState(
+                                                                        () {});
+                                                                  },
+                                                                );
+                                                                /* gratitudeDraftList
                                                                     .removeAt(
-                                                                        index);
+                                                                        index);*/
                                                                 setState(() {});
                                                               }),
                                                     );
@@ -314,28 +346,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                                   var data =
                                                       gratitudeList[index];
                                                   return GestureDetector(
-                                                    onTap: () {
-                                                      Navigator.push(context,
-                                                          MaterialPageRoute(
-                                                        builder: (context) {
-                                                          return const AddGratitudePage(
-                                                            isFromMyGratitude:
-                                                                true,
-                                                            registerUser: false,
-                                                            isSaved: true,
-                                                          );
-                                                        },
-                                                      )).then(
-                                                        (value) {
-                                                          if (value != null &&
-                                                              value is bool) {
-                                                            _refreshGratitudeList(
-                                                                value);
-                                                          }
-                                                          setState(() {});
-                                                        },
-                                                      );
-                                                    },
+                                                    onTap: () {},
                                                     child: Slidable(
                                                       closeOnScroll: true,
                                                       key: ValueKey<String>(
@@ -350,9 +361,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                                           Dimens.d20.spaceWidth,
                                                           GestureDetector(
                                                             onTap: () {
-                                                              gratitudeList
-                                                                  .removeAt(
-                                                                      index);
+                                                              _showAlertDialogDelete(context, index);
                                                               setState(() {});
                                                             },
                                                             child: Container(
@@ -385,6 +394,46 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                                       ),
                                                       child:
                                                           JournalListTileLayout(
+                                                        onDeleteTapCallback:
+                                                            () {
+                                                              _showAlertDialogDelete(context, index);
+                                                              setState(() {});
+
+                                                        },
+                                                        onEditTapCallback: () {
+                                                          Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                            builder: (context) {
+                                                              return AddGratitudePage(
+                                                                description:
+                                                                    data["des"],
+                                                                title: data[
+                                                                    "title"],
+                                                                date: data[
+                                                                        "createdOn"] ??
+                                                                    '',
+                                                                edit: true,
+                                                                isFromMyGratitude:
+                                                                    true,
+                                                                registerUser:
+                                                                    false,
+                                                                isSaved: true,
+                                                              );
+                                                            },
+                                                          )).then(
+                                                            (value) {
+                                                              if (value !=
+                                                                      null &&
+                                                                  value
+                                                                      is bool) {
+                                                                _refreshGratitudeList(
+                                                                    value);
+                                                              }
+                                                              setState(() {});
+                                                            },
+                                                          );
+                                                        },
                                                         margin: EdgeInsets.only(
                                                             bottom:
                                                                 Dimens.d20.h),
@@ -432,7 +481,76 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
           )),
     );
   }
-
+  void _showAlertDialogDelete(BuildContext context, int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          //backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(11.0), // Set border radius
+          ),
+          actions: <Widget>[
+            Dimens.d18.spaceHeight,
+            Align(
+                alignment: Alignment.topRight,
+                child: GestureDetector(
+                    onTap: () {
+                      Get.back();
+                    },
+                    child: SvgPicture.asset(
+                      ImageConstant.close,
+                    ))),
+            Center(
+                child: SvgPicture.asset(
+                  ImageConstant.deleteAffirmation,
+                  height: Dimens.d140,
+                  width: Dimens.d140,
+                )),
+            Dimens.d20.spaceHeight,
+            Center(
+              child: Text(
+                  textAlign: TextAlign.center,
+                  "Are you sure want to delete affirmation ?".tr,
+                  style: Style.montserratRegular(
+                    fontSize: Dimens.d14,
+                  )),
+            ),
+            Dimens.d24.spaceHeight,
+            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                CommonElevatedButton(
+                  height: 33,
+                  textStyle: Style.montserratRegular(
+                      fontSize: Dimens.d12, color: ColorConstant.white),
+                  title: "Delete".tr,
+                  onTap: () {
+                    setState(() {
+                      gratitudeList.removeAt(index);
+                    });
+                    Get.back();
+                  },
+                ),
+                Container(
+                  height: 33,margin: const EdgeInsets.symmetric(horizontal: 5),
+                  padding: const EdgeInsets.symmetric(horizontal: 21,),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(80),
+                      border: Border.all(color: ColorConstant.themeColor)),
+                  child: Center(
+                    child: Text(
+                      "cancel".tr,
+                      style: Style.montserratRegular(fontSize: 14),
+                    ),
+                  ),
+                )
+              ],
+            )
+          ],
+        );
+      },
+    );
+  }
   void _onAddClick(BuildContext context) {
     final subscriptionStatus = "SUBSCRIBED";
 

@@ -56,7 +56,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                         await PrefService.setValue(PrefKey.subscription, true);
                         Navigator.pushReplacement(context, MaterialPageRoute(
                           builder: (context) {
-                            return const AddGratitudePage(
+                            return  AddGratitudePage(
                               registerUser: true,
                               isFromMyGratitude: true,
                               isSaved: true,

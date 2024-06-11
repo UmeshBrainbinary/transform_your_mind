@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/date_time.dart';
@@ -25,13 +26,16 @@ import 'package:transform_your_mind/widgets/custom_appbar.dart';
 import '../../../core/utils/style.dart';
 
 class AddGratitudePage extends StatefulWidget {
-  const AddGratitudePage(
-      {Key? key, this.isSaved, this.isFromMyGratitude, this.registerUser})
-      : super(key: key);
+   AddGratitudePage(
+      {super.key, this.isSaved, this.isFromMyGratitude, this.registerUser,this.edit,this.title,this.description,this.date});
 
   final bool? isFromMyGratitude;
   final bool? isSaved;
   final bool? registerUser;
+  final bool? edit;
+  String? title;
+  String? description;
+  String? date;
 
   @override
   State<AddGratitudePage> createState() => _AddGratitudePageState();
@@ -64,6 +68,12 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
       statusBarColor: ColorConstant.backGround, // Status bar background color
       statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
     ));
+    if(widget.edit==true){
+    setState(() {
+      titleController.text = widget.title!;
+      descController.text = widget.description!;
+    });
+    }
     super.initState();
   }
 
@@ -77,10 +87,10 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
         resizeToAvoidBottomInset: true,
         appBar: CustomAppBar(
           showBack: widget.registerUser! ? false : true,
-          title: "addGratitude".tr,
-          /*   title: widget.gratitudeData != null
-              ? i10n.editGratitude
-              : i10n.addGratitude,*/
+         // title: "addGratitude".tr,
+             title: widget.edit==true
+              ? "editGratitude".tr
+              : "addGratitude".tr,
           action: !(widget.isFromMyGratitude!)
               ? Row(children: [
                   GestureDetector(
@@ -271,6 +281,13 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                                             "createdOn": "",
                                           });
                                           setState(() {});
+                                          if(widget.edit==true){
+                                            showSnackBarSuccess(context, "gratitudeUpdated".tr);
+
+                                          }else{
+                                            showSnackBarSuccess(context, "successfullyGratitude".tr);
+
+                                          }
                                           Get.back();
                                         }
                                       },

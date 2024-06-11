@@ -17,6 +17,7 @@ class JournalListTileLayout extends StatelessWidget {
   final String image;
   final bool showDelete;
   final VoidCallback? onDeleteTapCallback;
+  final VoidCallback? onEditTapCallback;
 
   const JournalListTileLayout({
     Key? key,
@@ -26,6 +27,7 @@ class JournalListTileLayout extends StatelessWidget {
     required this.image,
     this.showDelete = false,
     this.onDeleteTapCallback,
+    this.onEditTapCallback,
   }) : super(key: key);
 
   @override
@@ -43,15 +45,7 @@ class JournalListTileLayout extends StatelessWidget {
       ),
       child: Row(
         children: [
-          /*CommonLoadImage(
-            url: image,
-            width: Dimens.d90,
-            height: Dimens.d70,
-            customBorderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(Dimens.d10),
-              bottomLeft: Radius.circular(Dimens.d10),
-            ),
-          ),*/
+
           Dimens.d16.spaceWidth,
           Expanded(
             child: Column(
@@ -75,12 +69,21 @@ class JournalListTileLayout extends StatelessWidget {
                       ),
                     ),
                     Dimens.d16.spaceWidth,
-                    if (showDelete)
+
                       GestureDetector(
+                        onTap: () => onEditTapCallback?.call(),
+                        child: SvgPicture.asset(
+                          ImageConstant.editTools,
+                          color: ColorConstant.black,
+                        ),
+                      ),
+                    Dimens.d10.spaceWidth,
+
+                    GestureDetector(
                         onTap: () => onDeleteTapCallback?.call(),
                         child: SvgPicture.asset(
-                          ImageConstant.icDeleteWhite,
-                          color: Colors.transparent,
+                          ImageConstant.delete,
+                          color: ColorConstant.black,
                         ),
                       ),
                     Dimens.d15.spaceWidth,
@@ -181,14 +184,14 @@ class JournalDraftListTileLayout extends StatelessWidget {
                       ),
                     ),
                     Dimens.d16.spaceWidth,
-                    if (showDelete)
-                      GestureDetector(
-                        onTap: () => onDeleteTapCallback?.call(),
-                        child: SvgPicture.asset(
-                          ImageConstant.icDeleteWhite,
-                          color: Colors.red.withOpacity(0.5),
-                        ),
+                    GestureDetector(
+                      onTap: () => onDeleteTapCallback?.call(),
+                      child: SvgPicture.asset(
+                        ImageConstant.editTools,
+                         color: ColorConstant.black,
                       ),
+                    ),
+
                     Dimens.d15.spaceWidth,
                   ],
                 ),

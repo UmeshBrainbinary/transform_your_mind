@@ -51,7 +51,7 @@ void showSnackBarSuccess(
     showTopSnackBar(
       Overlay.of(context),
       CustomSnackBar.success(
-        backgroundColor: ColorConstant.successGreen,
+        backgroundColor: ColorConstant.themeColor,
         message: msg,
         textStyle:  TextStyle(
             fontWeight: FontWeight.w500,

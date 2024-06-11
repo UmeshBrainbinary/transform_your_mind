@@ -60,10 +60,9 @@ class _HomeMessagePageState extends State<HomeMessagePage> {
                     width: double.infinity,
                   ),
                   Image.asset(
-                     ImageConstant.homeBg,
+                     ImageConstant.splashLogo,
                       width: double.infinity,
                       fit: BoxFit.fitWidth,
-                      color: ColorConstant.themeColor,
                       opacity: const AlwaysStoppedAnimation(.85)),
                   Padding(
                     padding: EdgeInsets.symmetric(
@@ -73,7 +72,7 @@ class _HomeMessagePageState extends State<HomeMessagePage> {
                       textAlign: TextAlign.center,
                       wrapWords: false,
                       maxLines: 6,
-                      style: Style.montserratRegular(fontSize: Dimens.d30),
+                      style: Style.montserratRegular(fontSize: Dimens.d23),
                     ),
                   ),
                 ],
@@ -129,30 +128,11 @@ class _HomeMessagePageState extends State<HomeMessagePage> {
                           onTap: () {
                             if (_isBookmarked) {
                               _isBookmarked = false;
-                         /*     widget.affirmationData?.isBookMarked = false;
 
-                              bookmarkBloc.add(RefreshBookmarksEvent());
-
-                              bookmarkBloc.add(
-                                RemoveMyBookmarkEvent(
-                                  bookmarkId:
-                                  widget.affirmationData?.id ?? '',
-                                ),
-                              );*/
                               Navigator.pop(context,);
                             } else {
                               _isBookmarked = true;
-                        /*      widget.affirmationData?.isBookMarked = true;
 
-                              bookmarkBloc.add(RefreshBookmarksEvent());
-                              bookmarkBloc.add(
-                                AddMyBookmarkEvent(
-                                  addBookmarkRequest: AddBookmarkRequest(
-                                    contentType: 2,
-                                    contentId: widget.affirmationData?.id,
-                                  ),
-                                ),
-                              );*/
                             }
                           }),
                     ),
