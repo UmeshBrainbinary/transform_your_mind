@@ -9,7 +9,6 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
-import 'package:transform_your_mind/widgets/common_load_image.dart';
 
 class JournalListTileLayout extends StatelessWidget {
   final EdgeInsets margin;
@@ -159,7 +158,6 @@ class JournalDraftListTileLayout extends StatelessWidget {
       ),
       child: Row(
         children: [
-
           Dimens.d16.spaceWidth,
           Expanded(
             child: Column(

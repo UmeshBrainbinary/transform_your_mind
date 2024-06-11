@@ -145,9 +145,11 @@ class _ExploreScreenState extends State<ExploreScreen>
                               const Spacer(),
                               GestureDetector(
                                 onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                    return const NotificationScreen();
-                                  },));
+                                  Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) {
+                                      return const NotificationScreen();
+                                    },
+                                  ));
                                 },
                                 child: SvgPicture.asset(
                                     ImageConstant.notification,

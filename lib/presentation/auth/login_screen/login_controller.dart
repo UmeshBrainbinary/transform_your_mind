@@ -12,6 +12,7 @@ import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/model_class/login_model.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
+
 class LoginController extends GetxController {
 
   TextEditingController emailController = TextEditingController();
@@ -44,16 +45,19 @@ class LoginController extends GetxController {
     rememberMe.value = false;
     super.dispose();
   }
+
   onTapLogin(BuildContext context) async {
-    loader.value=true;
+    loader.value = true;
     await loginApi(context);
   }
+
   LoginModel loginModel = LoginModel();
+
   loginApi(BuildContext context) async {
     try {
       var headers = {'Content-Type': 'application/json'};
-      var request =
-          http.Request('POST', Uri.parse('${EndPoints.baseUrl}${EndPoints.login}'));
+      var request = http.Request(
+          'POST', Uri.parse('${EndPoints.baseUrl}${EndPoints.login}'));
       request.body =
           json.encode({"email": "test12@yopmail.com", "password": "User@1234"});
       request.headers.addAll(headers);
@@ -61,16 +65,13 @@ class LoginController extends GetxController {
       http.StreamedResponse response = await request.send();
 
       if (response.statusCode == 200) {
-
         await PrefService.setValue(PrefKey.isLoginOrRegister, true);
         await PrefService.setValue(PrefKey.isRemember, rememberMe.value);
         await PrefService.setValue(PrefKey.email, emailController.text);
         await PrefService.setValue(PrefKey.password, passwordController.text);
-        loader.value=false;
+        loader.value = false;
 
-
-        Get.toNamed(AppRoutes
-            .dashBoardScreen);
+        Get.toNamed(AppRoutes.dashBoardScreen);
         final responseBody = await response.stream.bytesToString();
 
         loginModel = loginModelFromJson(responseBody);
@@ -80,12 +81,12 @@ class LoginController extends GetxController {
         PrefService.setValue(PrefKey.userId, loginModel.data!.id);
         showSnackBarSuccess(context, "login Success");
       } else {
-        loader.value=false;
+        loader.value = false;
 
         debugPrint(response.reasonPhrase);
       }
     } catch (e) {
-      loader.value=false;
+      loader.value = false;
 
       debugPrint(e.toString());
     }

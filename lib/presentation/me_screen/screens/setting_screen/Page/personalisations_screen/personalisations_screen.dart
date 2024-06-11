@@ -17,22 +17,26 @@ class PersonalizationScreenScreen extends StatefulWidget {
   PersonalizationScreenScreen({super.key});
 
   @override
-  State<PersonalizationScreenScreen> createState() => _PersonalizationScreenScreenState();
+  State<PersonalizationScreenScreen> createState() =>
+      _PersonalizationScreenScreenState();
 }
 
-class _PersonalizationScreenScreenState extends State<PersonalizationScreenScreen> {
+class _PersonalizationScreenScreenState
+    extends State<PersonalizationScreenScreen> {
   PersonalizationController personalizationController =
       Get.put(PersonalizationController());
 
   ThemeController themeController = Get.find<ThemeController>();
- @override
+
+  @override
   void initState() {
-   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-     statusBarColor: ColorConstant.backGround, // Status bar background color
-     statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
-   ));
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.backGround, // Status bar background color
+      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+    ));
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -85,47 +89,51 @@ class _PersonalizationScreenScreenState extends State<PersonalizationScreenScree
                           Get.updateLocale(newLocale);
 
                           await PrefService.setValue(
-                              PrefKey.language, newLocale.toLanguageTag());
-                        },
-                        child: Container(
-                          height: 46,
-                          margin: const EdgeInsets.symmetric(horizontal: 17),
-                          padding: const EdgeInsets.symmetric(horizontal: 22),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(80),
-                              color: ColorConstant.black.withOpacity(0.1)),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "English",
-                                style: Style.montserratRegular(
-                                    fontSize: Dimens.d14,
-                                    fontWeight: FontWeight.w500),
+                                  PrefKey.language, newLocale.toLanguageTag());
+                            },
+                            child: Container(
+                              height: 46,
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 17),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 22),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(80),
+                                  color: ColorConstant.black.withOpacity(0.1)),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment
+                                    .spaceBetween,
+                                children: [
+                                  Text(
+                                    "English",
+                                    style: Style.montserratRegular(
+                                        fontSize: Dimens.d14,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  SvgPicture.asset(
+                                    personalizationController.english.isTrue
+                                        ? ImageConstant.select
+                                        : ImageConstant.unSelect,
+                                    height: 16,
+                                    width: 16,
+                                  )
+                                ],
                               ),
-                              SvgPicture.asset(
-                                personalizationController.english.isTrue
-                                    ? ImageConstant.select
-                                    : ImageConstant.unSelect,
-                                height: 16,
-                                width: 16,
-                              )
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
                     ),
                     Dimens.d14.spaceHeight,
                     Obx(
-                      () => GestureDetector(
-                        onTap: () async {
-                          personalizationController.german.value = true;
-                          personalizationController.english.value = false;
+                          () =>
+                          GestureDetector(
+                            onTap: () async {
+                              personalizationController.german.value = true;
+                              personalizationController.english.value = false;
 
                           Locale newLocale;
 
                           newLocale = const Locale('de', 'DE');
-                          Get.updateLocale(newLocale);
+                              Get.updateLocale(newLocale);
 
                           await PrefService.setValue(
                               PrefKey.language, newLocale.toLanguageTag());

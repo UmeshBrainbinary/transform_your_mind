@@ -30,6 +30,7 @@ class _SettingScreenState extends State<SettingScreen> {
   SettingController settingController = Get.put(SettingController());
 
   ThemeController themeController = Get.find<ThemeController>();
+
   @override
   void initState() {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -38,6 +39,7 @@ class _SettingScreenState extends State<SettingScreen> {
     ));
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

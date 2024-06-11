@@ -5,14 +5,13 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
+import 'package:transform_your_mind/core/utils/dimensions.dart';
+import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
-import 'package:transform_your_mind/core/utils/dimensions.dart';
-import 'package:transform_your_mind/core/utils/extension_utils.dart';
-import 'package:transform_your_mind/core/utils/string_constant.dart';
-import 'package:transform_your_mind/core/utils/style.dart';
 
 
 

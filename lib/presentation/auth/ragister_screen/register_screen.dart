@@ -4,6 +4,7 @@ import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
     as picker;
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/date_time.dart';
@@ -200,7 +201,11 @@ class RegisterScreen extends StatelessWidget {
                                       registerController.dobController.text =
                                           DateTimeUtils.formatDate(date);
                                       registerController.selectedDob = date;
-                                    },
+                                       // Your input date string
+                                      DateTime dateD = DateFormat('dd/MM/yyyy').parse(  registerController.dobController.text); // Parse the input date string
+                                      String formattedDate = DateFormat('yyyy-MM-dd').format(dateD);
+                                      registerController.dobController.text = formattedDate;
+                                        },
                                         currentTime: registerController.selectedDob ??
                                             DateTime.now()
                                                 .subtract(const Duration(days: 1)),
@@ -326,20 +331,16 @@ class RegisterScreen extends StatelessWidget {
                               CommonElevatedButton(
                                 title: "register".tr,
                                 onTap: () async {
-                                    FocusScope.of(context).unfocus();
-                                    Get.toNamed(AppRoutes.selectYourFocusPage);
+                                  FocusScope.of(context).unfocus();
 
                                   if (registerController.imageFile.value ==
                                       null) {
                                     errorToast("pleaseAddImage".tr);
                                   } else {
                                     if (_formKey.currentState!.validate()) {
-
-
-                                      // registerController.onTapRegister(context);
+                                      registerController.onTapRegister(context,registerController.imageFile.value!.path);
                                     }
                                   }
-
                                 },
                               ),
                               Dimens.d30.h.spaceHeight,
@@ -384,9 +385,11 @@ class RegisterScreen extends StatelessWidget {
                 },
               ),
             ),
-            Obx(() => registerController.loader.value==true
-                ? commonLoader()
-                : const SizedBox(),),
+            Obx(
+              () => registerController.loader.value == true
+                  ? commonLoader()
+                  : const SizedBox(),
+            ),
           ],
         ),
       ),

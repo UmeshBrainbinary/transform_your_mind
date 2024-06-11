@@ -29,14 +29,16 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       Get.put(SubscriptionController());
 
   ThemeController themeController = Get.find<ThemeController>();
-@override
+
+  @override
   void initState() {
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: ColorConstant.backGround, // Status bar background color
-    statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
-  ));
-  super.initState();
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.backGround, // Status bar background color
+      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+    ));
+    super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -52,12 +54,15 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                   GestureDetector(
                       onTap: () async {
                         await PrefService.setValue(PrefKey.subscription, true);
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                          return const AddGratitudePage(
-                            registerUser: true,
-                            isFromMyGratitude: true,
-                            isSaved: true,);
-                        },));
+                        Navigator.pushReplacement(context, MaterialPageRoute(
+                          builder: (context) {
+                            return const AddGratitudePage(
+                              registerUser: true,
+                              isFromMyGratitude: true,
+                              isSaved: true,
+                            );
+                          },
+                        ));
                       },
                       child: Text(
                         "skip".tr,

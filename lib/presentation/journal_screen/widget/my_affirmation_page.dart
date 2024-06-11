@@ -745,7 +745,9 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                     Dimens.d10.spaceWidth,
                                     GestureDetector(
                                         onTap: () {
-                                          _showAlertDialog(context,);
+                                          _showAlertDialog(
+                                            context,
+                                          );
                                         },
                                         child: SvgPicture.asset(
                                             ImageConstant.alarm)),
@@ -865,7 +867,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
     );
   }
 
-  void _showAlertDialog(BuildContext context,{String? title}) {
+  void _showAlertDialog(BuildContext context, {String? title}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -885,7 +887,8 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                       style: Style.montserratRegular(fontSize: 20),
                     ),
                     const Spacer(),
-                    Container(height: 26,
+                    Container(
+                      height: 26,
                       width: Dimens.d100,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(17),

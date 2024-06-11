@@ -4,7 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
+import 'package:http/http.dart' as http;
 import 'package:transform_your_mind/core/common_widget/custom_chip.dart';
 import 'package:transform_your_mind/core/common_widget/free_trial_page.dart';
 import 'package:transform_your_mind/core/common_widget/select_focus_button.dart';
@@ -16,7 +16,6 @@ import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
-import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/model_class/focus_model.dart';
 import 'package:transform_your_mind/presentation/intro_screen/select_your_focus_page.dart';
@@ -24,7 +23,6 @@ import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 import '../me_screen/screens/setting_screen/Page/notification_setting_screen/widget/reminder_time_utils.dart';
-import 'package:http/http.dart' as http;
 class SelectYourAffirmationFocusPage extends StatefulWidget {
   const SelectYourAffirmationFocusPage({
     Key? key,
@@ -53,6 +51,7 @@ class _SelectYourAffirmationFocusPageState
   ReminderPeriod? affirmationReminderPeriod;
   FocusesModel focusesModel = FocusesModel();
   bool loader = false;
+
   getAffirmation() async {
     var request = http.Request(
         'GET',
@@ -73,6 +72,7 @@ class _SelectYourAffirmationFocusPageState
       debugPrint(response.reasonPhrase);
     }
   }
+
   setAffirmations() async {
     setState(() {
       loader = true;
@@ -83,7 +83,7 @@ class _SelectYourAffirmationFocusPageState
           'PUT',
           Uri.parse(
               '${EndPoints.baseUrl}${EndPoints.updateFocuses}6666e94525e35910c83f3b12'));
-      request.body = json.encode({"affirmation":selectedTagNames});
+      request.body = json.encode({"affirmation": selectedTagNames});
       request.headers.addAll(headers);
 
       http.StreamedResponse response = await request.send();
@@ -139,7 +139,6 @@ class _SelectYourAffirmationFocusPageState
         ),
         body: Stack(
           alignment: Alignment.bottomCenter,
-      
           children: [
             Align(
                 alignment: Alignment.topRight,
@@ -189,7 +188,7 @@ class _SelectYourAffirmationFocusPageState
                     ],
                   ),
                 ),
-           /*     ValueListenableBuilder(
+                /*     ValueListenableBuilder(
                     valueListenable: selectedReminderTime,
                     builder: (context, value, child) {
                       return GestureDetector(
@@ -225,11 +224,11 @@ class _SelectYourAffirmationFocusPageState
                               ),
                               const Spacer(),
                               Dimens.d10.spaceWidth,
-                              *//*  if (state is! RemindersLoadingState)
+                              */ /*  if (state is! RemindersLoadingState)
                                 Text(selectedReminderTime.value,
                                     style: Style.montserratRegular(
                                         fontSize: Dimens.d16,
-                                        color: Colors.black)),*//*
+                                        color: Colors.black)),*/ /*
                               SvgPicture.asset(ImageConstant.icDownArrow,
                                   height: 20),
                             ],

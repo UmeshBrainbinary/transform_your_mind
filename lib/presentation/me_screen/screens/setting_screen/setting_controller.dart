@@ -20,7 +20,6 @@ class SettingController extends GetxController {
     settingsData.value = _SettingsData.getSettingsData;
     super.onInit();
   }
-
 }
 
 class _SettingsData {

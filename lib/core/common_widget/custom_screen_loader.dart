@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -286,9 +285,8 @@ class LoadingWidget extends StatelessWidget {
   }
 }
 
-
-Widget commonLoader(){
-  return    GestureDetector(
+Widget commonLoader() {
+  return GestureDetector(
       child: SizedBox(
           height: Get.height,
           width: Get.width,

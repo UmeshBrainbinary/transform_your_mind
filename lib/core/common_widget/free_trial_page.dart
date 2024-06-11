@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:lottie/lottie.dart';
 import 'package:transform_your_mind/core/common_widget/bg_semi_circle_texture_painter.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
@@ -72,7 +71,6 @@ class _FreeTrialPageState extends State<FreeTrialPage>
                     "Welcome to Transform.....you\'re all set to get started.\n\nYour Transform Basic package is now live.",
                     style: Style.montserratRegular(
                       fontSize: Dimens.d15,
-
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -81,9 +79,7 @@ class _FreeTrialPageState extends State<FreeTrialPage>
                     //i10n.freeGeneralDesc,
                     "This means you have access to....",
                     style: Style.montserratRegular(
-                        fontSize: Dimens.d12,
-
-                        fontWeight: FontWeight.w500),
+                        fontSize: Dimens.d12, fontWeight: FontWeight.w500),
                     textAlign: TextAlign.center,
                   ),
                   Dimens.d30.spaceHeight,
@@ -104,14 +100,15 @@ class _FreeTrialPageState extends State<FreeTrialPage>
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
                     child: CommonElevatedButton(
-
                       title: "Premium Access to all features",
                       onTap: () async {
                         await PrefService.setValue(PrefKey.premium, true);
 
                         Navigator.pushReplacement(context, MaterialPageRoute(
                           builder: (context) {
-                            return  SubscriptionScreen(skip: true,);
+                            return SubscriptionScreen(
+                              skip: true,
+                            );
                           },
                         ));
                       },

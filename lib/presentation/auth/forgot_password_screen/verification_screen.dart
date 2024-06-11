@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
@@ -8,6 +7,7 @@ import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/core/utils/toast_message.dart';
 import 'package:transform_your_mind/presentation/auth/forgot_password_screen/forgot_controller.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
@@ -29,8 +29,7 @@ class VerificationsScreen extends StatelessWidget {
       body: SafeArea(
           child: Stack(
             children: [
-
-              Padding(
+          Padding(
                 padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
                 child: LayoutBuilder(
                   builder: (context, constraint) {
@@ -104,14 +103,12 @@ class VerificationsScreen extends StatelessWidget {
                                   CommonElevatedButton(title: "verify".tr, onTap: () {
 
                                     FocusScope.of(context).unfocus();
-                                    forgotController.onTapOtpVerify(context);
-                                  /*  if(forgotController.otpController.text.isNotEmpty){
-                                      Get.toNamed(AppRoutes.newPasswordScreen);
+                                    if(forgotController.otpController.text.isNotEmpty){
+                                      forgotController.onTapOtpVerify(context);
                                     } else{
                                       errorToast("pleaseEnterVerificationCode".tr);
-                                    }*/
-
-                                  },)
+                                    }
+                                },)
                                 ],
                               ),
                             ),
@@ -122,8 +119,12 @@ class VerificationsScreen extends StatelessWidget {
                   },
                 ),
               ),
-              Obx(() => forgotController.loader.isTrue?commonLoader():const SizedBox(),)
-            ],
+          Obx(
+            () => forgotController.loader.isTrue
+                ? commonLoader()
+                : const SizedBox(),
+          )
+        ],
           )),
     );
   }

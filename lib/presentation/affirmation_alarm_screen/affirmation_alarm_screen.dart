@@ -50,12 +50,14 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
     );
     super.initState();
   }
-  getStatusBar(){
+
+  getStatusBar() {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: ColorConstant.backGround, // Status bar background color
       statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
     ));
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -141,9 +143,11 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
                               title: affirmationList[index]["title"],
                             );
                           },
-                        )).then((value) {
-                          getStatusBar();
-                        },);
+                        )).then(
+                          (value) {
+                            getStatusBar();
+                          },
+                        );
                       },
                       child: Container(
                         margin: const EdgeInsets.symmetric(
@@ -260,9 +264,11 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
                             title: affirmationDraftList[index]["title"],
                           );
                         },
-                      )).then((value) {
-                        getStatusBar();
-                      },);
+                      )).then(
+                        (value) {
+                          getStatusBar();
+                        },
+                      );
                     },
                     child: Container(
                       margin: const EdgeInsets.symmetric(
@@ -308,9 +314,11 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
                                         isFromMyAffirmation: true,
                                       );
                                     },
-                                  )).then((value) {
-                                    getStatusBar();
-                                  },);
+                                  )).then(
+                                    (value) {
+                                      getStatusBar();
+                                    },
+                                  );
                                 },
                                 child: SvgPicture.asset(
                                   ImageConstant.editTools,

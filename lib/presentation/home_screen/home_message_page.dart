@@ -55,8 +55,10 @@ class _HomeMessagePageState extends State<HomeMessagePage> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                const SizedBox(   height: double.infinity,
-                  width: double.infinity,),
+                  const SizedBox(
+                    height: double.infinity,
+                    width: double.infinity,
+                  ),
                   Image.asset(
                      ImageConstant.homeBg,
                       width: double.infinity,
@@ -74,7 +76,6 @@ class _HomeMessagePageState extends State<HomeMessagePage> {
                       style: Style.montserratRegular(fontSize: Dimens.d30),
                     ),
                   ),
-
                 ],
               ),
             ),

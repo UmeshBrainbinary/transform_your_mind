@@ -32,6 +32,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   ValueNotifier<int> currentLength = ValueNotifier(0);
   ThemeController themeController = Get.put(ThemeController());
   int? _currentRating = 0;
+
   @override
   void initState() {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -40,6 +41,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     ));
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

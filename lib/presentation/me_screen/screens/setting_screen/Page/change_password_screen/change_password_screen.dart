@@ -5,7 +5,6 @@ import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
-import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/core/utils/validation_functions.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/change_password_screen/change_password_controller.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
@@ -14,7 +13,7 @@ import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
-   ChangePasswordScreen({super.key});
+  ChangePasswordScreen({super.key});
 
   @override
   State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
@@ -23,9 +22,10 @@ class ChangePasswordScreen extends StatefulWidget {
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-   ChangePasswordController changePasswordController = Get.put(ChangePasswordController());
+  ChangePasswordController changePasswordController = Get.put(ChangePasswordController());
 
-   ThemeController themeController = Get.find<ThemeController>();
+  ThemeController themeController = Get.find<ThemeController>();
+
   @override
   void initState() {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -34,11 +34,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     ));
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: themeController.isDarkMode.value ? ColorConstant.black : ColorConstant.backGround,
+        backgroundColor: themeController.isDarkMode.value
+            ? ColorConstant.black
+            : ColorConstant.backGround,
         appBar: CustomAppBar(
           title: "changePassword".tr,
         ),
@@ -55,19 +58,21 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           key: _formKey,
                           child: ConstrainedBox(
                             constraints:
-                            BoxConstraints(minHeight: constraint.maxHeight),
+                                BoxConstraints(minHeight: constraint.maxHeight),
                             child: IntrinsicHeight(
                               child: Column(
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
                                   Dimens.d25.spaceHeight,
                                   ValueListenableBuilder(
-                                    valueListenable: changePasswordController.securePass3,
+                                    valueListenable:
+                                        changePasswordController.securePass3,
                                     builder: (context, value, child) {
                                       return CommonTextField(
                                         labelText: "currentPassword".tr,
                                         hintText: "enterCurrentPassword".tr,
-                                        controller: changePasswordController.currentPController,
+                                        controller: changePasswordController
+                                            .currentPController,
                                         validator: (value) {
                                           if (value == "") {
                                             return "thePasswordFieldIsRequired"
@@ -79,63 +84,77 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                           return null;
                                         },
                                         focusNode: FocusNode(),
-                                        prefixIcon: Image.asset(ImageConstant.lock, scale: Dimens.d4),
+                                        prefixIcon: Image.asset(
+                                            ImageConstant.lock,
+                                            scale: Dimens.d4),
                                         suffixIcon: GestureDetector(
-                                            onTap: (){
-                                              changePasswordController.securePass3.value = !changePasswordController.securePass3.value;
+                                            onTap: () {
+                                              changePasswordController
+                                                      .securePass3.value =
+                                                  !changePasswordController
+                                                      .securePass3.value;
                                             },
                                             child: Transform.scale(
                                               scale: 0.38,
                                               child: Image.asset(
-                                                changePasswordController.securePass3.value
+                                                changePasswordController
+                                                        .securePass3.value
                                                     ? ImageConstant.eyeClose
                                                     : ImageConstant.eyeOpen,
                                                 fit: BoxFit.contain,
                                                 height: 5,
                                                 width: 5,
                                               ),
-                                            )
-                                        ),
+                                            )),
                                         isSecure: value,
                                         textInputAction: TextInputAction.done,
                                       );
                                     },
                                   ),
                                   Dimens.d23.spaceHeight,
-
                                   ValueListenableBuilder(
-                                    valueListenable: changePasswordController.securePass,
+                                    valueListenable:
+                                        changePasswordController.securePass,
                                     builder: (context, value, child) {
                                       return CommonTextField(
                                         labelText: "newPassword".tr,
                                         hintText: "enterNewPasswordHint".tr,
-                                        controller: changePasswordController.newPController,
+                                        controller: changePasswordController
+                                            .newPController,
                                         validator: (value) {
                                           if (value == "") {
-                                            return "theNewPasswordFieldIsRequired".tr;
-                                          } else if(!isValidPassword(value, isRequired: true)){
-                                            return "pleaseEnterValidPassword".tr;
+                                            return "theNewPasswordFieldIsRequired"
+                                                .tr;
+                                          } else if (!isValidPassword(value,
+                                              isRequired: true)) {
+                                            return "pleaseEnterValidPassword"
+                                                .tr;
                                           }
                                           return null;
                                         },
                                         focusNode: FocusNode(),
-                                        prefixIcon: Image.asset(ImageConstant.lock, scale: Dimens.d4),
+                                        prefixIcon: Image.asset(
+                                            ImageConstant.lock,
+                                            scale: Dimens.d4),
                                         suffixIcon: GestureDetector(
-                                            onTap: (){
-                                              changePasswordController.securePass.value = !changePasswordController.securePass.value;
+                                            onTap: () {
+                                              changePasswordController
+                                                      .securePass.value =
+                                                  !changePasswordController
+                                                      .securePass.value;
                                             },
                                             child: Transform.scale(
                                               scale: 0.38,
                                               child: Image.asset(
-                                                changePasswordController.securePass.value
+                                                changePasswordController
+                                                        .securePass.value
                                                     ? ImageConstant.eyeClose
                                                     : ImageConstant.eyeOpen,
                                                 fit: BoxFit.contain,
                                                 height: 5,
                                                 width: 5,
                                               ),
-                                            )
-                                        ),
+                                            )),
                                         isSecure: value,
                                         textInputAction: TextInputAction.done,
                                       );
@@ -143,40 +162,52 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                   ),
                                   Dimens.d23.spaceHeight,
                                   ValueListenableBuilder(
-                                    valueListenable: changePasswordController.securePass2,
+                                    valueListenable:
+                                        changePasswordController.securePass2,
                                     builder: (context, value, child) {
                                       return CommonTextField(
                                         labelText: "confirmNewPassword".tr,
                                         hintText: "enterConfirmNewPassword".tr,
-                                        controller: changePasswordController.confirmPController,
+                                        controller: changePasswordController
+                                            .confirmPController,
                                         validator: (value) {
                                           if (value == "") {
-                                            return "theConfirmPasswordFieldIsRequired".tr;
-                                          } else if(value != changePasswordController.newPController.text){
+                                            return "theConfirmPasswordFieldIsRequired"
+                                                .tr;
+                                          } else if (value !=
+                                              changePasswordController
+                                                  .newPController.text) {
                                             return "passwordsDoNotMatch".tr;
-                                          } else if(!isValidPassword(value, isRequired: true)){
-                                            return "pleaseEnterValidPassword".tr;
+                                          } else if (!isValidPassword(value,
+                                              isRequired: true)) {
+                                            return "pleaseEnterValidPassword"
+                                                .tr;
                                           }
                                           return null;
                                         },
                                         focusNode: FocusNode(),
-                                        prefixIcon: Image.asset(ImageConstant.lock, scale: Dimens.d4),
+                                        prefixIcon: Image.asset(
+                                            ImageConstant.lock,
+                                            scale: Dimens.d4),
                                         suffixIcon: GestureDetector(
-                                            onTap: (){
-                                              changePasswordController.securePass2.value = !changePasswordController.securePass2.value;
+                                            onTap: () {
+                                              changePasswordController
+                                                      .securePass2.value =
+                                                  !changePasswordController
+                                                      .securePass2.value;
                                             },
                                             child: Transform.scale(
                                               scale: 0.38,
                                               child: Image.asset(
-                                                changePasswordController.securePass2.value
+                                                changePasswordController
+                                                        .securePass2.value
                                                     ? ImageConstant.eyeClose
                                                     : ImageConstant.eyeOpen,
                                                 fit: BoxFit.contain,
                                                 height: 5,
                                                 width: 5,
                                               ),
-                                            )
-                                        ),
+                                            )),
                                         isSecure: value,
                                         textInputAction: TextInputAction.done,
                                       );
@@ -186,15 +217,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                   CommonElevatedButton(
                                     title: "confirmPassword".tr,
                                     onTap: () {
-
-
                                       FocusScope.of(context).unfocus();
 
                                       if (_formKey.currentState!.validate()) {
-                                          Get.back();
+                                        Get.back();
                                       }
-
-
                                     },
                                   )
                                 ],

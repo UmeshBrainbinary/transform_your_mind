@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
-import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 
 class PersonalizationController extends GetxController {
@@ -14,7 +12,6 @@ class PersonalizationController extends GetxController {
 
   @override
   void onInit() {
-
     accountData.value = _AccountData.getAccountData;
     String currentLanguage = PrefService.getString(PrefKey.language);
     if (currentLanguage == "en-US") {

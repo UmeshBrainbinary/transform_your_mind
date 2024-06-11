@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -80,19 +79,19 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                           ),
                         ),
                         const Spacer(),
-                        GestureDetector(
-                          onTap: () {
-                            _showAlertDialogPlayPause(context,
-                                title: affirmationList[index]["title"],
-                                des: affirmationList[index]["des"]);
-                          },
-                          child: SvgPicture.asset(
-                            ImageConstant.playAffirmation,
-                            height: 18,
-                            width: 18,
-                          ),
-                        ),
-                        Dimens.d10.spaceWidth,
+                            GestureDetector(
+                              onTap: () {
+                                _showAlertDialogPlayPause(context,
+                                    title: affirmationList[index]["title"],
+                                    des: affirmationList[index]["des"]);
+                              },
+                              child: SvgPicture.asset(
+                                ImageConstant.playAffirmation,
+                                height: 18,
+                                width: 18,
+                              ),
+                            ),
+                            Dimens.d10.spaceWidth,
                         GestureDetector(
                           onTap: () {
                             _showAlertDialog(context);
@@ -124,8 +123,8 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                       ],),
                       Text(
                         affirmationList[index]["title"],
-                        style: Style.montserratRegular(
-                          fontSize: 18,
+                          style: Style.montserratRegular(
+                            fontSize: 18,
                         ),
                       ),
                       Dimens.d10.spaceHeight,
@@ -179,8 +178,8 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                             Navigator.push(context, MaterialPageRoute(
                               builder: (context) {
                                 return AddAffirmationPage(
-                                  index: index,
-                                  isEdit: true,
+                                      index: index,
+                                      isEdit: true,
                                   title: affirmationDraftList[index]["title"],
                                   des: affirmationDraftList[index]["des"],
                                   isFromMyAffirmation: true,
@@ -233,6 +232,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
       ],),
     );
   }
+
   void _showAlertDialogPlayPause(BuildContext context,
       {String? title, String? des}) {
     showDialog(
@@ -267,7 +267,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                 Dimens.d15.spaceHeight,
                 Container(
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 21, vertical: 28),
+                      const EdgeInsets.symmetric(horizontal: 21, vertical: 28),
                   decoration: BoxDecoration(
                     color: ColorConstant.backGround,
                     borderRadius: BorderRadius.circular(15),
@@ -299,7 +299,8 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
       },
     );
   }
-  void _showAlertDialog(BuildContext context,{String? title}) {
+
+  void _showAlertDialog(BuildContext context, {String? title}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -319,7 +320,8 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                       style: Style.montserratRegular(fontSize: 20),
                     ),
                     const Spacer(),
-                    Container(height: 26,
+                    Container(
+                      height: 26,
                       width: Dimens.d100,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(17),
@@ -453,8 +455,6 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                     ),
                   ],
                 ),
-
-
                 Dimens.d26.spaceHeight,
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: Dimens.d70.h),
@@ -474,10 +474,10 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
       },
     );
   }
+
   Widget numericSymbol() {
     return Text(":",
         style: Style.montserratBold(
             fontSize: 22, color: ColorConstant.themeColor));
   }
-
 }

@@ -7,8 +7,6 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/privacy_policy_screen/privacy_policy_controller.dart';
-import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/setting_screen.dart';
-import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 class PrivacyPolicyScreen extends StatelessWidget {
@@ -42,7 +40,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Dimens.d30.spaceHeight,
-                 /*   commonText("account"),
+                    /*   commonText("account"),
                     Dimens.d20.spaceHeight,
                     Container(
                       decoration: BoxDecoration(
@@ -81,12 +79,13 @@ class PrivacyPolicyScreen extends StatelessWidget {
                         itemCount: controller.privacyData.length,
                       ),
                     ),*/
-      
+
                     commonText("PrivacyPolicy"),
                     Dimens.d10.spaceHeight,
                     Text(
                       "1. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.",
-                      style: Style.montserratRegular(fontSize: 14).copyWith(height: 2),
+                      style: Style.montserratRegular(fontSize: 14)
+                          .copyWith(height: 2),
                     )
                   ],
                 ),

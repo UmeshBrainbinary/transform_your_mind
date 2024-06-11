@@ -1,4 +1,3 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -60,6 +59,7 @@ class _MyAppState extends State<MyApp> {
 
     getLanguages();
   }
+
   void setAlarm() async {
 /*    DateTime alarmTime = DateTime.now().add(const Duration(minutes: 1)); // Example: Set alarm after 1 minute
     final alarmSettings = AlarmSettings(
@@ -74,7 +74,6 @@ class _MyAppState extends State<MyApp> {
       notificationBody: 'This is the body',
       enableNotificationOnKill: Platform.isAndroid);
     await Alarm.set(alarmSettings: alarmSettings,);*/
-
   }
 
   getLanguages() {

@@ -3,9 +3,6 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
-import 'package:lottie/lottie.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
@@ -30,6 +27,7 @@ class AffirmationShareScreen extends StatefulWidget {
 
 class _AffirmationShareScreenState extends State<AffirmationShareScreen> {
   ScreenshotController screenshotController = ScreenshotController();
+
   @override
   void initState() {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -38,6 +36,7 @@ class _AffirmationShareScreenState extends State<AffirmationShareScreen> {
     ));
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -55,7 +54,8 @@ class _AffirmationShareScreenState extends State<AffirmationShareScreen> {
                   Dimens.d26.spaceHeight,
                   Stack(
                     children: [
-                      Container(width: Get.width,
+                      Container(
+                        width: Get.width,
                         margin: const EdgeInsets.only(
                             top: Dimens.d80,
                             right: Dimens.d20,
@@ -80,7 +80,8 @@ class _AffirmationShareScreenState extends State<AffirmationShareScreen> {
                             ),
                             Dimens.d20.spaceHeight,
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 23),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 23),
                               child: Text(
                                 widget.des!,
                                 textAlign: TextAlign.center,

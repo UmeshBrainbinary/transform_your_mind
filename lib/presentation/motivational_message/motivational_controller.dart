@@ -1,6 +1,5 @@
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:transform_your_mind/core/common_widget/app_common_dialog.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 
 class MotivationalController extends GetxController{

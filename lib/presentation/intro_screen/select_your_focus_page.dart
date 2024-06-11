@@ -51,11 +51,15 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
   FocusesModel focusesModel = FocusesModel();
 
   getFocuses() async {
+    var headers = {
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
     var request = http.Request(
-        'GET',
-        Uri.parse(
-            '${EndPoints.baseUrl}${EndPoints.getFocus}6667e00b474a3621861060c0&type=0'));
-
+      'GET',
+      Uri.parse(
+          '${EndPoints.baseUrl}${EndPoints.getFocus}6667e00b474a3621861060c0&type=1'),
+    );
+    request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
@@ -80,8 +84,8 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
       var request = http.Request(
           'PUT',
           Uri.parse(
-              '${EndPoints.baseUrl}${EndPoints.updateFocuses}6666e94525e35910c83f3b12'));
-      request.body = json.encode({"focuses":selectedTagNames});
+              '${EndPoints.baseUrl}${EndPoints.updateFocuses}${PrefService.getString(PrefKey.userId)}'));
+      request.body = json.encode({"focuses": selectedTagNames});
       request.headers.addAll(headers);
 
       http.StreamedResponse response = await request.send();
@@ -96,7 +100,6 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
             return const SelectYourAffirmationFocusPage(isFromMe: false);
           },
         ));
-
       } else {
         setState(() {
           loader = false;
@@ -196,26 +199,20 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
                         isLoading: false,
                         primaryBtnCallBack: () {
                           if (selectedTagNames.length >= 5) {
-                            //setFocuses();
-                            Navigator.pushReplacement(context, MaterialPageRoute(
-                              builder: (context) {
-                                return const SelectYourAffirmationFocusPage(isFromMe: false);
-                              },
-                            ));
+                            setFocuses();
                           } else {
                             showSnackBarError(
-                                context, 'Please add more than 5  Focuses');
+                                context, 'Please add more than 5 Focuses');
                           }
                         },
                       ),
                     ],
                   ),
                 ),
-
               ],
             ),
           ),
-          loader==true?const CommonLoader():const SizedBox()
+          loader == true ? const CommonLoader() : const SizedBox()
         ],
       ),
     );

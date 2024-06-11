@@ -49,10 +49,15 @@ class MotivationalMessageScreen extends StatelessWidget {
                         ),
                         child: Stack(
                           children: [
-                           // Image.asset(data["img"],fit: BoxFit.cover,),
+                            // Image.asset(data["img"],fit: BoxFit.cover,),
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 30,vertical: 30),
-                              child: Text(data["title"],style: Style.cormorantGaramondBold(fontSize: 20),),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 30, vertical: 30),
+                              child: Text(
+                                data["title"],
+                                style:
+                                    Style.cormorantGaramondBold(fontSize: 20),
+                              ),
                             ),
                           ],
                         ),

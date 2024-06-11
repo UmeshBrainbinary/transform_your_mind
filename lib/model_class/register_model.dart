@@ -4,7 +4,8 @@
 
 import 'dart:convert';
 
-RegisterModel registerModelFromJson(String str) => RegisterModel.fromJson(json.decode(str));
+RegisterModel registerModelFromJson(String str) =>
+    RegisterModel.fromJson(json.decode(str));
 
 String registerModelToJson(RegisterModel data) => json.encode(data.toJson());
 
@@ -16,10 +17,10 @@ class RegisterModel {
   });
 
   factory RegisterModel.fromJson(Map<String, dynamic> json) => RegisterModel(
-    message: json["message"],
-  );
+        message: json["message"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "message": message,
-  };
+        "message": message,
+      };
 }

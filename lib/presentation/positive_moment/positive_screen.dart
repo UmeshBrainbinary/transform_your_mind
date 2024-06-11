@@ -107,123 +107,123 @@ class _PositiveScreenState extends State<PositiveScreen> {
               ),
               Dimens.d30.h.spaceHeight,
               Expanded(
-                child:  _filteredBookmarks != null?
-                GridView.builder(
-                    controller: scrollController,
-                    padding: const EdgeInsets.only(bottom: Dimens.d20),
-                    physics: const BouncingScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      childAspectRatio: 1,
-                      crossAxisCount: 2,
-                      // Number of columns
-                      crossAxisSpacing: 20,
-                      // Spacing between columns
-                      mainAxisSpacing: 20, // Spacing between rows
-                    ),
-                    itemCount: _filteredBookmarks?.length??0,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          searchFocusNode.unfocus();
-                          _showAlertDialog(context);
-                          // _onTileClick(index, context);
-                        },
-                        child: Container(
-                          height: 156,
-                          width: 156,
-                          padding:
-                          const EdgeInsets.only(left: 10, right: 10, top: 10),
-                          decoration: BoxDecoration(
-                              color: ColorConstant.colorDCE9EE,
-                              borderRadius: BorderRadius.circular(18)),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Image.asset(
-                                _filteredBookmarks?[index]
-                                ["img"]??"",
-                                height: 101,
-                                width: 138,
-                              ),
-                              /*      CustomImageView(
+                child: _filteredBookmarks != null
+                    ? GridView.builder(
+                        controller: scrollController,
+                        padding: const EdgeInsets.only(bottom: Dimens.d20),
+                        physics: const BouncingScrollPhysics(),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          childAspectRatio: 1,
+                          crossAxisCount: 2,
+                          // Number of columns
+                          crossAxisSpacing: 20,
+                          // Spacing between columns
+                          mainAxisSpacing: 20, // Spacing between rows
+                        ),
+                        itemCount: _filteredBookmarks?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              searchFocusNode.unfocus();
+                              _showAlertDialog(context);
+                              // _onTileClick(index, context);
+                            },
+                            child: Container(
+                              height: 156,
+                              width: 156,
+                              padding: const EdgeInsets.only(
+                                  left: 10, right: 10, top: 10),
+                              decoration: BoxDecoration(
+                                  color: ColorConstant.colorDCE9EE,
+                                  borderRadius: BorderRadius.circular(18)),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Image.asset(
+                                    _filteredBookmarks?[index]["img"] ?? "",
+                                    height: 101,
+                                    width: 138,
+                                  ),
+                                  /*      CustomImageView(
                                         imagePath: positiveController
                                             .positiveMomentList[index]['image'],
                                         height: Dimens.d135,
                                         radius: BorderRadius.circular(10),
                                         fit: BoxFit.cover,
                                       ),*/
-                              Dimens.d12.spaceHeight,
-                              Text(
-                                _filteredBookmarks?[index]
-                                ['title']??"",
-                                maxLines: Dimens.d2.toInt(),
-                                style:
-                                Style.montserratMedium(fontSize: Dimens.d14),
-                                overflow: TextOverflow.ellipsis,
+                                  Dimens.d12.spaceHeight,
+                                  Text(
+                                    _filteredBookmarks?[index]['title'] ?? "",
+                                    maxLines: Dimens.d2.toInt(),
+                                    style: Style.montserratMedium(
+                                        fontSize: Dimens.d14),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          );
+                        })
+                    : GridView.builder(
+                        controller: scrollController,
+                        padding: const EdgeInsets.only(bottom: Dimens.d20),
+                        physics: const BouncingScrollPhysics(),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          childAspectRatio: 1,
+                          crossAxisCount: 2,
+                          // Number of columns
+                          crossAxisSpacing: 20,
+                          // Spacing between columns
+                          mainAxisSpacing: 20, // Spacing between rows
                         ),
-                      );
-                    })
-                    :GridView.builder(
-                    controller: scrollController,
-                    padding: const EdgeInsets.only(bottom: Dimens.d20),
-                    physics: const BouncingScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      childAspectRatio: 1,
-                      crossAxisCount: 2,
-                      // Number of columns
-                      crossAxisSpacing: 20,
-                      // Spacing between columns
-                      mainAxisSpacing: 20, // Spacing between rows
-                    ),
-                    itemCount: positiveController.positiveMomentList.length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          searchFocusNode.unfocus();
-                          _showAlertDialog(context);
-                          // _onTileClick(index, context);
-                        },
-                        child: Container(
-                          height: 156,
-                          width: 156,
-                          padding:
-                              const EdgeInsets.only(left: 10, right: 10, top: 10),
-                          decoration: BoxDecoration(
-                              color: ColorConstant.colorDCE9EE,
-                              borderRadius: BorderRadius.circular(18)),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Image.asset(
-                                positiveController.positiveMomentList[index]
-                                    ["img"],
-                                height: 101,
-                                width: 138,
-                              ),
-                              /*      CustomImageView(
+                        itemCount: positiveController.positiveMomentList.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              searchFocusNode.unfocus();
+                              _showAlertDialog(context);
+                              // _onTileClick(index, context);
+                            },
+                            child: Container(
+                              height: 156,
+                              width: 156,
+                              padding: const EdgeInsets.only(
+                                  left: 10, right: 10, top: 10),
+                              decoration: BoxDecoration(
+                                  color: ColorConstant.colorDCE9EE,
+                                  borderRadius: BorderRadius.circular(18)),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Image.asset(
+                                    positiveController.positiveMomentList[index]
+                                        ["img"],
+                                    height: 101,
+                                    width: 138,
+                                  ),
+                                  /*      CustomImageView(
                                         imagePath: positiveController
                                             .positiveMomentList[index]['image'],
                                         height: Dimens.d135,
                                         radius: BorderRadius.circular(10),
                                         fit: BoxFit.cover,
                                       ),*/
-                              Dimens.d12.spaceHeight,
-                              Text(
-                                positiveController.positiveMomentList[index]
-                                    ['title'],
-                                maxLines: Dimens.d2.toInt(),
-                                style:
-                                    Style.montserratMedium(fontSize: Dimens.d14),
-                                overflow: TextOverflow.ellipsis,
+                                  Dimens.d12.spaceHeight,
+                                  Text(
+                                    positiveController.positiveMomentList[index]
+                                        ['title'],
+                                    maxLines: Dimens.d2.toInt(),
+                                    style: Style.montserratMedium(
+                                        fontSize: Dimens.d14),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }),
+                            ),
+                          );
+                        }),
               )
             ],
           ),

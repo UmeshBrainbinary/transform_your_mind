@@ -30,8 +30,8 @@ class NotificationScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   var data = notificationController.notificationList[index];
                   return Container(
-                    margin:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -62,9 +62,12 @@ class NotificationScreen extends StatelessWidget {
                   );
                 },
                 separatorBuilder: (context, index) => const Divider(
-                  color: ColorConstant.backGround, // Customize the color as needed
-                  thickness: 3, // Customize the thickness as needed
-                  indent: 20, // Customize the indent as needed
+                  color: ColorConstant.backGround,
+                  // Customize the color as needed
+                  thickness: 3,
+                  // Customize the thickness as needed
+                  indent: 20,
+                  // Customize the indent as needed
                   endIndent: 20, // Customize the end indent as needed
                 ),
               ),

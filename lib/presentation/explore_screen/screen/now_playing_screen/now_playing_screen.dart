@@ -82,7 +82,6 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
         body: SafeArea(
       child: Stack(
         children: [
-
           /// background image
           Align(
             alignment: Alignment.bottomCenter,
@@ -97,6 +96,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
               ),
             ),
           ),
+
           /// description, subtitle
           Padding(
             padding: const EdgeInsets.only(top: Dimens.d300),
@@ -105,19 +105,25 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 60),
                   child: Text(
-                    "Your Way Out Of Addiction - Ep 4 How Addiction Starts",textAlign: TextAlign.center,
-                    style: Style.montserratRegular(fontSize: 17,color: ColorConstant.white),
+                    "Your Way Out Of Addiction - Ep 4 How Addiction Starts",
+                    textAlign: TextAlign.center,
+                    style: Style.montserratRegular(
+                        fontSize: 17, color: ColorConstant.white),
                   ),
                 ),
                 Dimens.d20.spaceHeight,
                 Text(
-                  "Chris Hill",textAlign: TextAlign.center,
-                  style: Style.montserratRegular(fontSize: 15,color: ColorConstant.white),
+                  "Chris Hill",
+                  textAlign: TextAlign.center,
+                  style: Style.montserratRegular(
+                      fontSize: 15, color: ColorConstant.white),
                 ),
                 Dimens.d20.spaceHeight,
                 Text(
-                  "Meditation",textAlign: TextAlign.center,
-                  style: Style.montserratRegular(fontSize: 15,color: ColorConstant.white),
+                  "Meditation",
+                  textAlign: TextAlign.center,
+                  style: Style.montserratRegular(
+                      fontSize: 15, color: ColorConstant.white),
                 ),
               ],
             ),
@@ -125,7 +131,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
 
           /// app bar
           Column(
-                children: [
+            children: [
                   Dimens.d30.h.spaceHeight,
                   CustomAppBar(
                     showBack: true,
@@ -139,7 +145,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                           Icons.close,
                       color: ColorConstant.black,
                     )),
-                    action: Row(
+                action: Row(
                       children: [
                         GestureDetector(
                           onTap: () {
@@ -164,7 +170,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                             context, "Your Sounds Successfully Bookmarked.");
                       },
                       child: SvgPicture.asset(
-                            height: 25.h,
+                        height: 25.h,
                             ImageConstant.bookmark,
                           ),
                         ),
@@ -195,7 +201,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
 
           ///seekbar
           Column(
-                mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   StreamBuilder<Duration?>(
                     stream: _audioPlayerService.positionStream,
@@ -566,7 +572,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
               ),
         ],
       ),
-        ));
+    ));
   }
 
   void _volumeTapHandler() {

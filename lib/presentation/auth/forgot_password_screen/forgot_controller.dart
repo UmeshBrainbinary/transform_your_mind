@@ -8,6 +8,7 @@ import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/model_class/common_model.dart';
+import 'package:transform_your_mind/model_class/verify_model.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 
 class ForgotController extends GetxController{
@@ -20,8 +21,7 @@ class ForgotController extends GetxController{
 
   ValueNotifier<bool> securePass = ValueNotifier(true);
   ValueNotifier<bool> securePass2 = ValueNotifier(true);
-  CommonModel commonModel = CommonModel();
-
+   VerifyModel verifyModel = VerifyModel();
   onTapOtpVerify(BuildContext context) async {
     await otpVerify(context);
   }
@@ -33,7 +33,8 @@ class ForgotController extends GetxController{
           'POST', Uri.parse('${EndPoints.baseUrl}${EndPoints.verifyOtp}'));
       request.body = json.encode({
         "email": PrefService.getString(PrefKey.email),
-        "otp": otpController.text
+        "otp": otpController.text,
+        "isSignUp": true
       });
       request.headers.addAll(headers);
 
@@ -44,9 +45,11 @@ class ForgotController extends GetxController{
         final responseBody = await response.stream.bytesToString();
 
         // Parse the string into JSON and then into CommonModel
-        commonModel = commonModelFromJson(responseBody);
+        verifyModel = verifyModelFromJson(responseBody);
         update();
-        showSnackBarSuccess(context, commonModel.message ?? "");
+        PrefService.setValue(PrefKey.token, verifyModel.token);
+        PrefService.setValue(PrefKey.userId, verifyModel.user!.id);
+       showSnackBarSuccess(context,verifyModel.message ?? "");
 
         Get.toNamed(AppRoutes.selectYourFocusPage);
 

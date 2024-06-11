@@ -105,8 +105,8 @@ class LoadingButton extends StatelessWidget {
       child: SizedBox(
         height: Dimens.d35.h,
         child: const CircularProgressIndicator(
-          color: ColorConstant.backGround,
-        )
+            color: ColorConstant.backGround,
+          )
       ),
     );
   }

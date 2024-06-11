@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
     as picker;
 import 'package:flutter_svg/flutter_svg.dart';
@@ -41,8 +40,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
  @override
   void initState() {
-
-   editProfileController.emailController.text = PrefService.getString(PrefKey.email);
+    editProfileController.emailController.text = PrefService.getString(PrefKey.email);
     super.initState();
   }
 
@@ -64,7 +62,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     key: _formKey,
                     child: ConstrainedBox(
                       constraints:
-                      BoxConstraints(minHeight: constraint.maxHeight),
+                          BoxConstraints(minHeight: constraint.maxHeight),
                       child: IntrinsicHeight(
                         child: Column(
                           mainAxisSize: MainAxisSize.max,
@@ -76,8 +74,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               builder: (context, value, child) {
                                 return AddImageEditWidget(
                                   onTap: () async {
-                                    await showImagePickerActionSheet(
-                                        context)
+                                    await showImagePickerActionSheet(context)
                                         ?.then((value) async {
                                       if (value != null) {
                                         editProfileController.imageFile.value =
@@ -86,7 +83,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     });
                                   },
                                   onDeleteTap: () async {
-                                    editProfileController.imageFile = ValueNotifier(null);
+                                    editProfileController.imageFile =
+                                        ValueNotifier(null);
                                     if (editProfileController.image != null) {
                                       editProfileController.urlImage = null;
                                       _isImageRemoved = true;
@@ -104,12 +102,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 labelText: "name".tr,
                                 hintText: "enterName".tr,
                                 controller:
-                                editProfileController.nameController,
+                                    editProfileController.nameController,
                                 focusNode: editProfileController.name,
                                 prefixIcon: Transform.scale(
                                   scale: 0.5,
-                                  child:
-                                  SvgPicture.asset(ImageConstant.user),
+                                  child: SvgPicture.asset(ImageConstant.user),
                                 ),
                                 keyboardType: TextInputType.emailAddress,
                                 validator: (value) {
@@ -123,9 +120,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             CommonTextField(
                                 labelText: "email".tr,
                                 hintText: "enterEmail".tr,
-                                controller: editProfileController.emailController,
+                                controller:
+                                    editProfileController.emailController,
                                 focusNode: editProfileController.email,
-                                filledColor: themeController.isDarkMode.value ? ColorConstant.lightGrey2 : ColorConstant.lightGrey,
+                                filledColor: themeController.isDarkMode.value
+                                    ? ColorConstant.lightGrey2
+                                    : ColorConstant.lightGrey,
                                 prefixIcon: Image.asset(ImageConstant.email,
                                     scale: Dimens.d4),
                                 keyboardType: TextInputType.emailAddress,
@@ -140,7 +140,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   return null;
                                 }),
                             Dimens.d16.h.spaceHeight,
-
                             CommonTextField(
                                 labelText: "dateOfBirth".tr,
                                 hintText: "DD/MM/YYYY",
@@ -153,26 +152,33 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                         height: Dimens.d5,
                                         width: Dimens.d5)),
                                 readOnly: true,
-                                onTap: () async{
+                                onTap: () async {
                                   FocusScope.of(context).unfocus();
-                                  await  picker.DatePicker.showDatePicker(context,
+                                  await picker.DatePicker.showDatePicker(context,
                                       showTitleActions: true,
                                       minTime: DateTime(1900, 3, 5),
-                                      maxTime: DateTime.now().subtract(
-                                          const Duration(days: 1)),
+                                      maxTime: DateTime.now()
+                                          .subtract(const Duration(days: 1)),
                                       theme: picker.DatePickerTheme(
                                           doneStyle: Style.montserratSemiBold(
                                               color: ColorConstant.white),
-                                          cancelStyle: Style.montserratSemiBold(color: ColorConstant.white),
-                                          itemStyle: Style.montserratSemiBold(color: ColorConstant.white),
-                                          backgroundColor: ColorConstant.themeColor),
-                                      onChanged: (date) {},
-                                      onConfirm: (date) {
-                                        editProfileController.dobController.text = DateTimeUtils.formatDate(date);
-                                        editProfileController.selectedDob = date;
-                                      }, currentTime: editProfileController.selectedDob ?? DateTime.now().subtract(const Duration(days: 1)), locale: picker.LocaleType.en);
+                                          cancelStyle: Style.montserratSemiBold(
+                                              color: ColorConstant.white),
+                                          itemStyle: Style.montserratSemiBold(
+                                              color: ColorConstant.white),
+                                          backgroundColor:
+                                              ColorConstant.themeColor),
+                                      onChanged: (date) {}, onConfirm: (date) {
+                                    editProfileController.dobController.text =
+                                        DateTimeUtils.formatDate(date);
+                                    editProfileController.selectedDob = date;
+                                  },
+                                      currentTime: editProfileController
+                                              .selectedDob ??
+                                          DateTime.now()
+                                              .subtract(const Duration(days: 1)),
+                                      locale: picker.LocaleType.en);
                                 },
-
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return "theDateOfBirthFieldIsRequired".tr;
@@ -184,7 +190,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 labelText: "gender".tr,
                                 hintText: "selectGender".tr,
                                 controller:
-                                editProfileController.genderController,
+                                    editProfileController.genderController,
                                 focusNode: editProfileController.gender,
                                 prefixIcon: Transform.scale(
                                     scale: 0.5,
@@ -201,8 +207,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                         width: Dimens.d5)),
                                 onTap: () {
                                   editProfileController.isDropGender.value =
-                                  !editProfileController
-                                      .isDropGender.value;
+                                      !editProfileController.isDropGender.value;
                                 },
                                 validator: (value) {
                                   if (value == null ||
@@ -213,120 +218,107 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 }),
                             Dimens.d5.h.spaceHeight,
                             Obx(
-                                  () => editProfileController.isDropGender.value
+                              () => editProfileController.isDropGender.value
                                   ? Container(
-                                width: Get.width,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(
-                                      Dimens.d10),
-                                  color: ColorConstant.white,
-                                ),
-                                child: Column(
-                                    children: List.generate(
-                                      editProfileController
-                                          .genderList.length,
-                                          (index) => GestureDetector(
-                                          onTap: () {
-                                            editProfileController
-                                                .isDropGender
-                                                .value = false;
-                                            editProfileController
-                                                .genderController
-                                                .text =
-                                            editProfileController
-                                                .genderList[index];
-                                            editProfileController.genderList
-                                                .refresh();
-                                          },
-                                          child: Container(
-                                            height: Dimens.d45,
-                                            width: Get.width,
-                                            padding: const EdgeInsets.only(
-                                                left: Dimens.d10,
-                                                top: Dimens.d12),
-                                            decoration: BoxDecoration(
-                                              color: editProfileController
-                                                  .genderController
-                                                  .text ==
-                                                  editProfileController
-                                                      .genderList[
-                                                  index]
-                                                  ? ColorConstant
-                                                  .themeColor
-                                                  : ColorConstant.white,
-                                              borderRadius: index == 0
-                                                  ? const BorderRadius.only(
-                                                  topLeft:
-                                                  Radius.circular(
-                                                      Dimens.d10),
-                                                  topRight:
-                                                  Radius.circular(
-                                                      Dimens.d10))
-                                                  : index == 2
-                                                  ? const BorderRadius.only(
-                                                  bottomLeft: Radius
-                                                      .circular(
-                                                      Dimens
-                                                          .d10),
-                                                  bottomRight:
-                                                  Radius.circular(
-                                                      Dimens
-                                                          .d10))
-                                                  : BorderRadius
-                                                  .circular(
-                                                  Dimens.d0),
-                                            ),
-                                            child: Text(
+                                      width: Get.width,
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(Dimens.d10),
+                                        color: ColorConstant.white,
+                                      ),
+                                      child: Column(
+                                          children: List.generate(
+                                        editProfileController.genderList.length,
+                                        (index) => GestureDetector(
+                                            onTap: () {
                                               editProfileController
-                                                  .genderList[index],
-                                              style: Style.montserratMedium(
-                                                  color: editProfileController
-                                                      .genderController
-                                                      .text ==
-                                                      editProfileController
-                                                          .genderList[
-                                                      index]
-                                                      ? ColorConstant
-                                                      .white
-                                                      : ColorConstant
-                                                      .black),
-                                            ),
-                                          )),
-                                    )),
-                              )
+                                                  .isDropGender.value = false;
+                                              editProfileController
+                                                      .genderController.text =
+                                                  editProfileController
+                                                      .genderList[index];
+                                              editProfileController.genderList
+                                                  .refresh();
+                                            },
+                                            child: Container(
+                                              height: Dimens.d45,
+                                              width: Get.width,
+                                              padding: const EdgeInsets.only(
+                                                  left: Dimens.d10,
+                                                  top: Dimens.d12),
+                                              decoration: BoxDecoration(
+                                                color: editProfileController
+                                                            .genderController
+                                                            .text ==
+                                                        editProfileController
+                                                            .genderList[index]
+                                                    ? ColorConstant.themeColor
+                                                    : ColorConstant.white,
+                                                borderRadius: index == 0
+                                                    ? const BorderRadius.only(
+                                                        topLeft:
+                                                            Radius.circular(
+                                                                Dimens.d10),
+                                                        topRight:
+                                                            Radius.circular(
+                                                                Dimens.d10))
+                                                    : index == 2
+                                                        ? const BorderRadius
+                                                            .only(
+                                                            bottomLeft:
+                                                                Radius.circular(
+                                                                    Dimens.d10),
+                                                            bottomRight:
+                                                                Radius.circular(
+                                                                    Dimens.d10))
+                                                        : BorderRadius.circular(
+                                                            Dimens.d0),
+                                              ),
+                                              child: Text(
+                                                editProfileController
+                                                    .genderList[index],
+                                                style: Style.montserratMedium(
+                                                    color: editProfileController
+                                                                .genderController
+                                                                .text ==
+                                                            editProfileController
+                                                                    .genderList[
+                                                                index]
+                                                        ? ColorConstant.white
+                                                        : ColorConstant.black),
+                                              ),
+                                            )),
+                                      )),
+                                    )
                                   : const SizedBox(),
                             ),
                             Dimens.d30.h.spaceHeight,
                             Obx(
-                                  () => (editProfileController.loader.value)
+                              () => (editProfileController.loader.value)
                                   ? const LoadingButton()
                                   : Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: Dimens.d50),
-                                child: CommonElevatedButton(
-                                  title: "update".tr,
-                                  onTap: () async {
-                                    FocusScope.of(context).unfocus();
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: Dimens.d50),
+                                      child: CommonElevatedButton(
+                                        title: "update".tr,
+                                        onTap: () async {
+                                          FocusScope.of(context).unfocus();
 
-                                    editProfileController.loader.value = true;
+                                          editProfileController.loader.value = true;
 
+                                          if (editProfileController
+                                                  .imageFile.value ==
+                                              null) {
+                                            errorToast("pleaseAddImage".tr);
+                                          } else {
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              Get.back();
+                                            }
+                                          }
 
-                                    if(editProfileController.imageFile.value == null){
-                                      errorToast("pleaseAddImage".tr);
-                                    }  else{
-                                      if (_formKey.currentState!.validate() ) {
-
-
-
-
-                                        Get.back();
-
-
-
-
-                                      }
-                                    }
-
-                                    editProfileController.loader.value = false;                                          },
+                                          editProfileController.loader.value = false;
+                                  },
                                 ),
                               ),
                             ),

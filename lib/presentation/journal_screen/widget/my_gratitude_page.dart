@@ -8,8 +8,6 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:transform_your_mind/core/app_export.dart';
-import 'package:transform_your_mind/core/common_widget/app_common_dialog.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
 import 'package:transform_your_mind/core/common_widget/on_loading_bottom_indicator.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
@@ -116,7 +114,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                     padding: const EdgeInsets.only(bottom: Dimens.d120),
                     child: SvgPicture.asset(ImageConstant.profile2),
                   )),
-         /*         BackGroundContainer(
+              /*         BackGroundContainer(
                 image: ImageConstant.homeBgBookmarks,
                 isLeft: true,
                 top: Dimens.d251,
@@ -142,12 +140,12 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Padding(
-                                              padding: const EdgeInsets.symmetric(
-                                                  horizontal: Dimens.d20),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: Dimens.d20),
                                               child: Text(
                                                 "drafts".tr,
-                                                style:
-                                                    Style.montserratRegular(
+                                                style: Style.montserratRegular(
                                                   fontSize: Dimens.d18,
                                                 ),
                                               ),
@@ -167,14 +165,16 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                                       gratitudeDraftList.length,
                                                   scrollDirection:
                                                       Axis.horizontal,
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                          horizontal: 20),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 20),
                                                   physics:
                                                       const ClampingScrollPhysics(),
-                                                  itemBuilder: (context, index) {
+                                                  itemBuilder:
+                                                      (context, index) {
                                                     var data =
-                                                        gratitudeDraftList[index];
+                                                        gratitudeDraftList[
+                                                            index];
                                                     return GestureDetector(
                                                       onTap: () {},
                                                       child:
@@ -184,9 +184,9 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                                                       .only(
                                                                       right: Dimens
                                                                           .d16),
-                                                              title:
-                                                                  data["title"] ??
-                                                                      '',
+                                                              title: data[
+                                                                      "title"] ??
+                                                                  '',
                                                               image:
                                                                   'https://picsum.photos/250?image=9' /* data["image"] */ ??
                                                                       '',
@@ -231,20 +231,20 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                                           .ddMMyyyyToParse)
                                                   : DateTime.now()
                                               : DateTime.now();
-                                          picker.DatePicker.showDatePicker(
-                                              context,
+                                          picker.DatePicker.showDatePicker(context,
                                               showTitleActions: true,
                                               minTime: DateTime.now().subtract(
                                                   const Duration(days: 1)),
                                               theme: picker.DatePickerTheme(
                                                   doneStyle: Style.montserratRegular(
-                                                      color: ColorConstant.white),
-                                                  cancelStyle:
-                                                      Style.montserratRegular(
-                                                          color: ColorConstant
-                                                              .white),
+                                                      color:
+                                                          ColorConstant.white),
+                                                  cancelStyle: Style.montserratRegular(
+                                                      color:
+                                                          ColorConstant.white),
                                                   itemStyle: Style.montserratRegular(
-                                                      color: ColorConstant.white),
+                                                      color:
+                                                          ColorConstant.white),
                                                   backgroundColor:
                                                       ColorConstant.themeColor),
                                               maxTime: DateTime(2050),
@@ -260,7 +260,8 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                         child: CommonTextField(
                                             enabled: false,
                                             suffixIcon: Padding(
-                                              padding: const EdgeInsets.all(13.0),
+                                              padding:
+                                                  const EdgeInsets.all(13.0),
                                               child: SvgPicture.asset(
                                                   ImageConstant.calendar),
                                             ),
@@ -270,7 +271,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                       ),
                                     )
                                   : const SizedBox(),
-      
+
                               /// saved list
                               Expanded(
                                 child: (_isLoading &&
@@ -299,8 +300,9 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                                 pageNumber = 1;
                                                 _isSearching = false;
                                                 gratitudeList.clear();
-      
-                                                _refreshController.loadComplete();
+
+                                                _refreshController
+                                                    .loadComplete();
                                                 _refreshController
                                                     .refreshCompleted();
                                               },
@@ -309,7 +311,8 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                                 physics:
                                                     const BouncingScrollPhysics(),
                                                 itemBuilder: (context, index) {
-                                                  var data = gratitudeList[index];
+                                                  var data =
+                                                      gratitudeList[index];
                                                   return GestureDetector(
                                                     onTap: () {
                                                       Navigator.push(context,
@@ -356,20 +359,23 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                                               width: Dimens.d65,
                                                               decoration:
                                                                   BoxDecoration(
-                                                                color: Colors.red
+                                                                color: Colors
+                                                                    .red
                                                                     .withOpacity(
                                                                         0.5),
                                                                 borderRadius:
                                                                     Dimens.d16
                                                                         .radiusAll,
                                                               ),
-                                                              alignment: Alignment
-                                                                  .center,
+                                                              alignment:
+                                                                  Alignment
+                                                                      .center,
                                                               child: SvgPicture
                                                                   .asset(
                                                                 ImageConstant
                                                                     .icDeleteWhite,
-                                                                width: Dimens.d24,
+                                                                width:
+                                                                    Dimens.d24,
                                                                 height:
                                                                     Dimens.d24,
                                                               ),
@@ -380,7 +386,8 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                                       child:
                                                           JournalListTileLayout(
                                                         margin: EdgeInsets.only(
-                                                            bottom: Dimens.d20.h),
+                                                            bottom:
+                                                                Dimens.d20.h),
                                                         title:
                                                             data["title"] ?? '',
                                                         //image: data["image"] ?? '',

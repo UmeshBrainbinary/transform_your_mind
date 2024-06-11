@@ -13,7 +13,6 @@ import 'package:transform_your_mind/presentation/me_screen/screens/setting_scree
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/notification_setting_screen/widget/reminder_time_utils.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/setting_screen.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
-import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 class NotificationSettingScreen extends StatefulWidget {
@@ -61,10 +60,10 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
 @override
   void initState() {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: ColorConstant.backGround, // Status bar background color
-    statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
-  ));
-  super.initState();
+      statusBarColor: ColorConstant.backGround, // Status bar background color
+      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+    ));
+    super.initState();
   }
   @override
   Widget build(BuildContext context) {
@@ -110,10 +109,14 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
                             physics: const ClampingScrollPhysics(),
                             children: [
                               Dimens.d20.h.spaceHeight,
-                              Text("affirmations".tr,style:Style.montserratSemiBold(fontSize: 14) ,),
+                              Text(
+                                "affirmations".tr,
+                                style: Style.montserratSemiBold(fontSize: 14),
+                              ),
                               Dimens.d20.h.spaceHeight,
                               Container(
-                                margin: const EdgeInsets.symmetric(horizontal: 1.2),
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 1.2),
                                 decoration: BoxDecoration(
                                   color: themeController.isDarkMode.value
                                       ? ColorConstant.textfieldFillColor
@@ -131,7 +134,8 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
                                     Expanded(
                                       child: Text(
                                         "Affirmation reminder".tr,
-                                        style: Style.montserratMedium().copyWith(
+                                        style:
+                                            Style.montserratMedium().copyWith(
                                           letterSpacing: Dimens.d0_16,
                                         ),
                                       ),
@@ -185,11 +189,14 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
                               },
                             ),*/
                               Dimens.d20.h.spaceHeight,
-                              Text("Motivational messages".tr,style:Style.montserratSemiBold(fontSize: 14) ,),
+                              Text(
+                                "Motivational messages".tr,
+                                style: Style.montserratSemiBold(fontSize: 14),
+                              ),
                               Dimens.d16.h.spaceHeight,
-
                               Container(
-                                margin: const EdgeInsets.symmetric(horizontal: 1.2),
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 1.2),
                                 decoration: BoxDecoration(
                                   color: themeController.isDarkMode.value
                                       ? ColorConstant.textfieldFillColor
@@ -207,7 +214,8 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
                                     Expanded(
                                       child: Text(
                                         "Motivational reminder".tr,
-                                        style: Style.montserratMedium().copyWith(
+                                        style:
+                                            Style.montserratMedium().copyWith(
                                           letterSpacing: Dimens.d0_16,
                                         ),
                                       ),
@@ -227,15 +235,22 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
                                 ),
                               ),
                               Dimens.d20.h.spaceHeight,
-                              Text("Affirmation alarms list".tr,style:Style.montserratSemiBold(fontSize: 14) ,),
+                              Text(
+                                "Affirmation alarms list".tr,
+                                style: Style.montserratSemiBold(fontSize: 14),
+                              ),
                               Dimens.d10.spaceHeight,
-                              GestureDetector(onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                  return AlarmListScreen();
-                                },));
-                              },
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) {
+                                      return AlarmListScreen();
+                                    },
+                                  ));
+                                },
                                 child: Container(
-                                  margin: const EdgeInsets.symmetric(horizontal: 1.2),
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 1.2),
                                   decoration: BoxDecoration(
                                     color: themeController.isDarkMode.value
                                         ? ColorConstant.textfieldFillColor
@@ -253,17 +268,20 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
                                       Expanded(
                                         child: Text(
                                           "Alarms List".tr,
-                                          style: Style.montserratMedium().copyWith(
+                                          style:
+                                              Style.montserratMedium().copyWith(
                                             letterSpacing: Dimens.d0_16,
                                           ),
                                         ),
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
-                                        child: SvgPicture.asset(ImageConstant.settingArrowRight,
-                                            color: themeController.isDarkMode.value
-                                                ? ColorConstant.white
-                                                : ColorConstant.black),
+                                        child: SvgPicture.asset(
+                                            ImageConstant.settingArrowRight,
+                                            color:
+                                                themeController.isDarkMode.value
+                                                    ? ColorConstant.white
+                                                    : ColorConstant.black),
                                       )
                                     ],
                                   ),
@@ -424,7 +442,6 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
                                   // );
                                 },
                               ),*/
-
                             ],
                           ),
                         ],

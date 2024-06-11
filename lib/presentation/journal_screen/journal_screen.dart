@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:transform_your_mind/core/common_widget/common_gradiant_container.dart';
@@ -36,7 +35,7 @@ class _JournalScreenState extends State<JournalScreen>
       lottie: ImageConstant.lottieCircle,
       route: AppRoutes.myAffirmationPage,
     ),
-  /*  JournalData(
+    /*  JournalData(
       title: "affirmationAlarms".tr,
       lottie: ImageConstant.lottieStarOcean,
       route: AppRoutes.affirmationAlarmScreen,
@@ -68,7 +67,8 @@ class _JournalScreenState extends State<JournalScreen>
       duration: const Duration(milliseconds: 200),
     );
   }
-  getStatusBar(){
+
+  getStatusBar() {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.white, // Status bar background color
       statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
@@ -91,7 +91,6 @@ class _JournalScreenState extends State<JournalScreen>
       child: Scaffold(
           appBar: CustomAppBar(
             title: "selfDevelopment".tr,
-      
           ),
           body: Stack(
             children: [
@@ -124,7 +123,7 @@ class _JournalScreenState extends State<JournalScreen>
                             }
                           });
                         }
-          
+
                         return false;
                       },
                       child: Expanded(
@@ -165,11 +164,13 @@ class _JournalScreenState extends State<JournalScreen>
                                                   context,
                                                   journalList[index].route ??
                                                       "",
-                                                ).then((value) {
-                                                  setState(() {
-                                                    getStatusBar();
-                                                  });
-                                                },);
+                                                ).then(
+                                                  (value) {
+                                                    setState(() {
+                                                      getStatusBar();
+                                                    });
+                                                  },
+                                                );
                                               },
                                               child: Column(
                                                 children: [
@@ -198,7 +199,6 @@ class _JournalScreenState extends State<JournalScreen>
                                                               .lottie,
                                                           height: 180,
                                                           width: 180,
-          
                                                       ),
                                                     ),
                                                   ),

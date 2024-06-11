@@ -4,7 +4,8 @@
 
 import 'dart:convert';
 
-LoginModel loginModelFromJson(String str) => LoginModel.fromJson(json.decode(str));
+LoginModel loginModelFromJson(String str) =>
+    LoginModel.fromJson(json.decode(str));
 
 String loginModelToJson(LoginModel data) => json.encode(data.toJson());
 
@@ -18,14 +19,14 @@ class LoginModel {
   });
 
   factory LoginModel.fromJson(Map<String, dynamic> json) => LoginModel(
-    data: json["data"] == null ? null : Data.fromJson(json["data"]),
-    meta: json["meta"] == null ? null : Meta.fromJson(json["meta"]),
-  );
+        data: json["data"] == null ? null : Data.fromJson(json["data"]),
+        meta: json["meta"] == null ? null : Meta.fromJson(json["meta"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "data": data?.toJson(),
-    "meta": meta?.toJson(),
-  };
+        "data": data?.toJson(),
+        "meta": meta?.toJson(),
+      };
 }
 
 class Data {
@@ -44,20 +45,20 @@ class Data {
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-    id: json["id"],
-    name: json["name"],
-    email: json["email"],
-    gender: json["gender"],
-    userProfile: json["user_profile"],
-  );
+        id: json["id"],
+        name: json["name"],
+        email: json["email"],
+        gender: json["gender"],
+        userProfile: json["user_profile"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "email": email,
-    "gender": gender,
-    "user_profile": userProfile,
-  };
+        "id": id,
+        "name": name,
+        "email": email,
+        "gender": gender,
+        "user_profile": userProfile,
+      };
 }
 
 class Meta {
@@ -70,12 +71,12 @@ class Meta {
   });
 
   factory Meta.fromJson(Map<String, dynamic> json) => Meta(
-    message: json["message"],
-    token: json["token"],
-  );
+        message: json["message"],
+        token: json["token"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "message": message,
-    "token": token,
-  };
+        "message": message,
+        "token": token,
+      };
 }

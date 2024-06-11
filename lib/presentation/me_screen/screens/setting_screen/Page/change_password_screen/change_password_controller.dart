@@ -13,6 +13,7 @@ class ChangePasswordController extends GetxController {
   ValueNotifier<bool> securePass = ValueNotifier(true);
   ValueNotifier<bool> securePass2 = ValueNotifier(true);
   ValueNotifier<bool> securePass3 = ValueNotifier(true);
+
   @override
   void onInit() {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -21,5 +22,4 @@ class ChangePasswordController extends GetxController {
     ));
     super.onInit();
   }
-
 }

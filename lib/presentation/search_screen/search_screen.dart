@@ -34,12 +34,16 @@ class _SearchScreenState extends State<SearchScreen> {
     ));
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: CustomAppBar(title: "search".tr,showBack: true,),
-        body:  Stack(
+        appBar: CustomAppBar(
+          title: "search".tr,
+          showBack: true,
+        ),
+        body: Stack(
           children: [
             Align(
               alignment: const Alignment(1, 0),
@@ -52,18 +56,17 @@ class _SearchScreenState extends State<SearchScreen> {
                 builder: (context, constraint) {
                   return ConstrainedBox(
                     constraints:
-                    BoxConstraints(minHeight: constraint.maxHeight),
+                        BoxConstraints(minHeight: constraint.maxHeight),
                     child: IntrinsicHeight(
                       child: Column(
                         children: [
-      
                           Dimens.d30.h.spaceHeight,
                           Container(
                             decoration: BoxDecoration(
                               boxShadow: [
                                 BoxShadow(
                                   color:
-                                  ColorConstant.themeColor.withOpacity(0.1),
+                                      ColorConstant.themeColor.withOpacity(0.1),
                                   blurRadius: Dimens.d8,
                                 )
                               ],
@@ -72,8 +75,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                 onChanged: (value) {
                                   setState(() {
                                     sController.filteredList =
-                                        sController.filterList(value,
-                                            sController.exploreList);
+                                        sController.filterList(
+                                            value, sController.exploreList);
                                   });
                                 },
                                 suffixIcon: SvgPicture.asset(
@@ -88,23 +91,23 @@ class _SearchScreenState extends State<SearchScreen> {
                           Dimens.d20.h.spaceHeight,
                           Expanded(
                               child: Obx(
-                                    () => sController.filteredList!=null
-                                    ? GridView.builder(
+                            () => sController.filteredList != null
+                                ? GridView.builder(
                                     padding: const EdgeInsets.only(
                                         bottom: Dimens.d20),
                                     physics: const BouncingScrollPhysics(),
                                     gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
                                       childAspectRatio: 0.71,
                                       crossAxisCount: 2,
                                       // Number of columns
                                       crossAxisSpacing: 20,
                                       // Spacing between columns
                                       mainAxisSpacing:
-                                      20, // Spacing between rows
+                                          20, // Spacing between rows
                                     ),
                                     itemCount:
-                                    sController.filteredList?.length??0,
+                                        sController.filteredList?.length ?? 0,
                                     itemBuilder: (context, index) {
                                       return GestureDetector(
                                         onTap: () {
@@ -118,19 +121,19 @@ class _SearchScreenState extends State<SearchScreen> {
                                               children: [
                                                 CustomImageView(
                                                   imagePath: sController
-                                                      .filteredList![index]
-                                                  ['image'],
+                                                          .filteredList![index]
+                                                      ['image'],
                                                   height: Dimens.d135,
                                                   radius:
-                                                  BorderRadius.circular(10),
+                                                      BorderRadius.circular(10),
                                                   fit: BoxFit.cover,
                                                 ),
                                                 Align(
                                                   alignment: Alignment.topRight,
                                                   child: Padding(
                                                     padding:
-                                                    const EdgeInsets.only(
-                                                        right: 10, top: 10),
+                                                        const EdgeInsets.only(
+                                                            right: 10, top: 10),
                                                     child: SvgPicture.asset(
                                                         ImageConstant.play),
                                                   ),
@@ -140,8 +143,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                             Dimens.d10.spaceHeight,
                                             Row(
                                               mainAxisAlignment:
-                                              MainAxisAlignment
-                                                  .spaceBetween,
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 Text(
                                                   "Meditation",
@@ -152,7 +155,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                                 const CircleAvatar(
                                                   radius: 2,
                                                   backgroundColor:
-                                                  ColorConstant.colorD9D9D9,
+                                                      ColorConstant.colorD9D9D9,
                                                 ),
                                                 Row(
                                                   children: [
@@ -181,8 +184,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                             ),
                                             Dimens.d7.spaceHeight,
                                             Text(
-                                              sController
-                                                  .filteredList![index]['title'],
+                                              sController.filteredList![index]
+                                                  ['title'],
                                               maxLines: Dimens.d2.toInt(),
                                               style: Style.montserratMedium(
                                                   fontSize: Dimens.d14),
@@ -192,26 +195,26 @@ class _SearchScreenState extends State<SearchScreen> {
                                         ),
                                       );
                                     })
-                                    : GridView.builder(
+                                : GridView.builder(
                                     padding: const EdgeInsets.only(
                                         bottom: Dimens.d20),
                                     physics: const BouncingScrollPhysics(),
                                     gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
                                       childAspectRatio: 0.71,
                                       crossAxisCount: 2,
                                       // Number of columns
                                       crossAxisSpacing: 20,
                                       // Spacing between columns
-                                      mainAxisSpacing: 20, // Spacing between rows
+                                      mainAxisSpacing:
+                                          20, // Spacing between rows
                                     ),
-                                    itemCount:
-                                    sController.exploreList.length,
+                                    itemCount: sController.exploreList.length,
                                     itemBuilder: (context, index) {
                                       return GestureDetector(
                                         onTap: () {
                                           searchFocusNode.unfocus();
-      
+
                                           _onTileClick(index, context);
                                         },
                                         child: Column(
@@ -221,19 +224,19 @@ class _SearchScreenState extends State<SearchScreen> {
                                               children: [
                                                 CustomImageView(
                                                   imagePath: sController
-                                                      .exploreList[index]
-                                                  ['image'],
+                                                          .exploreList[index]
+                                                      ['image'],
                                                   height: Dimens.d135,
                                                   radius:
-                                                  BorderRadius.circular(10),
+                                                      BorderRadius.circular(10),
                                                   fit: BoxFit.cover,
                                                 ),
                                                 Align(
                                                   alignment: Alignment.topRight,
                                                   child: Padding(
                                                     padding:
-                                                    const EdgeInsets.only(
-                                                        right: 10, top: 10),
+                                                        const EdgeInsets.only(
+                                                            right: 10, top: 10),
                                                     child: SvgPicture.asset(
                                                         ImageConstant.play),
                                                   ),
@@ -243,8 +246,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                             Dimens.d10.spaceHeight,
                                             Row(
                                               mainAxisAlignment:
-                                              MainAxisAlignment
-                                                  .spaceBetween,
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 Text(
                                                   "Meditation",
@@ -255,7 +258,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                                 const CircleAvatar(
                                                   radius: 2,
                                                   backgroundColor:
-                                                  ColorConstant.colorD9D9D9,
+                                                      ColorConstant.colorD9D9D9,
                                                 ),
                                                 Row(
                                                   children: [
@@ -276,15 +279,16 @@ class _SearchScreenState extends State<SearchScreen> {
                                                   ],
                                                 ),
                                                 SvgPicture.asset(
-                                                    ImageConstant.downloadCircle,
+                                                    ImageConstant
+                                                        .downloadCircle,
                                                     height: Dimens.d25,
                                                     width: Dimens.d25)
                                               ],
                                             ),
                                             Dimens.d7.spaceHeight,
                                             Text(
-                                              sController
-                                                  .exploreList[index]['title'],
+                                              sController.exploreList[index]
+                                                  ['title'],
                                               maxLines: Dimens.d2.toInt(),
                                               style: Style.montserratMedium(
                                                   fontSize: Dimens.d14),
@@ -294,7 +298,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                         ),
                                       );
                                     }),
-                              )),
+                          )),
                         ],
                       ),
                     ),

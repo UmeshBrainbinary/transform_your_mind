@@ -72,7 +72,8 @@ class _HomeScreenState extends State<HomeScreen>
     getGratitudeList();
     super.initState();
   }
-  getStatusBar(){
+
+  getStatusBar() {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: ColorConstant.backGround, // Status bar background color
       statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
@@ -234,7 +235,6 @@ class _HomeScreenState extends State<HomeScreen>
                 Dimens.d30.spaceHeight,
                 customDivider(),
                 Dimens.d30.spaceHeight,
-
 
                 //______________________________ ToDays Gratitude _______________________
                 /*   const Padding(
@@ -458,11 +458,13 @@ class _HomeScreenState extends State<HomeScreen>
                     builder: (context) {
                       return const NotificationScreen();
                     },
-                  )).then((value) {
-                    setState(() {
-                      getStatusBar();
-                    });
-                  },);
+                  )).then(
+                    (value) {
+                      setState(() {
+                        getStatusBar();
+                      });
+                    },
+                  );
                 },
                 child: SvgPicture.asset(
                   height: 25.h,
@@ -689,8 +691,7 @@ class _HomeScreenState extends State<HomeScreen>
                       children: [
                         Dimens.d10.spaceHeight,
                         Text(
-                          "WellDone"
-                              .tr,
+                          "WellDone".tr,
                           textAlign: TextAlign.center,
                           style: Style.montserratRegular(
                               color: ColorConstant.black),
@@ -716,18 +717,20 @@ class _HomeScreenState extends State<HomeScreen>
                     ),
                   )
                 : Column(
-                  children: [
-                    ListView.separated(
+                    children: [
+                      ListView.separated(
                         shrinkWrap: true,
                         padding: EdgeInsets.zero,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: affirmationList.length,
-                                  itemBuilder: (context, index) {
-                    return InkWell(
-                    onTap: () {
-                      setState(() {
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: affirmationList.length,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              setState(() {
                                 affirmationCheckList[index] = true;
-                                Future.delayed(const Duration(milliseconds: 800)).then(
+                                Future.delayed(
+                                        const Duration(milliseconds: 800))
+                                    .then(
                                   (value) {
                                     setState(() {
                                       affirmationList.removeAt(index);
@@ -750,8 +753,8 @@ class _HomeScreenState extends State<HomeScreen>
                                           shape: BoxShape.circle,
                                           color: ColorConstant.themeColor),
                                       child: Center(
-                                          child: SvgPicture.asset(ImageConstant.checkBox)
-                                      ),
+                                          child: SvgPicture.asset(
+                                              ImageConstant.checkBox)),
                                     )
                                   : Container(
                                       height: 40,
@@ -768,26 +771,25 @@ class _HomeScreenState extends State<HomeScreen>
                           return const Divider();
                         },
                       ),
-                    Dimens.d20.spaceHeight,
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: CommonElevatedButton(
-                        title: "addNew".tr,
-                        onTap: () {
-                          Get.toNamed(AppRoutes.myAffirmationPage)!.then(
-                                (value) {
-                              setState(() {
-                                getAffirmationList();
-                              });
-                            },
-                          );
-                        },
+                      Dimens.d20.spaceHeight,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: CommonElevatedButton(
+                          title: "addNew".tr,
+                          onTap: () {
+                            Get.toNamed(AppRoutes.myAffirmationPage)!.then(
+                              (value) {
+                                setState(() {
+                                  getAffirmationList();
+                                });
+                              },
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                    Dimens.d20.spaceHeight,
-
-                  ],
-                ),
+                      Dimens.d20.spaceHeight,
+                    ],
+                  ),
           )
         ],
       ),
@@ -858,8 +860,8 @@ class _HomeScreenState extends State<HomeScreen>
                     ),
                   )
                 : Column(
-                  children: [
-                    ListView.separated(
+                    children: [
+                      ListView.separated(
                         shrinkWrap: true,
                         padding: EdgeInsets.zero,
                         physics: const NeverScrollableScrollPhysics(),
@@ -869,7 +871,9 @@ class _HomeScreenState extends State<HomeScreen>
                             onTap: () {
                               setState(() {
                                 gratitudeCheckList[index] = true;
-                                Future.delayed(const Duration(milliseconds: 800)).then(
+                                Future.delayed(
+                                        const Duration(milliseconds: 800))
+                                    .then(
                                   (value) {
                                     setState(() {
                                       gratitudeList.removeAt(index);
@@ -891,9 +895,9 @@ class _HomeScreenState extends State<HomeScreen>
                                       decoration: const BoxDecoration(
                                           shape: BoxShape.circle,
                                           color: ColorConstant.themeColor),
-                                      child:  Center(
-                                        child: SvgPicture.asset(ImageConstant.checkBox)
-                                      ),
+                                      child: Center(
+                                          child: SvgPicture.asset(
+                                              ImageConstant.checkBox)),
                                     )
                                   : Container(
                                       height: 40,
@@ -905,31 +909,30 @@ class _HomeScreenState extends State<HomeScreen>
                                     ),
                             ),
                           );
-                                  },
-                                  separatorBuilder: (context, index) {
-                    return const Divider();
-                                  },
-                                ),
-                    Dimens.d20.spaceHeight,
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: CommonElevatedButton(
-                        title: "addNew".tr,
-                        onTap: () {
-                          Get.toNamed(AppRoutes.myGratitudePage)!.then(
-                                (value) {
-                              setState(() {
-                                getGratitudeList();
-                              });
-                            },
-                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return const Divider();
                         },
                       ),
-                    ),
-                    Dimens.d20.spaceHeight,
-
-                  ],
-                ),
+                      Dimens.d20.spaceHeight,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: CommonElevatedButton(
+                          title: "addNew".tr,
+                          onTap: () {
+                            Get.toNamed(AppRoutes.myGratitudePage)!.then(
+                              (value) {
+                                setState(() {
+                                  getGratitudeList();
+                                });
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                      Dimens.d20.spaceHeight,
+                    ],
+                  ),
           )
         ],
       ),

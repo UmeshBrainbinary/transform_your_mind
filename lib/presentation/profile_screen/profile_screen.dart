@@ -95,7 +95,8 @@ class ProfileScreen extends StatelessWidget {
                   Dimens.d2.spaceHeight,
                   Obx(
                     () => Text(
-                      profileController.mail?.value ?? "melissapeters@gmail.com",
+                      profileController.mail?.value ??
+                          "melissapeters@gmail.com",
                       style: Style.montserratRegular(
                         fontSize: Dimens.d10,
                       ),
@@ -157,7 +158,8 @@ class ProfileScreen extends StatelessWidget {
                                   showChartValuesInPercentage: false,
                                   showChartValuesOutside: false,
                                   decimalPlaces: 0,
-                                  chartValueBackgroundColor: Colors.transparent),
+                                  chartValueBackgroundColor:
+                                      Colors.transparent),
                             ),
                           ),
                           Dimens.d40.spaceWidth,
@@ -309,17 +311,19 @@ class ProfileScreen extends StatelessWidget {
                           registerController.dobController.clear();
                           registerController.genderController.clear();
                           registerController.imageFile.value = null;
-              
-                          if (PrefService.getBool(PrefKey.isRemember) == false) {
+
+                          if (PrefService.getBool(PrefKey.isRemember) ==
+                              false) {
                             LoginController loginController =
                                 Get.put(LoginController());
                             loginController.emailController.clear();
                             loginController.passwordController.clear();
                             loginController.rememberMe.value = false;
                           }
-              
+
                           Get.offAllNamed(AppRoutes.loginScreen);
-                          PrefService.setValue(PrefKey.isLoginOrRegister, false);
+                          PrefService.setValue(
+                              PrefKey.isLoginOrRegister, false);
                         },
                       );
                     },
@@ -345,7 +349,6 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                   Dimens.d50.spaceHeight,
-
                 ],
               ),
             ),

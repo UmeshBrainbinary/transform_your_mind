@@ -21,8 +21,7 @@ class HomeAppBar extends StatefulWidget {
   final bool ratingViewUi;
   final bool back;
 
-  const HomeAppBar(
-      {super.key,
+  const HomeAppBar({super.key,
       this.title,
       this.isInfo = false,
       this.fromHomeTab = false,
@@ -97,7 +96,6 @@ class _HomeAppBarState extends State<HomeAppBar> with TickerProviderStateMixin {
                     ),
                   )
                 : const SizedBox(),
-
             Dimens.d10.h.spaceWidth,
             GestureDetector(
               onTap: () {
