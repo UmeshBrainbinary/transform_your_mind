@@ -80,12 +80,13 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
       loader = true;
     });
     try {
-      var headers = {'Content-Type': 'application/json'};
-      var request = http.Request(
-          'PUT',
-          Uri.parse(
-              '${EndPoints.baseUrl}${EndPoints.updateFocuses}${PrefService.getString(PrefKey.userId)}'));
-      request.body = json.encode({"focuses": selectedTagNames});
+      var headers = {
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+      };
+      var request = http.MultipartRequest('POST', Uri.parse('${EndPoints.baseUrl}${EndPoints.updateUser}${PrefService.getString(PrefKey.userId)}'));
+      request.fields.addAll({
+        'focuses': jsonEncode(selectedTagNames)
+      });
       request.headers.addAll(headers);
 
       http.StreamedResponse response = await request.send();

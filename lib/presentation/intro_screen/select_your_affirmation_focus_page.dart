@@ -53,10 +53,14 @@ class _SelectYourAffirmationFocusPageState
   bool loader = false;
 
   getAffirmation() async {
+    var headers = {
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
     var request = http.Request(
         'GET',
         Uri.parse(
             '${EndPoints.baseUrl}${EndPoints.getFocus}6667e00b474a3621861060c0&type=1'));
+    request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
 

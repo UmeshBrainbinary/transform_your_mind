@@ -6,4 +6,5 @@ class EndPoints {
   static String login = "login";
   static String getFocus = "get-focus?created_by=";
   static String updateFocuses = "update-focus?id=";
+  static String updateUser = "update-user?id=";
 }
