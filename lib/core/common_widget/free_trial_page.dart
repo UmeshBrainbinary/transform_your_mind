@@ -62,60 +62,62 @@ class _FreeTrialPageState extends State<FreeTrialPage>
             ),
             Align(
               alignment: Alignment.bottomCenter,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Spacer(),
-                  Dimens.d251.spaceHeight,
-                  Text(
-                    "Welcome to Transform.....you\'re all set to get started.\n\nYour Transform Basic package is now live.",
-                    style: Style.montserratRegular(
-                      fontSize: Dimens.d15,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // const Spacer(),
+                    Dimens.d251.spaceHeight,
+                    Text(
+                      "Welcome to Transform.....you\'re all set to get started.\n\nYour Transform Basic package is now live.",
+                      style: Style.montserratRegular(
+                        fontSize: Dimens.d15,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  Dimens.d25.spaceHeight,
-                  Text(
-                    //i10n.freeGeneralDesc,
-                    "This means you have access to....",
-                    style: Style.montserratRegular(
-                        fontSize: Dimens.d12, fontWeight: FontWeight.w500),
-                    textAlign: TextAlign.center,
-                  ),
-                  Dimens.d30.spaceHeight,
-                  const _DescriptionPoints(
-                    title: "x1 journal input for all Journal features",
-                  ),
-                  const _DescriptionPoints(
-                    title: "x3 meditations, Transform pods or sleep sounds",
-                  ),
-                  const _DescriptionPoints(
-                    title: "Transform mood & emotions tracker",
-                  ),
-                  const _DescriptionPoints(
-                    title: "Focused affirmations up to x10 per day",
-                  ),
-                  const Spacer(),
-                  Dimens.d20.spaceHeight,
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
-                    child: CommonElevatedButton(
-                      title: "Premium Access to all features",
-                      onTap: () async {
-                        await PrefService.setValue(PrefKey.premium, true);
+                    Dimens.d25.spaceHeight,
+                    Text(
+                      //i10n.freeGeneralDesc,
+                      "This means you have access to....",
+                      style: Style.montserratRegular(
+                          fontSize: Dimens.d12, fontWeight: FontWeight.w500),
+                      textAlign: TextAlign.center,
+                    ),
+                    Dimens.d30.spaceHeight,
+                    const _DescriptionPoints(
+                      title: "x1 journal input for all Journal features",
+                    ),
+                    const _DescriptionPoints(
+                      title: "x3 meditations, Transform pods or sleep sounds",
+                    ),
+                    const _DescriptionPoints(
+                      title: "Transform mood & emotions tracker",
+                    ),
+                    const _DescriptionPoints(
+                      title: "Focused affirmations up to x10 per day",
+                    ),
+                    // const Spacer(),
+                    Dimens.d20.spaceHeight,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
+                      child: CommonElevatedButton(
+                        title: "Premium Access to all features",
+                        onTap: () async {
+                          await PrefService.setValue(PrefKey.premium, true);
 
-                        Navigator.pushReplacement(context, MaterialPageRoute(
-                          builder: (context) {
-                            return SubscriptionScreen(
-                              skip: true,
-                            );
-                          },
-                        ));
-                      },
+                          Navigator.pushReplacement(context, MaterialPageRoute(
+                            builder: (context) {
+                              return SubscriptionScreen(
+                                skip: true,
+                              );
+                            },
+                          ));
+                        },
+                      ),
                     ),
-                  ),
-                  Dimens.d10.spaceHeight,
-                ],
+                    Dimens.d10.spaceHeight,
+                  ],
+                ),
               ),
             ),
             const SizedBox(

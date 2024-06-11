@@ -59,7 +59,7 @@ class LoginController extends GetxController {
       var request = http.Request(
           'POST', Uri.parse('${EndPoints.baseUrl}${EndPoints.login}'));
       request.body =
-          json.encode({"email": "test12@yopmail.com", "password": "User@1234"});
+          json.encode({"email": emailController.text.trim(), "password": passwordController.text.trim()});
       request.headers.addAll(headers);
 
       http.StreamedResponse response = await request.send();
