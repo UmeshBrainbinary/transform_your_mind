@@ -220,7 +220,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                       FocusScope.of(context).unfocus();
 
                                       if (_formKey.currentState!.validate()) {
-                                        Get.back();
+                                        changePasswordController.resetPasswordApi(context);
+                                       // Get.back();
                                       }
                                     },
                                   )

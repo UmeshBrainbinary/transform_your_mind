@@ -89,9 +89,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                                     FocusScope.of(context).unfocus();
 
                                     if (_formKey.currentState!.validate()) {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                    return VerificationsScreen(forgot: true,);
-                                  },));
+                                  forgotController.forgotPasswordButton(context);
 
 
                                     }
