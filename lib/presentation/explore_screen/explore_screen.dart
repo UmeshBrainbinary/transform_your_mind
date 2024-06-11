@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
@@ -9,7 +10,7 @@ import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/explore_screen/explore_controller.dart';
 import 'package:transform_your_mind/presentation/explore_screen/screen/now_playing_screen/now_playing_screen.dart';
-import 'package:transform_your_mind/presentation/explore_screen/widget/home_app_bar.dart';
+import 'package:transform_your_mind/presentation/notification_screen/notification_screen.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
@@ -50,6 +51,10 @@ class _ExploreScreenState extends State<ExploreScreen>
         showScrollTop.value = false;
       }
     });
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.white, // Status bar background color
+      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+    ));
     super.initState();
   }
 
@@ -131,16 +136,25 @@ class _ExploreScreenState extends State<ExploreScreen>
                       child: Column(
                         children: [
                           Dimens.d30.h.spaceHeight,
-                          HomeAppBar(
-                            onInfoTap: () {},
-                            onRatingTap: () {
-                              _showAlertDialog(context);
-                            },
-                            isInfo: false,
-                            back: false,
-                            ratings: false,
-                            downloadShown: true,
-                            title: "explore".tr,
+                          Row(
+                            children: [
+                              Text(
+                                "Audio Content".tr,
+                                style: Style.montserratRegular(fontSize: 18),
+                              ),
+                              const Spacer(),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                    return const NotificationScreen();
+                                  },));
+                                },
+                                child: SvgPicture.asset(
+                                    ImageConstant.notification,
+                                    height: Dimens.d25,
+                                    width: Dimens.d25),
+                              ),
+                            ],
                           ),
                           Dimens.d30.h.spaceHeight,
                           Container(

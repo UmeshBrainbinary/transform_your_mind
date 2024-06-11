@@ -22,7 +22,7 @@ class HomeAppBar extends StatefulWidget {
   final bool back;
 
   const HomeAppBar(
-      {Key? key,
+      {super.key,
       this.title,
       this.isInfo = false,
       this.fromHomeTab = false,
@@ -33,8 +33,7 @@ class HomeAppBar extends StatefulWidget {
       this.showMeIcon = true,
       this.ratings = false,
       this.ratingViewUi = false,
-      required this.back})
-      : super(key: key);
+      required this.back});
 
   @override
   State<HomeAppBar> createState() => _HomeAppBarState();
@@ -98,19 +97,7 @@ class _HomeAppBarState extends State<HomeAppBar> with TickerProviderStateMixin {
                     ),
                   )
                 : const SizedBox(),
-         /*   widget.downloadShown!
-                ? GestureDetector(
-                    onTap: () {},
-                    child: SvgPicture.asset(ImageConstant.download,
-                        height: Dimens.d25, width: Dimens.d25),
-                  )
-                : const SizedBox(),
-            Dimens.d10.h.spaceWidth,
-            GestureDetector(
-              onTap: widget.onInfoTap!,
-              child: SvgPicture.asset(ImageConstant.information,
-                  height: Dimens.d25, width: Dimens.d25),
-            ),*/
+
             Dimens.d10.h.spaceWidth,
             GestureDetector(
               onTap: () {

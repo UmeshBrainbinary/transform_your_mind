@@ -38,12 +38,10 @@
   "chooseYourLanguage" : "Wählen Sie Ihre Sprache",
   "subscriptions": "Abonnements",
   "selectYourPreferred": "Wählen Sie Ihre bevorzugte Sprache, um Go My Go einfach zu verwenden",
-
   "leaveUsReview": "Hinterlassen Sie uns eine Bewertung",
   "deleteAccount": "Konto löschen",
   "legals": "Rechtliches",
   "settings": "Einstellungen",
-
   "email": "E-Mail",
   "enterEmail": "E-Mail eingeben",
   "password": "Passwort",
@@ -98,7 +96,6 @@
   "theme": "Thema",
   "privacyPolicy": "Datenschutzrichtlinie",
   "me": "Ich",
-
   "everyoneU": "Jeder ist einzigartig, lassen Sie uns Ihren Raum anpassen, um Ihnen die relevantesten Inhalte zu bieten.",
   "myHub": "Mein Hub",
   "myLibrary": "Meine Bibliothek",
@@ -109,7 +106,6 @@
   "myDownloads": "Meine Downloads",
   "seeAll": "Alle ansehen",
   "comingSoon": "Kommt bald...",
-
   "downloadYourFavouriteContentToSaveThemHereForQuickAccess": "Laden Sie Ihre Lieblingsinhalte herunter, um sie hier für den schnellen Zugriff zu speichern",
   "noDownloadYet" : "Noch kein Download",
   "welcomeToJournal": "Willkommen beim Journal",
@@ -143,7 +139,6 @@
   "meditationMin": "Meditations-Minuten",
   "edit": "Bearbeiten",
   "myDrafts": "Meine Entwürfe",
-
   "displayNameTransformYourMind": "Anzeigename Transform Your Mind",
   "remove": "Entfernen",
   "share": "Teilen",
@@ -263,9 +258,12 @@
   "sendFeedback": "Feedback abschicken",
   "support": "Unterstützung",
   "troubleshootingGuides": "Anleitungen zur Fehlerbehebung",
-
-  "howYourRate": "Wie würden Sie Ihre Erfahrung bewerten?"
-
-
+  "howYourRate": "Wie würden Sie Ihre Erfahrung bewerten?",
+  "yourGratitude": "Ihre Dankbarkeit",
+  "pleaseEnterDate": "Das Datumsfeld ist erforderlich.",
+  "pleaseEnterTitle": "Das Titelfeld ist erforderlich.",
+  "pleaseEnterDescription": "Das Feld Beschreibung ist erforderlich.",
+  "today'sAffirmation": "heute  Affirmationen",
+  "WellDone": "Gut gemacht, Sie haben heute alle Ihre Affirmationen vervollständigt."
 
 }

@@ -163,7 +163,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   height: Dimens.d20,
                   width: Dimens.d20,
                 ),
-                label: 'explore'.tr,
+                label: 'Audio Content'.tr,
                 activeIcon: SvgPicture.asset(
                   ImageConstant.exploreSelected,
                   height: Dimens.d20,
@@ -193,14 +193,14 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             unselectedItemColor: Colors.grey,
             selectedFontSize: Dimens.d12,
             unselectedFontSize: Dimens.d12,
-            selectedLabelStyle: Style.cormorantGaramondBold(
-              color: ColorConstant.themeColor,
-              fontSize: Dimens.d12,
+            selectedLabelStyle: Style.montserratSemiBold(
+              color: ColorConstant.black,
+              fontSize: Dimens.d10,
             ),
             showUnselectedLabels: true,
-            unselectedLabelStyle: Style.cormorantGaramondBold(
-              //color: Colors.black,
-              fontSize: Dimens.d12,
+            unselectedLabelStyle: Style.montserratRegular(
+              color: Colors.black,
+              fontSize: Dimens.d10,
             ),
             onTap: (v){
               if(v !=2)

@@ -8,6 +8,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:transform_your_mind/core/common_widget/pods_play_service.dart';
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/utils/audio_manager/audio_player_manager.dart';
 import 'package:transform_your_mind/core/utils/audio_manager/seek_bar.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
@@ -81,6 +82,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
         body: SafeArea(
       child: Stack(
         children: [
+
           /// background image
           Align(
             alignment: Alignment.bottomCenter,
@@ -95,9 +97,34 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
               ),
             ),
           ),
+          /// description, subtitle
+          Padding(
+            padding: const EdgeInsets.only(top: Dimens.d300),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 60),
+                  child: Text(
+                    "Your Way Out Of Addiction - Ep 4 How Addiction Starts",textAlign: TextAlign.center,
+                    style: Style.montserratRegular(fontSize: 17,color: ColorConstant.white),
+                  ),
+                ),
+                Dimens.d20.spaceHeight,
+                Text(
+                  "Chris Hill",textAlign: TextAlign.center,
+                  style: Style.montserratRegular(fontSize: 15,color: ColorConstant.white),
+                ),
+                Dimens.d20.spaceHeight,
+                Text(
+                  "Meditation",textAlign: TextAlign.center,
+                  style: Style.montserratRegular(fontSize: 15,color: ColorConstant.white),
+                ),
+              ],
+            ),
+          ),
 
           /// app bar
-              Column(
+          Column(
                 children: [
                   Dimens.d30.h.spaceHeight,
                   CustomAppBar(
@@ -110,8 +137,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                         },
                         child: const Icon(
                           Icons.close,
-                          color: ColorConstant.themeColor,
-                        )),
+                      color: ColorConstant.black,
+                    )),
                     action: Row(
                       children: [
                         GestureDetector(
@@ -132,8 +159,11 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                         ),
                         Dimens.d10.h.spaceWidth,
                         GestureDetector(
-                          onTap: () async {},
-                          child: SvgPicture.asset(
+                      onTap: () async {
+                        showSnackBarSuccess(
+                            context, "Your Sounds Successfully Bookmarked.");
+                      },
+                      child: SvgPicture.asset(
                             height: 25.h,
                             ImageConstant.bookmark,
                           ),
@@ -164,7 +194,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
           ),
 
           ///seekbar
-              Column(
+          Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   StreamBuilder<Duration?>(
@@ -534,8 +564,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                   }
                 },
               ),
-            ],
-          ),
+        ],
+      ),
         ));
   }
 

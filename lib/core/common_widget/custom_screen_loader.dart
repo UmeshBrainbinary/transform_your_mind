@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 
@@ -283,4 +284,15 @@ class LoadingWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+
+Widget commonLoader(){
+  return    GestureDetector(
+      child: SizedBox(
+          height: Get.height,
+          width: Get.width,
+          child: const Center(
+            child: CircularProgressIndicator(),
+          )));
 }

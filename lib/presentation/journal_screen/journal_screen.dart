@@ -36,11 +36,11 @@ class _JournalScreenState extends State<JournalScreen>
       lottie: ImageConstant.lottieCircle,
       route: AppRoutes.myAffirmationPage,
     ),
-    JournalData(
+  /*  JournalData(
       title: "affirmationAlarms".tr,
       lottie: ImageConstant.lottieStarOcean,
       route: AppRoutes.affirmationAlarmScreen,
-    ),
+    ),*/
     JournalData(
       title: "motivational".tr,
       lottie: ImageConstant.lottieHexagon,
@@ -62,16 +62,18 @@ class _JournalScreenState extends State<JournalScreen>
   @override
   void initState() {
     super.initState();
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.white, // Status bar background color
-      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
-    ));
+    getStatusBar();
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
     );
   }
-
+  getStatusBar(){
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.white, // Status bar background color
+      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+    ));
+  }
   bool ratingView = false;
   ThemeController themeController = Get.find<ThemeController>();
 
@@ -85,13 +87,13 @@ class _JournalScreenState extends State<JournalScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: CustomAppBar(
-          title: "selfDevelopment".tr,
-
-        ),
-        body: SafeArea(
-          child: Stack(
+    return SafeArea(
+      child: Scaffold(
+          appBar: CustomAppBar(
+            title: "selfDevelopment".tr,
+      
+          ),
+          body: Stack(
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -122,7 +124,7 @@ class _JournalScreenState extends State<JournalScreen>
                             }
                           });
                         }
-
+          
                         return false;
                       },
                       child: Expanded(
@@ -163,7 +165,11 @@ class _JournalScreenState extends State<JournalScreen>
                                                   context,
                                                   journalList[index].route ??
                                                       "",
-                                                );
+                                                ).then((value) {
+                                                  setState(() {
+                                                    getStatusBar();
+                                                  });
+                                                },);
                                               },
                                               child: Column(
                                                 children: [
@@ -192,7 +198,7 @@ class _JournalScreenState extends State<JournalScreen>
                                                               .lottie,
                                                           height: 180,
                                                           width: 180,
-
+          
                                                       ),
                                                     ),
                                                   ),
@@ -287,8 +293,8 @@ class _JournalScreenState extends State<JournalScreen>
               )
                   : const SizedBox(),*/
             ],
-          ),
-        ));
+          )),
+    );
   }
 }
 

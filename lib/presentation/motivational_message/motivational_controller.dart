@@ -1,5 +1,7 @@
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/common_widget/app_common_dialog.dart';
+import 'package:transform_your_mind/core/utils/color_constant.dart';
 
 class MotivationalController extends GetxController{
   List motivationalList = [
@@ -12,6 +14,10 @@ class MotivationalController extends GetxController{
 
   @override
   void onInit() {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.backGround, // Status bar background color
+      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+    ));
     super.onInit();
   }
 }

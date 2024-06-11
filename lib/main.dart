@@ -1,8 +1,10 @@
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
+import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/localization/app_translation.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
@@ -24,15 +26,17 @@ Future<void> main() async {
     Logger.init(kReleaseMode ? LogMode.live : LogMode.debug);
     runApp(MyApp());
   });
+/*  await AndroidAlarmManager.cancel(42);
+
+  await Alarm.init();*/
 
   /// localization on tap
   //var locale = const Locale('de', 'De');
   //Get.updateLocale(locale);
 
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent, // set the desired status bar color
-    statusBarIconBrightness:
-        Brightness.dark, // set the status bar icon color to light or dark
+    statusBarColor: ColorConstant.backGround, // Status bar background color
+    statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
   ));
 }
 
@@ -48,10 +52,29 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+
     themeController = Get.put(ThemeController(), permanent: true);
     print("isDarkTheme:- ${PrefService.getBool(PrefKey.isDarkTheme)}");
     themeController.isDarkMode.value = PrefService.getBool(PrefKey.isDarkTheme);
+    setAlarm();
+
     getLanguages();
+  }
+  void setAlarm() async {
+/*    DateTime alarmTime = DateTime.now().add(const Duration(minutes: 1)); // Example: Set alarm after 1 minute
+    final alarmSettings = AlarmSettings(
+      id: 42,
+      dateTime: alarmTime,
+      assetAudioPath: 'assets/audio/audio.mp3',
+      loopAudio: true,
+      vibrate: true,
+      volume: 0.8,androidFullScreenIntent: true,
+      fadeDuration: 3.0,
+      notificationTitle: 'This is the title',
+      notificationBody: 'This is the body',
+      enableNotificationOnKill: Platform.isAndroid);
+    await Alarm.set(alarmSettings: alarmSettings,);*/
+
   }
 
   getLanguages() {

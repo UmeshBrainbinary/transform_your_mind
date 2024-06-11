@@ -3,10 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:transform_your_mind/core/common_widget/bg_semi_circle_texture_painter.dart';
+import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/subscription_screen/subscription_screen.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
@@ -29,7 +31,7 @@ class _FreeTrialPageState extends State<FreeTrialPage>
   void initState() {
     super.initState();
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.white, // Status bar background color
+      statusBarColor: ColorConstant.white, // Status bar background color
       statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
     ));
     _lottieBgController = AnimationController(vsync: this);
@@ -45,93 +47,86 @@ class _FreeTrialPageState extends State<FreeTrialPage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-      /*    Lottie.asset(
-            ImageConstant.homeScreenMeshLottie,
-            controller: _lottieBgController,
-            height: MediaQuery.of(context).size.height / 3,
-            fit: BoxFit.fill,
-            onLoaded: (composition) {
-              _lottieBgController
-                ..duration = composition.duration
-                ..repeat();
-            },
-          ),*/
-          const BgSemiCircleTexture(),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: Dimens.d105, vertical: Dimens.d115),
-            child: SizedBox(
-              width: Dimens.d200,
-              height: Dimens.d120,
-              child: Image.asset(ImageConstant.splashLogo),
+    return SafeArea(
+      child: Scaffold(
+        body: Stack(
+          children: [
+            const BgSemiCircleTexture(),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: Dimens.d105, vertical: Dimens.d115),
+              child: SizedBox(
+                width: Dimens.d200,
+                height: Dimens.d120,
+                child: Image.asset(ImageConstant.splashLogo),
+              ),
             ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Spacer(),
-                Dimens.d251.spaceHeight,
-                Text(
-                  "Welcome to Transform.....you\'re all set to get started.\n\nYour Transform Basic package is now live.",
-                  style: Style.montserratRegular(
-                    fontSize: Dimens.d15,
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Spacer(),
+                  Dimens.d251.spaceHeight,
+                  Text(
+                    "Welcome to Transform.....you\'re all set to get started.\n\nYour Transform Basic package is now live.",
+                    style: Style.montserratRegular(
+                      fontSize: Dimens.d15,
 
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                Dimens.d25.spaceHeight,
-                Text(
-                  //i10n.freeGeneralDesc,
-                  "This means you have access to....",
-                  style: Style.montserratRegular(
-                      fontSize: Dimens.d12,
+                  Dimens.d25.spaceHeight,
+                  Text(
+                    //i10n.freeGeneralDesc,
+                    "This means you have access to....",
+                    style: Style.montserratRegular(
+                        fontSize: Dimens.d12,
 
-                      fontWeight: FontWeight.w500),
-                  textAlign: TextAlign.center,
-                ),
-                Dimens.d30.spaceHeight,
-                const _DescriptionPoints(
-                  title: "x1 journal input for all Journal features",
-                ),
-                const _DescriptionPoints(
-                  title: "x3 meditations, Transform pods or sleep sounds",
-                ),
-                const _DescriptionPoints(
-                  title: "Transform mood & emotions tracker",
-                ),
-                const _DescriptionPoints(
-                  title: "Focused affirmations up to x10 per day",
-                ),
-                const Spacer(),
-                Dimens.d20.spaceHeight,
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
-                  child: CommonElevatedButton(
-
-                    title: "Premium Access to all features",
-                    onTap: () {
-                      Navigator.pushReplacement(context, MaterialPageRoute(
-                        builder: (context) {
-                          return  SubscriptionScreen(skip: true,);
-                        },
-                      ));
-                    },
+                        fontWeight: FontWeight.w500),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-                Dimens.d50.spaceHeight,
-              ],
+                  Dimens.d30.spaceHeight,
+                  const _DescriptionPoints(
+                    title: "x1 journal input for all Journal features",
+                  ),
+                  const _DescriptionPoints(
+                    title: "x3 meditations, Transform pods or sleep sounds",
+                  ),
+                  const _DescriptionPoints(
+                    title: "Transform mood & emotions tracker",
+                  ),
+                  const _DescriptionPoints(
+                    title: "Focused affirmations up to x10 per day",
+                  ),
+                  const Spacer(),
+                  Dimens.d20.spaceHeight,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
+                    child: CommonElevatedButton(
+
+                      title: "Premium Access to all features",
+                      onTap: () async {
+                        await PrefService.setValue(PrefKey.premium, true);
+
+                        Navigator.pushReplacement(context, MaterialPageRoute(
+                          builder: (context) {
+                            return  SubscriptionScreen(skip: true,);
+                          },
+                        ));
+                      },
+                    ),
+                  ),
+                  Dimens.d10.spaceHeight,
+                ],
+              ),
             ),
-          ),
-          const SizedBox(
-            height: Dimens.d100,
-            child: CustomAppBar(title: ''),
-          )
-        ],
+            const SizedBox(
+              height: Dimens.d100,
+              child: CustomAppBar(title: ''),
+            )
+          ],
+        ),
       ),
     );
   }

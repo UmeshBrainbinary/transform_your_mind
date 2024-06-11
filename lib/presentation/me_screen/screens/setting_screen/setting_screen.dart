@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
@@ -18,12 +19,25 @@ import 'package:transform_your_mind/widgets/app_confirmation_dialog.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
-class SettingScreen extends StatelessWidget {
+class SettingScreen extends StatefulWidget {
   SettingScreen({super.key});
 
-  SettingController settingController = Get.put(SettingController());
-  ThemeController themeController = Get.find<ThemeController>();
+  @override
+  State<SettingScreen> createState() => _SettingScreenState();
+}
 
+class _SettingScreenState extends State<SettingScreen> {
+  SettingController settingController = Get.put(SettingController());
+
+  ThemeController themeController = Get.find<ThemeController>();
+  @override
+  void initState() {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.backGround, // Status bar background color
+      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+    ));
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,7 +105,7 @@ class SettingScreen extends StatelessWidget {
                                 } else {
                                   Navigator.push(context, MaterialPageRoute(
                                     builder: (context) {
-                                      return SupportScreen();
+                                      return const SupportScreen();
                                     },
                                   ));
                                 }

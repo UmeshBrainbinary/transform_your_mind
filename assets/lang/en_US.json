@@ -40,12 +40,10 @@
   "chooseYourLanguage" : "Choose your Language",
   "subscriptions": "Subscriptions",
   "selectYourPreferred": "Select Your Preferred Language To Use Go My Go Easily",
-
   "leaveUsReview": "Leave us a Review",
   "deleteAccount": "Delete Account",
   "legals": "Legals",
   "settings": "Settings",
-
   "email": "Email",
   "enterEmail": "Enter email",
   "password": "Password",
@@ -100,8 +98,6 @@
   "theme": "Theme",
   "privacyPolicy": "Privacy Policy",
   "me": "Me",
-
-
   "everyoneU": "Everyone is unique, let's tailor your space to get you the most relevant content.",
   "myHub": "My Hub",
   "myLibrary": "My Library",
@@ -146,7 +142,6 @@
   "meditationMin": "Meditation Min",
   "edit": "Edit",
   "myDrafts": "My Drafts",
-
   "displayNameTransformYourMind": "Display Name Transform Your Mind",
   "remove": "Remove",
   "share": "Share",
@@ -265,11 +260,12 @@
     "audioContent": "Audio Content",
     "sendFeedback": "Send Feedback",
     "support": "Support",
+    "yourGratitude": "Your Gratitude",
+    "today'sAffirmation": "Today's Affirmation",
     "troubleshootingGuides": "Troubleshooting guides",
-    "howYourRate": "How would you rate your experience?"
-
-
-
-
-
+    "pleaseEnterTitle": "The title field is required.",
+    "pleaseEnterDate": "The date field is required.",
+    "pleaseEnterDescription": "The Description field is required.",
+    "howYourRate": "How would you rate your experience?",
+    "WellDone": "Well done, you completed all your affirmations today."
 }

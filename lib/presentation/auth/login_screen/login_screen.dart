@@ -7,6 +7,7 @@ import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
+import 'package:transform_your_mind/core/utils/progress_dialog_utils.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/core/utils/validation_functions.dart';
@@ -28,180 +29,171 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: themeController.isDarkMode.value ?  ColorConstant.black : ColorConstant.backGround,
-      appBar: CustomAppBar(showBack: false,
-        title: "login".tr,
-      ),
-      body: SafeArea(
-          child: Stack(
-            children: [
-              !themeController.isDarkMode.value ?
-             Positioned(
-              top: Dimens.d70.h,
-              right: 0,
-              left:  null,
-              child: Image.asset(ImageConstant.bgStar, height: Dimens.d274.h),
-            ) : SizedBox(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
-                child: LayoutBuilder(
-                  builder: (context, constraint) {
-                    return Stack(
-                      children: [
-                        SingleChildScrollView(
-                          child: Form(
-                            key: _formKey,
-                           child: ConstrainedBox(
-                             constraints: BoxConstraints(
-                                 minHeight: constraint.maxHeight),
-                             child: IntrinsicHeight(
-                               child: Column(
-                                 mainAxisSize: MainAxisSize.max,
-                                 children: [
-                                   Dimens.d100.h.spaceHeight,
-                                   CommonTextField(
-                                       labelText: "email".tr,
-                                       hintText: "enterEmail".tr,
-                                       controller: loginController.emailController,
-                                       focusNode: FocusNode(),
-                                       prefixIcon: Image.asset(ImageConstant.email, scale: Dimens.d4),
-                                       keyboardType: TextInputType.emailAddress,
-
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: themeController.isDarkMode.value ?  ColorConstant.black : ColorConstant.backGround,
+        appBar: CustomAppBar(showBack: false,
+          title: "login".tr,
+        ),
+        body: Stack(
+          children: [
+            !themeController.isDarkMode.value ?
+           Positioned(
+            top: Dimens.d70.h,
+            right: 0,
+            left:  null,
+            child: Image.asset(ImageConstant.bgStar, height: Dimens.d274.h),
+          ) : const SizedBox(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
+              child: LayoutBuilder(
+                builder: (context, constraint) {
+                  return Stack(
+                    children: [
+                      SingleChildScrollView(
+                        child: Form(
+                          key: _formKey,
+                         child: ConstrainedBox(
+                           constraints: BoxConstraints(
+                               minHeight: constraint.maxHeight),
+                           child: IntrinsicHeight(
+                             child: Column(
+                               mainAxisSize: MainAxisSize.max,
+                               children: [
+                                 Dimens.d100.h.spaceHeight,
+                                 CommonTextField(
+                                     labelText: "email".tr,
+                                     hintText: "enterEmail".tr,
+                                     controller: loginController.emailController,
+                                     focusNode: FocusNode(),
+                                     prefixIcon: Image.asset(ImageConstant.email, scale: Dimens.d4),
+                                     keyboardType: TextInputType.emailAddress,
+      
+                                     validator: (value) {
+                                       if(value == ""){
+                                         return "theEmailFieldIsRequired".tr;
+                                       } else if (!isValidEmail(value, isRequired: true)) {
+                                         return "pleaseEnterValidEmail".tr;
+                                       }
+                                       return null;
+                                     }
+                                 ),
+                                 Dimens.d24.h.spaceHeight,
+                                 ValueListenableBuilder(
+                                   valueListenable: loginController.securePass,
+                                   builder: (context, value, child) {
+                                     return CommonTextField(
+                                       labelText:"password".tr,
+                                       hintText: "enterPassword".tr,
+                                       controller: loginController.passwordController,
+                                       onChanged: (value){
+                                         _formKey.currentState!.validate();
+                                       },
                                        validator: (value) {
-                                         if(value == ""){
-                                           return "theEmailFieldIsRequired".tr;
-                                         } else if (!isValidEmail(value, isRequired: true)) {
-                                           return "pleaseEnterValidEmail".tr;
+                                         if (value == "") {
+                                           return "thePasswordFieldIsRequired".tr;
+                                         } else if(!isValidPassword(value, isRequired: true)){
+                                           return "pleaseEnterValidPassword".tr;
                                          }
                                          return null;
+                                       },
+                                       focusNode: FocusNode(),
+                                       prefixIcon: Image.asset(ImageConstant.lock, scale: Dimens.d4),
+                                       suffixIcon: GestureDetector(
+                                           onTap: (){
+                                             loginController.securePass.value = !loginController.securePass.value;
+                                           },
+                                           child: Transform.scale(
+                                             scale: 0.38,
+                                             child: Image.asset(
+                                               loginController.securePass.value
+                                                   ? ImageConstant.eyeClose
+                                                   : ImageConstant.eyeOpen,
+                                               fit: BoxFit.contain,
+                                               height: 5,
+                                               width: 5,
+                                             ),
+                                           )
+                                     ),
+                                       isSecure: value,
+                                       //suffixTap: () => loginController.securePass.value = !loginController.securePass.value,
+                                       textInputAction: TextInputAction.done,
+                                     );
+                                   },
+                                 ),
+                                 Dimens.d20.h.spaceHeight,
+                                 _getRememberMeForgotPasswordWidget,
+                                 Dimens.d80.h.spaceHeight,
+                                 Obx(
+                                       () =>  (loginController.loader.value)
+                                       ? const LoadingButton()
+                                       : CommonElevatedButton(
+                                     title: "login".tr,
+                                     onTap: () async{
+      
+
+      
+                                       FocusScope.of(context).unfocus();
+      
+                                       if (_formKey.currentState!.validate()) {
+                                          loginController.onTapLogin(context);
+
+      
                                        }
-                                   ),
-                                   Dimens.d24.h.spaceHeight,
-                                   ValueListenableBuilder(
-                                     valueListenable: loginController.securePass,
-                                     builder: (context, value, child) {
-                                       return CommonTextField(
-                                         labelText:"password".tr,
-                                         hintText: "enterPassword".tr,
-                                         controller: loginController.passwordController,
-                                         onChanged: (value){
-                                           _formKey.currentState!.validate();
-                                         },
-                                         validator: (value) {
-                                           if (value == "") {
-                                             return "thePasswordFieldIsRequired".tr;
-                                           } else if(!isValidPassword(value, isRequired: true)){
-                                             return "pleaseEnterValidPassword".tr;
-                                           }
-                                           return null;
-                                         },
-                                         focusNode: FocusNode(),
-                                         prefixIcon: Image.asset(ImageConstant.lock, scale: Dimens.d4),
-                                         suffixIcon: GestureDetector(
-                                             onTap: (){
-                                               loginController.securePass.value = !loginController.securePass.value;
-                                             },
-                                             child: Transform.scale(
-                                               scale: 0.38,
-                                               child: Image.asset(
-                                                 loginController.securePass.value
-                                                     ? ImageConstant.eyeClose
-                                                     : ImageConstant.eyeOpen,
-                                                 fit: BoxFit.contain,
-                                                 height: 5,
-                                                 width: 5,
-                                               ),
-                                             )
-                                       ),
-                                         isSecure: value,
-                                         //suffixTap: () => loginController.securePass.value = !loginController.securePass.value,
-                                         textInputAction: TextInputAction.done,
-                                       );
+      
+
+      
                                      },
                                    ),
-                                   Dimens.d20.h.spaceHeight,
-                                   _getRememberMeForgotPasswordWidget,
-                                   Dimens.d80.h.spaceHeight,
-                                   Obx(
-                                         () =>  (loginController.loader.value)
-                                         ? const LoadingButton()
-                                         : CommonElevatedButton(
-                                       title: "login".tr,
-                                       onTap: () async{
-
-                                         loginController.loader.value = true;
-
-                                         FocusScope.of(context).unfocus();
-
-                                         if (_formKey.currentState!.validate()) {
-
-                                           await PrefService.setValue(PrefKey.isLoginOrRegister, true);
-                                           await PrefService.setValue(PrefKey.isRemember, loginController.rememberMe.value);
-                                           await PrefService.setValue(PrefKey.email, loginController.emailController.text);
-                                           await PrefService.setValue(PrefKey.password, loginController.passwordController.text);
-
-                                           Get.toNamed(AppRoutes
-                                               .dashBoardScreen);
-
-                                              // loginController.emailController.clear();
-                                           // loginController.passwordController.clear();
-                                           // loginController.rememberMe.value = false;
-
-                                         }
-
-                                         loginController.loader.value = false;
-
-                                       },
-                                     ),
-                                   ),
-                                   Dimens.d30.h.spaceHeight,
-                                   RichText(
-                                     text: TextSpan(
-                                       children: [
-                                         TextSpan(
-                                           text: "${"doNotHaveAnAccount".tr} ?",
-                                           style: Style.montserratRegular(
-                                            color:
-                                                themeController.isDarkMode.value
-                                                    ? ColorConstant.white
-                                                    : ColorConstant.black),
-                                      ),
-                                      const WidgetSpan(
-                                           child: Padding(
-                                               padding:
-                                               EdgeInsets.all(Dimens.d4)),
+                                 ),
+                                 Dimens.d30.h.spaceHeight,
+                                 RichText(
+                                   text: TextSpan(
+                                     children: [
+                                       TextSpan(
+                                         text: "${"doNotHaveAnAccount".tr} ?",
+                                         style: Style.montserratRegular(
+                                          color:
+                                              themeController.isDarkMode.value
+                                                  ? ColorConstant.white
+                                                  : ColorConstant.black),
+                                    ),
+                                    const WidgetSpan(
+                                         child: Padding(
+                                             padding:
+                                             EdgeInsets.all(Dimens.d4)),
+                                       ),
+                                       TextSpan(
+                                         text: "register".tr,
+                                         style: Style.montserratSemiBold(
+                                           color: ColorConstant.themeColor,
                                          ),
-                                         TextSpan(
-                                           text: "register".tr,
-                                           style: Style.montserratSemiBold(
-                                             color: ColorConstant.themeColor,
-                                           ),
-                                           recognizer: TapGestureRecognizer()
-                                             ..onTap = () {
-                                               Get.toNamed(
-                                                 AppRoutes.registerScreen,
-                                               );
-                                             },
-                                         ),
-                                       ],
-                                     ),
+                                         recognizer: TapGestureRecognizer()
+                                           ..onTap = () {
+                                             Get.toNamed(
+                                               AppRoutes.registerScreen,
+                                             );
+                                           },
+                                       ),
+                                     ],
                                    ),
-
-                                 ],
-                               ),
+                                 ),
+      
+                               ],
                              ),
                            ),
-                          ),
+                         ),
                         ),
-                        //commonGradiantContainer(color: AppColors.backgroundWhite, h: 20)
-                      ],
-                    );
-                  },
-                ),
+                      ),
+                      //commonGradiantContainer(color: AppColors.backgroundWhite, h: 20)
+                    ],
+                  );
+                },
               ),
-            ],
-          )
+            ),
+            Obx(() => loginController.loader.isTrue?const CommonLoader():const SizedBox(),)
+          ],
+        ),
       ),
     );
   }

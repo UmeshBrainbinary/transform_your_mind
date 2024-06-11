@@ -24,6 +24,7 @@ class ImageConstant {
   static String splashLogo = '$imagePath/splashLogo.png';
   static String bgStar = '$imagePath/bgStar.png';
   static String userPlaceHolder = '$imagePath/userPlaceHolder.svg';
+  static String nonPlaceHolder = '$imagePath/non_profile.svg';
   static String bgVector = '$imagePath/bgVector.svg';
   static String imgTransformLight = '$imagePath/img_transform_light.png';
 
@@ -181,15 +182,24 @@ class ImageConstant {
   static String profile2 = "$imagePath/profile2_back.svg";
   static String successTools = "$iconPath/success_tools.svg";
   static String affirmationSuccessTools = "$iconPath/affirmation_success_icon.svg";
+  static String success = "$iconPath/Success.svg";
   static String logOut = "$iconPath/logout.svg";
   static String unSelect = "$iconPath/unselect.svg";
   static String select = "$iconPath/select.svg";
   static String alarm = "$iconPath/alarm.svg";
+  static String playAffirmation = "$iconPath/play_affirmation.svg";
   static String moment = "$imagePath/moment.png";
   static String upArrowFaq = "$iconPath/up_arrow.svg";
   static String downArrowFaq = "$iconPath/down_arrow.svg";
+  static String pauseAudio = "$iconPath/ic_pause_audio.svg";
   static String bgImage = "$imagePath/background_image.png";
   static String closePositive = "$iconPath/close_positive.svg";
+  static String checkBox = "$iconPath/check_box.svg";
+  static String playPause = "$iconPath/playPause.svg";
+  static String pauseAffirmation = "$iconPath/pause_affirmation.svg";
+  static String addAffirmation = "$iconPath/add_affirmation.svg";
+  static String soundMax = "$iconPath/sound_max.svg";
+  static String soundMute = "$iconPath/sound_mute.svg";
   static String subscriptionCheck = "$iconPath/subscription_check.svg";
   static String shapeAffirmationShare =
       "$imagePath/shape_affirmation_share.svg";

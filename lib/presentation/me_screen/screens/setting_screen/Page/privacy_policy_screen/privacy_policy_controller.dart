@@ -1,10 +1,16 @@
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 
 class PrivacyPolicyController extends GetxController {
   RxList privacyData = [].obs;
   @override
   void onInit() {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.backGround, // Status bar background color
+      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+    ));
     privacyData.value = _PrivacyData.getSettingsData;
     super.onInit();
   }

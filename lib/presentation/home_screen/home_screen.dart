@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
@@ -11,13 +12,15 @@ import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/home_screen/home_message_page.dart';
 import 'package:transform_your_mind/presentation/home_screen/widgets/home_widget.dart';
-import 'package:transform_your_mind/presentation/home_screen/widgets/todays_gratitude.dart';
+import 'package:transform_your_mind/presentation/journal_screen/widget/my_affirmation_page.dart';
+import 'package:transform_your_mind/presentation/journal_screen/widget/my_gratitude_page.dart';
 import 'package:transform_your_mind/presentation/notification_screen/notification_screen.dart';
 import 'package:transform_your_mind/presentation/positive_moment/positive_screen.dart';
 import 'package:transform_your_mind/presentation/subscription_screen/subscription_screen.dart';
 import 'package:transform_your_mind/presentation/transform_pods_screen/transform_pods_screen.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
+import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:transform_your_mind/widgets/custom_view_controller.dart';
 
@@ -43,9 +46,11 @@ class _HomeScreenState extends State<HomeScreen>
   ];
 
   ThemeController themeController = Get.find<ThemeController>();
-
+  List<bool> affirmationCheckList = [];
+  List<bool> gratitudeCheckList = [];
   @override
   void initState() {
+    getStatusBar();
     _lottieBgController = AnimationController(vsync: this);
     Future.delayed(
       const Duration(milliseconds: 100),
@@ -63,7 +68,35 @@ class _HomeScreenState extends State<HomeScreen>
         showScrollTop.value = false;
       }
     });
+    getAffirmationList();
+    getGratitudeList();
     super.initState();
+  }
+  getStatusBar(){
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.backGround, // Status bar background color
+      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+    ));
+  }
+
+  getAffirmationList() {
+    setState(() {
+      affirmationCheckList = [];
+    });
+    List.generate(
+      affirmationList.length,
+      (index) => affirmationCheckList.add(false),
+    );
+  }
+
+  getGratitudeList() {
+    setState(() {
+      gratitudeCheckList = [];
+    });
+    List.generate(
+      gratitudeList.length,
+      (index) => gratitudeCheckList.add(false),
+    );
   }
 
   @override
@@ -77,13 +110,7 @@ class _HomeScreenState extends State<HomeScreen>
       _greeting = _getGreetingBasedOnTime();
     });
   }
-  List<String> affirmationList = [
-    'I am strong and capable.',
-    'I am worthy of love and respect.',
-    'I believe in myself and my abilities.',
-    'I am grateful for the good things in my life.',
-    'I am in control of my thoughts and emotions.'
-  ];
+
   String _getGreetingBasedOnTime() {
     final now = DateTime.now();
     final hour = now.hour;
@@ -207,11 +234,13 @@ class _HomeScreenState extends State<HomeScreen>
                 Dimens.d30.spaceHeight,
                 customDivider(),
                 Dimens.d30.spaceHeight,
+
+
                 //______________________________ ToDays Gratitude _______________________
-                const Padding(
+                /*   const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: TodaysGratitude(),
-                ),
+                ),*/
                 //______________________________ yourDaily Recommendations _______________________
 
                 Padding(
@@ -245,6 +274,9 @@ class _HomeScreenState extends State<HomeScreen>
                 ),
                 Dimens.d20.spaceHeight,
 
+                yourGratitude(),
+                Dimens.d20.spaceHeight,
+
                 yourAffirmation(),
                 /*   //______________________________ Today's Cleanse _______________________
 
@@ -276,6 +308,8 @@ class _HomeScreenState extends State<HomeScreen>
                   ),
                 ),*/
                 Dimens.d20.spaceHeight,
+                /*    yourGratitude(),
+                Dimens.d20.spaceHeight,*/
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
                   child: Text(
@@ -417,14 +451,18 @@ class _HomeScreenState extends State<HomeScreen>
               color: ColorConstant.backGround,
             ),
             Padding(
-              padding: const EdgeInsets.only(right: 20.0, top: 30.0),
+              padding: const EdgeInsets.only(right: 20.0, top: 40.0),
               child: GestureDetector(
                 onTap: () async {
                   Navigator.push(context, MaterialPageRoute(
                     builder: (context) {
                       return const NotificationScreen();
                     },
-                  ));
+                  )).then((value) {
+                    setState(() {
+                      getStatusBar();
+                    });
+                  },);
                 },
                 child: SvgPicture.asset(
                   height: 25.h,
@@ -452,8 +490,8 @@ class _HomeScreenState extends State<HomeScreen>
                   textAlign: TextAlign.center,
                   wrapWords: false,
                   maxLines: 4,
-                  style: Style.cormorantGaramondMedium(
-                      fontSize: Dimens.d55, color: ColorConstant.black),
+                  style: Style.montserratRegular(
+                      fontSize: Dimens.d17, color: ColorConstant.black),
                 ),
               ),
             ),
@@ -622,7 +660,7 @@ class _HomeScreenState extends State<HomeScreen>
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
             child: Text(
-              "yourAffirmation".tr,
+              "today'sAffirmation".tr,
               textAlign: TextAlign.center,
               style: Style.montserratRegular(fontSize: Dimens.d22),
             ),
@@ -639,43 +677,259 @@ class _HomeScreenState extends State<HomeScreen>
                   BoxShadow(
                     color: ColorConstant.black.withOpacity(0.1),
                     offset: const Offset(0, 0),
-                    // Specify the offset of the shadow
                     blurRadius: 4,
-                    // Specify the blur radius
                     spreadRadius: 0, // Specify the spread radius
                   )
                 ]),
-            child: ListView.separated(
-              shrinkWrap: true,
-              padding: EdgeInsets.zero,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: affirmationList.length,
-              itemBuilder: (context, index) {
-                return InkWell(
-                onTap: () {
-                  setState(() {
-                    affirmationList.removeAt(index);
-                  });
-                },
-                  child: ListTile(
-                    title: Text(
-                      affirmationList[index],
-                      style: Style.montserratRegular(),
+            child: affirmationList.isEmpty
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0, vertical: 10.0),
+                    child: Column(
+                      children: [
+                        Dimens.d10.spaceHeight,
+                        Text(
+                          "WellDone"
+                              .tr,
+                          textAlign: TextAlign.center,
+                          style: Style.montserratRegular(
+                              color: ColorConstant.black),
+                        ),
+                        Dimens.d20.spaceHeight,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: CommonElevatedButton(
+                            title: "addNew".tr,
+                            onTap: () {
+                              Get.toNamed(AppRoutes.myAffirmationPage)!.then(
+                                (value) {
+                                  setState(() {
+                                    getAffirmationList();
+                                  });
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                        Dimens.d10.spaceHeight,
+                      ],
                     ),
-                    trailing: Container(
-                      height: 40,
-                      width: 40,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: ColorConstant.themeColor)),
+                  )
+                : Column(
+                  children: [
+                    ListView.separated(
+                        shrinkWrap: true,
+                        padding: EdgeInsets.zero,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: affirmationList.length,
+                                  itemBuilder: (context, index) {
+                    return InkWell(
+                    onTap: () {
+                      setState(() {
+                                affirmationCheckList[index] = true;
+                                Future.delayed(const Duration(milliseconds: 800)).then(
+                                  (value) {
+                                    setState(() {
+                                      affirmationList.removeAt(index);
+                                      getAffirmationList();
+                                    });
+                                  },
+                                );
+                              });
+                            },
+                            child: ListTile(
+                              title: Text(
+                                affirmationList[index]["title"],
+                                style: Style.montserratRegular(),
+                              ),
+                              trailing: affirmationCheckList[index] == true
+                                  ? Container(
+                                      height: 40,
+                                      width: 40,
+                                      decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: ColorConstant.themeColor),
+                                      child: Center(
+                                          child: SvgPicture.asset(ImageConstant.checkBox)
+                                      ),
+                                    )
+                                  : Container(
+                                      height: 40,
+                                      width: 40,
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                              color: ColorConstant.themeColor)),
+                                    ),
+                            ),
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return const Divider();
+                        },
+                      ),
+                    Dimens.d20.spaceHeight,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: CommonElevatedButton(
+                        title: "addNew".tr,
+                        onTap: () {
+                          Get.toNamed(AppRoutes.myAffirmationPage)!.then(
+                                (value) {
+                              setState(() {
+                                getAffirmationList();
+                              });
+                            },
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                );
-              },
-              separatorBuilder: (context, index) {
-                return const Divider();
-              },
+                    Dimens.d20.spaceHeight,
+
+                  ],
+                ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget yourGratitude() {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
+            child: Text(
+              "today'sGratitude".tr,
+              textAlign: TextAlign.center,
+              style: Style.montserratRegular(fontSize: Dimens.d22),
             ),
+          ),
+          Dimens.d20.spaceHeight,
+          Container(
+            margin: const EdgeInsets.symmetric(
+              horizontal: 20.0,
+            ),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: ColorConstant.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: ColorConstant.black.withOpacity(0.1),
+                    offset: const Offset(0, 0),
+                    blurRadius: 4,
+                    spreadRadius: 0, // Specify the spread radius
+                  )
+                ]),
+            child: gratitudeList.isEmpty
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0, vertical: 10.0),
+                    child: Column(
+                      children: [
+                        Dimens.d10.spaceHeight,
+                        Text(
+                          "Well done, you completed all your Gratitude today."
+                              .tr,
+                          textAlign: TextAlign.center,
+                          style: Style.montserratRegular(
+                              color: ColorConstant.black),
+                        ),
+                        Dimens.d20.spaceHeight,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: CommonElevatedButton(
+                            title: "addNew".tr,
+                            onTap: () {
+                              Get.toNamed(AppRoutes.myGratitudePage)!.then(
+                                (value) {
+                                  setState(() {
+                                    getGratitudeList();
+                                  });
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                        Dimens.d10.spaceHeight,
+                      ],
+                    ),
+                  )
+                : Column(
+                  children: [
+                    ListView.separated(
+                        shrinkWrap: true,
+                        padding: EdgeInsets.zero,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: gratitudeList.length,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              setState(() {
+                                gratitudeCheckList[index] = true;
+                                Future.delayed(const Duration(milliseconds: 800)).then(
+                                  (value) {
+                                    setState(() {
+                                      gratitudeList.removeAt(index);
+                                      getGratitudeList();
+                                    });
+                                  },
+                                );
+                              });
+                            },
+                            child: ListTile(
+                              title: Text(
+                                gratitudeList[index]["title"],
+                                style: Style.montserratRegular(),
+                              ),
+                              trailing: gratitudeCheckList[index] == true
+                                  ? Container(
+                                      height: 40,
+                                      width: 40,
+                                      decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: ColorConstant.themeColor),
+                                      child:  Center(
+                                        child: SvgPicture.asset(ImageConstant.checkBox)
+                                      ),
+                                    )
+                                  : Container(
+                                      height: 40,
+                                      width: 40,
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                              color: ColorConstant.themeColor)),
+                                    ),
+                            ),
+                          );
+                                  },
+                                  separatorBuilder: (context, index) {
+                    return const Divider();
+                                  },
+                                ),
+                    Dimens.d20.spaceHeight,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: CommonElevatedButton(
+                        title: "addNew".tr,
+                        onTap: () {
+                          Get.toNamed(AppRoutes.myGratitudePage)!.then(
+                                (value) {
+                              setState(() {
+                                getGratitudeList();
+                              });
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                    Dimens.d20.spaceHeight,
+
+                  ],
+                ),
           )
         ],
       ),

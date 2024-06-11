@@ -1,4 +1,6 @@
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 
 class SupportController extends GetxController {
@@ -46,6 +48,10 @@ class SupportController extends GetxController {
 
   @override
   void onInit() {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.backGround, // Status bar background color
+      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+    ));
     supportData.value = _SupportData.getSettingsData;
     super.onInit();
   }

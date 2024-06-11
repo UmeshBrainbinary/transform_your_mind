@@ -9,6 +9,7 @@ import 'package:lottie/lottie.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
@@ -46,6 +47,7 @@ class _HomeMessagePageState extends State<HomeMessagePage> {
         return true;
       },
       child: Scaffold(
+        backgroundColor: ColorConstant.backGround,
         body: Stack(
           children: [
             Screenshot(
@@ -53,15 +55,13 @@ class _HomeMessagePageState extends State<HomeMessagePage> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  Lottie.asset(
-                      ImageConstant.homeScreenMeshLottie,
-                      height: double.infinity,
-                      width: double.infinity,
-                      fit: BoxFit.fill),
+                const SizedBox(   height: double.infinity,
+                  width: double.infinity,),
                   Image.asset(
                      ImageConstant.homeBg,
                       width: double.infinity,
                       fit: BoxFit.fitWidth,
+                      color: ColorConstant.themeColor,
                       opacity: const AlwaysStoppedAnimation(.85)),
                   Padding(
                     padding: EdgeInsets.symmetric(
@@ -71,18 +71,10 @@ class _HomeMessagePageState extends State<HomeMessagePage> {
                       textAlign: TextAlign.center,
                       wrapWords: false,
                       maxLines: 6,
-                      style: Style.montserratRegular(fontSize: Dimens.d38),
+                      style: Style.montserratRegular(fontSize: Dimens.d30),
                     ),
                   ),
-                  /*        Positioned(
-                    bottom: 160.h,
-                    child: Image.asset(
-                      ImageConstant.splashLogo,
-                      width: 150,
-                      height: 30,
-                      fit: BoxFit.contain,
-                    ),
-                  ),*/
+
                 ],
               ),
             ),

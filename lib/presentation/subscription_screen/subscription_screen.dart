@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_gratitude_page.dart';
 import 'package:transform_your_mind/presentation/subscription_screen/subscription_controller.dart';
@@ -26,68 +29,78 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       Get.put(SubscriptionController());
 
   ThemeController themeController = Get.find<ThemeController>();
-
+@override
+  void initState() {
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: ColorConstant.backGround, // Status bar background color
+    statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+  ));
+  super.initState();
+  }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: themeController.isDarkMode.value
-          ? ColorConstant.black
-          : ColorConstant.backGround,
-      appBar: CustomAppBar(
-        title: "subscription".tr,
-        showBack: widget.skip! ? false : true,
-        action: widget.skip!
-            ? Row(children: [
-                GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                        return const AddGratitudePage(
-                          registerUser: true,
-                          isFromMyGratitude: true,
-                          isSaved: true,);
-                      },));
-                    },
-                    child: Text(
-                      "skip".tr,
-                      style: Style.montserratRegular(
-                          color: themeController.isDarkMode.value
-                              ? ColorConstant.white
-                              : ColorConstant.black),
-                    )),
-                Dimens.d20.spaceWidth,
-              ])
-            : const SizedBox(),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Dimens.d22.spaceHeight,
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Dimens.d45),
-              child: Text(
-                "Choose a subscription plan to unlock all the functionality’s of the application.",
-                textAlign: TextAlign.center,
-                style: Style.cormorantGaramondSemiBold(
-                  fontSize: Dimens.d15,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: themeController.isDarkMode.value
+            ? ColorConstant.black
+            : ColorConstant.backGround,
+        appBar: CustomAppBar(
+          title: "subscription".tr,
+          showBack: widget.skip! ? false : true,
+          action: widget.skip!
+              ? Row(children: [
+                  GestureDetector(
+                      onTap: () async {
+                        await PrefService.setValue(PrefKey.subscription, true);
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                          return const AddGratitudePage(
+                            registerUser: true,
+                            isFromMyGratitude: true,
+                            isSaved: true,);
+                        },));
+                      },
+                      child: Text(
+                        "skip".tr,
+                        style: Style.montserratRegular(
+                            color: themeController.isDarkMode.value
+                                ? ColorConstant.white
+                                : ColorConstant.black),
+                      )),
+                  Dimens.d20.spaceWidth,
+                ])
+              : const SizedBox(),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Dimens.d22.spaceHeight,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Dimens.d45),
+                child: Text(
+                  "Choose a subscription plan to unlock all the functionality’s of the application.",
+                  textAlign: TextAlign.center,
+                  style: Style.montserratRegular(
+                    fontSize: Dimens.d13,
+                  ),
                 ),
               ),
-            ),
-            Dimens.d20.spaceHeight,
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Dimens.d45),
-              child: Text(
-                "Subscribe now and receive a 3-day free trial to access all the features of TransformYourMind",
-                textAlign: TextAlign.center,
-                style: Style.montserratRegular(
-                  color: ColorConstant.themeColor,
-                  fontSize: Dimens.d12,
+              Dimens.d20.spaceHeight,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Dimens.d45),
+                child: Text(
+                  "Subscribe now and receive a 3-day free trial to access all the features of TransformYourMind",
+                  textAlign: TextAlign.center,
+                  style: Style.montserratRegular(
+                    color: ColorConstant.themeColor,
+                    fontSize: Dimens.d12,
+                  ),
                 ),
               ),
-            ),
-            Dimens.d20.spaceHeight,
-            selectPlan()
-          ],
+              Dimens.d20.spaceHeight,
+              selectPlan()
+            ],
+          ),
         ),
       ),
     );
@@ -102,8 +115,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           Text(
             "Select plan",
             textAlign: TextAlign.center,
-            style: Style.cormorantGaramondBold(
-              fontSize: Dimens.d18,
+            style: Style.montserratRegular(
+              fontSize: Dimens.d16,
             ),
           ),
           Dimens.d10.spaceHeight,
@@ -177,7 +190,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                             padding: const EdgeInsets.only(left: 35),
                             child: Text(
                               data["des"],
-                              style: Style.montserratSemiBold(
+                              style: Style.montserratRegular(
                                   fontSize: 13,
                                   color: ColorConstant.color797777),
                             ),
@@ -203,8 +216,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             child: Text(
               "Restore Purchase",
               textAlign: TextAlign.center,
-              style: Style.cormorantGaramondBold(
-                fontSize: Dimens.d18,
+              style: Style.montserratRegular(
+                fontSize: Dimens.d15,
               ),
             ),
           ),

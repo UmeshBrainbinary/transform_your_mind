@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
-import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
@@ -61,7 +59,11 @@ class _CustomAppBarState extends State<CustomAppBar>
       centerTitle: widget.centerTitle,
       title: Text(widget.title,
           style: widget.titleStyle ??
-              Style.cormorantGaramondBold(fontSize: Dimens.d20,color: themeController.isDarkMode.value ? ColorConstant.white:ColorConstant.black)),
+              Style.montserratRegular(
+                  fontSize: Dimens.d18,
+                  color: themeController.isDarkMode.value
+                      ? ColorConstant.white
+                      : ColorConstant.black)),
       backgroundColor: ColorConstant.transparent,
       leading: widget.leading ?? _getLeading(),
       //automaticallyImplyLeading: false,

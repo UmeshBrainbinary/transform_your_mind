@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:numberpicker/numberpicker.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
@@ -26,7 +27,13 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
   bool am = true;
   bool pm = false;
   Duration selectedDuration = const Duration(hours: 0, minutes: 0, seconds: 0);
-
+  int selectedHour = 0;
+  int selectedHourIndex = 0;
+  int selectedMinute = 0;
+  int selectedSeconds = 0;
+  bool soundMute = false;
+  bool playPause = false;
+  final String audioFilePath = 'assets/audio/audio.mp3';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,21 +80,23 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                           ),
                         ),
                         const Spacer(),
+                        GestureDetector(
+                          onTap: () {
+                            _showAlertDialogPlayPause(context,
+                                title: affirmationList[index]["title"],
+                                des: affirmationList[index]["des"]);
+                          },
+                          child: SvgPicture.asset(
+                            ImageConstant.playAffirmation,
+                            height: 18,
+                            width: 18,
+                          ),
+                        ),
                         Dimens.d10.spaceWidth,
                         GestureDetector(
                           onTap: () {
                             _showAlertDialog(context);
 
-                            /*       Navigator.push(context, MaterialPageRoute(
-                              builder: (context) {
-                                return AddAffirmationPage(
-                                  isEdit: true,
-                                  title: affirmationList[index]["title"],
-                                  des: affirmationList[index]["des"],
-                                  isFromMyAffirmation: true,
-                                );
-                              },
-                            ));*/
                           },
                           child: SvgPicture.asset(
                             ImageConstant.editTools,
@@ -115,7 +124,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                       ],),
                       Text(
                         affirmationList[index]["title"],
-                        style: Style.cormorantGaramondBold(
+                        style: Style.montserratRegular(
                           fontSize: 18,
                         ),
                       ),
@@ -170,6 +179,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                             Navigator.push(context, MaterialPageRoute(
                               builder: (context) {
                                 return AddAffirmationPage(
+                                  index: index,
                                   isEdit: true,
                                   title: affirmationDraftList[index]["title"],
                                   des: affirmationDraftList[index]["des"],
@@ -223,7 +233,73 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
       ],),
     );
   }
-  void _showAlertDialog(BuildContext context) {
+  void _showAlertDialogPlayPause(BuildContext context,
+      {String? title, String? des}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              //backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(11.0), // Set border radius
+              ),
+              actions: <Widget>[
+                Dimens.d18.spaceHeight,
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Row(
+                    children: [
+                      Text(
+                        title!,
+                        style: Style.cormorantGaramondBold(fontSize: 20),
+                      ),
+                      const Spacer(),
+                      GestureDetector(
+                          onTap: () {
+                            Get.back();
+                          },
+                          child: SvgPicture.asset(ImageConstant.close))
+                    ],
+                  ),
+                ),
+                Dimens.d15.spaceHeight,
+                Container(
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 21, vertical: 28),
+                  decoration: BoxDecoration(
+                    color: ColorConstant.backGround,
+                    borderRadius: BorderRadius.circular(15),
+                    gradient: const LinearGradient(
+                      colors: [
+                        ColorConstant.colorAECFD8,
+                        ColorConstant.color4A6972
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                  ),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Text(
+                        des!,
+                        style: Style.montserratRegular(fontSize: 11, height: 2),
+                      ),
+                      SvgPicture.asset(ImageConstant.playPause),
+                    ],
+                  ),
+                ),
+                Dimens.d10.spaceHeight,
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+  void _showAlertDialog(BuildContext context,{String? title}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -239,11 +315,11 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                 Row(
                   children: [
                     Text(
-                      "New Alarms".tr,
-                      style: Style.cormorantGaramondBold(fontSize: 20),
+                      "Edit Alarms".tr,
+                      style: Style.montserratRegular(fontSize: 20),
                     ),
                     const Spacer(),
-                    Container(
+                    Container(height: 26,
                       width: Dimens.d100,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(17),
@@ -283,6 +359,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                               });
                             },
                             child: Container(
+                                height: 26,
                                 width: Dimens.d49,
                                 decoration: BoxDecoration(
                                     color: pm == true
@@ -323,20 +400,61 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: 100,
-                  width: Get.width,
-                  child: CupertinoTimerPicker(
-                    backgroundColor: Colors.transparent,
-                    mode: CupertinoTimerPickerMode.hms,
-                    initialTimerDuration: selectedDuration,
-                    onTimerDurationChanged: (Duration newDuration) {
-                      setState(() {
-                        selectedDuration = newDuration;
-                      });
-                    },
-                  ),
+                Dimens.d26.spaceHeight,
+                Row(
+                  children: [
+                    NumberPicker(
+                      zeroPad: true,
+                      value: selectedHour,
+                      minValue: 0,
+                      textStyle: Style.montserratRegular(
+                          fontSize: 14, color: ColorConstant.colorCACACA),
+                      selectedTextStyle: Style.montserratBold(
+                          fontSize: 22, color: ColorConstant.themeColor),
+                      maxValue: 24,
+                      itemHeight: 50,
+                      itemWidth: 50,
+                      onChanged: (value) =>
+                          setState(() => selectedHour = value),
+                    ),
+                    const Spacer(),
+                    numericSymbol(),
+                    const Spacer(),
+                    NumberPicker(
+                      zeroPad: true,
+                      value: selectedMinute,
+                      minValue: 0,
+                      itemHeight: 50,
+                      itemWidth: 50,
+                      textStyle: Style.montserratRegular(
+                          fontSize: 14, color: ColorConstant.colorCACACA),
+                      selectedTextStyle: Style.montserratBold(
+                          fontSize: 22, color: ColorConstant.themeColor),
+                      maxValue: 60,
+                      onChanged: (value) =>
+                          setState(() => selectedMinute = value),
+                    ),
+                    const Spacer(),
+                    numericSymbol(),
+                    const Spacer(),
+                    NumberPicker(
+                      zeroPad: true,
+                      value: selectedSeconds,
+                      minValue: 0,
+                      itemHeight: 50,
+                      itemWidth: 50,
+                      textStyle: Style.montserratRegular(
+                          fontSize: 14, color: ColorConstant.colorCACACA),
+                      selectedTextStyle: Style.montserratBold(
+                          fontSize: 22, color: ColorConstant.themeColor),
+                      maxValue: 60,
+                      onChanged: (value) =>
+                          setState(() => selectedSeconds = value),
+                    ),
+                  ],
                 ),
+
+
                 Dimens.d26.spaceHeight,
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: Dimens.d70.h),
@@ -355,6 +473,11 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
         );
       },
     );
+  }
+  Widget numericSymbol() {
+    return Text(":",
+        style: Style.montserratBold(
+            fontSize: 22, color: ColorConstant.themeColor));
   }
 
 }

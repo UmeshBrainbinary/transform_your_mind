@@ -50,7 +50,7 @@ class _ToolsScreenState extends State<ToolsScreen>
   @override
   void initState() {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.white, // Status bar background color
+      statusBarColor: ColorConstant.white, // Status bar background color
       statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
     ));
     _lottieBgController = AnimationController(vsync: this);
@@ -63,29 +63,29 @@ class _ToolsScreenState extends State<ToolsScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: "tools".tr,
-        showBack: false,
-        action: Padding(
-          padding: const EdgeInsets.only(right: 20.0),
-          child: GestureDetector(
-            onTap: () async {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) {
-                  return const NotificationScreen();
-                },
-              ));
-            },
-            child: SvgPicture.asset(
-              height: 25.h,
-              ImageConstant.notification,
+    return SafeArea(
+      child: Scaffold(
+        appBar: CustomAppBar(
+          title: "tools".tr,
+          showBack: false,
+          action: Padding(
+            padding: const EdgeInsets.only(right: 20.0),
+            child: GestureDetector(
+              onTap: () async {
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) {
+                    return const NotificationScreen();
+                  },
+                ));
+              },
+              child: SvgPicture.asset(
+                height: 25.h,
+                ImageConstant.notification,
+              ),
             ),
           ),
         ),
-      ),
-      body: SafeArea(
-        child: Stack(
+        body: Stack(
           children: [
             SingleChildScrollView(
               child: Stack(

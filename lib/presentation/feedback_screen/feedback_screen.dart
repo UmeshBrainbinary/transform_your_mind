@@ -32,7 +32,14 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   ValueNotifier<int> currentLength = ValueNotifier(0);
   ThemeController themeController = Get.put(ThemeController());
   int? _currentRating = 0;
-
+  @override
+  void initState() {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.backGround, // Status bar background color
+      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+    ));
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

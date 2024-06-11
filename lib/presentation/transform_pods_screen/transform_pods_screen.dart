@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/common_widget/app_common_dialog.dart';
@@ -46,7 +47,10 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
   @override
   void initState() {
 
-
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.white, // Status bar background color
+      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+    ));
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
@@ -67,243 +71,214 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: "transformPods".tr,showBack: true,),
-        body: Padding(
-      padding: const EdgeInsets.only( right: 20.0, left: 20.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-         /* HomeAppBar(
-            downloadWidget: const SizedBox(),
-            downloadShown: true,
-            title: "",
-            isInfo: false,
-            showMeIcon: false,
-            ratings: ratingView,
-            ratingViewUi: true,
-            onRatingTap: () {
-              setState(() {
-                if (ratingView == true) {
-                  ratingView = false;
-                } else {
-                  ratingView = true;
-                }
-              });
-            },
-            onInfoTap: () {
-              setState(() {
-                ratingView = false;
-              });
-              isTutorialVideoVisible.value = !isTutorialVideoVisible.value;
-              if (isTutorialVideoVisible.value) {
-                _controller.forward();
-              } else {
-                // videoKeys[6].currentState?.pause();
-                _controller.reverse();
-              }
-            },
-            back: true,
-          ),*/
-          LayoutContainer(
-            horizontal: 0,
-            child: Row(
-              children: [
-                _buildCategoryDropDown(context),
-                Dimens.d10.spaceWidth,
-                Expanded(
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25),
-                      boxShadow: [
-                        BoxShadow(
-                          color: ColorConstant.colorBFD0D4.withOpacity(0.5),
-                          // Shadow color with transparency
-                          blurRadius: 8.0,
-                          // Blur the shadow for a smoother effect
-                          spreadRadius: 0.5, // Spread the shadow slightly
-                        ),
-                      ],
-                    ),
-                    child: CommonTextField(
-                      hintText: "search".tr,
-                      controller: searchController,
-                      focusNode: searchFocusNode,
-                      prefixLottieIcon: ImageConstant.lottieSearch,
-                      textInputAction: TextInputAction.done,
-                      onChanged: (value) {
-                        setState(() {
-                          _filteredBookmarks = searchBookmarks(
-                              value, exploreController.exploreList);
-                        });
-                      },
+    return SafeArea(
+      child: Scaffold(
+        appBar: CustomAppBar(title: "transformPods".tr,showBack: true,),
+          body: Padding(
+        padding: const EdgeInsets.only( right: 20.0, left: 20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            LayoutContainer(
+              horizontal: 0,
+              child: Row(
+                children: [
+                  _buildCategoryDropDown(context),
+                  Dimens.d10.spaceWidth,
+                  Expanded(
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 5),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        boxShadow: [
+                          BoxShadow(
+                            color: ColorConstant.colorBFD0D4.withOpacity(0.5),
+                            // Shadow color with transparency
+                            blurRadius: 8.0,
+                            // Blur the shadow for a smoother effect
+                            spreadRadius: 0.5, // Spread the shadow slightly
+                          ),
+                        ],
+                      ),
+                      child: CommonTextField(
+                        hintText: "search".tr,
+                        controller: searchController,
+                        focusNode: searchFocusNode,
+                        prefixLottieIcon: ImageConstant.lottieSearch,
+                        textInputAction: TextInputAction.done,
+                        onChanged: (value) {
+                          setState(() {
+                            _filteredBookmarks = searchBookmarks(
+                                value, exploreController.exploreList);
+                          });
+                        },
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Dimens.d10.spaceHeight,
-          Expanded(
-              child: _filteredBookmarks != null
-                  ? GridView.builder(
-                      controller: scrollController,
-                      padding: const EdgeInsets.only(bottom: Dimens.d20),
-                      physics: const BouncingScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        childAspectRatio: 0.71,
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 20,
-                        mainAxisSpacing: 20,
-                      ),
-                      itemCount: _filteredBookmarks?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            _onTileClick(index, context);
-                          },
-                          child: Column(
-                            children: [
-                              Stack(
-                                alignment: Alignment.topRight,
-                                children: [
-                                  CustomImageView(
-                                    imagePath: _filteredBookmarks![index]
-                                        ['image'],
-                                    height: Dimens.d135,
-                                    radius: BorderRadius.circular(10),
-                                    fit: BoxFit.cover,
-                                  ),
-                                  Align(
-                                    alignment: Alignment.topRight,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          right: 10, top: 10),
-                                      child:
-                                          SvgPicture.asset(ImageConstant.play),
+            Dimens.d10.spaceHeight,
+            Expanded(
+                child: _filteredBookmarks != null
+                    ? GridView.builder(
+                        controller: scrollController,
+                        padding: const EdgeInsets.only(bottom: Dimens.d20),
+                        physics: const BouncingScrollPhysics(),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          childAspectRatio: 0.71,
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 20,
+                          mainAxisSpacing: 20,
+                        ),
+                        itemCount: _filteredBookmarks?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              _onTileClick(index, context);
+                            },
+                            child: Column(
+                              children: [
+                                Stack(
+                                  alignment: Alignment.topRight,
+                                  children: [
+                                    CustomImageView(
+                                      imagePath: _filteredBookmarks![index]
+                                          ['image'],
+                                      height: Dimens.d135,
+                                      radius: BorderRadius.circular(10),
+                                      fit: BoxFit.cover,
                                     ),
-                                  )
-                                ],
-                              ),
-                              Dimens.d10.spaceHeight,
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Meditation",
-                                    style: Style.montserratMedium(
-                                      fontSize: Dimens.d12,
+                                    Align(
+                                      alignment: Alignment.topRight,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            right: 10, top: 10),
+                                        child:
+                                            SvgPicture.asset(ImageConstant.play),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Dimens.d10.spaceHeight,
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Meditation",
+                                      style: Style.montserratMedium(
+                                        fontSize: Dimens.d12,
+                                      ),
                                     ),
-                                  ),
-                                  const CircleAvatar(
-                                    radius: 2,
-                                    backgroundColor: ColorConstant.colorD9D9D9,
-                                  ),
-                                  Text(
-                                    "12:00" ?? '',
-                                    style: Style.montserratMedium(
-                                      fontSize: Dimens.d12,
+                                    const CircleAvatar(
+                                      radius: 2,
+                                      backgroundColor: ColorConstant.colorD9D9D9,
                                     ),
-                                  ),
-                                  SvgPicture.asset(ImageConstant.downloadCircle,
-                                      height: Dimens.d25, width: Dimens.d25)
-                                ],
-                              ),
-                              Dimens.d7.spaceHeight,
-                              Text(
-                                _filteredBookmarks![index]['title'],
-                                maxLines: Dimens.d2.toInt(),
-                                style: Style.montserratMedium(
-                                    fontSize: Dimens.d14),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        );
-                      })
-                  : GridView.builder(
-                      controller: scrollController,
-                      padding: const EdgeInsets.only(bottom: Dimens.d20),
-                      physics: const BouncingScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        childAspectRatio: 0.71,
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 20,
-                        mainAxisSpacing: 20,
-                      ),
-                      itemCount: exploreController.exploreList.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            _onTileClick(index, context);
-                          },
-                          child: Column(
-                            children: [
-                              Stack(
-                                alignment: Alignment.topRight,
-                                children: [
-                                  CustomImageView(
-                                    imagePath: exploreController
-                                        .exploreList[index]['image'],
-                                    height: Dimens.d135,
-                                    radius: BorderRadius.circular(10),
-                                    fit: BoxFit.cover,
-                                  ),
-                                  Align(
-                                    alignment: Alignment.topRight,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          right: 10, top: 10),
-                                      child:
-                                          SvgPicture.asset(ImageConstant.play),
+                                    Text(
+                                      "12:00" ?? '',
+                                      style: Style.montserratMedium(
+                                        fontSize: Dimens.d12,
+                                      ),
                                     ),
-                                  )
-                                ],
-                              ),
-                              Dimens.d10.spaceHeight,
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Meditation",
-                                    style: Style.montserratMedium(
-                                      fontSize: Dimens.d12,
+                                    SvgPicture.asset(ImageConstant.downloadCircle,
+                                        height: Dimens.d25, width: Dimens.d25)
+                                  ],
+                                ),
+                                Dimens.d7.spaceHeight,
+                                Text(
+                                  _filteredBookmarks![index]['title'],
+                                  maxLines: Dimens.d2.toInt(),
+                                  style: Style.montserratMedium(
+                                      fontSize: Dimens.d14),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          );
+                        })
+                    : GridView.builder(
+                        controller: scrollController,
+                        padding: const EdgeInsets.only(bottom: Dimens.d20),
+                        physics: const BouncingScrollPhysics(),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          childAspectRatio: 0.71,
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 20,
+                          mainAxisSpacing: 20,
+                        ),
+                        itemCount: exploreController.exploreList.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              _onTileClick(index, context);
+                            },
+                            child: Column(
+                              children: [
+                                Stack(
+                                  alignment: Alignment.topRight,
+                                  children: [
+                                    CustomImageView(
+                                      imagePath: exploreController
+                                          .exploreList[index]['image'],
+                                      height: Dimens.d135,
+                                      radius: BorderRadius.circular(10),
+                                      fit: BoxFit.cover,
                                     ),
-                                  ),
-                                  const CircleAvatar(
-                                    radius: 2,
-                                    backgroundColor: ColorConstant.colorD9D9D9,
-                                  ),
-                                  Text(
-                                    "12:00" ?? '',
-                                    style: Style.montserratMedium(
-                                      fontSize: Dimens.d12,
+                                    Align(
+                                      alignment: Alignment.topRight,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            right: 10, top: 10),
+                                        child:
+                                            SvgPicture.asset(ImageConstant.play),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Dimens.d10.spaceHeight,
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Meditation",
+                                      style: Style.montserratMedium(
+                                        fontSize: Dimens.d12,
+                                      ),
                                     ),
-                                  ),
-                                  SvgPicture.asset(ImageConstant.downloadCircle,
-                                      height: Dimens.d25, width: Dimens.d25)
-                                ],
-                              ),
-                              Dimens.d7.spaceHeight,
-                              Text(
-                                exploreController.exploreList[index]['title'],
-                                maxLines: Dimens.d2.toInt(),
-                                style: Style.montserratMedium(
-                                    fontSize: Dimens.d14),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        );
-                      })),
-        ],
-      ),
-    ));
+                                    const CircleAvatar(
+                                      radius: 2,
+                                      backgroundColor: ColorConstant.colorD9D9D9,
+                                    ),
+                                    Text(
+                                      "12:00" ?? '',
+                                      style: Style.montserratMedium(
+                                        fontSize: Dimens.d12,
+                                      ),
+                                    ),
+                                    SvgPicture.asset(ImageConstant.downloadCircle,
+                                        height: Dimens.d25, width: Dimens.d25)
+                                  ],
+                                ),
+                                Dimens.d7.spaceHeight,
+                                Text(
+                                  exploreController.exploreList[index]['title'],
+                                  maxLines: Dimens.d2.toInt(),
+                                  style: Style.montserratMedium(
+                                      fontSize: Dimens.d14),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          );
+                        })),
+          ],
+        ),
+      )),
+    );
   }
 
   void _onTileClick(int index, BuildContext context) {

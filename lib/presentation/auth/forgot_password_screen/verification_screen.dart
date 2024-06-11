@@ -1,20 +1,16 @@
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
+import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
-import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
-import 'package:transform_your_mind/core/utils/string_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
-import 'package:transform_your_mind/core/utils/toast_message.dart';
 import 'package:transform_your_mind/presentation/auth/forgot_password_screen/forgot_controller.dart';
-import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
-import 'package:transform_your_mind/theme/theme_helper.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
-import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 class VerificationsScreen extends StatelessWidget {
@@ -33,12 +29,7 @@ class VerificationsScreen extends StatelessWidget {
       body: SafeArea(
           child: Stack(
             children: [
-              /*    Positioned(
-            top: Dimens.d70.h,
-            right: 0,
-            left: null,
-            child: Image.asset(ImageConstant.bgStar, height: Dimens.d274.h),
-          ),*/
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
                 child: LayoutBuilder(
@@ -113,12 +104,12 @@ class VerificationsScreen extends StatelessWidget {
                                   CommonElevatedButton(title: "verify".tr, onTap: () {
 
                                     FocusScope.of(context).unfocus();
-
-                                    if(forgotController.otpController.text.isNotEmpty){
+                                    forgotController.onTapOtpVerify(context);
+                                  /*  if(forgotController.otpController.text.isNotEmpty){
                                       Get.toNamed(AppRoutes.newPasswordScreen);
                                     } else{
                                       errorToast("pleaseEnterVerificationCode".tr);
-                                    }
+                                    }*/
 
                                   },)
                                 ],
@@ -131,6 +122,7 @@ class VerificationsScreen extends StatelessWidget {
                   },
                 ),
               ),
+              Obx(() => forgotController.loader.isTrue?commonLoader():const SizedBox(),)
             ],
           )),
     );

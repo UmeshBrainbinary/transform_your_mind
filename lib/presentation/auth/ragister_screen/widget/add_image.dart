@@ -94,7 +94,7 @@ class _AddImageWidgetState extends State<AddImageWidget> {
                                           borderRadius: Dimens.d16.radiusAll,
                                         ),
                                         child: SvgPicture.asset(
-                                          ImageConstant.userPlaceHolder,
+                                          ImageConstant.nonPlaceHolder,
                                           fit: BoxFit.cover,
                                           color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.white,
                                         ),

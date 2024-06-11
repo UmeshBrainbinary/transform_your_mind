@@ -2,6 +2,8 @@ import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:lottie/lottie.dart';
 import 'package:path_provider/path_provider.dart';
@@ -28,85 +30,94 @@ class AffirmationShareScreen extends StatefulWidget {
 
 class _AffirmationShareScreenState extends State<AffirmationShareScreen> {
   ScreenshotController screenshotController = ScreenshotController();
-
+  @override
+  void initState() {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.white, // Status bar background color
+      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+    ));
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const CustomAppBar(
-        showBack: true,
-        title: "",
-      ),
-      body: Column(
-        children: [
-          Screenshot(
-            controller: screenshotController,
-            child: Column(
-              children: [
-                Dimens.d26.spaceHeight,
-                Stack(
-                  children: [
-                    Container(width: Get.width,
-                      margin: const EdgeInsets.only(
-                          top: Dimens.d100,
-                          right: Dimens.d20,
-                          left: Dimens.d20),
-                      decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: Dimens.d8,
-                            )
-                          ],
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Column(
-                        children: [
-                          Dimens.d115.spaceHeight,
-                          Text(
-                            widget.title!,
-                            style: Style.montserratRegular(
-                                color: ColorConstant.black,
-                                fontSize: Dimens.d28),
-                          ),
-                          Dimens.d20.spaceHeight,
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 50),
-                            child: Text(
-                              widget.des!,
-                              textAlign: TextAlign.center,
-                              style: Style.montserratRegular(
-                                  fontSize: Dimens.d14,
-                                  color: ColorConstant.black),
+    return SafeArea(
+      child: Scaffold(
+        appBar: const CustomAppBar(
+          showBack: true,
+          title: "",
+        ),
+        body: Column(
+          children: [
+            Screenshot(
+              controller: screenshotController,
+              child: Column(
+                children: [
+                  Dimens.d26.spaceHeight,
+                  Stack(
+                    children: [
+                      Container(width: Get.width,
+                        margin: const EdgeInsets.only(
+                            top: Dimens.d80,
+                            right: Dimens.d20,
+                            left: Dimens.d20),
+                        decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: Dimens.d8,
+                              )
+                            ],
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20)),
+                        child: Column(
+                          children: [
+                            Dimens.d115.spaceHeight,
+                            Text(
+                              widget.title!,
+                              style: Style.cormorantGaramondBold(
+                                  color: ColorConstant.black,
+                                  fontSize: Dimens.d28),
                             ),
-                          ),
-                          Dimens.d40.spaceHeight,
-                        ],
+                            Dimens.d20.spaceHeight,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 23),
+                              child: Text(
+                                widget.des!,
+                                textAlign: TextAlign.center,
+                                style: Style.montserratRegular(
+                                    fontSize: Dimens.d14,
+                                    color: ColorConstant.black),
+                              ),
+                            ),
+                            Dimens.d40.spaceHeight,
+                          ],
+                        ),
                       ),
-                    ),
-                    Center(
-                      child: Lottie.asset(
-                        ImageConstant.lottieStarOcean,
-                        height: 180,
-                        width: 180,
+                      Center(
+                        child: Image.asset(
+                          ImageConstant.splashLogo,
+                          height: 160,
+                          width: 160,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-          Dimens.d40.spaceHeight,
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 80),
-            child: CommonElevatedButton(
-              title: "share".tr,
-              onTap: () {
-                shareScreenShot();
-              },
+            Dimens.d40.spaceHeight,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 80),
+              child: CommonElevatedButton(
+                title: "share".tr,
+                onTap: () {
+                  shareScreenShot();
+                },
+              ),
             ),
-          ),
-          Dimens.d40.spaceHeight,
-        ],
+            Dimens.d40.spaceHeight,
+          ],
+        ),
       ),
     );
   }

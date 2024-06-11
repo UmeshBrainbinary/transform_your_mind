@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
@@ -37,231 +39,304 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
   bool am = true;
   bool pm = false;
   Duration selectedDuration = const Duration(hours: 0, minutes: 0, seconds: 0);
+  List<bool> like = [];
 
   @override
+  void initState() {
+    getStatusBar();
+    List.generate(
+      affirmationList.length,
+      (index) => like.add(false),
+    );
+    super.initState();
+  }
+  getStatusBar(){
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.backGround, // Status bar background color
+      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+    ));
+  }
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: themeController.isDarkMode.value
-          ? ColorConstant.black
-          : ColorConstant.backGround,
-      appBar: CustomAppBar(
-        title: "affirmationAlarms".tr,
-        showBack: true,
-        action: Padding(
-          padding: const EdgeInsets.only(right: Dimens.d20),
-          child: GestureDetector(
-            onTap: () {
-              _onAddClick(context);
-            },
-            child: SvgPicture.asset(
-              ImageConstant.addTools,
-              height: Dimens.d22,
-              width: Dimens.d22,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: themeController.isDarkMode.value
+            ? ColorConstant.black
+            : ColorConstant.backGround,
+        appBar: CustomAppBar(
+          title: "affirmationAlarms".tr,
+          showBack: true,
+          action: Padding(
+            padding: const EdgeInsets.only(right: Dimens.d20),
+            child: GestureDetector(
+              onTap: () {
+                _onAddClick(context);
+              },
+              child: SvgPicture.asset(
+                ImageConstant.addTools,
+                height: Dimens.d22,
+                width: Dimens.d22,
+              ),
             ),
           ),
         ),
-      ),
-      body: Column(
-        children: [
-          Dimens.d30.spaceHeight,
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              children: [
-                _buildCategoryDropDown(context),
-                Dimens.d20.spaceWidth,
-                alarmView(),
-              ],
+        body: Column(
+          children: [
+            Dimens.d30.spaceHeight,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  _buildCategoryDropDown(context),
+                  Dimens.d20.spaceWidth,
+                  alarmView(),
+                ],
+              ),
             ),
-          ),
-          Dimens.d20.spaceHeight,
-          SingleChildScrollView(
-            child: ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: affirmationList.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(context, MaterialPageRoute(
-                      builder: (context) {
-                        return AffirmationShareScreen(
-                          des: affirmationList[index]["des"],
-                          title: affirmationList[index]["title"],
-                        );
-                      },
-                    ));
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: 20.0, vertical: 10),
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                        color: ColorConstant.white,
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+            Dimens.d20.spaceHeight,
+            SingleChildScrollView(
+              child: ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: affirmationList.length,
+                itemBuilder: (context, index) {
+                  return Slidable(
+                    closeOnScroll: true,
+                    key: const ValueKey<String>("" ?? ""),
+                    endActionPane: ActionPane(
+                      motion: const ScrollMotion(),
+                      dragDismissible: false,
+                      extentRatio: 0.26,
                       children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                affirmationList[index]["title"],
-                                style: Style.cormorantGaramondBold(
-                                  fontSize: 18,
-                                ),
-                              ),
+                        Dimens.d20.spaceWidth,
+                        GestureDetector(
+                          onTap: () {
+                            affirmationList.removeAt(index);
+                            setState(() {});
+                          },
+                          child: Container(
+                            width: Dimens.d65,
+                            margin: EdgeInsets.only(
+                                bottom: Dimens.d10.h, top: Dimens.d10.h),
+                            decoration: BoxDecoration(
+                              color: ColorConstant.deleteRed,
+                              borderRadius: Dimens.d16.radiusAll,
                             ),
-                            GestureDetector(
-                              onTap: () {
-                                _showAlertDialog(context);
-                              },
-                              child: SvgPicture.asset(
-                                ImageConstant.alarm,
-                                height: 18,
-                                width: 18,
-                              ),
+                            alignment: Alignment.center,
+                            child: SvgPicture.asset(
+                              ImageConstant.icDeleteWhite,
+                              width: Dimens.d24,
+                              height: Dimens.d24,
                             ),
-                            Dimens.d10.spaceWidth,
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) {
-                                    return AddAffirmationPage(
-                                      isEdit: true,
-                                      title: affirmationList[index]["title"],
-                                      des: affirmationList[index]["des"],
-                                      isFromMyAffirmation: true,
-                                    );
-                                  },
-                                ));
-                              },
-                              child: SvgPicture.asset(
-                                ImageConstant.editTools,
-                                height: 18,
-                                width: 18,
-                                color: ColorConstant.black,
-                              ),
-                            ),
-                            Dimens.d10.spaceWidth,
-                            GestureDetector(
-                              onTap: () {},
-                              child: SvgPicture.asset(
-                                ImageConstant.likeTools,
-                                height: 18,
-                                width: 18,
-                                color: ColorConstant.black,
-                              ),
-                            ),
-                            Dimens.d10.spaceWidth,
-                          ],
+                          ),
                         ),
-                        Dimens.d10.spaceHeight,
-                        Text(
-                          affirmationList[index]["des"],
-                          style: Style.montserratRegular(fontSize: 11),
-                        )
                       ],
                     ),
-                  ),
-                );
-              },
-            ),
-          ),
-          SingleChildScrollView(
-            child: ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: affirmationDraftList.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(context, MaterialPageRoute(
-                      builder: (context) {
-                        return AffirmationShareScreen(
-                          des: affirmationDraftList[index]["des"],
-                          title: affirmationDraftList[index]["title"],
-                        );
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            return AffirmationShareScreen(
+                              des: affirmationList[index]["des"],
+                              title: affirmationList[index]["title"],
+                            );
+                          },
+                        )).then((value) {
+                          getStatusBar();
+                        },);
                       },
-                    ));
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: 20.0, vertical: 10),
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                        color: ColorConstant.white,
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 20.0, vertical: 10),
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                            color: ColorConstant.white,
+                            borderRadius: BorderRadius.circular(20)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                              child: Text(
-                                affirmationDraftList[index]["title"],
-                                style: Style.cormorantGaramondBold(
-                                  fontSize: 18,
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    affirmationList[index]["title"],
+                                    style: Style.cormorantGaramondBold(
+                                      fontSize: 18,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                _showAlertDialog(context);
-                              },
-                              child: SvgPicture.asset(
-                                ImageConstant.alarm,
-                                height: 18,
-                                width: 18,
-                              ),
-                            ),
-                            Dimens.d10.spaceWidth,
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) {
-                                    return AddAffirmationPage(
-                                      isEdit: true,
-                                      title: affirmationDraftList[index]["title"],
-                                      des: affirmationDraftList[index]["des"],
-                                      isFromMyAffirmation: true,
-                                    );
+                                GestureDetector(
+                                  onTap: () {
+                                    _showAlertDialogPlayPause(context,
+                                        title: affirmationList[index]["title"],
+                                        des: affirmationList[index]["des"]);
                                   },
-                                ));
-                              },
-                              child: SvgPicture.asset(
-                                ImageConstant.editTools,
-                                height: 18,
-                                width: 18,
-                                color: ColorConstant.black,
-                              ),
+                                  child: SvgPicture.asset(
+                                    ImageConstant.playAffirmation,
+                                    height: 18,
+                                    width: 18,
+                                  ),
+                                ),
+                                Dimens.d10.spaceWidth,
+                                GestureDetector(
+                                  onTap: () {
+                                    _showAlertDialog(context);
+                                  },
+                                  child: SvgPicture.asset(
+                                    ImageConstant.alarm,
+                                    height: 18,
+                                    width: 18,
+                                  ),
+                                ),
+                                Dimens.d10.spaceWidth,
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(context, MaterialPageRoute(
+                                      builder: (context) {
+                                        return AddAffirmationPage(
+                                          index: index,
+                                          isEdit: true,
+                                          title: affirmationList[index]
+                                              ["title"],
+                                          des: affirmationList[index]["des"],
+                                          isFromMyAffirmation: true,
+                                        );
+                                      },
+                                    ));
+                                  },
+                                  child: SvgPicture.asset(
+                                    ImageConstant.editTools,
+                                    height: 18,
+                                    width: 18,
+                                    color: ColorConstant.black,
+                                  ),
+                                ),
+                                Dimens.d10.spaceWidth,
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      like[index] = !like[index];
+                                    });
+                                  },
+                                  child: SvgPicture.asset(
+                                    like[index]
+                                        ? ImageConstant.likeRedTools
+                                        : ImageConstant.likeTools,
+                                    height: 18,
+                                    width: 18,
+                                    color: like[index]
+                                        ? ColorConstant.deleteRed
+                                        : ColorConstant.black,
+                                  ),
+                                ),
+                                Dimens.d10.spaceWidth,
+                              ],
                             ),
-                            Dimens.d10.spaceWidth,
-                            GestureDetector(
-                              onTap: () {},
-                              child: SvgPicture.asset(
-                                ImageConstant.likeTools,
-                                height: 18,
-                                width: 18,
-                                color: ColorConstant.black,
-                              ),
-                            ),
-                            Dimens.d10.spaceWidth,
+                            Dimens.d10.spaceHeight,
+                            Text(
+                              affirmationList[index]["des"],
+                              style: Style.montserratRegular(fontSize: 11),
+                            )
                           ],
                         ),
-                        Dimens.d10.spaceHeight,
-                        Text(
-                          affirmationDraftList[index]["des"],
-                          style: Style.montserratRegular(fontSize: 11),
-                        )
-                      ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+            SingleChildScrollView(
+              child: ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: affirmationDraftList.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) {
+                          return AffirmationShareScreen(
+                            des: affirmationDraftList[index]["des"],
+                            title: affirmationDraftList[index]["title"],
+                          );
+                        },
+                      )).then((value) {
+                        getStatusBar();
+                      },);
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 10),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                          color: ColorConstant.white,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  affirmationDraftList[index]["title"],
+                                  style: Style.cormorantGaramondBold(
+                                    fontSize: 18,
+                                  ),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  _showAlertDialog(context);
+                                },
+                                child: SvgPicture.asset(
+                                  ImageConstant.alarm,
+                                  height: 18,
+                                  width: 18,
+                                ),
+                              ),
+                              Dimens.d10.spaceWidth,
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) {
+                                      return AddAffirmationPage(
+                                        index: index,
+                                        isEdit: true,
+                                        title: affirmationDraftList[index]
+                                            ["title"],
+                                        des: affirmationDraftList[index]["des"],
+                                        isFromMyAffirmation: true,
+                                      );
+                                    },
+                                  )).then((value) {
+                                    getStatusBar();
+                                  },);
+                                },
+                                child: SvgPicture.asset(
+                                  ImageConstant.editTools,
+                                  height: 18,
+                                  width: 18,
+                                  color: ColorConstant.black,
+                                ),
+                              ),
+                              Dimens.d10.spaceWidth,
+                              Dimens.d10.spaceWidth,
+                            ],
+                          ),
+                          Dimens.d10.spaceHeight,
+                          Text(
+                            affirmationDraftList[index]["des"],
+                            style: Style.montserratRegular(fontSize: 11),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -400,9 +475,77 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
     );
   }
 
+  void _showAlertDialogPlayPause(BuildContext context,
+      {String? title, String? des}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              //backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(11.0), // Set border radius
+              ),
+              actions: <Widget>[
+                Dimens.d18.spaceHeight,
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Row(
+                    children: [
+                      Text(
+                        title!,
+                        style: Style.cormorantGaramondBold(fontSize: 20),
+                      ),
+                      const Spacer(),
+                      GestureDetector(
+                          onTap: () {
+                            Get.back();
+                          },
+                          child: SvgPicture.asset(ImageConstant.close))
+                    ],
+                  ),
+                ),
+                Dimens.d15.spaceHeight,
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 21, vertical: 28),
+                  decoration: BoxDecoration(
+                    color: ColorConstant.backGround,
+                    borderRadius: BorderRadius.circular(15),
+                    gradient: const LinearGradient(
+                      colors: [
+                        ColorConstant.colorAECFD8,
+                        ColorConstant.color4A6972
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                  ),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Text(
+                        des!,
+                        style: Style.montserratRegular(fontSize: 11, height: 2),
+                      ),
+                      SvgPicture.asset(ImageConstant.playPause),
+                    ],
+                  ),
+                ),
+                Dimens.d10.spaceHeight,
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   Widget _buildCategoryDropDown(BuildContext context) {
     return Expanded(
       child: Container(
+        margin: const EdgeInsets.only(left: 25),
         height: Dimens.d38,
         decoration: BoxDecoration(
           border: Border.all(color: ColorConstant.lightGrey),
@@ -464,7 +607,7 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
             height: 0,
           ),
           isExpanded: true,
-          dropdownColor: ColorConstant.colorECF1F3,
+          dropdownColor: ColorConstant.themeColor,
           items: categoryList.map<DropdownMenuItem>((item) {
             bool isSelected = selectedCategory.value?["title"] == item["title"];
             return DropdownMenuItem(
@@ -480,7 +623,7 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
                     item["title"] ?? '',
                     style: Style.montserratRegular(
                       fontSize: Dimens.d14,
-                      color: ColorConstant.textGreyColor,
+                      color: ColorConstant.white,
                       fontWeight:
                           isSelected ? FontWeight.bold : FontWeight.w500,
                     ),

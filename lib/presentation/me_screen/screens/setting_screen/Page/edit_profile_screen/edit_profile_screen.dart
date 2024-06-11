@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
     as picker;
 import 'package:flutter_svg/flutter_svg.dart';
@@ -40,7 +41,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
  @override
   void initState() {
-    // TODO: implement initState
+
    editProfileController.emailController.text = PrefService.getString(PrefKey.email);
     super.initState();
   }
@@ -52,200 +53,233 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       appBar: CustomAppBar(
           title: "personalInformation".tr,
         ),
-      body: SafeArea(
-
-          child:  Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
-            child: LayoutBuilder(
-              builder: (context, constraint) {
-                return Stack(
-                  children: [
-                    SingleChildScrollView(
-                      child: Form(
-                        key: _formKey,
-                        child: ConstrainedBox(
-                          constraints:
-                          BoxConstraints(minHeight: constraint.maxHeight),
-                          child: IntrinsicHeight(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Dimens.d30.h.spaceHeight,
-                                ValueListenableBuilder(
-                                  valueListenable: editProfileController.imageFile,
-                                  builder: (context, value, child) {
-                                    return AddImageEditWidget(
-                                      onTap: () async {
-                                        await showImagePickerActionSheet(
-                                            context)
-                                            ?.then((value) async {
-                                          if (value != null) {
-                                            editProfileController.imageFile.value =
-                                                value;
-                                          }
-                                        });
-                                      },
-                                      onDeleteTap: () async {
-                                        editProfileController.imageFile = ValueNotifier(null);
-                                        if (editProfileController.image != null) {
-                                          editProfileController.urlImage = null;
-                                          _isImageRemoved = true;
-                                        }
-
-                                        setState(() {});
-                                      },
-                                      image: editProfileController.imageFile.value,
-                                      imageURL: editProfileController.urlImage,
-                                    );
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
+        child: LayoutBuilder(
+          builder: (context, constraint) {
+            return Stack(
+              children: [
+                SingleChildScrollView(
+                  child: Form(
+                    key: _formKey,
+                    child: ConstrainedBox(
+                      constraints:
+                      BoxConstraints(minHeight: constraint.maxHeight),
+                      child: IntrinsicHeight(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Dimens.d30.h.spaceHeight,
+                            ValueListenableBuilder(
+                              valueListenable: editProfileController.imageFile,
+                              builder: (context, value, child) {
+                                return AddImageEditWidget(
+                                  onTap: () async {
+                                    await showImagePickerActionSheet(
+                                        context)
+                                        ?.then((value) async {
+                                      if (value != null) {
+                                        editProfileController.imageFile.value =
+                                            value;
+                                      }
+                                    });
                                   },
+                                  onDeleteTap: () async {
+                                    editProfileController.imageFile = ValueNotifier(null);
+                                    if (editProfileController.image != null) {
+                                      editProfileController.urlImage = null;
+                                      _isImageRemoved = true;
+                                    }
+
+                                    setState(() {});
+                                  },
+                                  image: editProfileController.imageFile.value,
+                                  imageURL: editProfileController.urlImage,
+                                );
+                              },
+                            ),
+                            Dimens.d30.h.spaceHeight,
+                            CommonTextField(
+                                labelText: "name".tr,
+                                hintText: "enterName".tr,
+                                controller:
+                                editProfileController.nameController,
+                                focusNode: editProfileController.name,
+                                prefixIcon: Transform.scale(
+                                  scale: 0.5,
+                                  child:
+                                  SvgPicture.asset(ImageConstant.user),
                                 ),
-                                Dimens.d30.h.spaceHeight,
-                                CommonTextField(
-                                    labelText: "name".tr,
-                                    hintText: "enterName".tr,
-                                    controller:
-                                    editProfileController.nameController,
-                                    focusNode: editProfileController.name,
-                                    prefixIcon: Transform.scale(
-                                      scale: 0.5,
-                                      child:
-                                      SvgPicture.asset(ImageConstant.user),
-                                    ),
-                                    keyboardType: TextInputType.emailAddress,
-                                    validator: (value) {
-                                      if (value == null ||
-                                          (!isText(value, isRequired: true))) {
-                                        return "theNameFieldIsRequired".tr;
-                                      }
-                                      return null;
-                                    }),
-                                Dimens.d16.h.spaceHeight,
-                                CommonTextField(
-                                    labelText: "email".tr,
-                                    hintText: "enterEmail".tr,
-                                    controller: editProfileController.emailController,
-                                    focusNode: editProfileController.email,
-                                    filledColor: themeController.isDarkMode.value ? ColorConstant.lightGrey2 : ColorConstant.lightGrey,
-                                    prefixIcon: Image.asset(ImageConstant.email,
-                                        scale: Dimens.d4),
-                                    keyboardType: TextInputType.emailAddress,
-                                    readOnly: true,
-                                    validator: (value) {
-                                      if (value == "") {
-                                        return "theEmailFieldIsRequired".tr;
-                                      } else if (!isValidEmail(value,
-                                          isRequired: true)) {
-                                        return "pleaseEnterValidEmail".tr;
-                                      }
-                                      return null;
-                                    }),
-                                Dimens.d16.h.spaceHeight,
+                                keyboardType: TextInputType.emailAddress,
+                                validator: (value) {
+                                  if (value == null ||
+                                      (!isText(value, isRequired: true))) {
+                                    return "theNameFieldIsRequired".tr;
+                                  }
+                                  return null;
+                                }),
+                            Dimens.d16.h.spaceHeight,
+                            CommonTextField(
+                                labelText: "email".tr,
+                                hintText: "enterEmail".tr,
+                                controller: editProfileController.emailController,
+                                focusNode: editProfileController.email,
+                                filledColor: themeController.isDarkMode.value ? ColorConstant.lightGrey2 : ColorConstant.lightGrey,
+                                prefixIcon: Image.asset(ImageConstant.email,
+                                    scale: Dimens.d4),
+                                keyboardType: TextInputType.emailAddress,
+                                readOnly: true,
+                                validator: (value) {
+                                  if (value == "") {
+                                    return "theEmailFieldIsRequired".tr;
+                                  } else if (!isValidEmail(value,
+                                      isRequired: true)) {
+                                    return "pleaseEnterValidEmail".tr;
+                                  }
+                                  return null;
+                                }),
+                            Dimens.d16.h.spaceHeight,
 
-                                CommonTextField(
-                                    labelText: "dateOfBirth".tr,
-                                    hintText: "DD/MM/YYYY",
-                                    controller: editProfileController.dobController,
-                                    focusNode: editProfileController.dob,
-                                    prefixIcon: Transform.scale(
-                                        scale: 0.5,
-                                        child: SvgPicture.asset(
-                                            ImageConstant.calendar,
-                                            height: Dimens.d5,
-                                            width: Dimens.d5)),
-                                    readOnly: true,
-                                    onTap: () async{
-                                      FocusScope.of(context).unfocus();
-                                      await  picker.DatePicker.showDatePicker(context,
-                                          showTitleActions: true,
-                                          minTime: DateTime(1900, 3, 5),
-                                          maxTime: DateTime.now().subtract(
-                                              const Duration(days: 1)),
-                                          theme: picker.DatePickerTheme(
-                                              doneStyle: Style.montserratSemiBold(
-                                                  color: ColorConstant.white),
-                                              cancelStyle: Style.montserratSemiBold(color: ColorConstant.white),
-                                              itemStyle: Style.montserratSemiBold(color: ColorConstant.white),
-                                              backgroundColor: ColorConstant.themeColor),
-                                          onChanged: (date) {},
-                                          onConfirm: (date) {
-                                            editProfileController.dobController.text = DateTimeUtils.formatDate(date);
-                                            editProfileController.selectedDob = date;
-                                          }, currentTime: editProfileController.selectedDob ?? DateTime.now().subtract(const Duration(days: 1)), locale: picker.LocaleType.en);
-                                    },
+                            CommonTextField(
+                                labelText: "dateOfBirth".tr,
+                                hintText: "DD/MM/YYYY",
+                                controller: editProfileController.dobController,
+                                focusNode: editProfileController.dob,
+                                prefixIcon: Transform.scale(
+                                    scale: 0.5,
+                                    child: SvgPicture.asset(
+                                        ImageConstant.calendar,
+                                        height: Dimens.d5,
+                                        width: Dimens.d5)),
+                                readOnly: true,
+                                onTap: () async{
+                                  FocusScope.of(context).unfocus();
+                                  await  picker.DatePicker.showDatePicker(context,
+                                      showTitleActions: true,
+                                      minTime: DateTime(1900, 3, 5),
+                                      maxTime: DateTime.now().subtract(
+                                          const Duration(days: 1)),
+                                      theme: picker.DatePickerTheme(
+                                          doneStyle: Style.montserratSemiBold(
+                                              color: ColorConstant.white),
+                                          cancelStyle: Style.montserratSemiBold(color: ColorConstant.white),
+                                          itemStyle: Style.montserratSemiBold(color: ColorConstant.white),
+                                          backgroundColor: ColorConstant.themeColor),
+                                      onChanged: (date) {},
+                                      onConfirm: (date) {
+                                        editProfileController.dobController.text = DateTimeUtils.formatDate(date);
+                                        editProfileController.selectedDob = date;
+                                      }, currentTime: editProfileController.selectedDob ?? DateTime.now().subtract(const Duration(days: 1)), locale: picker.LocaleType.en);
+                                },
 
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return "theDateOfBirthFieldIsRequired".tr;
-                                      }
-                                      return null;
-                                    }),
-                                Dimens.d16.h.spaceHeight,
-                                CommonTextField(
-                                    labelText: "gender".tr,
-                                    hintText: "selectGender".tr,
-                                    controller:
-                                    editProfileController.genderController,
-                                    focusNode: editProfileController.gender,
-                                    prefixIcon: Transform.scale(
-                                        scale: 0.5,
-                                        child: SvgPicture.asset(
-                                            ImageConstant.gender,
-                                            height: Dimens.d5,
-                                            width: Dimens.d5)),
-                                    readOnly: true,
-                                    suffixIcon: Transform.scale(
-                                        scale: 0.5,
-                                        child: SvgPicture.asset(
-                                            ImageConstant.downArrow,
-                                            height: Dimens.d5,
-                                            width: Dimens.d5)),
-                                    onTap: () {
-                                      editProfileController.isDropGender.value =
-                                      !editProfileController
-                                          .isDropGender.value;
-                                    },
-                                    validator: (value) {
-                                      if (value == null ||
-                                          (!isText(value, isRequired: true))) {
-                                        return "theGenderFieldIsRequired".tr;
-                                      }
-                                      return null;
-                                    }),
-                                Dimens.d5.h.spaceHeight,
-                                Obx(
-                                      () => editProfileController.isDropGender.value
-                                      ? Container(
-                                    width: Get.width,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(
-                                          Dimens.d10),
-                                      color: ColorConstant.white,
-                                    ),
-                                    child: Column(
-                                        children: List.generate(
-                                          editProfileController
-                                              .genderList.length,
-                                              (index) => GestureDetector(
-                                              onTap: () {
-                                                editProfileController
-                                                    .isDropGender
-                                                    .value = false;
-                                                editProfileController
-                                                    .genderController
-                                                    .text =
-                                                editProfileController
-                                                    .genderList[index];
-                                                editProfileController.genderList
-                                                    .refresh();
-                                              },
-                                              child: Container(
-                                                height: Dimens.d45,
-                                                width: Get.width,
-                                                padding: const EdgeInsets.only(
-                                                    left: Dimens.d10,
-                                                    top: Dimens.d12),
-                                                decoration: BoxDecoration(
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "theDateOfBirthFieldIsRequired".tr;
+                                  }
+                                  return null;
+                                }),
+                            Dimens.d16.h.spaceHeight,
+                            CommonTextField(
+                                labelText: "gender".tr,
+                                hintText: "selectGender".tr,
+                                controller:
+                                editProfileController.genderController,
+                                focusNode: editProfileController.gender,
+                                prefixIcon: Transform.scale(
+                                    scale: 0.5,
+                                    child: SvgPicture.asset(
+                                        ImageConstant.gender,
+                                        height: Dimens.d5,
+                                        width: Dimens.d5)),
+                                readOnly: true,
+                                suffixIcon: Transform.scale(
+                                    scale: 0.5,
+                                    child: SvgPicture.asset(
+                                        ImageConstant.downArrow,
+                                        height: Dimens.d5,
+                                        width: Dimens.d5)),
+                                onTap: () {
+                                  editProfileController.isDropGender.value =
+                                  !editProfileController
+                                      .isDropGender.value;
+                                },
+                                validator: (value) {
+                                  if (value == null ||
+                                      (!isText(value, isRequired: true))) {
+                                    return "theGenderFieldIsRequired".tr;
+                                  }
+                                  return null;
+                                }),
+                            Dimens.d5.h.spaceHeight,
+                            Obx(
+                                  () => editProfileController.isDropGender.value
+                                  ? Container(
+                                width: Get.width,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                      Dimens.d10),
+                                  color: ColorConstant.white,
+                                ),
+                                child: Column(
+                                    children: List.generate(
+                                      editProfileController
+                                          .genderList.length,
+                                          (index) => GestureDetector(
+                                          onTap: () {
+                                            editProfileController
+                                                .isDropGender
+                                                .value = false;
+                                            editProfileController
+                                                .genderController
+                                                .text =
+                                            editProfileController
+                                                .genderList[index];
+                                            editProfileController.genderList
+                                                .refresh();
+                                          },
+                                          child: Container(
+                                            height: Dimens.d45,
+                                            width: Get.width,
+                                            padding: const EdgeInsets.only(
+                                                left: Dimens.d10,
+                                                top: Dimens.d12),
+                                            decoration: BoxDecoration(
+                                              color: editProfileController
+                                                  .genderController
+                                                  .text ==
+                                                  editProfileController
+                                                      .genderList[
+                                                  index]
+                                                  ? ColorConstant
+                                                  .themeColor
+                                                  : ColorConstant.white,
+                                              borderRadius: index == 0
+                                                  ? const BorderRadius.only(
+                                                  topLeft:
+                                                  Radius.circular(
+                                                      Dimens.d10),
+                                                  topRight:
+                                                  Radius.circular(
+                                                      Dimens.d10))
+                                                  : index == 2
+                                                  ? const BorderRadius.only(
+                                                  bottomLeft: Radius
+                                                      .circular(
+                                                      Dimens
+                                                          .d10),
+                                                  bottomRight:
+                                                  Radius.circular(
+                                                      Dimens
+                                                          .d10))
+                                                  : BorderRadius
+                                                  .circular(
+                                                  Dimens.d0),
+                                            ),
+                                            child: Text(
+                                              editProfileController
+                                                  .genderList[index],
+                                              style: Style.montserratMedium(
                                                   color: editProfileController
                                                       .genderController
                                                       .text ==
@@ -253,97 +287,61 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                           .genderList[
                                                       index]
                                                       ? ColorConstant
-                                                      .themeColor
-                                                      : ColorConstant.white,
-                                                  borderRadius: index == 0
-                                                      ? const BorderRadius.only(
-                                                      topLeft:
-                                                      Radius.circular(
-                                                          Dimens.d10),
-                                                      topRight:
-                                                      Radius.circular(
-                                                          Dimens.d10))
-                                                      : index == 2
-                                                      ? const BorderRadius.only(
-                                                      bottomLeft: Radius
-                                                          .circular(
-                                                          Dimens
-                                                              .d10),
-                                                      bottomRight:
-                                                      Radius.circular(
-                                                          Dimens
-                                                              .d10))
-                                                      : BorderRadius
-                                                      .circular(
-                                                      Dimens.d0),
-                                                ),
-                                                child: Text(
-                                                  editProfileController
-                                                      .genderList[index],
-                                                  style: Style.montserratMedium(
-                                                      color: editProfileController
-                                                          .genderController
-                                                          .text ==
-                                                          editProfileController
-                                                              .genderList[
-                                                          index]
-                                                          ? ColorConstant
-                                                          .white
-                                                          : ColorConstant
-                                                          .black),
-                                                ),
-                                              )),
-                                        )),
-                                  )
-                                      : const SizedBox(),
-                                ),
-                                Dimens.d30.h.spaceHeight,
-                                Obx(
-                                      () => (editProfileController.loader.value)
-                                      ? const LoadingButton()
-                                      : Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: Dimens.d50),
-                                    child: CommonElevatedButton(
-                                      title: "update".tr,
-                                      onTap: () async {
-                                        FocusScope.of(context).unfocus();
-
-                                        editProfileController.loader.value = true;
-
-
-                                        if(editProfileController.imageFile.value == null){
-                                          errorToast("pleaseAddImage".tr);
-                                        }  else{
-                                          if (_formKey.currentState!.validate() ) {
-
-
-
-
-                                            Get.back();
-
-
-
-
-                                          }
-                                        }
-
-                                        editProfileController.loader.value = false;                                          },
-                                    ),
-                                  ),
-                                ),
-                                Dimens.d50.h.spaceHeight,
-                              ],
+                                                      .white
+                                                      : ColorConstant
+                                                      .black),
+                                            ),
+                                          )),
+                                    )),
+                              )
+                                  : const SizedBox(),
                             ),
-                          ),
+                            Dimens.d30.h.spaceHeight,
+                            Obx(
+                                  () => (editProfileController.loader.value)
+                                  ? const LoadingButton()
+                                  : Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: Dimens.d50),
+                                child: CommonElevatedButton(
+                                  title: "update".tr,
+                                  onTap: () async {
+                                    FocusScope.of(context).unfocus();
+
+                                    editProfileController.loader.value = true;
+
+
+                                    if(editProfileController.imageFile.value == null){
+                                      errorToast("pleaseAddImage".tr);
+                                    }  else{
+                                      if (_formKey.currentState!.validate() ) {
+
+
+
+
+                                        Get.back();
+
+
+
+
+                                      }
+                                    }
+
+                                    editProfileController.loader.value = false;                                          },
+                                ),
+                              ),
+                            ),
+                            Dimens.d50.h.spaceHeight,
+                          ],
                         ),
                       ),
                     ),
-                    //commonGradiantContainer(color: AppColors.backgroundWhite, h: 20)
-                  ],
-                );
-              },
-            ),
-          ),
+                  ),
+                ),
+                //commonGradiantContainer(color: AppColors.backgroundWhite, h: 20)
+              ],
+            );
+          },
+        ),
       ),
 
     );

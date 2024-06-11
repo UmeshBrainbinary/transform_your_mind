@@ -35,6 +35,7 @@ class JournalListTileLayout extends StatelessWidget {
 
     return Container(
       height: Dimens.d70.h,
+      margin: const EdgeInsets.only(bottom: 20.0),
       decoration: BoxDecoration(
         color: themeController.isDarkMode.value
             ? ColorConstant.textfieldFillColor
@@ -43,7 +44,7 @@ class JournalListTileLayout extends StatelessWidget {
       ),
       child: Row(
         children: [
-          CommonLoadImage(
+          /*CommonLoadImage(
             url: image,
             width: Dimens.d90,
             height: Dimens.d70,
@@ -51,7 +52,7 @@ class JournalListTileLayout extends StatelessWidget {
               topLeft: Radius.circular(Dimens.d10),
               bottomLeft: Radius.circular(Dimens.d10),
             ),
-          ),
+          ),*/
           Dimens.d16.spaceWidth,
           Expanded(
             child: Column(
@@ -64,8 +65,8 @@ class JournalListTileLayout extends StatelessWidget {
                     Expanded(
                       child: Text(
                         title,
-                        style: Style.cormorantGaramondBold(
-                          fontSize: Dimens.d20,
+                        style: Style.montserratRegular(
+                          fontSize: Dimens.d18,
                           color: themeController.isDarkMode.value
                               ? ColorConstant.white
                               : ColorConstant.black,
@@ -149,6 +150,7 @@ class JournalDraftListTileLayout extends StatelessWidget {
     ThemeController themeController = Get.find<ThemeController>();
     return Container(
       width: Dimens.d335,
+      margin: const EdgeInsets.only(right: 20.0),
       decoration: BoxDecoration(
         color: themeController.isDarkMode.value
             ? ColorConstant.textfieldFillColor
@@ -157,15 +159,7 @@ class JournalDraftListTileLayout extends StatelessWidget {
       ),
       child: Row(
         children: [
-          CommonLoadImage(
-            url: image,
-            width: Dimens.d90,
-            height: Dimens.d70,
-            customBorderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(Dimens.d10),
-              bottomLeft: Radius.circular(Dimens.d10),
-            ),
-          ),
+
           Dimens.d16.spaceWidth,
           Expanded(
             child: Column(
@@ -178,8 +172,8 @@ class JournalDraftListTileLayout extends StatelessWidget {
                     Expanded(
                       child: Text(
                         title,
-                        style: Style.cormorantGaramondBold(
-                          fontSize: Dimens.d20,
+                        style: Style.montserratRegular(
+                          fontSize: Dimens.d18,
                           color: themeController.isDarkMode.value
                               ? ColorConstant.white
                               : ColorConstant.black,

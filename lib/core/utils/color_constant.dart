@@ -31,6 +31,7 @@ class ColorConstant {
   static const color3D5459 = Color(0XFF3D5459);
   static const colorBDDBE5 = Color(0XFFBDDBE5);
   static const color7C9EA7 = Color(0XFF7C9EA7);
+  static const colorCACACA = Color(0XFFCACACA);
 
   static const color3d5157 = Color(0XFF3d5157);
   static const lightGrey = Color.fromRGBO(220, 220, 220, 1);
@@ -40,6 +41,8 @@ class ColorConstant {
   static const colorFF0000 = Color(0XFFFF0000);
   static const colorECECEC = Color(0XFFECECEC);
   static const colorFFC700 = Color(0XFFFFC700);
+  static const color4A6972 = Color(0XFF4A6972);
+  static const colorAECFD8 = Color(0XFFAECFD8);
 
   static const textWhiteBackGround = Color.fromRGBO(229, 234, 249, 1);
   static const textDarkBlue = Color.fromRGBO(49, 59, 107, 1);
