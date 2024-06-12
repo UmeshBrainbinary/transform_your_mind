@@ -201,6 +201,7 @@ class ImageConstant {
   static String addAffirmation = "$iconPath/add_affirmation.svg";
   static String soundMax = "$iconPath/sound_max.svg";
   static String soundMute = "$iconPath/sound_mute.svg";
+  static String downArrowSetting = "$iconPath/down_arrow_setting.svg";
   static String filterPositive = "$iconPath/filter_positive_moment.svg";
   static String subscriptionCheck = "$iconPath/subscription_check.svg";
   static String shapeAffirmationShare =

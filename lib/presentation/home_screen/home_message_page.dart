@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'dart:math' as math;
+import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -59,16 +60,28 @@ class _HomeMessagePageState extends State<HomeMessagePage> {
                     height: double.infinity,
                     width: double.infinity,
                   ),
-                  Image.asset(
-                     ImageConstant.splashLogo,
-                      width: double.infinity,
-                      fit: BoxFit.fitWidth,
-                      opacity: const AlwaysStoppedAnimation(.85)),
+                  Stack(
+                    children: [
+                      Image.asset(
+                         ImageConstant.splashLogo,
+                          width: double.infinity,
+                          fit: BoxFit.fitWidth,
+                          opacity: const AlwaysStoppedAnimation(.85)),
+                      Positioned.fill(
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                          child: Container(
+                            color: Colors.black.withOpacity(0.0),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   Padding(
                     padding: EdgeInsets.symmetric(
                         horizontal: 45, vertical: 20.h),
                     child: AutoSizeText(
-                      "displayNameTransformYourMind".tr,
+                      "“Calm mind brings inner strength and self-confidence, so that's very important for good health” ".tr,
                       textAlign: TextAlign.center,
                       wrapWords: false,
                       maxLines: 6,

@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
-    as picker;
+import 'package:flutter_calendar_carousel/classes/event.dart';
+import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:transform_your_mind/core/app_export.dart';
@@ -11,7 +11,6 @@ import 'package:transform_your_mind/core/common_widget/layout_container.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
-import 'package:transform_your_mind/core/utils/date_time.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
@@ -56,11 +55,11 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
   int maxLengthDesc = 2000;
   ValueNotifier<int> currentLength = ValueNotifier(0);
   String? urlImage;
-  bool _isImageRemoved = false;
   int gratitudeAddedCount = 0;
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   File? selectedImage;
+  DateTime _currentDate = DateTime.now();
 
   @override
   void initState() {
@@ -190,7 +189,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  descFocus.unfocus();
+                                  /*  descFocus.unfocus();
                                   titleFocus.unfocus();
                                   DateTime initialDate = dateController
                                           .text.isNotEmpty
@@ -225,7 +224,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                                     FocusScope.of(context).unfocus();
                                   },
                                       currentTime: initialDate,
-                                      locale: picker.LocaleType.en);
+                                      locale: picker.LocaleType.en);*/
                                 },
                                 child: CommonTextField(
                                     enabled: false,
@@ -245,6 +244,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                                     },
                                     focusNode: dateFocus),
                               ),
+                              widgetCalendar(),
                               Dimens.d30.spaceHeight,
                               Row(
                                 children: [
@@ -320,6 +320,64 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
             ],
           );
         }),
+      ),
+    );
+  }
+
+  Widget widgetCalendar() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16.0),
+
+      color: ColorConstant.white,
+      child: CalendarCarousel<Event>(
+        onDayPressed: (DateTime date, List<Event> events) {
+          this.setState(() => _currentDate = date);
+        },
+        weekendTextStyle:
+            Style.montserratRegular(color: ColorConstant.black, fontSize: 15),
+        thisMonthDayBorderColor: ColorConstant.colorD6D8E1,
+        customDayBuilder: (
+          /// you can provide your own build function to make custom day containers
+          bool isSelectable,
+          int index,
+          bool isSelectedDay,
+          bool isToday,
+          bool isPrevMonthDay,
+          TextStyle textStyle,
+          bool isNextMonthDay,
+          bool isThisMonthDay,
+          DateTime day,
+        ) {
+          return null;
+        },
+        weekFormat: false,
+
+        daysTextStyle:
+            Style.montserratRegular(fontSize: 15, color: ColorConstant.black),
+        //markedDatesMap: _markedDateMap,
+        height: Dimens.d300,
+        childAspectRatio: 1.5,
+        dayPadding: 0.0,
+        prevDaysTextStyle: Style.montserratRegular(fontSize: 15),
+        selectedDateTime: _currentDate,
+        headerTextStyle: Style.montserratSemiBold(color: ColorConstant.black),
+        dayButtonColor: ColorConstant.white,
+        weekDayBackgroundColor: ColorConstant.white,
+        markedDateMoreCustomDecoration:
+            const BoxDecoration(color: Colors.white),
+        shouldShowTransform: false,
+        staticSixWeekFormat: false,
+        weekdayTextStyle: Style.montserratSemiBold(
+            fontSize: 11, color: ColorConstant.color797B86),
+        todayButtonColor: ColorConstant.transparent,
+        selectedDayBorderColor: Colors.transparent,
+        todayBorderColor: Colors.transparent,
+        selectedDayButtonColor: ColorConstant.themeColor,
+        daysHaveCircularBorder: false,
+        todayTextStyle:
+            Style.montserratRegular(fontSize: 15, color: ColorConstant.black),
+
+        /// null for not rendering any border, true for circular border, false for rectangular border
       ),
     );
   }
