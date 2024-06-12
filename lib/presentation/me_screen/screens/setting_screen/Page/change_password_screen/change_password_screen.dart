@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/size_utils.dart';
+import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/core/utils/validation_functions.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/change_password_screen/change_password_controller.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
@@ -43,7 +46,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             ? ColorConstant.black
             : ColorConstant.backGround,
         appBar: CustomAppBar(
-          title: "changePassword".tr,
+          title: "newPassword".tr,
         ),
         body: Stack(
           children: [
@@ -64,54 +67,54 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
                                   Dimens.d25.spaceHeight,
-                                  ValueListenableBuilder(
-                                    valueListenable:
-                                        changePasswordController.securePass3,
-                                    builder: (context, value, child) {
-                                      return CommonTextField(
-                                        labelText: "currentPassword".tr,
-                                        hintText: "enterCurrentPassword".tr,
-                                        controller: changePasswordController
-                                            .currentPController,
-                                        validator: (value) {
-                                          if (value == "") {
-                                            return "thePasswordFieldIsRequired"
-                                                .tr;
-                                          }
-                                          //  else if(!isValidPassword(value, isRequired: true)){
-                                          //   return "pleaseEnterValidPassword".tr;
-                                          // }
-                                          return null;
-                                        },
-                                        focusNode: FocusNode(),
-                                        prefixIcon: Image.asset(
-                                            ImageConstant.lock,
-                                            scale: Dimens.d4),
-                                        suffixIcon: GestureDetector(
-                                            onTap: () {
-                                              changePasswordController
-                                                      .securePass3.value =
-                                                  !changePasswordController
-                                                      .securePass3.value;
-                                            },
-                                            child: Transform.scale(
-                                              scale: 0.38,
-                                              child: Image.asset(
-                                                changePasswordController
-                                                        .securePass3.value
-                                                    ? ImageConstant.eyeClose
-                                                    : ImageConstant.eyeOpen,
-                                                fit: BoxFit.contain,
-                                                height: 5,
-                                                width: 5,
-                                              ),
-                                            )),
-                                        isSecure: value,
-                                        textInputAction: TextInputAction.done,
-                                      );
-                                    },
-                                  ),
-                                  Dimens.d23.spaceHeight,
+                                  // ValueListenableBuilder(
+                                  //   valueListenable:
+                                  //       changePasswordController.securePass3,
+                                  //   builder: (context, value, child) {
+                                  //     return CommonTextField(
+                                  //       labelText: "currentPassword".tr,
+                                  //       hintText: "enterCurrentPassword".tr,
+                                  //       controller: changePasswordController
+                                  //           .currentPController,
+                                  //       validator: (value) {
+                                  //         if (value == "") {
+                                  //           return "thePasswordFieldIsRequired"
+                                  //               .tr;
+                                  //         }
+                                  //         //  else if(!isValidPassword(value, isRequired: true)){
+                                  //         //   return "pleaseEnterValidPassword".tr;
+                                  //         // }
+                                  //         return null;
+                                  //       },
+                                  //       focusNode: FocusNode(),
+                                  //       prefixIcon: Image.asset(
+                                  //           ImageConstant.lock,
+                                  //           scale: Dimens.d4),
+                                  //       suffixIcon: GestureDetector(
+                                  //           onTap: () {
+                                  //             changePasswordController
+                                  //                     .securePass3.value =
+                                  //                 !changePasswordController
+                                  //                     .securePass3.value;
+                                  //           },
+                                  //           child: Transform.scale(
+                                  //             scale: 0.38,
+                                  //             child: Image.asset(
+                                  //               changePasswordController
+                                  //                       .securePass3.value
+                                  //                   ? ImageConstant.eyeClose
+                                  //                   : ImageConstant.eyeOpen,
+                                  //               fit: BoxFit.contain,
+                                  //               height: 5,
+                                  //               width: 5,
+                                  //             ),
+                                  //           )),
+                                  //       isSecure: value,
+                                  //       textInputAction: TextInputAction.done,
+                                  //     );
+                                  //   },
+                                  // ),
+                                  // Dimens.d23.spaceHeight,
                                   ValueListenableBuilder(
                                     valueListenable:
                                         changePasswordController.securePass,
@@ -215,7 +218,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                   ),
                                   Dimens.d120.spaceHeight,
                                   CommonElevatedButton(
-                                    title: "confirmPassword".tr,
+                                    title: "submit".tr,
                                     onTap: () {
                                       FocusScope.of(context).unfocus();
 
@@ -239,7 +242,52 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             ),
           ],
         ),
+
       ),
     );
   }
+}
+void _showAlertDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        //backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(11.0), // Set border radius
+        ),
+        actions: <Widget>[
+          Dimens.d27.spaceHeight,
+          Center(child: SvgPicture.asset(ImageConstant.passwordCheck,height: Dimens.d100, width: Dimens.d100,)),
+          Dimens.d8.spaceHeight,
+
+          Center(
+            child: Text("passwordChanged".tr,
+                textAlign: TextAlign.center,
+                style: Style.cormorantGaramondBold(
+                  fontSize: Dimens.d22,
+                  fontWeight: FontWeight.w700,
+                )),
+          ),
+          Dimens.d7.spaceHeight,
+          Center(
+            child: Text(
+                textAlign: TextAlign.center,
+                "yourPassword".tr,
+                style: Style.montserratRegular(
+                  fontSize: Dimens.d12,
+                  fontWeight: FontWeight.w400,
+                )),
+          ),
+          Dimens.d31.spaceHeight,
+          Padding(
+            padding:   EdgeInsets.symmetric(horizontal: Dimens.d70.h),
+            child: CommonElevatedButton(title: "ok".tr, onTap: () {
+              Get.back();
+            },),
+          )
+        ],
+      );
+    },
+  );
 }
