@@ -75,6 +75,12 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
     _lottieBgController.dispose();
     super.dispose();
   }
+  String formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+    return "$minutes:$seconds";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -444,19 +450,25 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                                       _updatedRealtimeAudioDuration,
                                       builder: (BuildContext context, value,
                                           Widget? child) {
-                                        return Text(
-                                          _updatedRealtimeAudioDuration
-                                              .value.durationFormatter,
-                                          style: Style.montserratMedium(
-                                          fontSize: Dimens.d14,
-                                          color: ColorConstant.white),
-                                    );
+                                        return   StreamBuilder<Duration?>(
+                                          stream: _audioPlayerService.positionStream,
+                                          builder: (context, snapshot) {
+                                            final currentDuration = snapshot.data ?? Duration.zero;
+                                            return  Text(
+                                              currentDuration.toString().split('.').first,
+                                              style: Style.montserratMedium(
+                                                  fontSize: Dimens.d14,
+                                                  color: ColorConstant.white),
+                                            );
+                                          },
+                                        );
+
+
                                   },
                                 ),
                               ),
                             ),
-
-                            /// music animation
+                                /// music animation
                                 Lottie.asset(
                                   ImageConstant.lottieAudio,
                                   controller: _lottieController,
@@ -469,8 +481,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                                         composition.duration;
                                   },
                                 ),
-
-                            SizedBox(
+                                SizedBox(
                               height: Dimens.d35,
                               width: Dimens.d55,
                               child: Center(
@@ -479,14 +490,17 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                                       _updatedRealtimeAudioDuration,
                                   builder: (BuildContext context, value,
                                       Widget? child) {
-                                    return Text(
-                                      (_totalAudioDuration -
-                                              _updatedRealtimeAudioDuration
-                                                  .value)
-                                          .durationFormatter,
-                                      style: Style.montserratMedium(
-                                          fontSize: Dimens.d14,
-                                          color: ColorConstant.white),
+                                    return    StreamBuilder<Duration?>(
+                                      stream: _audioPlayerService.durationStream,
+                                      builder: (context, snapshot) {
+                                        final totalDuration = snapshot.data ?? Duration.zero;
+                                        return  Text(
+                                          totalDuration.toString().split('.').first,
+                                          style: Style.montserratMedium(
+                                              fontSize: Dimens.d14,
+                                              color: ColorConstant.white),
+                                        );
+                                      },
                                     );
                                   },
                                 ),

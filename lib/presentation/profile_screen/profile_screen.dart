@@ -144,7 +144,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 "Total Hours Spent": 50.0,
                                 "journal entries": 20.0,
                                 "Completed Affirmations": 30.0,
-                                "Days Spent": 30.0,
                               },
                               animationDuration:
                                   const Duration(milliseconds: 800),
@@ -217,26 +216,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ),
                                     ),
                                   ),
-                                  Dimens.d12.spaceHeight,
-                                  Row(
-                                    children: [
-                                      Container(
-                                        height: 10,
-                                        width: 10,
-                                        decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: ColorConstant.themeColor,
-                                        ),
-                                      ),
-                                      Dimens.d6.spaceWidth,
-                                      Text(
-                                        "totalHoursSpent".tr,
-                                        style: Style.montserratRegular(
-                                          fontSize: Dimens.d9,
-                                        ),
-                                      )
-                                    ],
-                                  ),
+
                                   Dimens.d12.spaceHeight,
                                   Row(
                                     children: [
@@ -250,7 +230,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ),
                                       Dimens.d6.spaceWidth,
                                       Text(
-                                        "journalEntries".tr,
+                                        "Completed Gratitude".tr,
                                         style: Style.montserratRegular(
                                           fontSize: Dimens.d9,
                                         ),
@@ -270,7 +250,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ),
                                       Dimens.d6.spaceWidth,
                                       Text(
-                                        "completedAffirmations".tr,
+                                        "journalEntries".tr,
                                         style: Style.montserratRegular(
                                           fontSize: Dimens.d9,
                                         ),
@@ -290,7 +270,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ),
                                       Dimens.d6.spaceWidth,
                                       Text(
-                                        "daysSpent".tr,
+                                        "completedAffirmations".tr,
                                         style: Style.montserratRegular(
                                           fontSize: Dimens.d9,
                                         ),
