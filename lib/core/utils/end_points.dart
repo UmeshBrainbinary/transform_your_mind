@@ -9,4 +9,6 @@ class EndPoints {
   static String updateUser = "update-user?id=";
   static String forgotPassword = "forgot-password";
   static String resetPassword = "reset-password";
+  static String addFocus = "add-focus";
+  static String deleteFocus = "delete-focus?id=";
 }

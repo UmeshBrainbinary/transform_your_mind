@@ -66,55 +66,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                               child: Column(
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  Dimens.d25.spaceHeight,
-                                  // ValueListenableBuilder(
-                                  //   valueListenable:
-                                  //       changePasswordController.securePass3,
-                                  //   builder: (context, value, child) {
-                                  //     return CommonTextField(
-                                  //       labelText: "currentPassword".tr,
-                                  //       hintText: "enterCurrentPassword".tr,
-                                  //       controller: changePasswordController
-                                  //           .currentPController,
-                                  //       validator: (value) {
-                                  //         if (value == "") {
-                                  //           return "thePasswordFieldIsRequired"
-                                  //               .tr;
-                                  //         }
-                                  //         //  else if(!isValidPassword(value, isRequired: true)){
-                                  //         //   return "pleaseEnterValidPassword".tr;
-                                  //         // }
-                                  //         return null;
-                                  //       },
-                                  //       focusNode: FocusNode(),
-                                  //       prefixIcon: Image.asset(
-                                  //           ImageConstant.lock,
-                                  //           scale: Dimens.d4),
-                                  //       suffixIcon: GestureDetector(
-                                  //           onTap: () {
-                                  //             changePasswordController
-                                  //                     .securePass3.value =
-                                  //                 !changePasswordController
-                                  //                     .securePass3.value;
-                                  //           },
-                                  //           child: Transform.scale(
-                                  //             scale: 0.38,
-                                  //             child: Image.asset(
-                                  //               changePasswordController
-                                  //                       .securePass3.value
-                                  //                   ? ImageConstant.eyeClose
-                                  //                   : ImageConstant.eyeOpen,
-                                  //               fit: BoxFit.contain,
-                                  //               height: 5,
-                                  //               width: 5,
-                                  //             ),
-                                  //           )),
-                                  //       isSecure: value,
-                                  //       textInputAction: TextInputAction.done,
-                                  //     );
-                                  //   },
-                                  // ),
-                                  // Dimens.d23.spaceHeight,
+
+                                  Dimens.d23.spaceHeight,
                                   ValueListenableBuilder(
                                     valueListenable:
                                         changePasswordController.securePass,

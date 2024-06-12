@@ -355,6 +355,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
         borderRadius: BorderRadius.circular(16),
         color: ColorConstant.white,
       ),
+
       child: CalendarCarousel<Event>(
 
         onDayPressed: (DateTime date, List<Event> events) {

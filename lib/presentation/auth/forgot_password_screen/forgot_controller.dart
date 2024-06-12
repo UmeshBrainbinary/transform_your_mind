@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
@@ -16,6 +17,7 @@ import 'package:transform_your_mind/routes/app_routes.dart';
 class ForgotController extends GetxController {
   //______________________________ Strings _____________________________
   TextEditingController emailController = TextEditingController();
+  FocusNode emailFocus = FocusNode();
   TextEditingController otpController = TextEditingController();
   TextEditingController newPController = TextEditingController();
   TextEditingController confirmPController = TextEditingController();
@@ -27,7 +29,9 @@ class ForgotController extends GetxController {
   ForgotPassword forgotPassword = ForgotPassword();
 
   onTapOtpVerify(BuildContext context) async {
+    loader.value = true;
     await otpVerify(context);
+    loader.value = false;
   }
 
   onTapOtpVerifyChangePass(BuildContext context) async {
@@ -35,7 +39,9 @@ class ForgotController extends GetxController {
   }
 
   forgotPasswordButton(BuildContext context) async {
+    loader.value = true;
     await forgotPasswordApi(context);
+    loader.value = false;
   }
 
   forgotPasswordApi(BuildContext context) async {
@@ -119,7 +125,7 @@ class ForgotController extends GetxController {
       var request = http.Request(
           'POST', Uri.parse('${EndPoints.baseUrl}${EndPoints.verifyOtp}'));
       request.body = json.encode({
-        "email": PrefService.getString(PrefKey.email),
+        "email": emailController.text,
         "otp": otpController.text,
         "isSignUp": true
       });
@@ -137,7 +143,7 @@ class ForgotController extends GetxController {
         // PrefService.setValue(PrefKey.token, verifyModel.token);
         // PrefService.setValue(PrefKey.userId, verifyModel.user!.id);
         // showSnackBarSuccess(context, verifyModel.message ?? "");
-
+        await PrefService.setValue(PrefKey.email, emailController.text);
         Get.toNamed(AppRoutes.changePassword);
 
         debugPrint(await response.stream.bytesToString());

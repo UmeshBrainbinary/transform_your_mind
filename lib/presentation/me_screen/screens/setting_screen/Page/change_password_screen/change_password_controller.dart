@@ -16,7 +16,6 @@ import 'package:transform_your_mind/routes/app_routes.dart';
 class ChangePasswordController extends GetxController {
 
 
-  TextEditingController currentPController = TextEditingController();
   TextEditingController newPController = TextEditingController();
   TextEditingController confirmPController = TextEditingController();
 
@@ -37,6 +36,7 @@ class ChangePasswordController extends GetxController {
 
 
   resetPasswordApi(BuildContext context) async {
+    loader.value = true;
     try {
       var headers = {'Content-Type': 'application/json'};
       var request = http.Request(

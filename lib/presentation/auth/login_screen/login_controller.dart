@@ -80,7 +80,12 @@ class LoginController extends GetxController {
         PrefService.setValue(PrefKey.token, loginModel.meta!.token);
         PrefService.setValue(PrefKey.userId, loginModel.data!.id);
         showSnackBarSuccess(context, "login Successfully");
-      } else {
+      } else if(response.statusCode == 400 ){
+        loader.value = false;
+
+        showSnackBarSuccess(context, "Invalid password");
+
+      }else {
         loader.value = false;
 
         debugPrint(response.reasonPhrase);
