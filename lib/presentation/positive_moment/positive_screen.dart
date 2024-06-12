@@ -8,6 +8,7 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/edit_profile_screen/edit_profile_screen.dart';
 import 'package:transform_your_mind/presentation/positive_moment/add_positive_page.dart';
 import 'package:transform_your_mind/presentation/positive_moment/positive_controller.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
@@ -131,141 +132,169 @@ class _PositiveScreenState extends State<PositiveScreen> {
               Dimens.d30.h.spaceHeight,
               Expanded(
                 child: _filteredBookmarks != null
-                    ? Expanded(
-                      child: Stack(
-                        children: [
-                              GridView.builder(
-                              controller: scrollController,
-                              padding: const EdgeInsets.only(bottom: Dimens.d20),
-                              physics: const BouncingScrollPhysics(),
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                childAspectRatio: 1,
-                                crossAxisCount: 2,
-                                // Number of columns
-                                crossAxisSpacing: 20,
-                                // Spacing between columns
-                                mainAxisSpacing: 20, // Spacing between rows
-                              ),
-                              itemCount: _filteredBookmarks?.length ?? 0,
-                              itemBuilder: (context, index) {
-                                return GestureDetector(
+                    ? GridView.builder(
+                        controller: scrollController,
+                        padding: const EdgeInsets.only(bottom: Dimens.d20),
+                        physics: const BouncingScrollPhysics(),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          childAspectRatio: 1,
+                          crossAxisCount: 2,
+                          // Number of columns
+                          crossAxisSpacing: 20,
+                          // Spacing between columns
+                          mainAxisSpacing: 20, // Spacing between rows
+                        ),
+                        itemCount: _filteredBookmarks?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            height: 156,
+                            width: 156,
+                            padding: const EdgeInsets.only(
+                                left: 10, right: 10, top: 10),
+                            decoration: BoxDecoration(
+                                color: ColorConstant.colorDCE9EE,
+                                borderRadius: BorderRadius.circular(18)),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                GestureDetector(
                                   onTap: () {
                                     searchFocusNode.unfocus();
-                                    //   _showAlertDialog(context);
-                                    // _onTileClick(index, context);
+                                    _showAlertDialog(context);
                                   },
-                                  child: Container(
-                                    height: 156,
-                                    width: 156,
-                                    padding: const EdgeInsets.only(
-                                        left: 10, right: 10, top: 10),
-                                    decoration: BoxDecoration(
-                                        color: ColorConstant.colorDCE9EE,
-                                        borderRadius: BorderRadius.circular(18)),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Image.asset(
-                                          _filteredBookmarks?[index]["img"] ?? "",
-                                          height: 101,
-                                          width: 138,
-                                        ),
-                                        /*      CustomImageView(
-                                              imagePath: positiveController
-                                                  .positiveMomentList[index]['image'],
-                                              height: Dimens.d135,
-                                              radius: BorderRadius.circular(10),
-                                              fit: BoxFit.cover,
-                                            ),*/
-                                        Dimens.d10.spaceHeight,
-                                        InkWell(
-                                          onTap: () {
-                      
-                                            positiveController.showMenu();
-                                            // showMenu(
-                                            //   context: context,
-                                            //   position: const RelativeRect.fromLTRB(
-                                            //       0, 0, 0, 0),
-                                            //   // adjust the position as needed
-                                            //   items: [
-                                            //     const PopupMenuItem<int>(
-                                            //       value: 1,
-                                            //       child: Text('Option 1'),
-                                            //     ),
-                                            //     const PopupMenuItem<int>(
-                                            //       value: 2,
-                                            //       child: Text('Option 2'),
-                                            //     ),
-                                            //   ],
-                                            // ).then((value) {
-                                            //   if (value != null) {
-                                            //     print('Selected: $value');
-                                            //     // handle the selected value
-                                            //   }
-                                            // });
-                                          },
-                                          child: Row(
-                                            children: [
-                                              const Spacer(),
-                                              SvgPicture.asset(
-                                                  ImageConstant.moreVert),
-                                            ],
-                                          ),
-                                        ),
-                                        Text(
-                                          _filteredBookmarks?[index]['title'] ?? "",
-                                          maxLines: Dimens.d2.toInt(),
-                                          style: Style.montserratMedium(
-                                              fontSize: Dimens.d14),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                      
-                              }),
-                          Obx(() => Visibility(
-                            visible: positiveController.isMenuVisible.value,
-                            child: Positioned(
-                              left: 50, // adjust the position as needed
-                              top: 50,  // adjust the position as needed
-                              child: Expanded(
-                                child: Material(
-                                  elevation: 4.0,
-                                  child: Container(
-                                    padding: EdgeInsets.all(8.0),
-                                    color: Colors.white,
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        ListTile(
-                                          leading: Icon(Icons.edit),
-                                          title: Text('Edit'),
-                                          onTap: () {
-                                            // Handle edit action
-                                            positiveController.hideMenu();
-                                          },
-                                        ),
-                                        ListTile(
-                                          leading: Icon(Icons.delete),
-                                          title: Text('Delete'),
-                                          onTap: () {
-                                            // Handle delete action
-                                            positiveController.hideMenu();
-                                          },
-                                        ),
-                                      ],
-                                    ),
+                                  child: Image.asset(
+                                    _filteredBookmarks?[index]["img"] ?? "",
+                                    height: 101,
+                                    width: 138,
                                   ),
                                 ),
-                              ),
+                                /*      CustomImageView(
+                                  imagePath: positiveController
+                                      .positiveMomentList[index]['image'],
+                                  height: Dimens.d135,
+                                  radius: BorderRadius.circular(10),
+                                  fit: BoxFit.cover,
+                                ),*/
+                                Dimens.d10.spaceHeight,
+                                Row(
+                                  children: [
+                                    Spacer(),
+                                    PopupMenuButton(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10.0),
+                                        ),
+                                      ),
+                                      color: ColorConstant.white,
+                                      child: SvgPicture.asset(
+                                          ImageConstant.moreVert),
+                                      itemBuilder: (context) {
+                                        return List.generate(
+                                          1,
+                                          (index) {
+                                            return PopupMenuItem(
+                                                child: Column(
+                                              children: [
+                                                InkWell(
+                                                  onTap: () {
+                                                    _onAddClick1(context);
+                                                  },
+                                                  child: Container(
+                                                    height: 28,
+                                                    width: 86,
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5),
+                                                        color: ColorConstant
+                                                            .color5B93FF
+                                                            .withOpacity(0.05)),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceAround,
+                                                      children: [
+                                                        SvgPicture.asset(
+                                                          ImageConstant
+                                                              .editTools,
+                                                          color: ColorConstant
+                                                              .color5B93FF,
+                                                        ),
+                                                        Text(
+                                                          'Edit',
+                                                          style: Style
+                                                              .montserratRegular(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color: ColorConstant
+                                                                .color5B93FF,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                Dimens.d15.spaceHeight,
+                                                InkWell(
+                                                  onTap: () {
+                                                    _showAlertDialogDelete(context, index);
+                                                  },
+                                                  child: Container(
+                                                    height: 28,
+                                                    width: 86,
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5),
+                                                        color: ColorConstant
+                                                            .colorE71D36
+                                                            .withOpacity(0.05)),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceAround,
+                                                      children: [
+                                                        SvgPicture.asset(
+                                                          ImageConstant.delete,
+                                                          color: ColorConstant
+                                                              .colorE71D36,
+                                                        ),
+                                                        Text(
+                                                          'Delete',
+                                                          style: Style
+                                                              .montserratRegular(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color: ColorConstant
+                                                                .colorE71D36,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ));
+                                          },
+                                        );
+                                      },
+                                    )
+                                  ],
+                                ),
+                                Text(
+                                  _filteredBookmarks?[index]['title'] ?? "",
+                                  maxLines: Dimens.d2.toInt(),
+                                  style: Style.montserratMedium(
+                                      fontSize: Dimens.d14),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
                             ),
-                          )),
-                            ],
-                      ),
-                    )
+                          );
+                        })
                     : GridView.builder(
                         controller: scrollController,
                         padding: const EdgeInsets.only(bottom: Dimens.d20),
@@ -333,6 +362,76 @@ class _PositiveScreenState extends State<PositiveScreen> {
     );
   }
 
+  void _showAlertDialogDelete(BuildContext context, int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          //backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(11.0), // Set border radius
+          ),
+          actions: <Widget>[
+            Dimens.d18.spaceHeight,
+            Align(
+                alignment: Alignment.topRight,
+                child: GestureDetector(
+                    onTap: () {
+                      Get.back();
+                    },
+                    child: SvgPicture.asset(
+                      ImageConstant.close,
+                    ))),
+            Center(
+                child: SvgPicture.asset(
+                  ImageConstant.deleteAffirmation,
+                  height: Dimens.d140,
+                  width: Dimens.d140,
+                )),
+            Dimens.d20.spaceHeight,
+            Center(
+              child: Text(
+                  textAlign: TextAlign.center,
+                  "Are you sure want to delete positive moments ?".tr,
+                  style: Style.montserratRegular(
+                    fontSize: Dimens.d14,
+                  )),
+            ),
+            Dimens.d24.spaceHeight,
+            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                CommonElevatedButton(
+                  height: 33,
+                  textStyle: Style.montserratRegular(
+                      fontSize: Dimens.d12, color: ColorConstant.white),
+                  title: "Delete".tr,
+                  onTap: () {
+                    setState(() {
+
+                    });
+                    Get.back();
+                  },
+                ),
+                Container(
+                  height: 33,margin: const EdgeInsets.symmetric(horizontal: 5),
+                  padding: const EdgeInsets.symmetric(horizontal: 21,),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(80),
+                      border: Border.all(color: ColorConstant.themeColor)),
+                  child: Center(
+                    child: Text(
+                      "cancel".tr,
+                      style: Style.montserratRegular(fontSize: 14),
+                    ),
+                  ),
+                )
+              ],
+            )
+          ],
+        );
+      },
+    );
+  }
   void _showAlertDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -390,14 +489,15 @@ class _PositiveScreenState extends State<PositiveScreen> {
         return Container(
           height: 299,
           decoration: const BoxDecoration(
-              borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(11),
-            topRight: Radius.circular(11),
-          ),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(11),
+              topRight: Radius.circular(11),
+            ),
             color: ColorConstant.white,
           ),
           child: Padding(
-            padding: const EdgeInsets.only(left: 20.0, right: 20, top: 5,bottom: 5),
+            padding:
+                const EdgeInsets.only(left: 20.0, right: 20, top: 5, bottom: 5),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -463,10 +563,11 @@ class _PositiveScreenState extends State<PositiveScreen> {
                                         : const SizedBox(),
                               ),
                             ),
-                            Text("Weekly".tr,style: Style.montserratMedium(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500
-                            ),)
+                            Text(
+                              "Weekly".tr,
+                              style: Style.montserratMedium(
+                                  fontSize: 18, fontWeight: FontWeight.w500),
+                            )
                           ],
                         ),
                       ),
@@ -487,7 +588,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
                           children: [
                             Obx(
                               () => Container(
-                                height:18,
+                                height: 18,
                                 width: 18,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(50),
@@ -502,17 +603,18 @@ class _PositiveScreenState extends State<PositiveScreen> {
                                         ? Center(
                                             child: SvgPicture.asset(
                                               ImageConstant.done,
-                                              height:5,
+                                              height: 5,
                                               width: 8,
                                             ),
                                           )
                                         : const SizedBox(),
                               ),
                             ),
-                            Text("Monthly".tr,style: Style.montserratMedium(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500
-                            ),)
+                            Text(
+                              "Monthly".tr,
+                              style: Style.montserratMedium(
+                                  fontSize: 18, fontWeight: FontWeight.w500),
+                            )
                           ],
                         ),
                       ),
@@ -556,10 +658,11 @@ class _PositiveScreenState extends State<PositiveScreen> {
                                 : const SizedBox(),
                           ),
                         ),
-                        Text("Yearly".tr,style: Style.montserratMedium(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500
-                        ),)
+                        Text(
+                          "Yearly".tr,
+                          style: Style.montserratMedium(
+                              fontSize: 18, fontWeight: FontWeight.w500),
+                        )
                       ],
                     ),
                   ),
@@ -599,15 +702,16 @@ class _PositiveScreenState extends State<PositiveScreen> {
                                               child: SvgPicture.asset(
                                                 ImageConstant.done,
                                                 height: 5,
-                                                width:8,
+                                                width: 8,
                                               ),
                                             )
                                           : const SizedBox()),
                             ),
-                            Text("3 Months ".tr,style: Style.montserratMedium(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500
-                            ),)
+                            Text(
+                              "3 Months ".tr,
+                              style: Style.montserratMedium(
+                                  fontSize: 18, fontWeight: FontWeight.w500),
+                            )
                           ],
                         ),
                       ),
@@ -649,10 +753,11 @@ class _PositiveScreenState extends State<PositiveScreen> {
                                         )
                                       : const SizedBox()),
                             ),
-                            Text("6 Months".tr,style: Style.montserratMedium(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500
-                            ),)
+                            Text(
+                              "6 Months".tr,
+                              style: Style.montserratMedium(
+                                  fontSize: 18, fontWeight: FontWeight.w500),
+                            )
                           ],
                         ),
                       ),
@@ -669,9 +774,10 @@ class _PositiveScreenState extends State<PositiveScreen> {
                   child: Center(
                       child: Text(
                     "Apply".tr,
-                    style: Style.montserratRegular(color: ColorConstant.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w400),
+                    style: Style.montserratRegular(
+                        color: ColorConstant.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w400),
                   )),
                 )
               ],
@@ -764,6 +870,31 @@ class _PositiveScreenState extends State<PositiveScreen> {
         },
       )).then(
         (value) {
+          setState(() {});
+        },
+      );
+    }
+  }
+  void _onAddClick1(BuildContext context) {
+    final subscriptionStatus = "SUBSCRIBED";
+
+    /// to check if item counts are not more then the config count in case of no subscription
+    if (!(subscriptionStatus == "SUBSCRIBED" ||
+        subscriptionStatus == "SUBSCRIBED")) {
+      /*  Navigator.pushNamed(context, SubscriptionPage.subscription, arguments: {
+        AppConstants.isInitialUser: AppConstants.noSubscription,
+        AppConstants.subscriptionMessage: i10n.journalNoSubscriptionMessage,
+      });*/
+    } else {
+      Navigator.push(context, MaterialPageRoute(
+        builder: (context) {
+          return const AddPositivePage(
+            isFromMyAffirmation: true,
+            isEdit: true,
+          );
+        },
+      )).then(
+            (value) {
           setState(() {});
         },
       );

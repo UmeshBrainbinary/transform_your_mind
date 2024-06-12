@@ -19,8 +19,10 @@ class PositiveController extends GetxController {
   }
 
   var isMenuVisible = false.obs;
+  var menuPosition = RelativeRect.fromLTRB(0, 0, 0, 0).obs;
 
-  void showMenu() {
+  void showMenu(RelativeRect position) {
+    menuPosition.value = position;
     isMenuVisible.value = true;
   }
 
@@ -55,5 +57,6 @@ class PositiveController extends GetxController {
     update();
   }
 }
+
 
 

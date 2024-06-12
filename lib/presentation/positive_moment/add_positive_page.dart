@@ -87,7 +87,7 @@ class _AddPositivePageState extends State<AddPositivePage>
             ? ColorConstant.black
             : ColorConstant.backGround,
         appBar: CustomAppBar(
-          title: "positiveMoments".tr,
+          title: widget.isEdit! ?"Edit Positive Moments" :"positiveMoments".tr,
         ),
         body: Stack(
           children: [
@@ -188,9 +188,10 @@ class _AddPositivePageState extends State<AddPositivePage>
                                 Dimens.d20.h.spaceHeight,
                                 Row(
                                   children: [
+                                    if(widget.isEdit!)
                                     Expanded(
                                       child: CommonElevatedButton(
-                                        title: "draft".tr,
+                                        title: "cancel".tr,
                                         outLined: true,
                                         textStyle: Style.montserratRegular(
                                             color: ColorConstant.textDarkBlue),

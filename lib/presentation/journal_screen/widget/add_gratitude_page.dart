@@ -47,6 +47,9 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
 
   ThemeController themeController = Get.find<ThemeController>();
 
+  bool select = false;
+
+
   final FocusNode titleFocus = FocusNode();
   final FocusNode descFocus = FocusNode();
   final FocusNode dateFocus = FocusNode();
@@ -63,6 +66,10 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
 
   @override
   void initState() {
+
+
+      dateController.text = _formatDate(_currentDate);
+
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: ColorConstant.backGround, // Status bar background color
       statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
@@ -74,6 +81,9 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
     });
     }
     super.initState();
+  }
+  String _formatDate(DateTime date) {
+    return "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
   }
 
   @override
@@ -137,6 +147,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                   children: [
                     Expanded(
                       child: SingleChildScrollView(
+
                         child: LayoutContainer(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,6 +200,10 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                               ),
                               GestureDetector(
                                 onTap: () {
+
+                                  setState(() {
+                                    select=!select;
+                                  });
                                   /*  descFocus.unfocus();
                                   titleFocus.unfocus();
                                   DateTime initialDate = dateController
@@ -229,10 +244,18 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                                 child: CommonTextField(
                                     enabled: false,
                                     labelText: "date".tr,
-                                    suffixIcon: Padding(
-                                      padding: const EdgeInsets.all(13.0),
-                                      child: SvgPicture.asset(
-                                          ImageConstant.calendar),
+                                    suffixIcon: GestureDetector(
+                                      onTap: () {
+
+                                        setState(() {
+                                          select=!select;
+                                        });
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(13.0),
+                                        child: SvgPicture.asset(
+                                            ImageConstant.calendar),
+                                      ),
                                     ),
                                     hintText: "DD/MM/YYYY",
                                     controller: dateController,
@@ -244,7 +267,8 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                                     },
                                     focusNode: dateFocus),
                               ),
-                              widgetCalendar(),
+                              Dimens.d3.spaceHeight,
+                              if(select == true)widgetCalendar(),
                               Dimens.d30.spaceHeight,
                               Row(
                                 children: [
@@ -327,35 +351,101 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
   Widget widgetCalendar() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
-
-      color: ColorConstant.white,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: ColorConstant.white,
+      ),
       child: CalendarCarousel<Event>(
+
+        onDayPressed: (DateTime date, List<Event> events) {
+          setState(() => _currentDate = date);
+          dateController.text = "${date.day}/${date.month}/${date.year}";
+         select=false;
+          print('==========${_currentDate}');
+        },
+        weekendTextStyle:
+        TextStyle(color: Colors.black, fontSize: 15), // Customize your text style
+        thisMonthDayBorderColor: Colors.transparent,
+        customDayBuilder: (
+            bool isSelectable,
+            int index,
+            bool isSelectedDay,
+            bool isToday,
+            bool isPrevMonthDay,
+            TextStyle textStyle,
+            bool isNextMonthDay,
+            bool isThisMonthDay,
+            DateTime day,
+            ) {
+          if (isSelectedDay) {
+            return Container(
+              decoration: BoxDecoration(
+                color: ColorConstant.themeColor, // Customize your selected day color
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Center(
+                child: Text(
+                  day.day.toString(),
+                  style: TextStyle(color: Colors.white), // Customize your selected day text style
+                ),
+              ),
+            );
+          }  else {
+            return null;
+          }
+        },
+        weekFormat: false,
+        daysTextStyle: TextStyle(fontSize: 15, color: Colors.black),
+        height: 300.0,
+        markedDateIconBorderColor: Colors.transparent,
+        childAspectRatio: 1.5,
+        dayPadding: 0.0,
+        prevDaysTextStyle: TextStyle(fontSize: 15),
+        selectedDateTime: _currentDate,
+        headerTextStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+        dayButtonColor: Colors.white,
+        weekDayBackgroundColor: Colors.white,
+        markedDateMoreCustomDecoration: const BoxDecoration(color: Colors.white),
+        shouldShowTransform: false,
+        staticSixWeekFormat: false,
+        weekdayTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Colors.grey),
+        todayButtonColor: Colors.transparent,
+        selectedDayBorderColor: Colors.transparent,
+        todayBorderColor: Colors.transparent,
+        selectedDayButtonColor: Colors.transparent,
+        daysHaveCircularBorder: false,
+        todayTextStyle: TextStyle(fontSize: 15, color: Colors.black),
+      ),
+    );
+  }
+}
+/*CalendarCarousel<Event>(
         onDayPressed: (DateTime date, List<Event> events) {
           this.setState(() => _currentDate = date);
         },
         weekendTextStyle:
-            Style.montserratRegular(color: ColorConstant.black, fontSize: 15),
-        thisMonthDayBorderColor: ColorConstant.colorD6D8E1,
+        Style.montserratRegular(color: ColorConstant.black, fontSize: 15),
+        thisMonthDayBorderColor: Colors.transparent, // Remove border for current month days
         customDayBuilder: (
-          /// you can provide your own build function to make custom day containers
-          bool isSelectable,
-          int index,
-          bool isSelectedDay,
-          bool isToday,
-          bool isPrevMonthDay,
-          TextStyle textStyle,
-          bool isNextMonthDay,
-          bool isThisMonthDay,
-          DateTime day,
-        ) {
+            /// you can provide your own build function to make custom day containers
+            bool isSelectable,
+            int index,
+            bool isSelectedDay,
+            bool isToday,
+            bool isPrevMonthDay,
+            TextStyle textStyle,
+            bool isNextMonthDay,
+            bool isThisMonthDay,
+            DateTime day,
+            ) {
           return null;
         },
         weekFormat: false,
-
         daysTextStyle:
-            Style.montserratRegular(fontSize: 15, color: ColorConstant.black),
-        //markedDatesMap: _markedDateMap,
-        height: Dimens.d300,
+        Style.montserratRegular(fontSize: 15, color: ColorConstant.black),
+        // markedDatesMap: _markedDateMap,
+        height: 300.0, // Replace with Dimens.d300 if it's defined elsewhere
+        markedDateIconBorderColor: Colors.transparent, // Remove border for marked dates
         childAspectRatio: 1.5,
         dayPadding: 0.0,
         prevDaysTextStyle: Style.montserratRegular(fontSize: 15),
@@ -363,22 +453,18 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
         headerTextStyle: Style.montserratSemiBold(color: ColorConstant.black),
         dayButtonColor: ColorConstant.white,
         weekDayBackgroundColor: ColorConstant.white,
-        markedDateMoreCustomDecoration:
-            const BoxDecoration(color: Colors.white),
+        markedDateMoreCustomDecoration: const BoxDecoration(color: Colors.white),
         shouldShowTransform: false,
         staticSixWeekFormat: false,
         weekdayTextStyle: Style.montserratSemiBold(
             fontSize: 11, color: ColorConstant.color797B86),
-        todayButtonColor: ColorConstant.transparent,
+        todayButtonColor: Colors.transparent,
         selectedDayBorderColor: Colors.transparent,
         todayBorderColor: Colors.transparent,
         selectedDayButtonColor: ColorConstant.themeColor,
         daysHaveCircularBorder: false,
         todayTextStyle:
-            Style.montserratRegular(fontSize: 15, color: ColorConstant.black),
+        Style.montserratRegular(fontSize: 15, color: ColorConstant.black),
 
         /// null for not rendering any border, true for circular border, false for rectangular border
-      ),
-    );
-  }
-}
+      )*/
