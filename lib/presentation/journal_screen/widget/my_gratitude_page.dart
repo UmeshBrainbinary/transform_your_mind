@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_calendar_carousel/classes/event.dart';
+import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
     as picker;
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -59,15 +61,21 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
   Timer? _debounce;
   bool _isSearching = false;
   ThemeController themeController = Get.find<ThemeController>();
-
+  DateTime _currentDate = DateTime.now();
+  bool select = false;
   @override
   void initState() {
+    //dateController.text = _formatDate(_currentDate);
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: ColorConstant.backGround, // Status bar background color
       statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
     ));
     super.initState();
   }
+  String _formatDate(DateTime date) {
+    return "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -249,45 +257,9 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                           horizontal: Dimens.d30),
                                       child: GestureDetector(
                                         onTap: () {
-                                          FocusScope.of(context).unfocus();
-                                          DateTime initialDate = dateController
-                                                  .text.isNotEmpty
-                                              ? DateTimeUtils.parseDate(
-                                                          dateController.text,
-                                                          format: DateTimeUtils
-                                                              .ddMMyyyyToParse)
-                                                      .isAfter(DateTime.now())
-                                                  ? DateTimeUtils.parseDate(
-                                                      dateController.text,
-                                                      format: DateTimeUtils
-                                                          .ddMMyyyyToParse)
-                                                  : DateTime.now()
-                                              : DateTime.now();
-                                          picker.DatePicker.showDatePicker(context,
-                                              showTitleActions: true,
-                                              minTime: DateTime.now().subtract(
-                                                  const Duration(days: 1)),
-                                              theme: picker.DatePickerTheme(
-                                                  doneStyle: Style.montserratRegular(
-                                                      color:
-                                                          ColorConstant.white),
-                                                  cancelStyle: Style.montserratRegular(
-                                                      color:
-                                                          ColorConstant.white),
-                                                  itemStyle: Style.montserratRegular(
-                                                      color:
-                                                          ColorConstant.white),
-                                                  backgroundColor:
-                                                      ColorConstant.themeColor),
-                                              maxTime: DateTime(2050),
-                                              onChanged: (date) {},
-                                              onConfirm: (date) {
-                                            dateController.text =
-                                                DateTimeUtils.formatDate(date);
-                                            FocusScope.of(context).unfocus();
-                                          },
-                                              currentTime: initialDate,
-                                              locale: picker.LocaleType.en);
+                                          setState(() {
+                                            select=!select;
+                                          });
                                         },
                                         child: CommonTextField(
                                             enabled: false,
@@ -304,6 +276,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                     )
                                   : const SizedBox(),
 
+                              if(select == true)widgetCalendar(),
                               /// saved list
                               Expanded(
                                 child: (_isLoading &&
@@ -469,6 +442,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                                   ))
                                                 : const SizedBox(),
                               ),
+
                             ],
                           ),
                         )
@@ -588,4 +562,78 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
       } else {}
     });
   }
+
+  Widget widgetCalendar() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: ColorConstant.white,
+      ),
+
+      child: CalendarCarousel<Event>(
+
+        onDayPressed: (DateTime date, List<Event> events) {
+          setState(() => _currentDate = date);
+          dateController.text = "${date.day}/${date.month}/${date.year}";
+          select=false;
+          print('==========${_currentDate}');
+        },
+        weekendTextStyle:
+        TextStyle(color: Colors.black, fontSize: 15), // Customize your text style
+        thisMonthDayBorderColor: Colors.transparent,
+        customDayBuilder: (
+            bool isSelectable,
+            int index,
+            bool isSelectedDay,
+            bool isToday,
+            bool isPrevMonthDay,
+            TextStyle textStyle,
+            bool isNextMonthDay,
+            bool isThisMonthDay,
+            DateTime day,
+            ) {
+          if (isSelectedDay) {
+            return Container(
+              decoration: BoxDecoration(
+                color: ColorConstant.themeColor, // Customize your selected day color
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Center(
+                child: Text(
+                  day.day.toString(),
+                  style: TextStyle(color: Colors.white), // Customize your selected day text style
+                ),
+              ),
+            );
+          }  else {
+            return null;
+          }
+        },
+        weekFormat: false,
+        daysTextStyle: TextStyle(fontSize: 15, color: Colors.black),
+        height: 300.0,
+        markedDateIconBorderColor: Colors.transparent,
+        childAspectRatio: 1.5,
+        dayPadding: 0.0,
+        prevDaysTextStyle: TextStyle(fontSize: 15),
+        selectedDateTime: _currentDate,
+        headerTextStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+        dayButtonColor: Colors.white,
+        weekDayBackgroundColor: Colors.white,
+        markedDateMoreCustomDecoration: const BoxDecoration(color: Colors.white),
+        shouldShowTransform: false,
+        staticSixWeekFormat: false,
+        weekdayTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Colors.grey),
+        todayButtonColor: Colors.transparent,
+        selectedDayBorderColor: Colors.transparent,
+        todayBorderColor: Colors.transparent,
+        selectedDayButtonColor: Colors.transparent,
+        daysHaveCircularBorder: false,
+        todayTextStyle: TextStyle(fontSize: 15, color: Colors.black),
+      ),
+    );
+  }
+
+
 }

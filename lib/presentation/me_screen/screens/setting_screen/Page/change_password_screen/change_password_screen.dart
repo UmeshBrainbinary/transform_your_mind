@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/size_utils.dart';
+import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/core/utils/validation_functions.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/change_password_screen/change_password_controller.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
@@ -43,7 +46,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             ? ColorConstant.black
             : ColorConstant.backGround,
         appBar: CustomAppBar(
-          title: "changePassword".tr,
+          title: "newPassword".tr,
         ),
         body: Stack(
           children: [
@@ -168,7 +171,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                   ),
                                   Dimens.d120.spaceHeight,
                                   CommonElevatedButton(
-                                    title: "confirmPassword".tr,
+                                    title: "submit".tr,
                                     onTap: () {
                                       FocusScope.of(context).unfocus();
 
@@ -192,7 +195,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             ),
           ],
         ),
+
       ),
     );
   }
 }
+

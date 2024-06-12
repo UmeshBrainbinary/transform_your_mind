@@ -24,10 +24,21 @@ class EditProfileController extends GetxController {
   DateTime? selectedDob;
 
   RxBool loader = false.obs;
+bool _select = false;
+
+  bool get select => _select;
+
+  set select(bool value) {
+    _select = value;
+    update();
+  }
+
+  DateTime currentDate = DateTime.now();
   RxBool isDropGender = false.obs;
   String? image = '';
   String? urlImage;
   File? selectedImage;
+
 
 
   RxList genderList = [
