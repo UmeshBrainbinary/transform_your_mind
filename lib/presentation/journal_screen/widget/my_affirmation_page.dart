@@ -1,20 +1,26 @@
-import 'dart:async';
+import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:numberpicker/numberpicker.dart';
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
+import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
+import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/prefKeys.dart';
+import 'package:transform_your_mind/core/utils/progress_dialog_utils.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/model_class/affirmation_data_model.dart';
+import 'package:transform_your_mind/model_class/affirmation_model.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_affirmation_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/affirmation_share_screen.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/edit_affirmation_dialog_widget.dart';
@@ -38,28 +44,7 @@ class MyAffirmationPage extends StatefulWidget {
 
 class _MyAffirmationPageState extends State<MyAffirmationPage>
     with SingleTickerProviderStateMixin {
-  List listOfBookmarks = [
-    {
-      "title": "Health",
-      "des":
-          "There is no right or wrong way to meditate but it’s important to find a correct practice that helps you to meets your needs and overcome with issues and manage symptoms of conditions such a"
-    },
-    {
-      "title": "Self-esteem",
-      "des":
-          "Self-esteem Affirmations help to replace negative thoughts with positive ones"
-    },
-    {
-      "title": "Success",
-      "des":
-          "If you find these quotes helpful why not spread a little light around by sharing them with others? Spreading forgiveness around is a lovely way to enhance your day. "
-    },
-    {
-      "title": "Health",
-      "des":
-          "Meditation is practiced to train attention and awareness, and achieve a mentally clear and emotionally calm and stable state. "
-    },
-  ];
+
 
   int pageNumber = 1;
   int pageNumberAf = 0;
@@ -69,7 +54,6 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
 
   //k-naveen
   bool _isLoading = false;
-  bool _isLoadingDraft = false;
   int totalItemCountOfAffirmation = 0;
   int totalItemCountOfAffirmationDrafts = 0;
 
@@ -77,8 +61,6 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   ThemeController themeController = Get.find<ThemeController>();
   FocusNode searchFocus = FocusNode();
 
-  bool _isSearching = true;
-  Timer? _debounce;
 
   int _currentTabIndex = 0;
   ValueNotifier<bool> isDraftAdded = ValueNotifier(false);
@@ -100,29 +82,24 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   @override
   void initState() {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.backGround, // Status bar background color
-      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+      statusBarColor: ColorConstant.backGround,
+      statusBarIconBrightness: Brightness.dark,
     ));
-    setState(() {
-      _filteredBookmarks = listOfBookmarks;
-    });
-    List.generate(
-      listOfBookmarks.length,
-      (index) => like.add(false),
-    );
+
+
+    getData();
+
     super.initState();
   }
-
+  getData() async {
+    await getAffirmationData();
+    await getAffirmation();
+  }
   void _onAddClick(BuildContext context) {
-    final subscriptionStatus = "SUBSCRIBED";
-
-    /// to check if item counts are not more then the config count in case of no subscription
+    String subscriptionStatus = "SUBSCRIBED";
     if (!(subscriptionStatus == "SUBSCRIBED" ||
         subscriptionStatus == "SUBSCRIBED")) {
-      /*  Navigator.pushNamed(context, SubscriptionPage.subscription, arguments: {
-        AppConstants.isInitialUser: AppConstants.noSubscription,
-        AppConstants.subscriptionMessage: i10n.journalNoSubscriptionMessage,
-      });*/
+
     } else {
       Navigator.push(context, MaterialPageRoute(
         builder: (context) {
@@ -146,7 +123,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   searchBookmarks(String query, List bookmarks) {
     return bookmarks
         .where((bookmark) =>
-            bookmark['title']!.toLowerCase().contains(query.toLowerCase()))
+            bookmark.name!.toLowerCase().contains(query.toLowerCase()))
         .toList();
   }
 
@@ -160,6 +137,118 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   bool soundMute = false;
   bool playPause = false;
   final String audioFilePath = 'assets/audio/audio.mp3';
+  AffirmationModel affirmationModel = AffirmationModel();
+  AffirmationDataModel affirmationDataModel = AffirmationDataModel();
+  bool loader = false;
+
+  getAffirmation() async
+  {
+    var headers = {
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.Request(
+        'GET',
+        Uri.parse(
+            '${EndPoints.baseUrl}${EndPoints.getFocus}${PrefService.getString(PrefKey.userId)}&type=1'));
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      final responseBody = await response.stream.bytesToString();
+
+      affirmationModel = affirmationModelFromJson(responseBody);
+      setState(() {});
+    } else {
+      debugPrint(response.reasonPhrase);
+    }
+  }
+  getAffirmationData() async {
+    var headers = {
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.Request(
+        'GET',
+        Uri.parse(
+            '${EndPoints.baseUrl}${EndPoints.getFocus}6667e00b474a3621861060c0&type=1'));
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      final responseBody = await response.stream.bytesToString();
+
+      affirmationDataModel = affirmationDataModelFromJson(responseBody);
+      setState(() {
+        _filteredBookmarks = affirmationDataModel.data;
+      });
+      List.generate(affirmationDataModel.data?.length??0, (index) => like.add(false),);
+      setState(() {});
+    } else {
+      debugPrint(response.reasonPhrase);
+    }
+  }
+  addAffirmation({String? title, String? des}) async {
+    setState(() {
+      loader = true;
+    });
+    debugPrint("User Id ${PrefService.getString(PrefKey.userId)}");
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.Request('POST', Uri.parse('${EndPoints.baseUrl}${EndPoints.addFocus}'));
+    request.body = json.encode({
+      "name": title,
+      "description": des,
+      "type": 1,
+      "created_by": PrefService.getString(PrefKey.userId)
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      setState(() {
+        loader = false;
+      });
+      showSnackBarSuccess(context,
+          "Successfully add in your affirmation");
+      setState(() {});
+    }
+    else {
+      setState(() {
+        loader = false;
+      });
+      debugPrint(response.reasonPhrase);
+    }
+
+  }
+  deleteAffirmation(id) async {
+    setState(() {
+      loader = true;
+    });
+    var headers = {
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.Request(
+        'DELETE', Uri.parse('${EndPoints.baseUrl}${EndPoints.deleteFocus}$id'));
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      showSnackBarSuccess(context, "Affirmation Deleted");
+      setState(() {
+        loader = false;
+      });
+    } else {
+      setState(() {
+        loader = false;
+      });
+      debugPrint(response.reasonPhrase);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -171,7 +260,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
         appBar: CustomAppBar(
           showBack: true,
           title: "myAffirmation".tr,
-          action: (_isLoading || _isLoadingDraft)
+          action: (_isLoading)
               ? const Offstage()
               : Padding(
                   padding: const EdgeInsets.only(right: Dimens.d20),
@@ -187,118 +276,123 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                   ),
                 ),
         ),
-        body: SizedBox(
-          height: Get.height,
-          width: Get.width,
-          child: Stack(
-            children: [
-              Align(
-                  alignment: Alignment.topRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: Dimens.d100),
-                    child: SvgPicture.asset(ImageConstant.profile1),
-                  )),
-              Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: Dimens.d120),
-                    child: SvgPicture.asset(ImageConstant.profile2),
-                  )),
-              LayoutContainer(
-                vertical: 0,
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Dimens.d13.spaceHeight,
-                    Row(
+        body: Stack(
+          children: [
+            SizedBox(
+              height: Get.height,
+              width: Get.width,
+              child: Stack(
+                children: [
+                  Align(
+                      alignment: Alignment.topRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: Dimens.d100),
+                        child: SvgPicture.asset(ImageConstant.profile1),
+                      )),
+                  Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: Dimens.d120),
+                        child: SvgPicture.asset(ImageConstant.profile2),
+                      )),
+                  LayoutContainer(
+                    vertical: 0,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Spacer(),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _currentTabIndex = 0;
-                            });
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: Dimens.d14),
-                            height: Dimens.d38,
-                            decoration: BoxDecoration(
-                                border: Border.all(
+                        Dimens.d13.spaceHeight,
+                        Row(
+                          children: [
+                            const Spacer(),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _currentTabIndex = 0;
+                                });
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: Dimens.d14),
+                                height: Dimens.d38,
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: _currentTabIndex == 0
+                                            ? ColorConstant.transparent
+                                            : themeController.isDarkMode.value
+                                                ? ColorConstant.white
+                                                : ColorConstant.black,
+                                        width: 0.5),
+                                    borderRadius: BorderRadius.circular(33),
                                     color: _currentTabIndex == 0
-                                        ? ColorConstant.transparent
-                                        : themeController.isDarkMode.value
+                                        ? ColorConstant.themeColor
+                                        : ColorConstant.transparent),
+                                child: Center(
+                                  child: Text(
+                                    "yourAffirmation".tr,
+                                    style: Style.montserratRegular(
+                                        fontSize: Dimens.d14,
+                                        color: _currentTabIndex == 0
                                             ? ColorConstant.white
-                                            : ColorConstant.black,
-                                    width: 0.5),
-                                borderRadius: BorderRadius.circular(33),
-                                color: _currentTabIndex == 0
-                                    ? ColorConstant.themeColor
-                                    : ColorConstant.transparent),
-                            child: Center(
-                              child: Text(
-                                "yourAffirmation".tr,
-                                style: Style.montserratRegular(
-                                    fontSize: Dimens.d14,
-                                    color: _currentTabIndex == 0
-                                        ? ColorConstant.white
-                                        : themeController.isDarkMode.value
-                                            ? ColorConstant.white
-                                            : ColorConstant.black),
+                                            : themeController.isDarkMode.value
+                                                ? ColorConstant.white
+                                                : ColorConstant.black),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                        const Spacer(),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _currentTabIndex = 1;
-                            });
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: Dimens.d34),
-                            height: Dimens.d38,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(33),
-                                border: Border.all(
+                            const Spacer(),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _currentTabIndex = 1;
+                                });
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: Dimens.d34),
+                                height: Dimens.d38,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(33),
+                                    border: Border.all(
+                                        color: _currentTabIndex == 1
+                                            ? ColorConstant.transparent
+                                            : themeController.isDarkMode.value
+                                                ? ColorConstant.white
+                                                : ColorConstant.black,
+                                        width: 0.5),
                                     color: _currentTabIndex == 1
-                                        ? ColorConstant.transparent
-                                        : themeController.isDarkMode.value
+                                        ? ColorConstant.themeColor
+                                        : ColorConstant.transparent),
+                                child: Center(
+                                  child: Text(
+                                    "affirmation".tr,
+                                    style: Style.montserratRegular(
+                                        fontSize: Dimens.d14,
+                                        color: _currentTabIndex == 1
                                             ? ColorConstant.white
-                                            : ColorConstant.black,
-                                    width: 0.5),
-                                color: _currentTabIndex == 1
-                                    ? ColorConstant.themeColor
-                                    : ColorConstant.transparent),
-                            child: Center(
-                              child: Text(
-                                "affirmation".tr,
-                                style: Style.montserratRegular(
-                                    fontSize: Dimens.d14,
-                                    color: _currentTabIndex == 1
-                                        ? ColorConstant.white
-                                        : themeController.isDarkMode.value
-                                            ? ColorConstant.white
-                                            : ColorConstant.black),
+                                            : themeController.isDarkMode.value
+                                                ? ColorConstant.white
+                                                : ColorConstant.black),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                            const Spacer(),
+                          ],
                         ),
-                        const Spacer(),
+                        Dimens.d16.spaceHeight,
+                        const DividerWidget(),
+                        Dimens.d20.spaceHeight,
+                        _getTabListOfGoals(),
                       ],
                     ),
-                    Dimens.d16.spaceHeight,
-                    const DividerWidget(),
-                    Dimens.d20.spaceHeight,
-                    _getTabListOfGoals(),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+            loader == true ? const CommonLoader() : const SizedBox()
+          ],
         ),
       ),
     );
@@ -306,8 +400,10 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
 
   Widget _getTabListOfGoals() {
     if (_currentTabIndex == 0) {
+      getAffirmation();
       return yourAffirmationWidget();
     } else {
+
       return transformAffirmationWidget();
     }
   }
@@ -318,24 +414,21 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
         child: Column(
           children: [
             ///draft part
-            _draftAffirmationListWidget(),
-            Dimens.d15.spaceHeight,
-            affirmationList.isNotEmpty
-                ? Align(
-                    alignment: Alignment.topLeft,
-                    child: Text("myAffirmation".tr,
-                        style: Style.montserratRegular(
+            //  _draftAffirmationListWidget(),
+
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text("myAffirmation".tr,
+                  style: Style.montserratRegular(
                           fontSize: Dimens.d18,
                         )),
-                  )
-                : const SizedBox(),
+            ),
             Dimens.d11.spaceHeight,
             ListView.builder(
-              itemCount: affirmationList.length,
+              itemCount: affirmationModel.data?.length ?? 0,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
-                final data = affirmationList[index];
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(
@@ -362,7 +455,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                           children: [
                             Expanded(
                               child: Text(
-                                data["title"] ?? '',
+                                affirmationModel.data?[index].name ?? '',
                                 style: Style.montserratRegular(
                                         height: Dimens.d1_3.h,
                                         fontSize: Dimens.d18,
@@ -377,14 +470,21 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                   builder: (context) {
                                     return AddAffirmationPage(
                                       index: index,
+                                      id:  affirmationModel.data?[index].id??"",
                                       isFromMyAffirmation: true,
-                                      title: data["title"],
+                                      title:
+                                          affirmationModel.data?[index].name ??
+                                              "",
                                       isEdit: true,
-                                      des: data["des"],
+                                      des: affirmationModel
+                                              .data?[index].description ??
+                                          "",
                                     );
                                   },
                                 )).then(
                                   (value) {
+                                    getAffirmation();
+
                                     setState(() {});
                                     if (value != null && value is bool) {
                                       value
@@ -405,7 +505,8 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                             Dimens.d10.spaceWidth,
                             GestureDetector(
                               onTap: () {
-                                _showAlertDialogDelete(context, index);
+                                _showAlertDialogDelete(context, index,
+                                    affirmationModel.data?[index].id ?? "");
                               },
                               child: SvgPicture.asset(
                                 ImageConstant.delete,
@@ -436,7 +537,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                         ),
                         Dimens.d10.spaceHeight,
                         Text(
-                          data["des"] ?? '',
+                          affirmationModel.data?[index].description ?? '',
                           style: Style.montserratRegular(
                                   height: Dimens.d2,
                                   fontSize: Dimens.d11,
@@ -456,7 +557,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
     );
   }
 
-  Widget _draftAffirmationListWidget() {
+/*  Widget _draftAffirmationListWidget() {
     return ValueListenableBuilder(
       valueListenable: isDraftAdded,
       builder: (context, value, child) => (_isLoadingDraft &&
@@ -609,7 +710,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                 )
               : const Offstage(),
     );
-  }
+  }*/
 
   Widget transformAffirmationWidget() {
     return Expanded(
@@ -653,7 +754,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                         onChanged: (value) {
                           setState(() {
                             _filteredBookmarks =
-                                searchBookmarks(value, listOfBookmarks);
+                                searchBookmarks(value, affirmationDataModel.data!);
                           });
                         },
                       ),
@@ -666,7 +767,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
               padding: const EdgeInsets.only(bottom: 20.0),
               child: _filteredBookmarks != null
                   ? ListView.builder(
-                      itemCount: _filteredBookmarks?.length ?? 0,
+                      itemCount:  _filteredBookmarks?.length ?? 0,
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       primary: false,
@@ -676,8 +777,8 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                             Navigator.push(context, MaterialPageRoute(
                               builder: (context) {
                                 return AffirmationShareScreen(
-                                  des: _filteredBookmarks?[index]["des"],
-                                  title: _filteredBookmarks?[index]["title"],
+                                  des:_filteredBookmarks?[index].description,
+                                  title: _filteredBookmarks?[index].name,
                                 );
                               },
                             ));
@@ -697,7 +798,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        _filteredBookmarks?[index]["title"] ??
+                                        _filteredBookmarks?[index].name  ??
                                             '',
                                         style: Style.montserratRegular(
                                                 height: Dimens.d1_3.h,
@@ -708,17 +809,10 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                       ),
                                     ),
                                     GestureDetector(
-                                      onTap: () {
-                                        affirmationList.add({
-                                          "title": _filteredBookmarks![index]
-                                              ["title"],
-                                          "des": _filteredBookmarks![index]
-                                              ["des"],
-                                          "image": "",
-                                          "createdOn": "",
-                                        });
-                                        showSnackBarSuccess(context,
-                                            "Successfully add in your affirmation");
+                                      onTap: () async {
+
+                                       await  addAffirmation(title: _filteredBookmarks?[index].name ,des: _filteredBookmarks?[index].description );
+
                                         setState(() {});
                                       },
                                       child: SvgPicture.asset(
@@ -731,10 +825,8 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                     GestureDetector(
                                       onTap: () {
                                         _showAlertDialogPlayPause(context,
-                                            title: _filteredBookmarks![index]
-                                                ["title"],
-                                            des: _filteredBookmarks![index]
-                                                ["des"]);
+                                            title: _filteredBookmarks?[index].name,
+                                            des: _filteredBookmarks?[index].description);
                                       },
                                       child: SvgPicture.asset(
                                         ImageConstant.playAffirmation,
@@ -773,7 +865,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                 ),
                                 Dimens.d10.spaceHeight,
                                 Text(
-                                  _filteredBookmarks?[index]["des"] ?? '',
+                                  _filteredBookmarks?[index].description?? '',
                                   style: Style.montserratRegular(
                                           height: Dimens.d2,
                                           fontSize: Dimens.d11,
@@ -787,100 +879,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                         );
                       },
                     )
-                  : ListView.builder(
-                      itemCount: listOfBookmarks.length,
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      primary: false,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (context) {
-                                return AffirmationShareScreen(
-                                  des: listOfBookmarks[index]["des"],
-                                  title: listOfBookmarks[index]["title"],
-                                );
-                              },
-                            ));
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.only(bottom: Dimens.d16),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: Dimens.d11, vertical: Dimens.d11),
-                            decoration: BoxDecoration(
-                              color: ColorConstant.color3D5459,
-                              borderRadius: Dimens.d16.radiusAll,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        listOfBookmarks[index]["title"] ?? '',
-                                        style: Style.montserratRegular(
-                                                height: Dimens.d1_3.h,
-                                                fontSize: Dimens.d18,
-                                                color: Colors.white)
-                                            .copyWith(wordSpacing: Dimens.d4),
-                                        maxLines: 1,
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        affirmationList.add({
-                                          "title": listOfBookmarks[index]
-                                              ["title"],
-                                          "des": listOfBookmarks[index]["des"],
-                                          "image": "",
-                                          "createdOn": "",
-                                        });
-                                        showSnackBarSuccess(context,
-                                            "Successfully add in your affirmation");
-
-                                        setState(() {});
-                                      },
-                                      child: SvgPicture.asset(
-                                        ImageConstant.addAffirmation,
-                                        height: 18,
-                                        width: 18,
-                                      ),
-                                    ),
-                                    Dimens.d10.spaceWidth,
-                                    GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          like[index] = !like[index];
-                                        });
-                                      },
-                                      child: SvgPicture.asset(
-                                        like[index]
-                                            ? ImageConstant.likeRedTools
-                                            : ImageConstant.likeTools,
-                                        height: Dimens.d18,
-                                        width: Dimens.d18,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                Dimens.d10.spaceHeight,
-                                Text(
-                                  listOfBookmarks[index]["des"] ?? '',
-                                  style: Style.montserratRegular(
-                                          height: Dimens.d2,
-                                          fontSize: Dimens.d11,
-                                          color: Colors.white)
-                                      .copyWith(wordSpacing: Dimens.d4),
-                                  maxLines: 4,
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                  : const SizedBox(),
             ),
           ],
         ),
@@ -1174,7 +1173,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
     );
   }
 
-  void _showAlertDialogDelete(BuildContext context, int index) {
+  void _showAlertDialogDelete(BuildContext context, int index, id) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1217,12 +1216,11 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                   textStyle: Style.montserratRegular(
                       fontSize: Dimens.d12, color: ColorConstant.white),
                   title: "Delete".tr,
-                  onTap: () {
-                    setState(() {
-                      affirmationList.removeAt(index);
-                      _isSearching = affirmationList.isNotEmpty;
-                    });
+                  onTap: () async {
                     Get.back();
+                    await deleteAffirmation(id);
+                    await getAffirmation();
+                    setState(() {});
                   },
                 ),
                 Container(

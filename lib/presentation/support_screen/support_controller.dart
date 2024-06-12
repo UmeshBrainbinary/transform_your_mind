@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
@@ -5,6 +7,12 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 
 class SupportController extends GetxController {
   RxList supportData = [].obs;
+  TextEditingController name = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController comment = TextEditingController();
+  FocusNode nameFocus = FocusNode();
+  FocusNode emailFocus = FocusNode();
+  FocusNode commentFocus = FocusNode();
   RxList faqList = [
     {
       "title": "What is App Name?",

@@ -1,16 +1,21 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart' as http;
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
+import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
+import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/progress_dialog_utils.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/my_affirmation_page.dart';
@@ -20,12 +25,14 @@ import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 import 'package:transform_your_mind/widgets/custom_view_controller.dart';
 
+import '../../../core/utils/prefKeys.dart';
+
 class AddAffirmationPage extends StatefulWidget {
   final bool isFromMyAffirmation;
   final bool? isEdit;
   final bool? isSaved;
   final int? index;
-  final String? title, des;
+  final String? title, des,id;
 
   const AddAffirmationPage(
       {required this.isFromMyAffirmation,
@@ -34,6 +41,7 @@ class AddAffirmationPage extends StatefulWidget {
       this.des,
       this.isEdit,
       this.index,
+      this.id,
       super.key});
 
   @override
@@ -57,7 +65,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
   File? selectedImage;
   late final AnimationController _lottieIconsController;
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  bool loader = false;
   @override
   void initState() {
     if (widget.title != null) {
@@ -76,6 +84,79 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
       statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
     ));
     super.initState();
+  }
+
+  addAffirmation() async {
+    setState(() {
+      loader = true;
+    });
+    debugPrint("User Id ${PrefService.getString(PrefKey.userId)}");
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.Request('POST', Uri.parse('${EndPoints.baseUrl}${EndPoints.addFocus}'));
+    request.body = json.encode({
+      "name": titleController.text,
+      "description": descController.text,
+      "type": 1,
+      "created_by": PrefService.getString(PrefKey.userId)
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      setState(() {
+        loader = false;
+      });
+      showSnackBarSuccess(context, "successfullyAffirmation".tr);
+      setState(() {});
+      Get.back();
+    }
+    else {
+      setState(() {
+        loader = false;
+      });
+      debugPrint(response.reasonPhrase);
+    }
+
+  }
+  updateAffirmation() async {
+    setState(() {
+      loader = true;
+    });
+    debugPrint("User Id ${PrefService.getString(PrefKey.userId)}");
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.Request('POST', Uri.parse('${EndPoints.baseUrl}${EndPoints.updateFocuses}${widget.id}'));
+    request.body = json.encode({
+      "name": titleController.text,
+      "description": descController.text,
+      "type": 1,
+      "created_by": PrefService.getString(PrefKey.userId)
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      setState(() {
+        loader = false;
+      });
+      showSnackBarSuccess(context, "affirmationSuccessfully".tr);
+      setState(() {});
+      Get.back();
+    }
+    else {
+      setState(() {
+        loader = false;
+      });
+      debugPrint(response.reasonPhrase);
+    }
+
   }
 
   @override
@@ -162,24 +243,15 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                                 Dimens.d30.h.spaceHeight,
                                 Row(
                                   children: [
-                                    Expanded(
+                                    !widget.isEdit!?const SizedBox():Expanded(
                                       child: CommonElevatedButton(
-                                        title: "draft".tr,
+                                        title: "cancel".tr,
                                         outLined: true,
                                         textStyle: Style.montserratRegular(
                                             color: ColorConstant.textDarkBlue),
                                         onTap: () {
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            affirmationDraftList.add({
-                                              "title": titleController.text,
-                                              "des": descController.text,
-                                              "image": imageFile.value,
-                                              "createdOn": "",
-                                            });
-                                            setState(() {});
-                                            Get.back();
-                                          }
+                                          setState(() {});
+                                          Get.back();
                                         },
                                       ),
                                     ),
@@ -196,27 +268,10 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                                           if (_formKey.currentState!
                                               .validate()) {
                                             if (widget.isEdit!) {
-                                              final newAffirmation = {
-                                                "title": titleController.text,
-                                                "des": descController.text,
-                                                "image": imageFile.value,
-                                                "createdOn": "",
-                                              };
-                                              affirmationList[widget.index!] =
-                                                  newAffirmation;
-                                              showSnackBarSuccess(context, "affirmationSuccessfully".tr);
-
-                                              //_showAlertDialog(context);
+                                              updateAffirmation();
                                             } else {
-                                              affirmationList.add({
-                                                "title": titleController.text,
-                                                "des": descController.text,
-                                                "image": imageFile.value,
-                                                "createdOn": "",
-                                              });
-                                             showSnackBarSuccess(context, "successfullyAffirmation".tr);
-                                              setState(() {});
-                                              Get.back();
+                                              addAffirmation();
+
                                             }
                                           }
                                         },
@@ -235,6 +290,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                 );
               },
             ),
+            loader==true?const CommonLoader():const SizedBox()
           ],
         ),
       ),

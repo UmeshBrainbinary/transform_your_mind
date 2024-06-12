@@ -4,6 +4,7 @@ import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/progress_dialog_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/core/utils/validation_functions.dart';
 import 'package:transform_your_mind/presentation/auth/forgot_password_screen/forgot_controller.dart';
@@ -32,12 +33,7 @@ class ForgotPasswordScreen extends StatelessWidget {
       body: SafeArea(
           child: Stack(
         children: [
-      /*    Positioned(
-            top: Dimens.d70.h,
-            right: 0,
-            left: null,
-            child: Image.asset(ImageConstant.bgStar, height: Dimens.d274.h),
-          ),*/
+
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
             child: LayoutBuilder(
@@ -70,7 +66,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                                     labelText: "email".tr,
                                     hintText: "enterEmail".tr,
                                     controller: forgotController.emailController,
-                                    focusNode: FocusNode(),
+                                    focusNode:forgotController.emailFocus,
                                     prefixIcon: Image.asset(ImageConstant.email,
                                         scale: Dimens.d4),
                                     keyboardType: TextInputType.emailAddress,
@@ -86,7 +82,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                                 Dimens.d100.spaceHeight,
                                 CommonElevatedButton(title:"send".tr,
                                   onTap: () {
-                                    FocusScope.of(context).unfocus();
+                                    forgotController.emailFocus.unfocus();
 
                                     if (_formKey.currentState!.validate()) {
                                   forgotController.forgotPasswordButton(context);
@@ -107,6 +103,7 @@ class ForgotPasswordScreen extends StatelessWidget {
               },
             ),
           ),
+          Obx(() => forgotController.loader.isTrue?const CommonLoader( ):const SizedBox(),)
         ],
       )),
     );
