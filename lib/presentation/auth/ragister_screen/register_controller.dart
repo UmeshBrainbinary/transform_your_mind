@@ -28,6 +28,15 @@ class RegisterController extends GetxController{
   ValueNotifier<XFile?> imageFile = ValueNotifier(null);
 
   DateTime? selectedDob;
+  bool _select = false;
+
+  bool get select => _select;
+
+  set select(bool value) {
+    _select = value;
+    update();
+  }
+  DateTime currentDate = DateTime.now();
 
   RxBool loader = false.obs;
   RxBool isDropGender = false.obs;

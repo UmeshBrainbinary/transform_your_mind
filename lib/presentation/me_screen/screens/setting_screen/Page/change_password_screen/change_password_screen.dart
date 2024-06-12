@@ -200,47 +200,4 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     );
   }
 }
-void _showAlertDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        //backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(11.0), // Set border radius
-        ),
-        actions: <Widget>[
-          Dimens.d27.spaceHeight,
-          Center(child: SvgPicture.asset(ImageConstant.passwordCheck,height: Dimens.d100, width: Dimens.d100,)),
-          Dimens.d8.spaceHeight,
 
-          Center(
-            child: Text("passwordChanged".tr,
-                textAlign: TextAlign.center,
-                style: Style.cormorantGaramondBold(
-                  fontSize: Dimens.d22,
-                  fontWeight: FontWeight.w700,
-                )),
-          ),
-          Dimens.d7.spaceHeight,
-          Center(
-            child: Text(
-                textAlign: TextAlign.center,
-                "yourPassword".tr,
-                style: Style.montserratRegular(
-                  fontSize: Dimens.d12,
-                  fontWeight: FontWeight.w400,
-                )),
-          ),
-          Dimens.d31.spaceHeight,
-          Padding(
-            padding:   EdgeInsets.symmetric(horizontal: Dimens.d70.h),
-            child: CommonElevatedButton(title: "ok".tr, onTap: () {
-              Get.back();
-            },),
-          )
-        ],
-      );
-    },
-  );
-}

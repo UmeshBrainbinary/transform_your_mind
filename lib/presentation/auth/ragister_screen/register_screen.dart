@@ -1,5 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_calendar_carousel/classes/event.dart';
+import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
     as picker;
 import 'package:flutter_svg/svg.dart';
@@ -24,13 +26,19 @@ import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 import 'package:transform_your_mind/widgets/image_picker_action_sheet.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
   RegisterScreen({super.key});
 
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  RegisterController registerController = Get.put(RegisterController());
-  ThemeController themeController = Get.find<ThemeController>();
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
 
+class _RegisterScreenState extends State<RegisterScreen> {
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  RegisterController registerController = Get.put(RegisterController());
+
+  ThemeController themeController = Get.find<ThemeController>();
 
   @override
   Widget build(BuildContext context) {
@@ -179,37 +187,18 @@ class RegisterScreen extends StatelessWidget {
                                           height: Dimens.d5,
                                           width: Dimens.d5)),
                                   readOnly: true,
-                                  onTap: () async {
-                                    FocusScope.of(context).unfocus();
-                                    await picker.DatePicker.showDatePicker(
-                                        context,
-                                        showTitleActions: true,
-                                        minTime: DateTime(1900, 3, 5),
-                                        maxTime: DateTime.now()
-                                            .subtract(const Duration(days: 1)),
-                                        theme: picker.DatePickerTheme(
-                                            doneStyle: Style.montserratSemiBold(
-                                                color: ColorConstant.white),
-                                            cancelStyle: Style.montserratSemiBold(
-                                                color: ColorConstant.white),
-                                            itemStyle: Style.montserratSemiBold(
-                                                color: ColorConstant.white),
-                                            backgroundColor:
-                                                ColorConstant.themeColor),
-                                        onChanged: (date) {},
-                                        onConfirm: (date) {
-                                      registerController.dobController.text =
-                                          DateTimeUtils.formatDate(date);
-                                      registerController.selectedDob = date;
-                                       // Your input date string
-                                      DateTime dateD = DateFormat('dd/MM/yyyy').parse(  registerController.dobController.text); // Parse the input date string
-                                      String formattedDate = DateFormat('yyyy-MM-dd').format(dateD);
-                                      registerController.dobController.text = formattedDate;
-                                        },
-                                        currentTime: registerController.selectedDob ??
-                                            DateTime.now()
-                                                .subtract(const Duration(days: 1)),
-                                        locale: picker.LocaleType.en);
+                                  onTap: () {
+                                    showDialog(context: context, builder: (context) {
+                                      return Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                              height: 300,
+                                              child: widgetCalendar()),
+                                        ],
+                                      );
+                                    },);
                                   },
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -392,6 +381,82 @@ class RegisterScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget widgetCalendar() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: ColorConstant.white,
+      ),
+
+      child: GetBuilder<RegisterController>(
+        builder: ( controller) {
+          return CalendarCarousel<Event>(
+
+            onDayPressed: (DateTime date, List<Event> events) {
+              setState(() => controller.currentDate = date);
+              controller.dobController.text = "${date.day}/${date.month}/${date.year}";
+              controller.select=false;
+              print('==========${controller.currentDate}');
+            },
+            weekendTextStyle:
+            TextStyle(color: Colors.black, fontSize: 15), // Customize your text style
+            thisMonthDayBorderColor: Colors.transparent,
+            customDayBuilder: (
+                bool isSelectable,
+                int index,
+                bool isSelectedDay,
+                bool isToday,
+                bool isPrevMonthDay,
+                TextStyle textStyle,
+                bool isNextMonthDay,
+                bool isThisMonthDay,
+                DateTime day,
+                ) {
+              if (isSelectedDay) {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: ColorConstant.themeColor, // Customize your selected day color
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Center(
+                    child: Text(
+                      day.day.toString(),
+                      style: TextStyle(color: Colors.white), // Customize your selected day text style
+                    ),
+                  ),
+                );
+              }  else {
+                return null;
+              }
+            },
+            weekFormat: false,
+            daysTextStyle: TextStyle(fontSize: 15, color: Colors.black),
+            height: 300.0,
+            markedDateIconBorderColor: Colors.transparent,
+            childAspectRatio: 1.5,
+            dayPadding: 0.0,
+            prevDaysTextStyle: TextStyle(fontSize: 15),
+            selectedDateTime: controller.currentDate,
+            headerTextStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+            dayButtonColor: Colors.white,
+            weekDayBackgroundColor: Colors.white,
+            markedDateMoreCustomDecoration: const BoxDecoration(color: Colors.white),
+            shouldShowTransform: false,
+            staticSixWeekFormat: false,
+            weekdayTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Colors.grey),
+            todayButtonColor: Colors.transparent,
+            selectedDayBorderColor: Colors.transparent,
+            todayBorderColor: Colors.transparent,
+            selectedDayButtonColor: Colors.transparent,
+            daysHaveCircularBorder: false,
+            todayTextStyle: TextStyle(fontSize: 15, color: Colors.black),
+          );
+        },
       ),
     );
   }

@@ -68,7 +68,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
   void initState() {
 
 
-      dateController.text = _formatDate(_currentDate);
+    //  dateController.text = _formatDate(_currentDate);
 
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: ColorConstant.backGround, // Status bar background color
@@ -272,9 +272,10 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                               Dimens.d30.spaceHeight,
                               Row(
                                 children: [
+                                  if(widget.edit==true)
                                   Expanded(
                                     child: CommonElevatedButton(
-                                      title: "draft".tr,
+                                      title: "Cancel".tr,
                                       outLined: true,
                                       textStyle: Style.montserratRegular(
                                           color: ColorConstant.textDarkBlue),
@@ -295,7 +296,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                                   Dimens.d20.spaceWidth,
                                   Expanded(
                                     child: CommonElevatedButton(
-                                      title: "save".tr,
+                                      title: widget.edit==true?"Update":"save".tr,
                                       onTap: () async {
                                         if (_formKey.currentState!.validate()) {
                                           gratitudeList.add({
