@@ -73,6 +73,7 @@ class Style {
     );
   }
 
+
   static TextStyle montserratSemiBold({
     Color? color,
     FontWeight fontWeight = FontWeight.w700,

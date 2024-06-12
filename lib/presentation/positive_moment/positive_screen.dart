@@ -30,6 +30,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
   late ScrollController scrollController = ScrollController();
   ValueNotifier<bool> showScrollTop = ValueNotifier(false);
   List? _filteredBookmarks;
+
   @override
   void initState() {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -58,6 +59,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
     "6 months",
     "yearly"
   ];
+
   searchBookmarks(String query, List bookmarks) {
     return bookmarks
         .where((bookmark) =>
@@ -129,63 +131,141 @@ class _PositiveScreenState extends State<PositiveScreen> {
               Dimens.d30.h.spaceHeight,
               Expanded(
                 child: _filteredBookmarks != null
-                    ? GridView.builder(
-                        controller: scrollController,
-                        padding: const EdgeInsets.only(bottom: Dimens.d20),
-                        physics: const BouncingScrollPhysics(),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          childAspectRatio: 1,
-                          crossAxisCount: 2,
-                          // Number of columns
-                          crossAxisSpacing: 20,
-                          // Spacing between columns
-                          mainAxisSpacing: 20, // Spacing between rows
-                        ),
-                        itemCount: _filteredBookmarks?.length ?? 0,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              searchFocusNode.unfocus();
-                              _showAlertDialog(context);
-                              // _onTileClick(index, context);
-                            },
-                            child: Container(
-                              height: 156,
-                              width: 156,
-                              padding: const EdgeInsets.only(
-                                  left: 10, right: 10, top: 10),
-                              decoration: BoxDecoration(
-                                  color: ColorConstant.colorDCE9EE,
-                                  borderRadius: BorderRadius.circular(18)),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Image.asset(
-                                    _filteredBookmarks?[index]["img"] ?? "",
-                                    height: 101,
-                                    width: 138,
+                    ? Expanded(
+                      child: Stack(
+                        children: [
+                              GridView.builder(
+                              controller: scrollController,
+                              padding: const EdgeInsets.only(bottom: Dimens.d20),
+                              physics: const BouncingScrollPhysics(),
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                childAspectRatio: 1,
+                                crossAxisCount: 2,
+                                // Number of columns
+                                crossAxisSpacing: 20,
+                                // Spacing between columns
+                                mainAxisSpacing: 20, // Spacing between rows
+                              ),
+                              itemCount: _filteredBookmarks?.length ?? 0,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    searchFocusNode.unfocus();
+                                    //   _showAlertDialog(context);
+                                    // _onTileClick(index, context);
+                                  },
+                                  child: Container(
+                                    height: 156,
+                                    width: 156,
+                                    padding: const EdgeInsets.only(
+                                        left: 10, right: 10, top: 10),
+                                    decoration: BoxDecoration(
+                                        color: ColorConstant.colorDCE9EE,
+                                        borderRadius: BorderRadius.circular(18)),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Image.asset(
+                                          _filteredBookmarks?[index]["img"] ?? "",
+                                          height: 101,
+                                          width: 138,
+                                        ),
+                                        /*      CustomImageView(
+                                              imagePath: positiveController
+                                                  .positiveMomentList[index]['image'],
+                                              height: Dimens.d135,
+                                              radius: BorderRadius.circular(10),
+                                              fit: BoxFit.cover,
+                                            ),*/
+                                        Dimens.d10.spaceHeight,
+                                        InkWell(
+                                          onTap: () {
+                      
+                                            positiveController.showMenu();
+                                            // showMenu(
+                                            //   context: context,
+                                            //   position: const RelativeRect.fromLTRB(
+                                            //       0, 0, 0, 0),
+                                            //   // adjust the position as needed
+                                            //   items: [
+                                            //     const PopupMenuItem<int>(
+                                            //       value: 1,
+                                            //       child: Text('Option 1'),
+                                            //     ),
+                                            //     const PopupMenuItem<int>(
+                                            //       value: 2,
+                                            //       child: Text('Option 2'),
+                                            //     ),
+                                            //   ],
+                                            // ).then((value) {
+                                            //   if (value != null) {
+                                            //     print('Selected: $value');
+                                            //     // handle the selected value
+                                            //   }
+                                            // });
+                                          },
+                                          child: Row(
+                                            children: [
+                                              const Spacer(),
+                                              SvgPicture.asset(
+                                                  ImageConstant.moreVert),
+                                            ],
+                                          ),
+                                        ),
+                                        Text(
+                                          _filteredBookmarks?[index]['title'] ?? "",
+                                          maxLines: Dimens.d2.toInt(),
+                                          style: Style.montserratMedium(
+                                              fontSize: Dimens.d14),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  /*      CustomImageView(
-                                        imagePath: positiveController
-                                            .positiveMomentList[index]['image'],
-                                        height: Dimens.d135,
-                                        radius: BorderRadius.circular(10),
-                                        fit: BoxFit.cover,
-                                      ),*/
-                                  Dimens.d12.spaceHeight,
-                                  Text(
-                                    _filteredBookmarks?[index]['title'] ?? "",
-                                    maxLines: Dimens.d2.toInt(),
-                                    style: Style.montserratMedium(
-                                        fontSize: Dimens.d14),
-                                    overflow: TextOverflow.ellipsis,
+                                );
+                      
+                              }),
+                          Obx(() => Visibility(
+                            visible: positiveController.isMenuVisible.value,
+                            child: Positioned(
+                              left: 50, // adjust the position as needed
+                              top: 50,  // adjust the position as needed
+                              child: Expanded(
+                                child: Material(
+                                  elevation: 4.0,
+                                  child: Container(
+                                    padding: EdgeInsets.all(8.0),
+                                    color: Colors.white,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        ListTile(
+                                          leading: Icon(Icons.edit),
+                                          title: Text('Edit'),
+                                          onTap: () {
+                                            // Handle edit action
+                                            positiveController.hideMenu();
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: Icon(Icons.delete),
+                                          title: Text('Delete'),
+                                          onTap: () {
+                                            // Handle delete action
+                                            positiveController.hideMenu();
+                                          },
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
+                                ),
                               ),
                             ),
-                          );
-                        })
+                          )),
+                            ],
+                      ),
+                    )
                     : GridView.builder(
                         controller: scrollController,
                         padding: const EdgeInsets.only(bottom: Dimens.d20),
@@ -304,66 +384,365 @@ class _PositiveScreenState extends State<PositiveScreen> {
   }
 
   void _showAlertDialogFilter(BuildContext context) {
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              //backgroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(11.0), // Set border radius
-              ),
-              content: Column(mainAxisSize: MainAxisSize.min,
-                children: [
-                  Dimens.d5.spaceHeight,
-                  GestureDetector(
+      builder: (context) {
+        return Container(
+          height: 299,
+          decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(11),
+            topRight: Radius.circular(11),
+          ),
+            color: ColorConstant.white,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 20.0, right: 20, top: 5,bottom: 5),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      "Filter".tr,
+                      style: Style.montserratRegular(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    const Spacer(),
+                    InkWell(
                       onTap: () {
                         Get.back();
                       },
-                      child: Align(
-                        alignment: Alignment.topRight,
-                        child: SvgPicture.asset(
-                          ImageConstant.closePositive,
-                          height: 28,
-                          width: 28,
-                        ),
-                      )),
-                  Dimens.d10.spaceHeight,
-                  SizedBox(
-                    height: Dimens.d150,
-                    width: Dimens.d100,
-                    child: ListView.builder(
-                      itemCount: positiveMoment.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0),
-                          child: Center(
-                              child: Text(
-                            positiveMoment[index],
-                            style: Style.montserratRegular(fontSize: 18),
-                          )),
-                        );
+                      child: SvgPicture.asset(
+                        ImageConstant.close,
+                        color: ColorConstant.hintText,
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        positiveController.onTapCon("value");
                       },
+                      child: Container(
+                        height: 42,
+                        width: 116,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                            border:
+                                Border.all(color: ColorConstant.colorAFAFAF)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Obx(
+                              () => Container(
+                                height: 18,
+                                width: 18,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(50),
+                                    border: Border.all(
+                                        color: ColorConstant.colorAFAFAF),
+                                    color: positiveController.conTap.value ==
+                                            'value'
+                                        ? ColorConstant.themeColor
+                                        : ColorConstant.transparent),
+                                child:
+                                    positiveController.conTap.value == 'value'
+                                        ? Center(
+                                            child: SvgPicture.asset(
+                                              ImageConstant.done,
+                                              height: 5.5,
+                                              width: 8,
+                                            ),
+                                          )
+                                        : const SizedBox(),
+                              ),
+                            ),
+                            Text("Weekly".tr,style: Style.montserratMedium(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500
+                            ),)
+                          ],
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        positiveController.onTapCon1("select");
+                      },
+                      child: Container(
+                        height: 42,
+                        width: 124,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                            border:
+                                Border.all(color: ColorConstant.colorAFAFAF)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Obx(
+                              () => Container(
+                                height:18,
+                                width: 18,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(50),
+                                    border: Border.all(
+                                        color: ColorConstant.colorAFAFAF),
+                                    color: positiveController.conTap.value ==
+                                            'select'
+                                        ? ColorConstant.themeColor
+                                        : ColorConstant.transparent),
+                                child:
+                                    positiveController.conTap.value == 'select'
+                                        ? Center(
+                                            child: SvgPicture.asset(
+                                              ImageConstant.done,
+                                              height:5,
+                                              width: 8,
+                                            ),
+                                          )
+                                        : const SizedBox(),
+                              ),
+                            ),
+                            Text("Monthly".tr,style: Style.montserratMedium(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500
+                            ),)
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                InkWell(
+                  onTap: () {
+                    positiveController.onTapCon2("year");
+                  },
+                  child: Container(
+                    height: 42,
+                    width: 103,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: ColorConstant.colorAFAFAF),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Obx(
+                          () => Container(
+                            height: 18,
+                            width: 18,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              border:
+                                  Border.all(color: ColorConstant.colorAFAFAF),
+                              color: positiveController.conTap.value == 'year'
+                                  ? ColorConstant.themeColor
+                                  : ColorConstant.transparent,
+                            ),
+                            child: positiveController.conTap.value == 'year'
+                                ? Center(
+                                    child: SvgPicture.asset(
+                                      ImageConstant.done,
+                                      height: 5,
+                                      width: 8,
+                                    ),
+                                  )
+                                : const SizedBox(),
+                          ),
+                        ),
+                        Text("Yearly".tr,style: Style.montserratMedium(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500
+                        ),)
+                      ],
                     ),
                   ),
-                  Dimens.d10.spaceHeight,
-                  Padding(
-                    padding:EdgeInsets.symmetric(horizontal: 40),
-                    child: CommonElevatedButton(
-                      height: 30,
-                      title: "submit".tr,
-                      onTap: () {},
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        positiveController.onTapCon3("month");
+                      },
+                      child: Container(
+                        height: 42,
+                        width: 133,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                            border:
+                                Border.all(color: ColorConstant.colorAFAFAF)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Obx(
+                              () => Container(
+                                  height: 18,
+                                  width: 18,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50),
+                                      border: Border.all(
+                                          color: ColorConstant.colorAFAFAF),
+                                      color: positiveController.conTap.value ==
+                                              'month'
+                                          ? ColorConstant.themeColor
+                                          : ColorConstant.transparent),
+                                  child:
+                                      positiveController.conTap.value == 'month'
+                                          ? Center(
+                                              child: SvgPicture.asset(
+                                                ImageConstant.done,
+                                                height: 5,
+                                                width:8,
+                                              ),
+                                            )
+                                          : const SizedBox()),
+                            ),
+                            Text("3 Months ".tr,style: Style.montserratMedium(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500
+                            ),)
+                          ],
+                        ),
+                      ),
                     ),
-                  )
-                ],
-              ),
-            );
-          },
+                    InkWell(
+                      onTap: () {
+                        positiveController.onTapCon4("selectMonth");
+                      },
+                      child: Container(
+                        height: 42,
+                        width: 134,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                            border:
+                                Border.all(color: ColorConstant.colorAFAFAF)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Obx(
+                              () => Container(
+                                  height: 18,
+                                  width: 18,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50),
+                                      border: Border.all(
+                                          color: ColorConstant.colorAFAFAF),
+                                      color: positiveController.conTap.value ==
+                                              'selectMonth'
+                                          ? ColorConstant.themeColor
+                                          : ColorConstant.transparent),
+                                  child: positiveController.conTap.value ==
+                                          'selectMonth'
+                                      ? Center(
+                                          child: SvgPicture.asset(
+                                            ImageConstant.done,
+                                            height: 5,
+                                            width: 8,
+                                          ),
+                                        )
+                                      : const SizedBox()),
+                            ),
+                            Text("6 Months".tr,style: Style.montserratMedium(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500
+                            ),)
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  width: 238,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(80),
+                    color: ColorConstant.themeColor,
+                  ),
+                  child: Center(
+                      child: Text(
+                    "Apply".tr,
+                    style: Style.montserratRegular(color: ColorConstant.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w400),
+                  )),
+                )
+              ],
+            ),
+          ),
         );
       },
     );
   }
+
+  // void _showAlertDialogFilter(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return StatefulBuilder(
+  //         builder: (context, setState) {
+  //           return AlertDialog(
+  //             //backgroundColor: Colors.white,
+  //             shape: RoundedRectangleBorder(
+  //               borderRadius: BorderRadius.circular(11.0), // Set border radius
+  //             ),
+  //             content: Column(mainAxisSize: MainAxisSize.min,
+  //               children: [
+  //                 Dimens.d5.spaceHeight,
+  //                 GestureDetector(
+  //                     onTap: () {
+  //                       Get.back();
+  //                     },
+  //                     child: Align(
+  //                       alignment: Alignment.topRight,
+  //                       child: SvgPicture.asset(
+  //                         ImageConstant.closePositive,
+  //                         height: 28,
+  //                         width: 28,
+  //                       ),
+  //                     )),
+  //                 Dimens.d10.spaceHeight,
+  //                 SizedBox(
+  //                   height: Dimens.d150,
+  //                   width: Dimens.d100,
+  //                   child: ListView.builder(
+  //                     itemCount: positiveMoment.length,
+  //                     itemBuilder: (context, index) {
+  //                       return Padding(
+  //                         padding: const EdgeInsets.only(bottom: 10.0),
+  //                         child: Center(
+  //                             child: Text(
+  //                           positiveMoment[index],
+  //                           style: Style.montserratRegular(fontSize: 18),
+  //                         )),
+  //                       );
+  //                     },
+  //                   ),
+  //                 ),
+  //                 Dimens.d10.spaceHeight,
+  //                 Padding(
+  //                   padding:EdgeInsets.symmetric(horizontal: 40),
+  //                   child: CommonElevatedButton(
+  //                     height: 30,
+  //                     title: "submit".tr,
+  //                     onTap: () {},
+  //                   ),
+  //                 )
+  //               ],
+  //             ),
+  //           );
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
 
   void _onAddClick(BuildContext context) {
     final subscriptionStatus = "SUBSCRIBED";

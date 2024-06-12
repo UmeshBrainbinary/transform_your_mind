@@ -44,6 +44,7 @@ class ColorConstant {
   static const colorFFC700 = Color(0XFFFFC700);
   static const color4A6972 = Color(0XFF4A6972);
   static const colorAECFD8 = Color(0XFFAECFD8);
+  static const colorAFAFAF = Color(0XFFAFAFAF);
   static const color797B86 = Color(0XFF797B86);
 
   static const textWhiteBackGround = Color.fromRGBO(229, 234, 249, 1);
