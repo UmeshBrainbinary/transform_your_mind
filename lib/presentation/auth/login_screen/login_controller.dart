@@ -80,6 +80,9 @@ class LoginController extends GetxController {
         loginModel = loginModelFromJson(responseBody);
         update();
         debugPrint("loginModel $loginModel");
+        debugPrint("token ${loginModel.meta!.token}");
+        debugPrint("userId ${loginModel.data!.id}");
+
         PrefService.setValue(PrefKey.token, loginModel.meta!.token);
         PrefService.setValue(PrefKey.userId, loginModel.data!.id);
         showSnackBarSuccess(context, "login Successfully");

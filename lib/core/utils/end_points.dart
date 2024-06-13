@@ -17,4 +17,7 @@ class EndPoints {
   static String getYourAffirmation = "get-affirmation?created_by=";
   static String updateAffirmation = "update-affirmation?id=";
   static String categoryAffirmation = "get-affirmation?category=";
+  static String getUser = "${baseUrl}user-details?id=";
+
+
 }
