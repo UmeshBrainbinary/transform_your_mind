@@ -11,4 +11,7 @@ class EndPoints {
   static String resetPassword = "reset-password";
   static String addFocus = "add-focus";
   static String deleteFocus = "delete-focus?id=";
+  static String getUser = "${baseUrl}user-details?id=";
+
+
 }

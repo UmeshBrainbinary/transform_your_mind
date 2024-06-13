@@ -294,6 +294,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                                           editProfileController.loader.value = true;
 
+
                                           if (editProfileController
                                                   .imageFile.value ==
                                               null) {
@@ -301,7 +302,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                           } else {
                                             if (_formKey.currentState!
                                                 .validate()) {
-                                              Get.back();
+                                              editProfileController.updateUser(context);
                                             }
                                           }
 
