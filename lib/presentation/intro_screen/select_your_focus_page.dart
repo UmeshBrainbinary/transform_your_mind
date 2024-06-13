@@ -57,7 +57,7 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
     var request = http.Request(
       'GET',
       Uri.parse(
-          '${EndPoints.baseUrl}${EndPoints.getCategory}'),
+          '${EndPoints.baseUrl}${EndPoints.getCategory}0'),
     );
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();

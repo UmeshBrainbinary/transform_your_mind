@@ -19,6 +19,7 @@ import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/progress_dialog_utils.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/model_class/affirmation_category_model.dart';
 import 'package:transform_your_mind/model_class/affirmation_data_model.dart';
 import 'package:transform_your_mind/model_class/affirmation_model.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_affirmation_page.dart';
@@ -63,9 +64,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   ValueNotifier<bool> isDraftAdded = ValueNotifier(false);
 
   List categoryList = [
-    {"title": "Self-Esteem"},
-    {"title": "Health"},
-    {"title": "Success"},
+
   ];
 
   final TextEditingController _userAffirmationController =
@@ -90,6 +89,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
 
   getData() async {
     await getAffirmationData();
+    getCategoryAffirmation();
     ///await getAffirmation();
   }
 
@@ -135,6 +135,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   bool playPause = false;
   final String audioFilePath = 'assets/audio/audio.mp3';
   AffirmationModel affirmationModel = AffirmationModel();
+  AffirmationCategoryModel affirmationCategoryModel = AffirmationCategoryModel();
   AffirmationDataModel affirmationDataModel = AffirmationDataModel();
   bool loader = false;
 
@@ -159,6 +160,30 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
         like.add(affirmationModel.data![i].isLiked!);
       }
 
+    } else {
+      debugPrint(response.reasonPhrase);
+    }
+  }
+  getCategoryAffirmation() async {
+
+    var headers = {
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.Request(
+        'GET',
+        Uri.parse(
+            '${EndPoints.baseUrl}${EndPoints.getCategory}1'));
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      final responseBody = await response.stream.bytesToString();
+
+      affirmationCategoryModel = affirmationCategoryModelFromJson(responseBody);
+     for(int i = 0 ;i <affirmationCategoryModel.data!.length;i++){
+       categoryList.add({"title":affirmationCategoryModel.data![i].name});
+     }
     } else {
       debugPrint(response.reasonPhrase);
     }
