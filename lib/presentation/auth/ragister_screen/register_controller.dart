@@ -12,12 +12,12 @@ import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
+import 'package:transform_your_mind/model_class/common_model.dart';
 import 'package:transform_your_mind/model_class/register_model.dart';
 import 'package:transform_your_mind/presentation/auth/forgot_password_screen/verification_screen.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 
-class RegisterController extends GetxController{
-
+class RegisterController extends GetxController {
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -36,6 +36,7 @@ class RegisterController extends GetxController{
     _select = value;
     update();
   }
+
   DateTime currentDate = DateTime.now();
 
   RxBool loader = false.obs;
@@ -44,12 +45,7 @@ class RegisterController extends GetxController{
   String? urlImage;
   File? selectedImage;
 
-
-  RxList genderList = [
-    "male".tr,
-    "female".tr,
-    "other".tr
-  ].obs;
+  RxList genderList = ["male".tr, "female".tr, "other".tr].obs;
 
   @override
   void onInit() {
@@ -66,22 +62,28 @@ class RegisterController extends GetxController{
     loader.value = true;
 
     debugPrint("loader ${loader.value}");
-    await registerApi(context,path);
+    await registerApi(context, path);
 
     update();
   }
+  CommonModel commonModel = CommonModel();
 
   registerApi(BuildContext context, String path) async {
-
-    var request = http.MultipartRequest('POST', Uri.parse("${EndPoints.baseUrl}${EndPoints.registerApi}"));
+    var request = http.MultipartRequest(
+        'POST', Uri.parse("${EndPoints.baseUrl}${EndPoints.registerApi}"));
     request.fields.addAll({
       "name": nameController.text,
       "email": emailController.text,
       "password": passwordController.text,
-      "dob":  dobController.text,
-      "gender": "1",
+      "dob": dobController.text,
+      "gender": genderController.text == "Male"
+          ? "1"
+          : genderController.text == "Female"
+              ? "2"
+              : genderController.text == "Other"
+                  ? "3"
+                  : "0",
       "user_type": "0",
-
     });
     request.files.add(await http.MultipartFile.fromPath('user_profile', path));
 
@@ -91,39 +93,19 @@ class RegisterController extends GetxController{
       loader.value = false;
       PrefService.setValue(PrefKey.email, emailController.text);
       showSnackBarSuccess(context, "User registered successfully!");
-     Navigator.push(context, MaterialPageRoute(builder: (context) {
-       return VerificationsScreen(forgot: false,);
-     },));
-      debugPrint(await response.stream.bytesToString());
-    }
-    else {
-      debugPrint(response.reasonPhrase);
-    }
-/*
-    var headers = {'Content-Type': 'application/json'};
-    var request = http.Request('POST', Uri.parse('${EndPoints.baseUrl}signup'));
-    request.body = json.encode({
-      "name": nameController.text,
-      "email": emailController.text,
-      "password": passwordController.text,
-      "profile": "d",
-      "dob": "09/06/2015",
-      "gender": 1
-    });
-    request.headers.addAll(headers);
-
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      loader.value = false;
-      PrefService.setValue(PrefKey.email, emailController.text);
-      showSnackBarSuccess(context, "User registered successfully!");
-      Get.toNamed(AppRoutes.verificationsScreen);
+      Navigator.push(context, MaterialPageRoute(
+        builder: (context) {
+          return VerificationsScreen(
+            forgot: false,
+          );
+        },
+      ));
       debugPrint(await response.stream.bytesToString());
     } else {
-      showSnackBarSuccess(context, "User with this email already exists.");
-      loader.value = false;
+      final responseBody = await response.stream.bytesToString();
+      commonModel = commonModelFromJson(responseBody);
+      debugPrint("message For CommonModel $commonModel");
       debugPrint(response.reasonPhrase);
-    }*/
+    }
   }
 }

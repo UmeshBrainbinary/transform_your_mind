@@ -187,18 +187,52 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           height: Dimens.d5,
                                           width: Dimens.d5)),
                                   readOnly: true,
-                                  onTap: () {
-                                    showDialog(context: context, builder: (context) {
+                                  onTap: () async {
+
+                                    FocusScope.of(context).unfocus();
+                                    await picker.DatePicker.showDatePicker(
+                                        context,
+                                        showTitleActions: true,
+                                        minTime: DateTime(1900, 3, 5),
+                                        maxTime: DateTime.now()
+                                            .subtract(const Duration(days: 1)),
+                                        theme: picker.DatePickerTheme(
+                                            doneStyle: Style.montserratSemiBold(
+                                                color: ColorConstant.white),
+                                            cancelStyle: Style.montserratSemiBold(
+                                                color: ColorConstant.white),
+                                            itemStyle: Style.montserratSemiBold(
+                                                color: ColorConstant.white),
+                                            backgroundColor:
+                                            ColorConstant.themeColor),
+                                        onChanged: (date) {},
+                                        onConfirm: (date) {
+                                          registerController.dobController.text =
+                                              DateTimeUtils.formatDate(date);
+                                          registerController.selectedDob = date;
+                                          // Your input date string
+                                          DateTime dateD = DateFormat('dd/MM/yyyy').parse(  registerController.dobController.text); // Parse the input date string
+                                          String formattedDate = DateFormat('yyyy-MM-dd').format(dateD);
+                                          registerController.dobController.text = formattedDate;
+                                        },
+                                        currentTime: registerController.selectedDob ??
+                                            DateTime.now()
+                                                .subtract(const Duration(days: 1)),
+                                        locale: picker.LocaleType.en);
+
+
+
+                                  /*  showDialog(context: context, builder: (context) {
                                       return Column(
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
-                                          Container(
+                                          SizedBox(
                                               height: 300,
                                               child: widgetCalendar()),
                                         ],
                                       );
-                                    },);
+                                    },);*/
                                   },
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {

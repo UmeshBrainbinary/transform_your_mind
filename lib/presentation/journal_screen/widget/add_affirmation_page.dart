@@ -95,13 +95,14 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
-    var request = http.Request('POST', Uri.parse('${EndPoints.baseUrl}${EndPoints.addFocus}'));
-    request.body = json.encode({
-      "name": titleController.text,
-      "description": descController.text,
-      "type": 1,
-      "created_by": PrefService.getString(PrefKey.userId)
+
+    var request = http.MultipartRequest('POST', Uri.parse('${EndPoints.baseUrl}${EndPoints.addAffirmation}'));
+    request.fields.addAll({
+      'created_by':PrefService.getString(PrefKey.userId),
+      'name': titleController.text,
+      'description': descController.text
     });
+
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
@@ -131,13 +132,13 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
-    var request = http.Request('POST', Uri.parse('${EndPoints.baseUrl}${EndPoints.updateFocuses}${widget.id}'));
-    request.body = json.encode({
+    var request = http.MultipartRequest('POST', Uri.parse('${EndPoints.baseUrl}${EndPoints.updateAffirmation}${widget.id}'));
+    request.fields.addAll({
       "name": titleController.text,
       "description": descController.text,
-      "type": 1,
       "created_by": PrefService.getString(PrefKey.userId)
     });
+
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();

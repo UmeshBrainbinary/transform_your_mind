@@ -30,8 +30,10 @@ class Datum {
   String? description;
   dynamic category;
   int? status;
-  int? type;
   String? createdBy;
+  bool? isDefault;
+  bool? isLiked;
+  dynamic audioFile;
   DateTime? createdAt;
   DateTime? updatedAt;
   int? v;
@@ -42,8 +44,10 @@ class Datum {
     this.description,
     this.category,
     this.status,
-    this.type,
     this.createdBy,
+    this.isDefault,
+    this.isLiked,
+    this.audioFile,
     this.createdAt,
     this.updatedAt,
     this.v,
@@ -55,8 +59,10 @@ class Datum {
     description: json["description"],
     category: json["category"],
     status: json["status"],
-    type: json["type"],
     createdBy: json["created_by"],
+    isDefault: json["isDefault"],
+    isLiked: json["isLiked"],
+    audioFile: json["audioFile"],
     createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
     updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
     v: json["__v"],
@@ -68,8 +74,10 @@ class Datum {
     "description": description,
     "category": category,
     "status": status,
-    "type": type,
     "created_by": createdBy,
+    "isDefault": isDefault,
+    "isLiked": isLiked,
+    "audioFile": audioFile,
     "createdAt": createdAt?.toIso8601String(),
     "updatedAt": updatedAt?.toIso8601String(),
     "__v": v,

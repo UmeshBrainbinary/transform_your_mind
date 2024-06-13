@@ -17,6 +17,7 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/model_class/affirmation_model.dart';
 import 'package:transform_your_mind/model_class/focus_model.dart';
 import 'package:transform_your_mind/presentation/intro_screen/select_your_focus_page.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
@@ -49,7 +50,7 @@ class _SelectYourAffirmationFocusPageState
 
   ReminderTime? affirmationReminderTime;
   ReminderPeriod? affirmationReminderPeriod;
-  FocusesModel focusesModel = FocusesModel();
+  AffirmationModel  affirmationModel  = AffirmationModel();
   bool loader = false;
 
   getAffirmation() async {
@@ -59,7 +60,7 @@ class _SelectYourAffirmationFocusPageState
     var request = http.Request(
         'GET',
         Uri.parse(
-            '${EndPoints.baseUrl}${EndPoints.getFocus}6667e00b474a3621861060c0&type=1'));
+            '${EndPoints.baseUrl}${EndPoints.getAffirmation}'));
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
@@ -67,9 +68,9 @@ class _SelectYourAffirmationFocusPageState
     if (response.statusCode == 200) {
       final responseBody = await response.stream.bytesToString();
 
-      focusesModel = focusesModelFromJson(responseBody);
-      for (int i = 0; i < focusesModel.data!.length; i++) {
-        listOfTags.add(Tag(focusesModel.data![i].name.toString(), false));
+      affirmationModel = affirmationModelFromJson(responseBody);
+      for (int i = 0; i < affirmationModel.data!.length; i++) {
+        listOfTags.add(Tag(affirmationModel.data![i].name.toString(), false));
       }
       setState(() {});
     } else {
@@ -246,6 +247,7 @@ class _SelectYourAffirmationFocusPageState
                   secondaryBtnText: widget.isFromMe ? '' : "skip".tr,
                   isLoading: false,
                   primaryBtnCallBack: () {
+                    //getAffirmation();
                     if (selectedTagNames.length >= 5) {
                       Navigator.pushReplacement(context, MaterialPageRoute(
                         builder: (context) {

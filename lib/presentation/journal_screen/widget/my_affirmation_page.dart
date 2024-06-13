@@ -44,8 +44,6 @@ class MyAffirmationPage extends StatefulWidget {
 
 class _MyAffirmationPageState extends State<MyAffirmationPage>
     with SingleTickerProviderStateMixin {
-
-
   int pageNumber = 1;
   int pageNumberAf = 0;
   int totalItemCountOfBookmarks = 0;
@@ -60,7 +58,6 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   TextEditingController searchController = TextEditingController();
   ThemeController themeController = Get.find<ThemeController>();
   FocusNode searchFocus = FocusNode();
-
 
   int _currentTabIndex = 0;
   ValueNotifier<bool> isDraftAdded = ValueNotifier(false);
@@ -86,20 +83,20 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
       statusBarIconBrightness: Brightness.dark,
     ));
 
-
     getData();
 
     super.initState();
   }
+
   getData() async {
     await getAffirmationData();
-    await getAffirmation();
+    ///await getAffirmation();
   }
+
   void _onAddClick(BuildContext context) {
     String subscriptionStatus = "SUBSCRIBED";
     if (!(subscriptionStatus == "SUBSCRIBED" ||
         subscriptionStatus == "SUBSCRIBED")) {
-
     } else {
       Navigator.push(context, MaterialPageRoute(
         builder: (context) {
@@ -141,15 +138,15 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   AffirmationDataModel affirmationDataModel = AffirmationDataModel();
   bool loader = false;
 
-  getAffirmation() async
-  {
+  getAffirmation() async {
+
     var headers = {
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
     var request = http.Request(
         'GET',
         Uri.parse(
-            '${EndPoints.baseUrl}${EndPoints.getFocus}${PrefService.getString(PrefKey.userId)}&type=1'));
+            '${EndPoints.baseUrl}${EndPoints.getYourAffirmation}${PrefService.getString(PrefKey.userId)}'));
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
@@ -158,19 +155,21 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
       final responseBody = await response.stream.bytesToString();
 
       affirmationModel = affirmationModelFromJson(responseBody);
-      setState(() {});
+      for (int i = 0; i < affirmationModel.data!.length; i++) {
+        like.add(affirmationModel.data![i].isLiked!);
+      }
+
     } else {
       debugPrint(response.reasonPhrase);
     }
   }
+
   getAffirmationData() async {
     var headers = {
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
     var request = http.Request(
-        'GET',
-        Uri.parse(
-            '${EndPoints.baseUrl}${EndPoints.getFocus}6667e00b474a3621861060c0&type=1'));
+        'GET', Uri.parse('${EndPoints.baseUrl}${EndPoints.getAffirmation}'));
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
@@ -181,13 +180,16 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
       affirmationDataModel = affirmationDataModelFromJson(responseBody);
       setState(() {
         _filteredBookmarks = affirmationDataModel.data;
+        for (int i = 0; i < _filteredBookmarks!.length; i++) {
+          like.add(_filteredBookmarks![i].isLiked);
+        }
       });
-      List.generate(affirmationDataModel.data?.length??0, (index) => like.add(false),);
       setState(() {});
     } else {
       debugPrint(response.reasonPhrase);
     }
   }
+
   addAffirmation({String? title, String? des}) async {
     setState(() {
       loader = true;
@@ -197,14 +199,15 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
-    var request = http.Request('POST', Uri.parse('${EndPoints.baseUrl}${EndPoints.addFocus}'));
-    request.body = json.encode({
-      "name": title,
-      "description": des,
-      "type": 1,
-      "created_by": PrefService.getString(PrefKey.userId)
+    var request = http.MultipartRequest('POST', Uri.parse('${EndPoints.baseUrl}${EndPoints.addAffirmation}'));
+    request.fields.addAll({
+      'created_by':PrefService.getString(PrefKey.userId),
+      'name': title!,
+      'description': des!
     });
+
     request.headers.addAll(headers);
+
 
     http.StreamedResponse response = await request.send();
 
@@ -212,18 +215,36 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
       setState(() {
         loader = false;
       });
-      showSnackBarSuccess(context,
-          "Successfully add in your affirmation");
+      showSnackBarSuccess(context, "Successfully add in your affirmation");
       setState(() {});
-    }
-    else {
+    } else {
       setState(() {
         loader = false;
       });
       debugPrint(response.reasonPhrase);
     }
-
   }
+
+  updateLike({String? id, bool? isLiked}) async {
+    debugPrint("User Id ${PrefService.getString(PrefKey.userId)}");
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.Request('POST',
+        Uri.parse('${EndPoints.baseUrl}${EndPoints.updateAffirmation}$id'));
+    request.body = json.encode({"isLiked": isLiked});
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      setState(() {});
+    } else {
+      debugPrint(response.reasonPhrase);
+    }
+  }
+
   deleteAffirmation(id) async {
     setState(() {
       loader = true;
@@ -232,7 +253,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
     var request = http.Request(
-        'DELETE', Uri.parse('${EndPoints.baseUrl}${EndPoints.deleteFocus}$id'));
+        'DELETE', Uri.parse('${EndPoints.baseUrl}${EndPoints.deleteAffirmation}$id'));
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
@@ -403,7 +424,6 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
       getAffirmation();
       return yourAffirmationWidget();
     } else {
-
       return transformAffirmationWidget();
     }
   }
@@ -420,8 +440,8 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
               alignment: Alignment.topLeft,
               child: Text("myAffirmation".tr,
                   style: Style.montserratRegular(
-                          fontSize: Dimens.d18,
-                        )),
+                    fontSize: Dimens.d18,
+                  )),
             ),
             Dimens.d11.spaceHeight,
             ListView.builder(
@@ -470,7 +490,8 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                   builder: (context) {
                                     return AddAffirmationPage(
                                       index: index,
-                                      id:  affirmationModel.data?[index].id??"",
+                                      id: affirmationModel.data?[index].id ??
+                                          "",
                                       isFromMyAffirmation: true,
                                       title:
                                           affirmationModel.data?[index].name ??
@@ -482,8 +503,8 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                     );
                                   },
                                 )).then(
-                                  (value) {
-                                    getAffirmation();
+                                  (value) async {
+                                    await getAffirmation();
 
                                     setState(() {});
                                     if (value != null && value is bool) {
@@ -517,10 +538,24 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                             ),
                             Dimens.d10.spaceWidth,
                             GestureDetector(
-                              onTap: () {
+                              onTap: () async {
                                 setState(() {
                                   like[index] = !like[index];
                                 });
+                                if (affirmationModel.data![index]
+                                    .isLiked!) {
+                                  await updateLike(
+                                  id: affirmationModel.data?[index].id,
+                                  isLiked: false);
+                                  await getAffirmation();
+                                } else {
+                                  await updateLike(
+                                  id: affirmationModel.data?[index].id,
+                                  isLiked: true);
+                                  await getAffirmation();
+                                }
+
+                                setState(() {});
                               },
                               child: SvgPicture.asset(
                                 like[index]
@@ -753,8 +788,8 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                         textInputAction: TextInputAction.done,
                         onChanged: (value) {
                           setState(() {
-                            _filteredBookmarks =
-                                searchBookmarks(value, affirmationDataModel.data!);
+                            _filteredBookmarks = searchBookmarks(
+                                value, affirmationDataModel.data!);
                           });
                         },
                       ),
@@ -767,7 +802,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
               padding: const EdgeInsets.only(bottom: 20.0),
               child: _filteredBookmarks != null
                   ? ListView.builder(
-                      itemCount:  _filteredBookmarks?.length ?? 0,
+                      itemCount: _filteredBookmarks?.length ?? 0,
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       primary: false,
@@ -777,7 +812,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                             Navigator.push(context, MaterialPageRoute(
                               builder: (context) {
                                 return AffirmationShareScreen(
-                                  des:_filteredBookmarks?[index].description,
+                                  des: _filteredBookmarks?[index].description,
                                   title: _filteredBookmarks?[index].name,
                                 );
                               },
@@ -798,8 +833,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        _filteredBookmarks?[index].name  ??
-                                            '',
+                                        _filteredBookmarks?[index].name ?? '',
                                         style: Style.montserratRegular(
                                                 height: Dimens.d1_3.h,
                                                 fontSize: Dimens.d18,
@@ -810,8 +844,11 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                     ),
                                     GestureDetector(
                                       onTap: () async {
-
-                                       await  addAffirmation(title: _filteredBookmarks?[index].name ,des: _filteredBookmarks?[index].description );
+                                        await addAffirmation(
+                                            title:
+                                                _filteredBookmarks?[index].name,
+                                            des: _filteredBookmarks?[index]
+                                                .description);
 
                                         setState(() {});
                                       },
@@ -825,8 +862,10 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                     GestureDetector(
                                       onTap: () {
                                         _showAlertDialogPlayPause(context,
-                                            title: _filteredBookmarks?[index].name,
-                                            des: _filteredBookmarks?[index].description);
+                                            title:
+                                                _filteredBookmarks?[index].name,
+                                            des: _filteredBookmarks?[index]
+                                                .description);
                                       },
                                       child: SvgPicture.asset(
                                         ImageConstant.playAffirmation,
@@ -845,10 +884,24 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                             ImageConstant.alarm)),
                                     Dimens.d8.spaceWidth,
                                     GestureDetector(
-                                      onTap: () {
+                                      onTap: () async {
                                         setState(() {
                                           like[index] = !like[index];
                                         });
+                                        if (_filteredBookmarks![index]
+                                            .isLiked) {
+                                          await updateLike(
+                                              id: _filteredBookmarks?[index].id,
+                                              isLiked: false);
+                                          await getAffirmationData();
+                                        } else {
+                                          await updateLike(
+                                              id: _filteredBookmarks?[index].id,
+                                              isLiked: true);
+                                          await getAffirmationData();
+                                        }
+
+                                        setState(() {});
                                       },
                                       child: SvgPicture.asset(
                                         like[index]
@@ -865,7 +918,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                 ),
                                 Dimens.d10.spaceHeight,
                                 Text(
-                                  _filteredBookmarks?[index].description?? '',
+                                  _filteredBookmarks?[index].description ?? '',
                                   style: Style.montserratRegular(
                                           height: Dimens.d2,
                                           fontSize: Dimens.d11,
@@ -1209,7 +1262,8 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                   )),
             ),
             Dimens.d24.spaceHeight,
-            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 CommonElevatedButton(
                   height: 33,
@@ -1224,8 +1278,11 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                   },
                 ),
                 Container(
-                  height: 33,margin: const EdgeInsets.symmetric(horizontal: 5),
-                  padding: const EdgeInsets.symmetric(horizontal: 21,),
+                  height: 33,
+                  margin: const EdgeInsets.symmetric(horizontal: 5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 21,
+                  ),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(80),
                       border: Border.all(color: ColorConstant.themeColor)),

@@ -57,7 +57,7 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
     var request = http.Request(
       'GET',
       Uri.parse(
-          '${EndPoints.baseUrl}${EndPoints.getFocus}6667e00b474a3621861060c0&type=1'),
+          '${EndPoints.baseUrl}${EndPoints.getCategory}'),
     );
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
@@ -199,6 +199,7 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
                         secondaryBtnText: widget.isFromMe ? '' : "Skip",
                         isLoading: false,
                         primaryBtnCallBack: () {
+                         // getFocuses();
                           if (selectedTagNames.length >= 5) {
                             setFocuses();
                           } else {
