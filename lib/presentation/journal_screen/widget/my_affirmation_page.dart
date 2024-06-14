@@ -161,6 +161,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
         loader = false;
       });
     } else {
+      affirmationModel  = AffirmationModel();
       setState(() {
         loader = false;
       });
@@ -486,12 +487,15 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
     return Expanded(
       child: SingleChildScrollView(
         child: affirmationModel.data == null
-            ? SizedBox(height: Get.height-300,
-              child: Center(
-                child: Text(
-                  "noAffirmationFound".tr,
-                  style: Style.montserratRegular(
-                      fontSize: Dimens.d18, color: ColorConstant.black),
+            ? Center(
+              child: SizedBox(height: Get.height-300,
+                child: Column(crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(ImageConstant.noData),
+                    Dimens.d20.spaceHeight,
+                    Text("Data Not Found",style: Style.montserratBold(fontSize: 24),)
+                  ],
                 ),
               ),
             )

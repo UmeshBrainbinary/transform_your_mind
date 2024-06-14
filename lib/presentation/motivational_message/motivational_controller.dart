@@ -40,7 +40,7 @@ class MotivationalController extends GetxController {
       for (int i = 0; i < motivationalModel.data!.length; i++) {
         motivationalList.add({
           "title": motivationalModel.data![i].message,
-          "img": "https://transformyourmind-server.onrender.com/${motivationalModel.data![i].motivationalImage}"
+          "img": "${motivationalModel.data![i].motivationalImage}"
         });
       }
       update(["motivational"]);

@@ -206,6 +206,7 @@ class ImageConstant {
   static String downArrowSetting = "$iconPath/down_arrow_setting.svg";
   static String filterPositive = "$iconPath/filter_positive_moment.svg";
   static String subscriptionCheck = "$iconPath/subscription_check.svg";
+  static String noData = "$iconPath/no_data.svg";
   static String shapeAffirmationShare =
       "$imagePath/shape_affirmation_share.svg";
   static String settingArrowRight = "$iconPath/setting_arrow_right.svg";

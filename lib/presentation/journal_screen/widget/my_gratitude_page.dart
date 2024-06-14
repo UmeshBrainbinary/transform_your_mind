@@ -310,16 +310,17 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                         : _isLoadingDraft
                                             ? const SizedBox.shrink()
                                             : gratitudeList.isEmpty
-                                                ? Center(
-                                                    child: JournalNoDataWidget(
-                                                    showBottomHeight: true,
-                                                    title: _isSearching
-                                                        ? "noSearchData".tr
-                                                        : "noGratitudeData".tr,
-                                                    onClick: () {
-                                                      _onAddClick(context);
-                                                    },
-                                                  ))
+                                                ? Padding(
+                                                  padding: const EdgeInsets.only(bottom: Dimens.d150),
+                                                  child: Column(crossAxisAlignment: CrossAxisAlignment.center,
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      SvgPicture.asset(ImageConstant.noData),
+                                                      Dimens.d20.spaceHeight,
+                                                      Text("Data Not Found",style: Style.montserratBold(fontSize: 24),)
+                                                    ],
+                                                  ),
+                                                )
                                                 : const SizedBox(),
                               ),
                             ],
@@ -376,6 +377,8 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
               children: [
                 CommonElevatedButton(
                   height: 33,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: Dimens.d28),
+
                   textStyle: Style.montserratRegular(
                       fontSize: Dimens.d12, color: ColorConstant.white),
                   title: "delete".tr,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:transform_your_mind/core/app_export.dart';
+import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
@@ -33,13 +34,6 @@ class NewPasswordScreen extends StatelessWidget {
       body: SafeArea(
           child: Stack(
         children: [
-/*
-              Positioned(
-                top: Dimens.d70.h,
-                right: 0,
-                left:  null,
-                child: Image.asset(ImageConstant.bgStar, height: Dimens.d274.h),
-              ),*/
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
             child: LayoutBuilder(
@@ -172,6 +166,7 @@ class NewPasswordScreen extends StatelessWidget {
               },
             ),
           ),
+          Obx(() => forgotController.loader.isTrue?commonLoader():const SizedBox(),)
         ],
       )),
     );

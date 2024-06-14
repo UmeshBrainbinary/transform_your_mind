@@ -19,8 +19,9 @@ import 'package:transform_your_mind/widgets/custom_appbar.dart';
 class VerificationsScreen extends StatefulWidget {
   bool? forgot;
   String? token;
+  String? email;
 
-  VerificationsScreen({super.key, this.forgot,this.token});
+  VerificationsScreen({super.key, this.forgot,this.token,this.email});
 
   @override
   State<VerificationsScreen> createState() => _VerificationsScreenState();
@@ -36,18 +37,19 @@ class _VerificationsScreenState extends State<VerificationsScreen> {
 
   @override
   void initState() {
+    forgotController.otpController.clear();
     startTimer();
     super.initState();
   }
 
-  void resendOtp() {
+  void resendOtp(BuildContext context) {
     setState(() {
       _start = 60;
     });
     startTimer();
     // Add your OTP resend logic here
-    forgotController.resendApi(widget.token);
-    showSnackBarSuccess(context, "otpResent".tr);
+    forgotController.resendApi(widget.token,widget.forgot,widget.email,context);
+
   }
 
   void startTimer() {
@@ -172,7 +174,7 @@ class _VerificationsScreenState extends State<VerificationsScreen> {
                                     GestureDetector(
                                       onTap: () {
                                         if(_start==0){
-                                          resendOtp();
+                                          resendOtp(context);
 
                                         }
                                       },
@@ -204,7 +206,7 @@ class _VerificationsScreenState extends State<VerificationsScreen> {
                                       .otpController.text.isNotEmpty) {
                                     if (widget.forgot == true) {
                                       forgotController
-                                          .onTapOtpVerifyChangePass(context);
+                                          .onTapOtpVerifyChangePass(context,widget.email!,widget.forgot);
                                     } else {
                                       forgotController.onTapOtpVerify(context,widget.token!);
                                     }

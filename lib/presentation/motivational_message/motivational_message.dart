@@ -47,7 +47,7 @@ class MotivationalMessageScreen extends StatelessWidget {
                           decoration: BoxDecoration(
                             image:  DecorationImage(
                                 image: NetworkImage(
-                                    data["img"]),
+                                    "https://transformyourmind-server.onrender.com/${data["img"]}"),
                                 fit: BoxFit.cover),
                             borderRadius: BorderRadius.circular(20),
                           ),
