@@ -36,7 +36,10 @@ class ForgotController extends GetxController {
   }
 
   onTapOtpVerifyChangePass(BuildContext context, String email, bool? forgot) async {
+    loader.value= true;
     await otpVerifyChangePass(context,email,forgot);
+    loader.value=false;
+
   }
 
   forgotPasswordButton(BuildContext context, ) async {
