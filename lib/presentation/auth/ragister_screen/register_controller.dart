@@ -92,14 +92,10 @@ class RegisterController extends GetxController {
     if (response.statusCode == 200 || response.statusCode == 201) {
       loader.value = false;
       PrefService.setValue(PrefKey.email, emailController.text);
-      showSnackBarSuccess(context, "User registered successfully!");
-      Navigator.push(context, MaterialPageRoute(
-        builder: (context) {
-          return VerificationsScreen(
-            forgot: false,
-          );
-        },
-      ));
+      showSnackBarSuccess(context, "otpSendEmail".tr);
+     Get.to(VerificationsScreen(
+       forgot: false,
+     ));
       debugPrint(await response.stream.bytesToString());
     } else {
       final responseBody = await response.stream.bytesToString();

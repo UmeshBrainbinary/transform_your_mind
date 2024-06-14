@@ -24,7 +24,8 @@ import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 class NowPlayingScreen extends StatefulWidget {
-  const NowPlayingScreen({super.key});
+  AudioPlayerService? audioPlayerService;
+   NowPlayingScreen({super.key,this.audioPlayerService});
 
   @override
   State<NowPlayingScreen> createState() => _NowPlayingScreenState();
@@ -35,7 +36,6 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
   List<AudioSpeed> audioSpeedList = AudioSpeed.getAudioSpeedList();
   int currentAudioSpeedIndex = 0;
   Duration position = Duration.zero;
-  Duration _totalAudioDuration = const Duration();
   Timer? volTimer;
   final ValueNotifier<bool> _isVolShowing = ValueNotifier(false);
   ValueNotifier<bool> isActivityApiCalled = ValueNotifier(false);
@@ -49,7 +49,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
   Timer? _opacityOfSpeedTimer;
   final ValueNotifier<double> _slideValue = ValueNotifier(40.0);
   late final AnimationController _lottieBgController, _lottieController;
-  final AudioPlayerService _audioPlayerService = AudioPlayerService();
+ // final AudioPlayerService _audioPlayerService = AudioPlayerService();
   bool isPlaying = false;
   TextEditingController ratingController = TextEditingController();
   FocusNode ratingFocusNode = FocusNode();
@@ -65,8 +65,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
 
     _setInitValues();
 
-    _audioPlayerService.setUrl(
-        'https://media.shoorah.io/admins/shoorah_pods/audio/1682952330-9588.mp3');
+/*    _audioPlayerService.setUrl(
+        'https://media.shoorah.io/admins/shoorah_pods/audio/1682952330-9588.mp3');*/
   }
 
   @override
@@ -145,7 +145,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                     leading: GestureDetector(
                         onTap: () {
                           Get.back();
-                          _audioPlayerService.pause();
+                          widget.audioPlayerService!.dispose();
+                          //_audioPlayerService.pause();
                         },
                         child: const Icon(
                           Icons.close,
@@ -210,11 +211,11 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
             mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   StreamBuilder<Duration?>(
-                    stream: _audioPlayerService.positionStream,
+                    stream:  widget.audioPlayerService!.positionStream,
                     builder: (context, snapshot) {
                       final position = snapshot.data ?? Duration.zero;
                       return StreamBuilder<Duration?>(
-                        stream: _audioPlayerService.durationStream,
+                        stream:  widget.audioPlayerService!.durationStream,
                         builder: (context, snapshot) {
                           final duration = snapshot.data ?? Duration.zero;
                           return SeekBar(
@@ -222,13 +223,13 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                             position: position,
                             onChanged: (newPosition) {
                               if (newPosition != null) {
-                                _audioPlayerService.seekForMeditationAudio(
+                                widget.audioPlayerService!.seekForMeditationAudio(
                                     position: newPosition);
                               }
                             },
                             onChangeEnd: (newPosition) {
                               if (newPosition != null) {
-                                _audioPlayerService.seekForMeditationAudio(
+                                widget.audioPlayerService!.seekForMeditationAudio(
                                     position: newPosition);
                               }
                         },
@@ -264,7 +265,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                               child: GestureDetector(
                                 onTap: () {
                                   if (!_isAudioLoading.value) {
-                                    _audioPlayerService.skipBackward();
+                                    widget.audioPlayerService!.skipBackward();
                                   }
                                 },
                                 child: Image.asset(
@@ -285,9 +286,9 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                                     onTap: () {
                                       if (isPlaying) {
                                         _lottieController.stop();
-                                        _audioPlayerService.pause();
+                                        widget.audioPlayerService!.pause();
                                       } else {
-                                        _audioPlayerService.play();
+                                        widget.audioPlayerService!.play();
                                         _lottieController.repeat();
                                       }
                                       setState(() {
@@ -341,7 +342,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                           child: GestureDetector(
                             onTap: () {
                               if (!_isAudioLoading.value) {
-                                _audioPlayerService.skipForward();
+                                widget.audioPlayerService!.skipForward();
                               }
                             },
                             child: Image.asset(
@@ -451,7 +452,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                                       builder: (BuildContext context, value,
                                           Widget? child) {
                                         return   StreamBuilder<Duration?>(
-                                          stream: _audioPlayerService.positionStream,
+                                          stream:  widget.audioPlayerService!.positionStream,
                                           builder: (context, snapshot) {
                                             final currentDuration = snapshot.data ?? Duration.zero;
                                             return  Text(
@@ -491,7 +492,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                                   builder: (BuildContext context, value,
                                       Widget? child) {
                                     return    StreamBuilder<Duration?>(
-                                      stream: _audioPlayerService.durationStream,
+                                      stream:  widget.audioPlayerService!.durationStream,
                                       builder: (context, snapshot) {
                                         final totalDuration = snapshot.data ?? Duration.zero;
                                         return  Text(
@@ -688,7 +689,6 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
     randomNumberForSelectingLottie = Dimens.d1.toInt() +
         randomNumberGenerator.nextInt(Dimens.d7.toInt() - Dimens.d1.toInt());
 
-    _totalAudioDuration = parseAudioDuration('00:00');
 
   }
 

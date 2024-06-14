@@ -34,4 +34,8 @@ class AudioPlayerService {
     final currentPosition = _audioPlayer.position;
     await _audioPlayer.seek(currentPosition - const Duration(seconds: 15));
   }
+
+  Future<void> dispose() async {
+    await _audioPlayer.dispose();
+  }
 }

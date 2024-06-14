@@ -55,6 +55,7 @@
   "verification": "Überprüfung",
   "enterVerification": "Bestätigungscode eingeben.",
   "notReceiveCode": "Wenn Sie keinen Code erhalten haben, erneut senden",
+  "resend": "erneut senden",
   "send": "Senden",
   "verify": "Verifizieren",
   "newPassword": "Neues Passwort",
@@ -271,5 +272,13 @@
   "theCommentFiledRequired": "Der Kommentar muss eingereicht werden",
   "completedGratitude": "Dankbarkeit abgeschlossen",
   "successfullyAffirmation": "Fügen Sie Ihre Bestätigung erfolgreich hinzu",
-  "WellDone": "Gut gemacht, Sie haben heute alle Ihre Affirmationen vervollständigt."
+  "WellDone": "Gut gemacht, Sie haben heute alle Ihre Affirmationen vervollständigt.",
+  "otpSendEmail" : "OTP an Ihre E-Mail-Adresse senden",
+  "otpResent": "OTP erneut gesendet",
+  "areYouSureDeleteAffirmation": "Möchten Sie die Bestätigung wirklich löschen?",
+  "wellDone": "Gut gemacht, Sie haben heute alle Dankbarkeitsaufgaben abgeschlossen."
+
+
+
+
 }

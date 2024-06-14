@@ -72,6 +72,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
   String? urlImage;
   int gratitudeAddedCount = 0;
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  DateTime todayDate = DateTime.now();
 
   File? selectedImage;
   DateTime _currentDate = DateTime.now();
@@ -265,6 +266,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                               ),
                               GestureDetector(
                                 onTap: () async {
+                                  dateController.text = DateFormat('dd/MM/yyyy').format(todayDate);
                                   showDialog(
                                     context: context,
                                     builder: (context) {
@@ -302,6 +304,12 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                                     ),
                                     hintText: "DD/MM/YYYY",
                                     controller: dateController,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        dateController.text = value;
+
+                                      });
+                                    },
                                     validator: (value) {
                                       if (value == "") {
                                         return "pleaseEnterDate".tr;
@@ -323,12 +331,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                                         onTap: () async {
                                           if (_formKey.currentState!
                                               .validate()) {
-                                            gratitudeDraftList.add({
-                                              "title": titleController.text,
-                                              "des": descController.text,
-                                              "image": imageFile.value,
-                                              "createdOn": "",
-                                            });
+
                                             setState(() {});
                                             Get.back();
                                           }
@@ -387,14 +390,18 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
         ),
         child: CalendarCarousel<Event>(
           onDayPressed: (DateTime date, List<Event> events) {
-            setState.call(() => _currentDate = date);
+            if (date.isBefore(DateTime.now())) {
+              setState.call(() => _currentDate = date);
 
-            print("==========$_currentDate");
-            setState.call(() {
-              dateController.text = "${date.day}/${date.month}/${date.year}";
-              select = false;
-            });
+              print("==========$_currentDate");
+              setState.call(() {
+                dateController.text = "${date.day}/${date.month}/${date.year}";
+                select = false;
+              });
+            }
+
           },
+
           weekendTextStyle:
               Style.montserratRegular(fontSize: 15, color: ColorConstant.black),
           // Customize your text style

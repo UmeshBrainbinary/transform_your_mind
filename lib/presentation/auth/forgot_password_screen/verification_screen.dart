@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
@@ -13,14 +16,66 @@ import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
-class VerificationsScreen extends StatelessWidget {
+class VerificationsScreen extends StatefulWidget {
   bool? forgot;
 
   VerificationsScreen({super.key, this.forgot});
 
+  @override
+  State<VerificationsScreen> createState() => _VerificationsScreenState();
+}
+
+class _VerificationsScreenState extends State<VerificationsScreen> {
   final ForgotController forgotController = Get.put(ForgotController());
 
   ThemeController themeController = Get.find<ThemeController>();
+
+  int _start = 60;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    startTimer();
+    super.initState();
+  }
+
+  void resendOtp() {
+    setState(() {
+      _start = 60;
+    });
+    startTimer();
+    // Add your OTP resend logic here
+    showSnackBarSuccess(context, "otpResent".tr);
+  }
+
+  void startTimer() {
+    const oneSec = Duration(seconds: 1);
+
+    _timer = Timer.periodic(
+      oneSec,
+      (timer) {
+        if (_start == 0) {
+          timer.cancel();
+          // Handle timeout here
+        } else {
+          setState(() {
+            _start--;
+          });
+        }
+      },
+    );
+  }
+
+  String formatTime(int seconds) {
+    final secs = (seconds % 60).toString().padLeft(2, '0');
+    return '00:$secs';
+  }
+
+  @override
+  void dispose() {
+    _timer!.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,23 +156,53 @@ class VerificationsScreen extends StatelessWidget {
                               SizedBox(
                                 height: Dimens.d24,
                                 width: Dimens.d296,
-                                child: Text(
-                                    textAlign: TextAlign.center,
-                                    "notReceiveCode".tr,
-                                    style: Style.montserratRegular(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                        color: ColorConstant.color716B6B)),
+                                child: Row(
+                                  children: [
+                                    const Spacer(),
+                                    Text(
+                                        textAlign: TextAlign.center,
+                                        "notReceiveCode".tr,
+                                        style: Style.montserratRegular(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400,
+                                            color: ColorConstant.color716B6B)),
+                                    Dimens.d5.spaceWidth,
+                                    GestureDetector(
+                                      onTap: () {
+                                        if(_start==0){
+                                          resendOtp();
+
+                                        }
+                                      },
+                                      child: Text(
+                                          textAlign: TextAlign.center,
+                                          "resend".tr,
+                                          style: Style.montserratRegular(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w400,
+                                              color: _start!=0?Colors.black.withOpacity(0.2):ColorConstant.themeColor)),
+                                    ),
+                                    const Spacer(),
+                                  ],
+                                ),
                               ),
-                              Dimens.d83.spaceHeight,
+                              Dimens.d30.spaceHeight,
+                              Text('Time left: ${formatTime(_start)}',
+                                  textAlign: TextAlign.center,
+                                  style: Style.montserratRegular(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                      color: ColorConstant.themeColor)),
+                              Dimens.d30.spaceHeight,
                               CommonElevatedButton(
                                 title: "verify".tr,
                                 onTap: () {
                                   FocusScope.of(context).unfocus();
                                   if (forgotController
                                       .otpController.text.isNotEmpty) {
-                                    if (forgot == true) {
-                                      forgotController.onTapOtpVerifyChangePass(context);
+                                    if (widget.forgot == true) {
+                                      forgotController
+                                          .onTapOtpVerifyChangePass(context);
                                     } else {
                                       forgotController.onTapOtpVerify(context);
                                     }

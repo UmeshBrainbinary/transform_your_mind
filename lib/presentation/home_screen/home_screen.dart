@@ -4,14 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
+import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/model_class/common_model.dart';
+import 'package:transform_your_mind/model_class/gratitude_model.dart';
 import 'package:transform_your_mind/presentation/home_screen/home_message_page.dart';
 import 'package:transform_your_mind/presentation/home_screen/widgets/home_widget.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/my_affirmation_page.dart';
@@ -25,7 +30,7 @@ import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:transform_your_mind/widgets/custom_view_controller.dart';
-
+import 'package:http/http.dart' as http;
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -46,7 +51,63 @@ class _HomeScreenState extends State<HomeScreen>
     {"title": "gratitudeJournal".tr, "icon": ImageConstant.journalIconQuick},
     {"title": "positiveMoments".tr, "icon": ImageConstant.sleepIconQuick},
   ];
+  List gratitudeList = [];
+  GratitudeModel gratitudeModel = GratitudeModel();
+  DateTime todayDate = DateTime.now();
 
+  getGratitude() async {
+    var headers = {
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.Request(
+        'GET',
+        Uri.parse(
+            '${EndPoints.baseUrl}get-gratitude?created_by=${PrefService.getString(PrefKey.userId)}&date=${DateFormat('dd/MM/yyyy').format(todayDate)}'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      gratitudeModel = GratitudeModel();
+      final responseBody = await response.stream.bytesToString();
+      gratitudeModel = gratitudeModelFromJson(responseBody);
+      gratitudeList = gratitudeModel.data!;
+      setState(() {
+        gratitudeCheckList = [];
+      });
+      List.generate(
+        gratitudeList.length,
+            (index) => gratitudeCheckList.add(false),
+      );
+      setState(() {
+        debugPrint("gratitude Model $gratitudeList");
+        debugPrint("gratitude Model ${gratitudeModel.data}");
+      });
+    } else {
+      debugPrint(response.reasonPhrase);
+    }
+  }
+  CommonModel commonModel = CommonModel();
+  deleteGratitude(id) async {
+    var headers = {
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.Request(
+        'DELETE', Uri.parse('${EndPoints.baseUrl}delete-gratitude?id=$id'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      final responseBody = await response.stream.bytesToString();
+      commonModel = commonModelFromJson(responseBody);
+      showSnackBarSuccess(context, commonModel.message ?? "");
+    } else {
+      debugPrint(response.reasonPhrase);
+    }
+  }
   ThemeController themeController = Get.find<ThemeController>();
   List<bool> affirmationCheckList = [];
   List<bool> gratitudeCheckList = [];
@@ -71,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen>
       }
     });
     getAffirmationList();
-    getGratitudeList();
+    getGratitude();
     super.initState();
   }
 
@@ -92,15 +153,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  getGratitudeList() {
-    setState(() {
-      gratitudeCheckList = [];
-    });
-    List.generate(
-      gratitudeList.length,
-      (index) => gratitudeCheckList.add(false),
-    );
-  }
+
 
   @override
   void dispose() {
@@ -238,11 +291,6 @@ class _HomeScreenState extends State<HomeScreen>
                 customDivider(),
                 Dimens.d30.spaceHeight,
 
-                //______________________________ ToDays Gratitude _______________________
-                /*   const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: TodaysGratitude(),
-                ),*/
                 //______________________________ yourDaily Recommendations _______________________
 
                 Padding(
@@ -280,35 +328,6 @@ class _HomeScreenState extends State<HomeScreen>
                 Dimens.d20.spaceHeight,
 
                 yourAffirmation(),
-                /*   //______________________________ Today's Cleanse _______________________
-
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
-                  child: Text(
-                    "todayCleanse".tr,
-                    textAlign: TextAlign.center,
-                    style: Style.montserratRegular(fontSize: Dimens.d22),
-                  ),
-                ),
-                Dimens.d30.spaceHeight,
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: CleanseButton(
-                    totalCount: totalCountCleanse ?? 0,
-                  ),
-                ),*/
-                /*    Dimens.d50.spaceHeight,
-                //______________________________ yourDailyRituals _______________________
-                Container(
-                  decoration: BoxDecoration(
-                      color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : Colors.white,
-                      borderRadius: BorderRadius.circular(16)),
-                  padding: const EdgeInsets.symmetric(vertical: 27),
-                  margin: const EdgeInsets.symmetric(horizontal: 20),
-                  child:  TodaysRituals(
-                    type: "yourDailyRituals".tr,
-                  ),
-                ),*/
                 Dimens.d20.spaceHeight,
                 /*    yourGratitude(),
                 Dimens.d20.spaceHeight,*/
@@ -835,7 +854,7 @@ class _HomeScreenState extends State<HomeScreen>
                       children: [
                         Dimens.d10.spaceHeight,
                         Text(
-                          "Well done, you completed all your Gratitude today."
+                          "wellDone"
                               .tr,
                           textAlign: TextAlign.center,
                           style: Style.montserratRegular(
@@ -849,8 +868,8 @@ class _HomeScreenState extends State<HomeScreen>
                             onTap: () {
                               Get.toNamed(AppRoutes.myGratitudePage)!.then(
                                 (value) {
-                                  setState(() {
-                                    getGratitudeList();
+                                  setState(() async {
+                                    await getGratitude();
                                   });
                                 },
                               );
@@ -877,9 +896,10 @@ class _HomeScreenState extends State<HomeScreen>
                                         const Duration(milliseconds: 800))
                                     .then(
                                   (value) {
-                                    setState(() {
+                                    setState(() async {
                                       gratitudeList.removeAt(index);
-                                      getGratitudeList();
+                                      await deleteGratitude(gratitudeList[index].id);
+                                      await getGratitude();
                                     });
                                   },
                                 );
@@ -924,8 +944,8 @@ class _HomeScreenState extends State<HomeScreen>
                           onTap: () {
                             Get.toNamed(AppRoutes.myGratitudePage)!.then(
                               (value) {
-                                setState(() {
-                                  getGratitudeList();
+                                setState(() async {
+                                  await getGratitude();
                                 });
                               },
                             );

@@ -6,7 +6,6 @@ import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -35,8 +34,7 @@ import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
-List gratitudeDraftList = [];
-List gratitudeList = [];
+
 
 class MyGratitudePage extends StatefulWidget {
   final bool fromNotification;
@@ -53,6 +51,7 @@ class MyGratitudePage extends StatefulWidget {
 class _MyGratitudePageState extends State<MyGratitudePage> {
   TextEditingController dateController = TextEditingController();
   FocusNode dateFocus = FocusNode();
+  List gratitudeList = [];
 
   bool _isLoading = false;
   bool _isLoadingDraft = false;
@@ -110,14 +109,13 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
       debugPrint(response.reasonPhrase);
     }
   }
+
   deleteGratitude(id) async {
     var headers = {
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
     var request = http.Request(
-        'DELETE',
-        Uri.parse(
-            '${EndPoints.baseUrl}delete-gratitude?id=$id'));
+        'DELETE', Uri.parse('${EndPoints.baseUrl}delete-gratitude?id=$id'));
 
     request.headers.addAll(headers);
 
@@ -126,7 +124,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
     if (response.statusCode == 200) {
       final responseBody = await response.stream.bytesToString();
       commonModel = commonModelFromJson(responseBody);
-      showSnackBarSuccess(context, commonModel.message??"");
+      showSnackBarSuccess(context, commonModel.message ?? "");
     } else {
       debugPrint(response.reasonPhrase);
     }
@@ -189,9 +187,8 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                         Expanded(
                           child: Column(
                             children: [
-
                               Dimens.d20.spaceHeight,
-                                      gratitudeList.isNotEmpty
+                              gratitudeList.isNotEmpty
                                   ? Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: Dimens.d30),
@@ -259,39 +256,37 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                                 itemBuilder: (context, index) {
                                                   var data =
                                                       gratitudeList[index];
-                                                  return   JournalListTileLayout(
-                                                    onDeleteTapCallback:
-                                                        () {
+                                                  return JournalListTileLayout(
+                                                    onDeleteTapCallback: () {
                                                       _showAlertDialogDelete(
-                                                          context, index,data.id);
+                                                          context,
+                                                          index,
+                                                          data.id);
                                                       setState(() {});
                                                     },
                                                     onEditTapCallback: () {
-                                                      Navigator.push(
-                                                          context,
+                                                      Navigator.push(context,
                                                           MaterialPageRoute(
-                                                            builder: (context) {
-                                                              return AddGratitudePage(
-                                                                id:data.id ,
-                                                                description:
-                                                                data.description ,
-                                                                title: data.name ,
-                                                                date: data.createdAt ??
+                                                        builder: (context) {
+                                                          return AddGratitudePage(
+                                                            id: data.id,
+                                                            description: data
+                                                                .description,
+                                                            title: data.name,
+                                                            date:
+                                                                data.createdAt ??
                                                                     '',
-                                                                edit: true,
-                                                                isFromMyGratitude:
+                                                            edit: true,
+                                                            isFromMyGratitude:
                                                                 true,
-                                                                registerUser:
-                                                                false,
-                                                                isSaved: true,
-                                                              );
-                                                            },
-                                                          )).then(
-                                                            (value) async {
-                                                          if (value !=
-                                                              null &&
-                                                              value
-                                                              is bool) {
+                                                            registerUser: false,
+                                                            isSaved: true,
+                                                          );
+                                                        },
+                                                      )).then(
+                                                        (value) async {
+                                                          if (value != null &&
+                                                              value is bool) {
                                                             _refreshGratitudeList(
                                                                 value);
                                                           }
@@ -301,17 +296,14 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                                       );
                                                     },
                                                     margin: EdgeInsets.only(
-                                                        bottom:
-                                                        Dimens.d20.h),
-                                                    title:
-                                                    data.name ?? '',
+                                                        bottom: Dimens.d20.h),
+                                                    title: data.name ?? '',
                                                     //image: data["image"] ?? '',
                                                     image:
-                                                    "https://picsum.photos/250?image=9" ??
-                                                        '',
+                                                        "https://picsum.photos/250?image=9" ??
+                                                            '',
                                                     createdDate:
-                                                    data.createdAt ??
-                                                        '',
+                                                        data.date ?? '',
                                                   );
                                                 },
                                               ),
@@ -319,8 +311,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                           )
                                         : _isLoadingDraft
                                             ? const SizedBox.shrink()
-                                            : gratitudeList.isEmpty &&
-                                                    gratitudeDraftList.isEmpty
+                                            : gratitudeList.isEmpty
                                                 ? Center(
                                                     child: JournalNoDataWidget(
                                                     showBottomHeight: true,
@@ -376,7 +367,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
             Center(
               child: Text(
                   textAlign: TextAlign.center,
-                  "Are you sure want to delete affirmation ?".tr,
+                  "areYouSureDeleteAffirmation".tr,
                   style: Style.montserratRegular(
                     fontSize: Dimens.d14,
                   )),
@@ -389,13 +380,14 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                   height: 33,
                   textStyle: Style.montserratRegular(
                       fontSize: Dimens.d12, color: ColorConstant.white),
-                  title: "Delete".tr,
+                  title: "delete".tr,
                   onTap: () async {
-                   await deleteGratitude(id);
+                  setState(() {
+                    gratitudeList = [];
+                  });
+                    await deleteGratitude(id);
                     await getGratitude();
-                    setState(() {
-
-                    });
+                    setState(() {});
                     Get.back();
                   },
                 ),
@@ -436,9 +428,11 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
     } else {
       Get.toNamed(AppRoutes.addGratitudePage)!.then((value) {
         setState(() {});
-      }).then( (value) async {
-        await getGratitude();
-      },);
+      }).then(
+        (value) async {
+          await getGratitude();
+        },
+      );
     }
   }
 
@@ -446,7 +440,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
     pageNumber = 1;
 
     pageNumberDrafts = 1;
-    gratitudeDraftList.clear();
+
   }
 
   void _onSearchChanged(String query) {
@@ -472,16 +466,17 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
       ),
       child: CalendarCarousel<Event>(
         onDayPressed: (DateTime date, List<Event> events) async {
-          setState(() => _currentDate = date);
+          if (date.isBefore(DateTime.now())) {
+            setState(() => _currentDate = date);
 
-          dateController.text = DateFormat('dd/MM/yyyy').format(date);
-          await getGratitude();
-          setState(() {
-
-          });
-          select = false;
-          print('==========${_currentDate}');
+            dateController.text = DateFormat('dd/MM/yyyy').format(date);
+            await getGratitude();
+            setState(() {
+              select = false;
+            });
+          }
         },
+
         weekendTextStyle: const TextStyle(color: Colors.black, fontSize: 15),
         // Customize your text style
         thisMonthDayBorderColor: Colors.transparent,

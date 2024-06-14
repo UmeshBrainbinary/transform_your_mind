@@ -60,7 +60,7 @@ class ForgotController extends GetxController {
         final responseBody = await response.stream.bytesToString();
         forgotPassword = forgotPasswordFromJson(responseBody);
         update();
-        Navigator.push(context, MaterialPageRoute(
+        Navigator.pushReplacement(context, MaterialPageRoute(
           builder: (context) {
             return VerificationsScreen(
               forgot: true,
@@ -106,7 +106,7 @@ class ForgotController extends GetxController {
         PrefService.setValue(PrefKey.userImage,verifyModel.user?.userProfile??"");
         showSnackBarSuccess(context, verifyModel.message ?? "");
 
-        Get.toNamed(AppRoutes.selectYourFocusPage);
+        Get.offAllNamed(AppRoutes.selectYourFocusPage);
 
         debugPrint(await response.stream.bytesToString());
       } else {

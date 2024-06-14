@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
@@ -105,8 +106,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   ),
                                   keyboardType: TextInputType.emailAddress,
                                   validator: (value) {
-                                    if (value == null ||
-                                        (!isText(value, isRequired: true))) {
+                                    if (value!.isEmpty /*||
+                                        (!isText(value, isRequired: true))*/) {
                                       return "theNameFieldIsRequired".tr;
                                     }
                                     return null;
@@ -195,7 +196,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           SizedBox(
-                                              height: Dimens.d300,
+                                              height: Dimens.d350,
                                               child: widgetCalendar()),
                                         ],
                                       );
@@ -387,7 +388,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
   Widget widgetCalendar() {
     return Container(
-      height: 350,
+      height: 480,
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
@@ -397,11 +398,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
         builder: (controller) {
           return CalendarCarousel<Event>(
             onDayPressed: (DateTime date, List<Event> events) {
-              setState(() => controller.currentDate = date);
-              controller.dobController.text =
-              "${date.day}/${date.month}/${date.year}";
-              controller.select = false;
-              print('==========${controller.currentDate}');
+              if (date.isBefore(DateTime.now())) {
+                setState(() {
+                  controller.currentDate = date;
+                  controller.dobController.text = DateFormat('dd/MM/yyyy').format(date);
+                  controller.select = false;
+                });
+                debugPrint('Selected Date: ${controller.currentDate}');
+              }
+
             },
             weekendTextStyle: Style.montserratRegular(fontSize: 15,color: ColorConstant.black),
             // Customize your text style

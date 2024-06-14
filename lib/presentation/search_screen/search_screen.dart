@@ -323,7 +323,7 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
       ),
       builder: (BuildContext context) {
-        return const NowPlayingScreen();
+        return  NowPlayingScreen();
       },
     );
   }

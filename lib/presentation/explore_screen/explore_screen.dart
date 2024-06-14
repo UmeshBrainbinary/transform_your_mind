@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:transform_your_mind/core/app_export.dart';
+import 'package:transform_your_mind/core/common_widget/pods_play_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
@@ -34,9 +35,9 @@ class _ExploreScreenState extends State<ExploreScreen>
   int? _currentRating = 0;
   TextEditingController searchController = TextEditingController();
   FocusNode searchFocusNode = FocusNode();
+  final AudioPlayerService _audioPlayerService = AudioPlayerService();
 
   ThemeController themeController = Get.find<ThemeController>();
-
   @override
   void initState() {
     _lottieBgController = AnimationController(vsync: this);
@@ -139,7 +140,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                           Row(
                             children: [
                               Text(
-                                "Audio Content".tr,
+                                "audioContent".tr,
                                 style: Style.montserratRegular(fontSize: 18),
                               ),
                               const Spacer(),
@@ -177,10 +178,12 @@ class _ExploreScreenState extends State<ExploreScreen>
                                             exploreController.exploreList);
                                   });
                                 },
-                                suffixIcon: SvgPicture.asset(
-                                    ImageConstant.searchExplore,
-                                    height: 40,
-                                    width: 40),
+                                suffixIcon: Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: SvgPicture.asset(
+                                      ImageConstant.searchExplore,
+                                  ),
+                                ),
                                 hintText: "search".tr,
                                 controller: searchController,
                                 focusNode: searchFocusNode),
@@ -211,7 +214,11 @@ class _ExploreScreenState extends State<ExploreScreen>
                                       return GestureDetector(
                                         onTap: () {
                                           searchFocusNode.unfocus();
-                                          _onTileClick(index, context);
+                                          _audioPlayerService.dispose();
+
+                                          _audioPlayerService.setUrl(
+                                              'https://media.shoorah.io/admins/shoorah_pods/audio/1682952330-9588.mp3');
+                                          _onTileClick(index, context,_audioPlayerService);
                                         },
                                         child: Column(
                                           children: [
@@ -246,7 +253,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                                                       .spaceBetween,
                                               children: [
                                                 Text(
-                                                  "Meditation",
+                                                  "Motivational",
                                                   style: Style.montserratMedium(
                                                     fontSize: Dimens.d12,
                                                   ),
@@ -314,8 +321,10 @@ class _ExploreScreenState extends State<ExploreScreen>
                                       return GestureDetector(
                                         onTap: () {
                                           searchFocusNode.unfocus();
-
-                                          _onTileClick(index, context);
+                                          _audioPlayerService.dispose();
+                                          _audioPlayerService.setUrl(
+                                              'https://media.shoorah.io/admins/shoorah_pods/audio/1682952330-9588.mp3');
+                                          _onTileClick(index, context,_audioPlayerService);
                                       },
                                       child: Column(
                                         children: [
@@ -350,7 +359,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                                                       .spaceBetween,
                                               children: [
                                                 Text(
-                                                  "Meditation",
+                                                  "Motivational",
                                                   style: Style.montserratMedium(
                                                   fontSize: Dimens.d12,
                                                 ),
@@ -411,7 +420,7 @@ class _ExploreScreenState extends State<ExploreScreen>
     );
   }
 
-  void _onTileClick(int index, BuildContext context) {
+  void _onTileClick(int index, BuildContext context, AudioPlayerService audioPlayerService) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -423,7 +432,7 @@ class _ExploreScreenState extends State<ExploreScreen>
         ),
       ),
       builder: (BuildContext context) {
-        return const NowPlayingScreen();
+        return  NowPlayingScreen(audioPlayerService: audioPlayerService,);
       },
     );
   }
