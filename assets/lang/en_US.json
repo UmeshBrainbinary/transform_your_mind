@@ -278,6 +278,10 @@
     "WellDone": "Well done, you completed all your affirmations today.",
     "otpSendEmail" : "Otp send to your email address",
      "otpResent": "OTP Resent",
-     "areYouSureDeleteAffirmation": "Are you sure want to delete affirmation ?",
-      "wellDone": "Well done, you completed all your Gratitude today."
+     "areYouSureDeleteAffirmation": "Are you sure you want to delete affirmation ?",
+     "areYouSureDeleteGratitude": "Are you sure you want to delete gratitude ?",
+      "wellDone": "Well done, you completed all your Gratitude today.",
+      "delete": "Delete",
+      "noAffirmationFound": "No affirmation found"
+
 }

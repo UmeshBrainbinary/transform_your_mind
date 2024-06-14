@@ -56,7 +56,6 @@ class RegisterController extends GetxController {
     super.onInit();
   }
 
-  RegisterModel registerModel = RegisterModel();
 
   onTapRegister(BuildContext context, String path) async {
     loader.value = true;
@@ -67,7 +66,7 @@ class RegisterController extends GetxController {
     update();
   }
   CommonModel commonModel = CommonModel();
-
+  RegisterModel registerModel = RegisterModel();
   registerApi(BuildContext context, String path) async {
     var request = http.MultipartRequest(
         'POST', Uri.parse("${EndPoints.baseUrl}${EndPoints.registerApi}"));
@@ -85,7 +84,9 @@ class RegisterController extends GetxController {
                   : "0",
       "user_type": "0",
     });
-    request.files.add(await http.MultipartFile.fromPath('user_profile', path));
+    if(path.isNotEmpty){
+      request.files.add(await http.MultipartFile.fromPath('user_profile', path));
+    }
 
     http.StreamedResponse response = await request.send();
 
@@ -93,10 +94,16 @@ class RegisterController extends GetxController {
       loader.value = false;
       PrefService.setValue(PrefKey.email, emailController.text);
       showSnackBarSuccess(context, "otpSendEmail".tr);
+      final responseBody = await response.stream.bytesToString();
+
+      // Parse the string into JSON and then into CommonModel
+      registerModel = registerModelFromJson(responseBody);
      Get.to(VerificationsScreen(
        forgot: false,
+       token: registerModel.token,
      ));
-      debugPrint(await response.stream.bytesToString());
+
+
     } else {
       final responseBody = await response.stream.bytesToString();
       commonModel = commonModelFromJson(responseBody);

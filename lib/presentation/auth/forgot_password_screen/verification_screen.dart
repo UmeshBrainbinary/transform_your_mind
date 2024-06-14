@@ -18,8 +18,9 @@ import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 class VerificationsScreen extends StatefulWidget {
   bool? forgot;
+  String? token;
 
-  VerificationsScreen({super.key, this.forgot});
+  VerificationsScreen({super.key, this.forgot,this.token});
 
   @override
   State<VerificationsScreen> createState() => _VerificationsScreenState();
@@ -45,6 +46,7 @@ class _VerificationsScreenState extends State<VerificationsScreen> {
     });
     startTimer();
     // Add your OTP resend logic here
+    forgotController.resendApi(widget.token);
     showSnackBarSuccess(context, "otpResent".tr);
   }
 
@@ -204,7 +206,7 @@ class _VerificationsScreenState extends State<VerificationsScreen> {
                                       forgotController
                                           .onTapOtpVerifyChangePass(context);
                                     } else {
-                                      forgotController.onTapOtpVerify(context);
+                                      forgotController.onTapOtpVerify(context,widget.token!);
                                     }
                                   } else {
                                     errorToast(

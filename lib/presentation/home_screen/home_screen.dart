@@ -103,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen>
     if (response.statusCode == 200) {
       final responseBody = await response.stream.bytesToString();
       commonModel = commonModelFromJson(responseBody);
-      showSnackBarSuccess(context, commonModel.message ?? "");
+      //showSnackBarSuccess(context, commonModel.message ?? "");
     } else {
       debugPrint(response.reasonPhrase);
     }
@@ -867,9 +867,10 @@ class _HomeScreenState extends State<HomeScreen>
                             title: "addNew".tr,
                             onTap: () {
                               Get.toNamed(AppRoutes.myGratitudePage)!.then(
-                                (value) {
-                                  setState(() async {
-                                    await getGratitude();
+                                (value) async {
+                                  await getGratitude();
+                                  setState(()  {
+
                                   });
                                 },
                               );
@@ -895,11 +896,11 @@ class _HomeScreenState extends State<HomeScreen>
                                 Future.delayed(
                                         const Duration(milliseconds: 800))
                                     .then(
-                                  (value) {
-                                    setState(() async {
-                                      gratitudeList.removeAt(index);
-                                      await deleteGratitude(gratitudeList[index].id);
-                                      await getGratitude();
+                                  (value) async {
+                                    await deleteGratitude(gratitudeList[index].id);
+                                    gratitudeList.removeAt(index);
+                                    await getGratitude();
+                                    setState(()  {
                                     });
                                   },
                                 );

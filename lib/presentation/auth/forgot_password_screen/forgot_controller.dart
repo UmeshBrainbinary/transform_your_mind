@@ -28,9 +28,9 @@ class ForgotController extends GetxController {
   VerifyModel verifyModel = VerifyModel();
   ForgotPassword forgotPassword = ForgotPassword();
 
-  onTapOtpVerify(BuildContext context) async {
+  onTapOtpVerify(BuildContext context,token) async {
     loader.value = true;
-    await otpVerify(context);
+    await otpVerify(context,token);
     loader.value = false;
   }
 
@@ -42,6 +42,28 @@ class ForgotController extends GetxController {
     loader.value = true;
     await forgotPasswordApi(context);
     loader.value = false;
+  }
+  resendApi(String? token) async {
+    var headers = {
+      'Content-Type': 'application/json',
+    };
+    var request = http.Request('POST', Uri.parse('${EndPoints.baseUrl}resend-otp'));
+    request.body = json.encode({
+      "email": PrefService.getString(PrefKey.email),
+      "isSignUp": true,
+      "token":token
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      debugPrint(await response.stream.bytesToString());
+    }
+    else {
+      debugPrint(response.reasonPhrase);
+    }
+
   }
 
   forgotPasswordApi(BuildContext context) async {
@@ -79,15 +101,16 @@ class ForgotController extends GetxController {
     }
   }
 
-  otpVerify(BuildContext context) async {
+  otpVerify(BuildContext context, token) async {
     try {
       var headers = {'Content-Type': 'application/json'};
       var request = http.Request(
           'POST', Uri.parse('${EndPoints.baseUrl}${EndPoints.verifyOtp}'));
       request.body = json.encode({
-        "email": PrefService.getString(PrefKey.email),
+       // "email": PrefService.getString(PrefKey.email),
         "otp": otpController.text,
-        "isSignUp": true
+        "isSignUp": true,
+        "token":token
       });
       request.headers.addAll(headers);
 

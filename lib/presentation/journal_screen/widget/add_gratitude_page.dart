@@ -264,60 +264,59 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                                 keyboardType: TextInputType.multiline,
                                 textInputAction: TextInputAction.newline,
                               ),
-                              GestureDetector(
-                                onTap: () async {
-                                  dateController.text = DateFormat('dd/MM/yyyy').format(todayDate);
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return StatefulBuilder(
-                                        builder: (context, setState) {
-                                          return Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              widgetCalendar(setState),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    },
-                                  );
-                                },
-                                child: CommonTextField(
-                                    enabled: false,
-                                    labelText: "date".tr,
-                                    suffixIcon: GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          select = !select;
-                                        });
+                              CommonTextField(
+                                  enabled: true,
+                                  readOnly:true,onTap: () async {
+                                descFocus.unfocus();
+                                titleFocus.unfocus();
+                                dateController.text = DateFormat('dd/MM/yyyy').format(todayDate);
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return StatefulBuilder(
+                                      builder: (context, setState) {
+                                        return Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                          children: [
+                                            widgetCalendar(setState),
+                                          ],
+                                        );
                                       },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(13.0),
-                                        child: SvgPicture.asset(
-                                            ImageConstant.calendar),
-                                      ),
-                                    ),
-                                    hintText: "DD/MM/YYYY",
-                                    controller: dateController,
-                                    onChanged: (value) {
+                                    );
+                                  },
+                                );
+                              },
+                                  labelText: "date".tr,
+                                  suffixIcon: GestureDetector(
+                                    onTap: () {
                                       setState(() {
-                                        dateController.text = value;
-
+                                        select = !select;
                                       });
                                     },
-                                    validator: (value) {
-                                      if (value == "") {
-                                        return "pleaseEnterDate".tr;
-                                      }
-                                      return null;
-                                    },
-                                    focusNode: dateFocus),
-                              ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(13.0),
+                                      child: SvgPicture.asset(
+                                          ImageConstant.calendar),
+                                    ),
+                                  ),
+                                  hintText: "DD/MM/YYYY",
+                                  controller: dateController,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      dateController.text = value;
+                                    });
+                                  },
+                                  validator: (value) {
+                                    if (value == "") {
+                                      return "pleaseEnterDate".tr;
+                                    }
+                                    return null;
+                                  },
+                                  focusNode: dateFocus),
                               Dimens.d30.spaceHeight,
                               Row(
                                 children: [
@@ -398,6 +397,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                 dateController.text = "${date.day}/${date.month}/${date.year}";
                 select = false;
               });
+              setState((){});
             }
 
           },

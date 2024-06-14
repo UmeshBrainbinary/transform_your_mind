@@ -276,9 +276,10 @@
   "otpSendEmail" : "OTP an Ihre E-Mail-Adresse senden",
   "otpResent": "OTP erneut gesendet",
   "areYouSureDeleteAffirmation": "Möchten Sie die Bestätigung wirklich löschen?",
-  "wellDone": "Gut gemacht, Sie haben heute alle Dankbarkeitsaufgaben abgeschlossen."
-
-
+  "areYouSureDeleteGratitude": "Sind Sie sicher, dass Sie Dankbarkeit löschen möchten?",
+  "wellDone": "Gut gemacht, Sie haben heute alle Dankbarkeitsaufgaben abgeschlossen.",
+  "delete": "löschen",
+  "noAffirmationFound": "Keine Bestätigung gefunden"
 
 
 }
