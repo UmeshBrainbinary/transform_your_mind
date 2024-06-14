@@ -188,8 +188,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                           child: Column(
                             children: [
                               Dimens.d20.spaceHeight,
-                              gratitudeList.isNotEmpty
-                                  ? Padding(
+                               Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: Dimens.d30),
                                       child: GestureDetector(
@@ -210,8 +209,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                             controller: dateController,
                                             focusNode: dateFocus),
                                       ),
-                                    )
-                                  : const SizedBox(),
+                                    ),
 
                               if (select == true) widgetCalendar(),
 
@@ -312,16 +310,17 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                         : _isLoadingDraft
                                             ? const SizedBox.shrink()
                                             : gratitudeList.isEmpty
-                                                ? Center(
-                                                    child: JournalNoDataWidget(
-                                                    showBottomHeight: true,
-                                                    title: _isSearching
-                                                        ? "noSearchData".tr
-                                                        : "noGratitudeData".tr,
-                                                    onClick: () {
-                                                      _onAddClick(context);
-                                                    },
-                                                  ))
+                                                ? Padding(
+                                                  padding: const EdgeInsets.only(bottom: Dimens.d150),
+                                                  child: Column(crossAxisAlignment: CrossAxisAlignment.center,
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      SvgPicture.asset(ImageConstant.noData),
+                                                      Dimens.d20.spaceHeight,
+                                                      Text("Data Not Found",style: Style.montserratBold(fontSize: 24),)
+                                                    ],
+                                                  ),
+                                                )
                                                 : const SizedBox(),
                               ),
                             ],
@@ -367,7 +366,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
             Center(
               child: Text(
                   textAlign: TextAlign.center,
-                  "areYouSureDeleteAffirmation".tr,
+                  "areYouSureDeleteGratitude".tr,
                   style: Style.montserratRegular(
                     fontSize: Dimens.d14,
                   )),
@@ -378,6 +377,8 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
               children: [
                 CommonElevatedButton(
                   height: 33,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: Dimens.d28),
+
                   textStyle: Style.montserratRegular(
                       fontSize: Dimens.d12, color: ColorConstant.white),
                   title: "delete".tr,
@@ -459,83 +460,98 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
 
   Widget widgetCalendar() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: ColorConstant.white,
-      ),
-      child: CalendarCarousel<Event>(
-        onDayPressed: (DateTime date, List<Event> events) async {
-          if (date.isBefore(DateTime.now())) {
-            setState(() => _currentDate = date);
+        height: 350,
+        margin: const EdgeInsets.symmetric(horizontal: 16.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: ColorConstant.white,
+        ),
+        child: CalendarCarousel<Event>(
+          onDayPressed: (DateTime date, List<Event> events) async {
+            if (date.isBefore(DateTime.now())) {
+              setState.call(() => _currentDate = date);
 
-            dateController.text = DateFormat('dd/MM/yyyy').format(date);
-            await getGratitude();
-            setState(() {
-              select = false;
-            });
-          }
-        },
+              print("==========$_currentDate");
+              setState.call(() {
+                dateController.text = DateFormat('dd/MM/yyyy').format(date);
 
-        weekendTextStyle: const TextStyle(color: Colors.black, fontSize: 15),
-        // Customize your text style
-        thisMonthDayBorderColor: Colors.transparent,
-        customDayBuilder: (
-          bool isSelectable,
-          int index,
-          bool isSelectedDay,
-          bool isToday,
-          bool isPrevMonthDay,
-          TextStyle textStyle,
-          bool isNextMonthDay,
-          bool isThisMonthDay,
-          DateTime day,
-        ) {
-          if (isSelectedDay) {
-            return Container(
-              decoration: BoxDecoration(
-                color: ColorConstant.themeColor,
-                // Customize your selected day color
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Center(
-                child: Text(
-                  day.day.toString(),
-                  style: TextStyle(
-                      color: Colors
-                          .white), // Customize your selected day text style
+                /*dateController.text = "${date.day}/${date.month}/${date.year}";*/
+                select = false;
+              });
+              await getGratitude();
+              setState((){});
+            }
+
+          },
+
+          weekendTextStyle:
+          Style.montserratRegular(fontSize: 15, color: ColorConstant.black),
+          // Customize your text style
+          thisMonthDayBorderColor: Colors.transparent,
+          customDayBuilder: (
+              bool isSelectable,
+              int index,
+              bool isSelectedDay,
+              bool isToday,
+              bool isPrevMonthDay,
+              TextStyle textStyle,
+              bool isNextMonthDay,
+              bool isThisMonthDay,
+              DateTime day,
+              ) {
+            if (isSelectedDay) {
+              return Container(
+                margin: const EdgeInsets.symmetric(horizontal: 5),
+                height: Dimens.d32,
+                width: Dimens.d32,
+                decoration: BoxDecoration(
+                  color: ColorConstant.themeColor,
+                  // Customize your selected day color
+                  borderRadius: BorderRadius.circular(8),
                 ),
-              ),
-            );
-          } else {
-            return null;
-          }
-        },
-        weekFormat: false,
-        daysTextStyle: TextStyle(fontSize: 15, color: Colors.black),
-        height: 300.0,
-        markedDateIconBorderColor: Colors.transparent,
-        childAspectRatio: 1.5,
-        dayPadding: 0.0,
-        prevDaysTextStyle: TextStyle(fontSize: 15),
-        selectedDateTime: _currentDate,
-        headerTextStyle:
-            TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-        dayButtonColor: Colors.white,
-        weekDayBackgroundColor: Colors.white,
-        markedDateMoreCustomDecoration:
-            const BoxDecoration(color: Colors.white),
-        shouldShowTransform: false,
-        staticSixWeekFormat: false,
-        weekdayTextStyle: TextStyle(
-            fontWeight: FontWeight.bold, fontSize: 11, color: Colors.grey),
-        todayButtonColor: Colors.transparent,
-        selectedDayBorderColor: Colors.transparent,
-        todayBorderColor: Colors.transparent,
-        selectedDayButtonColor: Colors.transparent,
-        daysHaveCircularBorder: false,
-        todayTextStyle: TextStyle(fontSize: 15, color: Colors.black),
-      ),
-    );
+                child: Center(
+                  child: Text(
+                    day.day.toString(),
+                    style: Style.montserratRegular(
+                        fontSize: 15,
+                        color: ColorConstant
+                            .white), // Customize your selected day text style
+                  ),
+                ),
+              );
+            } else {
+              return null;
+            }
+          },
+          weekFormat: false,
+          daysTextStyle:
+          Style.montserratRegular(fontSize: 15, color: ColorConstant.black),
+          height: 300.0,
+          markedDateIconBorderColor: Colors.transparent,
+          childAspectRatio: 1.5,
+          dayPadding: 0.0,
+          prevDaysTextStyle: Style.montserratRegular(fontSize: 15),
+          selectedDateTime: _currentDate,
+          headerTextStyle: Style.montserratRegular(
+              color: ColorConstant.black, fontWeight: FontWeight.bold),
+          dayButtonColor: Colors.white,
+          weekDayBackgroundColor: Colors.white,
+          markedDateMoreCustomDecoration:
+          const BoxDecoration(color: Colors.white),
+          shouldShowTransform: false,
+          staticSixWeekFormat: false,
+          weekdayTextStyle: Style.montserratRegular(
+              fontSize: 11,
+              color: ColorConstant.color797B86,
+              fontWeight: FontWeight.bold),
+          todayButtonColor: Colors.transparent,
+          selectedDayBorderColor: Colors.transparent,
+          todayBorderColor: Colors.transparent,
+          selectedDayButtonColor: Colors.transparent,
+          daysHaveCircularBorder: false,
+          todayTextStyle:
+          Style.montserratRegular(fontSize: 15, color: ColorConstant.black),
+        ));
+
   }
 }

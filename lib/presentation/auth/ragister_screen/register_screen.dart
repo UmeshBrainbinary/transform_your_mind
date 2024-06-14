@@ -324,14 +324,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 onTap: () async {
                                   FocusScope.of(context).unfocus();
 
-                                  if (registerController.imageFile.value ==
-                                      null) {
-                                    errorToast("pleaseAddImage".tr);
-                                  } else {
+
                                     if (_formKey.currentState!.validate()) {
-                                      registerController.onTapRegister(context,registerController.imageFile.value!.path);
+                                      registerController.onTapRegister(context,registerController.imageFile.value?.path??"");
                                     }
-                                  }
+
                                 },
                               ),
                               Dimens.d30.h.spaceHeight,

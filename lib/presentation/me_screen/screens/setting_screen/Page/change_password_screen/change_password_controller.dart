@@ -106,7 +106,7 @@ class ChangePasswordController extends GetxController {
         resetPassword = resetPasswordFromJson(responseBody);
         update();
         _showAlertDialog(context);
-        showSnackBarSuccess(context, resetPassword.message ?? "");
+        //showSnackBarSuccess(context, resetPassword.message ?? "");
       } else {
         loader.value = false;
         // print(response.reasonPhrase);
