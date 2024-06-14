@@ -87,8 +87,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                          ?.then((value) async {
                                        if (value != null) {
 
-                                         editProfileController.imageFile.value =
-                                             value;
+                                         editProfileController.imageFile.value = value;
                                        }
                                      });
                                    },
@@ -304,11 +303,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                         title: "update".tr,
                                         onTap: () async {
                                           FocusScope.of(context).unfocus();
-                                          if (editProfileController
+                                         /* if (editProfileController
                                                   .imageFile.value ==
                                               null) {
                                             errorToast("pleaseAddImage".tr);
-                                          } else {
+                                          } else {*/
                                             if (_formKey.currentState!
                                                 .validate()) {
                                               await editProfileController
@@ -316,7 +315,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                               editProfileController.getUser();
                                             }
                                           }
-                                        },
+                                      //  },
                                       ),
                                     ),
                             ),

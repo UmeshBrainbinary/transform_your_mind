@@ -52,7 +52,10 @@ class EditProfileController extends GetxController {
     emailController.text = getUserModel.data!.email!;
     dobController.text = DateFormat('dd/MM/yyyy').format(getUserModel.data!.dob!);
     genderController.text = getUserModel.data!.gender==1?"Male":getUserModel.data!.gender==2?"Female":"Other";
-    urlImage = getUserModel.data!.userProfile!;
+    if( getUserModel.data?.userProfile !=null){
+      urlImage = getUserModel.data?.userProfile?? "";
+
+    }
     update();
     update(["edit"]);
   }
@@ -111,7 +114,10 @@ class EditProfileController extends GetxController {
             ? "3"
             : "0",
       });
-      request.files.add(await http.MultipartFile.fromPath('user_profile', imageFile.value!.path));
+      if(imageFile.value  != null){
+        request.files.add(await http.MultipartFile.fromPath('user_profile', imageFile.value!.path));
+
+      }
       request.headers.addAll(headers);
 
       http.StreamedResponse response = await request.send();
