@@ -136,21 +136,17 @@ class LoginScreen extends StatelessWidget {
                                   Dimens.d20.h.spaceHeight,
                                   _getRememberMeForgotPasswordWidget,
                                   Dimens.d80.h.spaceHeight,
-                                  Obx(
-                                    () => (loginController.loader.value)
-                                        ? const LoadingButton()
-                                        : CommonElevatedButton(
-                                            title: "login".tr,
-                                            onTap: () async {
-                                              FocusScope.of(context).unfocus();
+                                  CommonElevatedButton(
+                                    title: "login".tr,
+                                    onTap: () async {
+                                      FocusScope.of(context).unfocus();
 
-                                              if (_formKey.currentState!
-                                                  .validate()) {
-                                                loginController
-                                                    .onTapLogin(context);
-                                              }
-                                            },
-                                          ),
+                                      if (_formKey.currentState!
+                                          .validate()) {
+                                        loginController
+                                            .onTapLogin(context);
+                                      }
+                                    },
                                   ),
                                   Dimens.d30.h.spaceHeight,
                                   RichText(

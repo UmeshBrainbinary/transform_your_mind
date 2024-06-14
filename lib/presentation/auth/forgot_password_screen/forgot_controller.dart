@@ -183,7 +183,7 @@ ResendModel resendModel = ResendModel();
         // PrefService.setValue(PrefKey.token, verifyModel.token);
         // PrefService.setValue(PrefKey.userId, verifyModel.user!.id);
         // showSnackBarSuccess(context, verifyModel.message ?? "");
-        await PrefService.setValue(PrefKey.email, emailController.text);
+        await PrefService.setValue(PrefKey.email,email);
         Get.toNamed(AppRoutes.changePassword);
 
         debugPrint(await response.stream.bytesToString());
