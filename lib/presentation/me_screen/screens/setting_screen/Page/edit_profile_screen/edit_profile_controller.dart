@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/end_points.dart';
@@ -43,14 +44,17 @@ class EditProfileController extends GetxController {
     super.onInit();
     getData();
   }
-
+ String imageUrl = "";
   getData() async {
     await getUser();
     // await updateUser(context);
-    imageFile.value = getUserModel.data!.userProfile;
     nameController.text = getUserModel.data!.name!;
     emailController.text = getUserModel.data!.email!;
-    genderController.text = getUserModel.data!.gender.toString();
+    dobController.text = DateFormat('dd/MM/yyyy').format(getUserModel.data!.dob!);
+    genderController.text = getUserModel.data!.gender==1?"Male":getUserModel.data!.gender==2?"Female":"Other";
+    urlImage = getUserModel.data!.userProfile!;
+    update();
+    update(["edit"]);
   }
 
   getUser() async {
@@ -72,6 +76,8 @@ class EditProfileController extends GetxController {
         final responseBody = await response.stream.bytesToString();
 
         getUserModel = getUserModelFromJson(responseBody);
+       await  PrefService.setValue(PrefKey.name, getUserModel.data?.name??"");
+       await  PrefService.setValue(PrefKey.userImage, getUserModel.data?.userProfile??"");
       } else {
         debugPrint(response.reasonPhrase);
       }
@@ -96,8 +102,7 @@ class EditProfileController extends GetxController {
               '${EndPoints.baseUrl}${EndPoints.updateUser}${PrefService.getString(PrefKey.userId)}'));
       request.fields.addAll({
         'name': nameController.text.trim(),
-        'email': emailController.text.trim(),
-        'dob' : dobController.text.trim(),
+         'dob':dobController.text,
         "gender": genderController.text == "Male"
             ? "1"
             : genderController.text == "Female"

@@ -13,7 +13,7 @@ import 'package:transform_your_mind/theme/theme_controller.dart';
 class JournalListTileLayout extends StatelessWidget {
   final EdgeInsets margin;
   final String title;
-  final String createdDate;
+  final DateTime createdDate;
   final String image;
   final bool showDelete;
   final VoidCallback? onDeleteTapCallback;
@@ -105,12 +105,10 @@ class JournalListTileLayout extends StatelessWidget {
                         child: Padding(padding: EdgeInsets.all(Dimens.d4)),
                       ),
                       TextSpan(
-                        text: createdDate.isNotEmpty
-                            ? DateTimeUtils.formatDate(
-                                DateTime.parse(createdDate),
-                                formatDateType: FormatDateType.ddMMMyyyy,
-                              )
-                            : "29 May 2024",
+                        text: DateTimeUtils.formatDate(
+                          createdDate,
+                          formatDateType: FormatDateType.ddMMMyyyy,
+                        ),
                         style: Style.montserratRegular(
                           color: ColorConstant.themeColor,
                           fontSize: Dimens.d12,

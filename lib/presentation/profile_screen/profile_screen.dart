@@ -31,6 +31,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   List dList = ["Monthly", "Annually", "Weekly"];
   String? selectedMonth = "Monthly";
   @override
+  void initState() {
+    profileController.getUserDetail();
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorConstant.colorBFD0D4,
@@ -85,15 +90,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   width: Dimens.d120,
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      image: const DecorationImage(
+                      image:  DecorationImage(
                           image: NetworkImage(
-                              "https://picsum.photos/250?image=9")),
+                             "https://transformyourmind-server.onrender.com/${profileController.image?.value}" ??
+                                  ""),fit: BoxFit.cover),
                       border: Border.all(
                           color: ColorConstant.themeColor, width: 2)),
                 ),
                 Dimens.d12.spaceHeight,
                 Text(
-                  "Melissa peters",
+                  profileController.name?.value ??
+                      "melissapeters@gmail.com",
                   style: Style.montserratBold(
                     fontSize: Dimens.d14,
                   ),

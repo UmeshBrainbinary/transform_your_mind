@@ -1,20 +1,25 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
+import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
+import 'package:transform_your_mind/model_class/common_model.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/my_gratitude_page.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
@@ -23,10 +28,18 @@ import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 import '../../../core/utils/style.dart';
-
+import 'package:http/http.dart' as http ;
 class AddGratitudePage extends StatefulWidget {
-   AddGratitudePage(
-      {super.key, this.isSaved, this.isFromMyGratitude, this.registerUser,this.edit,this.title,this.description,this.date});
+  AddGratitudePage(
+      {super.key,
+      this.isSaved,
+      this.isFromMyGratitude,
+      this.registerUser,
+      this.edit,
+      this.title,
+      this.description,
+      this.id,
+      this.date});
 
   final bool? isFromMyGratitude;
   final bool? isSaved;
@@ -34,8 +47,8 @@ class AddGratitudePage extends StatefulWidget {
   final bool? edit;
   String? title;
   String? description;
-  String? date;
-
+  DateTime? date;
+  String? id;
   @override
   State<AddGratitudePage> createState() => _AddGratitudePageState();
 }
@@ -48,7 +61,6 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
   ThemeController themeController = Get.find<ThemeController>();
 
   bool select = false;
-
 
   final FocusNode titleFocus = FocusNode();
   final FocusNode descFocus = FocusNode();
@@ -66,24 +78,81 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
 
   @override
   void initState() {
-
-
-    //  dateController.text = _formatDate(_currentDate);
-
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: ColorConstant.backGround, // Status bar background color
       statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
     ));
-    if(widget.edit==true){
-    setState(() {
-      titleController.text = widget.title!;
-      descController.text = widget.description!;
-    });
+    if (widget.edit == true) {
+      setState(() {
+        titleController.text = widget.title!;
+        descController.text = widget.description!;
+        dateController.text = DateFormat('dd/MM/yyyy').format(widget.date!);
+      });
     }
     super.initState();
   }
-  String _formatDate(DateTime date) {
-    return "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
+  CommonModel commonModel = CommonModel();
+  addGratitude() async {
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.Request(
+        'POST', Uri.parse('${EndPoints.baseUrl}add-gratitude'));
+    request.body = json.encode({
+      "name": titleController.text,
+      "description":descController.text,
+      "date": dateController.text,
+      "created_by":PrefService.getString(PrefKey.userId)
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final responseBody = await response.stream.bytesToString();
+
+      commonModel = commonModelFromJson(responseBody);
+      Get.back();
+      showSnackBarSuccess(context, commonModel.message??"");
+    } else {
+      final responseBody = await response.stream.bytesToString();
+
+      commonModel = commonModelFromJson(responseBody);
+      showSnackBarSuccess(context, commonModel.message??"");
+
+    }
+  }
+  updateGratitude() async {
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.Request(
+        'POST', Uri.parse('${EndPoints.baseUrl}update-gratitude?id=${widget.id}'));
+    request.body = json.encode({
+      "name": titleController.text,
+      "description":descController.text,
+      "date": dateController.text,
+      "created_by":PrefService.getString(PrefKey.userId)
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final responseBody = await response.stream.bytesToString();
+
+      commonModel = commonModelFromJson(responseBody);
+      Get.back();
+      showSnackBarSuccess(context, commonModel.message??"");
+    } else {
+      final responseBody = await response.stream.bytesToString();
+
+      commonModel = commonModelFromJson(responseBody);
+      showSnackBarSuccess(context, commonModel.message??"");
+
+    }
   }
 
   @override
@@ -96,10 +165,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
         resizeToAvoidBottomInset: true,
         appBar: CustomAppBar(
           showBack: widget.registerUser! ? false : true,
-         // title: "addGratitude".tr,
-             title: widget.edit==true
-              ? "editGratitude".tr
-              : "addGratitude".tr,
+          title: widget.edit == true ? "editGratitude".tr : "addGratitude".tr,
           action: !(widget.isFromMyGratitude!)
               ? Row(children: [
                   GestureDetector(
@@ -147,7 +213,6 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                   children: [
                     Expanded(
                       child: SingleChildScrollView(
-
                         child: LayoutContainer(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -199,56 +264,34 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                                 textInputAction: TextInputAction.newline,
                               ),
                               GestureDetector(
-                                onTap: () {
-
-                                  setState(() {
-                                    select=!select;
-                                  });
-                                  /*  descFocus.unfocus();
-                                  titleFocus.unfocus();
-                                  DateTime initialDate = dateController
-                                          .text.isNotEmpty
-                                      ? DateTimeUtils.parseDate(
-                                                  dateController.text,
-                                                  format: DateTimeUtils
-                                                      .ddMMyyyyToParse)
-                                              .isAfter(DateTime.now())
-                                          ? DateTimeUtils.parseDate(
-                                              dateController.text,
-                                              format:
-                                                  DateTimeUtils.ddMMyyyyToParse)
-                                          : DateTime.now()
-                                      : DateTime.now();
-                                  picker.DatePicker.showDatePicker(context,
-                                      showTitleActions: true,
-                                      minTime: DateTime.now()
-                                          .subtract(const Duration(days: 1)),
-                                      theme: picker.DatePickerTheme(
-                                          doneStyle: Style.montserratRegular(
-                                              color: ColorConstant.white),
-                                          cancelStyle: Style.montserratRegular(
-                                              color: ColorConstant.white),
-                                          itemStyle: Style.montserratRegular(
-                                              color: ColorConstant.white),
-                                          backgroundColor:
-                                              ColorConstant.themeColor),
-                                      maxTime: DateTime(2050),
-                                      onChanged: (date) {}, onConfirm: (date) {
-                                    dateController.text =
-                                        DateTimeUtils.formatDate(date);
-                                    FocusScope.of(context).unfocus();
-                                  },
-                                      currentTime: initialDate,
-                                      locale: picker.LocaleType.en);*/
+                                onTap: () async {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return StatefulBuilder(
+                                        builder: (context, setState) {
+                                          return Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              widgetCalendar(setState),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                  );
                                 },
                                 child: CommonTextField(
                                     enabled: false,
                                     labelText: "date".tr,
                                     suffixIcon: GestureDetector(
                                       onTap: () {
-
                                         setState(() {
-                                          select=!select;
+                                          select = !select;
                                         });
                                       },
                                       child: Padding(
@@ -267,53 +310,48 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                                     },
                                     focusNode: dateFocus),
                               ),
-                              Dimens.d3.spaceHeight,
-                              if(select == true)widgetCalendar(),
                               Dimens.d30.spaceHeight,
                               Row(
                                 children: [
-                                  if(widget.edit==true)
-                                  Expanded(
-                                    child: CommonElevatedButton(
-                                      title: "Cancel".tr,
-                                      outLined: true,
-                                      textStyle: Style.montserratRegular(
-                                          color: ColorConstant.textDarkBlue),
-                                      onTap: () async {
-                                        if (_formKey.currentState!.validate()) {
-                                          gratitudeDraftList.add({
-                                            "title": titleController.text,
-                                            "des": descController.text,
-                                            "image": imageFile.value,
-                                            "createdOn": "",
-                                          });
-                                          setState(() {});
-                                          Get.back();
-                                        }
-                                      },
+                                  if (widget.edit == true)
+                                    Expanded(
+                                      child: CommonElevatedButton(
+                                        title: "Cancel".tr,
+                                        outLined: true,
+                                        textStyle: Style.montserratRegular(
+                                            color: ColorConstant.textDarkBlue),
+                                        onTap: () async {
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            gratitudeDraftList.add({
+                                              "title": titleController.text,
+                                              "des": descController.text,
+                                              "image": imageFile.value,
+                                              "createdOn": "",
+                                            });
+                                            setState(() {});
+                                            Get.back();
+                                          }
+                                        },
+                                      ),
                                     ),
-                                  ),
                                   Dimens.d20.spaceWidth,
                                   Expanded(
                                     child: CommonElevatedButton(
-                                      title: widget.edit==true?"Update":"save".tr,
+                                      title: widget.edit == true
+                                          ? "Update"
+                                          : "save".tr,
                                       onTap: () async {
                                         if (_formKey.currentState!.validate()) {
-                                          gratitudeList.add({
-                                            "title": titleController.text,
-                                            "des": descController.text,
-                                            "image": imageFile.value,
-                                            "createdOn": "",
-                                          });
-                                          setState(() {});
-                                          if(widget.edit==true){
-                                            showSnackBarSuccess(context, "gratitudeUpdated".tr);
 
-                                          }else{
-                                            showSnackBarSuccess(context, "successfullyGratitude".tr);
+                                          if (widget.edit == true) {
+                                            updateGratitude();
+
+                                          } else {
+                                            addGratitude();
 
                                           }
-                                          Get.back();
+
                                         }
                                       },
                                     ),
@@ -332,16 +370,6 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                   ],
                 ),
               ),
-              /*     if (state is GratitudeLoadingState)
-                Container(
-                  color: Colors.transparent,
-                  child: Center(
-                    child: InkDropLoader(
-                      size: Dimens.d50,
-                      color: ColorConstant.themeColor,
-                    ),
-                  ),
-                )*/
             ],
           );
         }),
@@ -349,26 +377,29 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
     );
   }
 
-  Widget widgetCalendar() {
+  Widget widgetCalendar(StateSetter setState) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: ColorConstant.white,
-      ),
+        height: 350,
+        margin: const EdgeInsets.symmetric(horizontal: 16.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: ColorConstant.white,
+        ),
+        child: CalendarCarousel<Event>(
+          onDayPressed: (DateTime date, List<Event> events) {
+            setState.call(() => _currentDate = date);
 
-      child: CalendarCarousel<Event>(
-
-        onDayPressed: (DateTime date, List<Event> events) {
-          setState(() => _currentDate = date);
-          dateController.text = "${date.day}/${date.month}/${date.year}";
-         select=false;
-          print('==========${_currentDate}');
-        },
-        weekendTextStyle:
-        TextStyle(color: Colors.black, fontSize: 15), // Customize your text style
-        thisMonthDayBorderColor: Colors.transparent,
-        customDayBuilder: (
+            print("==========$_currentDate");
+            setState.call(() {
+              dateController.text = "${date.day}/${date.month}/${date.year}";
+              select = false;
+            });
+          },
+          weekendTextStyle:
+              Style.montserratRegular(fontSize: 15, color: ColorConstant.black),
+          // Customize your text style
+          thisMonthDayBorderColor: Colors.transparent,
+          customDayBuilder: (
             bool isSelectable,
             int index,
             bool isSelectedDay,
@@ -378,95 +409,59 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
             bool isNextMonthDay,
             bool isThisMonthDay,
             DateTime day,
-            ) {
-          if (isSelectedDay) {
-            return Container(
-              decoration: BoxDecoration(
-                color: ColorConstant.themeColor, // Customize your selected day color
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Center(
-                child: Text(
-                  day.day.toString(),
-                  style: TextStyle(color: Colors.white), // Customize your selected day text style
+          ) {
+            if (isSelectedDay) {
+              return Container(
+                margin: const EdgeInsets.symmetric(horizontal: 5),
+                height: Dimens.d32,
+                width: Dimens.d32,
+                decoration: BoxDecoration(
+                  color: ColorConstant.themeColor,
+                  // Customize your selected day color
+                  borderRadius: BorderRadius.circular(8),
                 ),
-              ),
-            );
-          }  else {
-            return null;
-          }
-        },
-        weekFormat: false,
-        daysTextStyle: TextStyle(fontSize: 15, color: Colors.black),
-        height: 300.0,
-        markedDateIconBorderColor: Colors.transparent,
-        childAspectRatio: 1.5,
-        dayPadding: 0.0,
-        prevDaysTextStyle: TextStyle(fontSize: 15),
-        selectedDateTime: _currentDate,
-        headerTextStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-        dayButtonColor: Colors.white,
-        weekDayBackgroundColor: Colors.white,
-        markedDateMoreCustomDecoration: const BoxDecoration(color: Colors.white),
-        shouldShowTransform: false,
-        staticSixWeekFormat: false,
-        weekdayTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Colors.grey),
-        todayButtonColor: Colors.transparent,
-        selectedDayBorderColor: Colors.transparent,
-        todayBorderColor: Colors.transparent,
-        selectedDayButtonColor: Colors.transparent,
-        daysHaveCircularBorder: false,
-        todayTextStyle: TextStyle(fontSize: 15, color: Colors.black),
-      ),
-    );
+                child: Center(
+                  child: Text(
+                    day.day.toString(),
+                    style: Style.montserratRegular(
+                        fontSize: 15,
+                        color: ColorConstant
+                            .white), // Customize your selected day text style
+                  ),
+                ),
+              );
+            } else {
+              return null;
+            }
+          },
+          weekFormat: false,
+          daysTextStyle:
+              Style.montserratRegular(fontSize: 15, color: ColorConstant.black),
+          height: 300.0,
+          markedDateIconBorderColor: Colors.transparent,
+          childAspectRatio: 1.5,
+          dayPadding: 0.0,
+          prevDaysTextStyle: Style.montserratRegular(fontSize: 15),
+          selectedDateTime: _currentDate,
+          headerTextStyle: Style.montserratRegular(
+              color: ColorConstant.black, fontWeight: FontWeight.bold),
+          dayButtonColor: Colors.white,
+          weekDayBackgroundColor: Colors.white,
+          markedDateMoreCustomDecoration:
+              const BoxDecoration(color: Colors.white),
+          shouldShowTransform: false,
+          staticSixWeekFormat: false,
+          weekdayTextStyle: Style.montserratRegular(
+              fontSize: 11,
+              color: ColorConstant.color797B86,
+              fontWeight: FontWeight.bold),
+          todayButtonColor: Colors.transparent,
+          selectedDayBorderColor: Colors.transparent,
+          todayBorderColor: Colors.transparent,
+          selectedDayButtonColor: Colors.transparent,
+          daysHaveCircularBorder: false,
+          todayTextStyle:
+              Style.montserratRegular(fontSize: 15, color: ColorConstant.black),
+        ));
   }
 }
-/*CalendarCarousel<Event>(
-        onDayPressed: (DateTime date, List<Event> events) {
-          this.setState(() => _currentDate = date);
-        },
-        weekendTextStyle:
-        Style.montserratRegular(color: ColorConstant.black, fontSize: 15),
-        thisMonthDayBorderColor: Colors.transparent, // Remove border for current month days
-        customDayBuilder: (
-            /// you can provide your own build function to make custom day containers
-            bool isSelectable,
-            int index,
-            bool isSelectedDay,
-            bool isToday,
-            bool isPrevMonthDay,
-            TextStyle textStyle,
-            bool isNextMonthDay,
-            bool isThisMonthDay,
-            DateTime day,
-            ) {
-          return null;
-        },
-        weekFormat: false,
-        daysTextStyle:
-        Style.montserratRegular(fontSize: 15, color: ColorConstant.black),
-        // markedDatesMap: _markedDateMap,
-        height: 300.0, // Replace with Dimens.d300 if it's defined elsewhere
-        markedDateIconBorderColor: Colors.transparent, // Remove border for marked dates
-        childAspectRatio: 1.5,
-        dayPadding: 0.0,
-        prevDaysTextStyle: Style.montserratRegular(fontSize: 15),
-        selectedDateTime: _currentDate,
-        headerTextStyle: Style.montserratSemiBold(color: ColorConstant.black),
-        dayButtonColor: ColorConstant.white,
-        weekDayBackgroundColor: ColorConstant.white,
-        markedDateMoreCustomDecoration: const BoxDecoration(color: Colors.white),
-        shouldShowTransform: false,
-        staticSixWeekFormat: false,
-        weekdayTextStyle: Style.montserratSemiBold(
-            fontSize: 11, color: ColorConstant.color797B86),
-        todayButtonColor: Colors.transparent,
-        selectedDayBorderColor: Colors.transparent,
-        todayBorderColor: Colors.transparent,
-        selectedDayButtonColor: ColorConstant.themeColor,
-        daysHaveCircularBorder: false,
-        todayTextStyle:
-        Style.montserratRegular(fontSize: 15, color: ColorConstant.black),
-
-        /// null for not rendering any border, true for circular border, false for rectangular border
-      )*/

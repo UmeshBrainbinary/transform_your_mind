@@ -190,7 +190,7 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
                             ),*/
                               Dimens.d20.h.spaceHeight,
                               Text(
-                                "Motivational messages".tr,
+                                "motivationalMessages".tr,
                                 style: Style.montserratSemiBold(fontSize: 14),
                               ),
                               Dimens.d16.h.spaceHeight,

@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/home_screen/home_message_page.dart';
@@ -222,7 +224,7 @@ class _HomeScreenState extends State<HomeScreen>
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
                   child: Text(
-                    "$_greeting, RK!",
+                    "$_greeting, ${PrefService.getString(PrefKey.name).toString()}",
                     textAlign: TextAlign.center,
                     style: Style.cormorantGaramondMedium(fontSize: 22),
                   ),
@@ -885,7 +887,7 @@ class _HomeScreenState extends State<HomeScreen>
                             },
                             child: ListTile(
                               title: Text(
-                                gratitudeList[index]["title"],
+                                gratitudeList[index].name,
                                 style: Style.montserratRegular(),
                               ),
                               trailing: gratitudeCheckList[index] == true

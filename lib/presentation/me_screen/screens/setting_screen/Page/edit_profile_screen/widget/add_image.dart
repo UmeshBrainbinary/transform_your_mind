@@ -45,39 +45,30 @@ class _AddImageEditWidgetState extends State<AddImageEditWidget> {
           Stack(alignment: Alignment.center,
             children: [
               widget.imageURL!=null
-                  ? GestureDetector(
-                      onTap: () {
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.only(top: Dimens.d30),
-                        height: Dimens.d100,
-                        width: Dimens.d100,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: const DecorationImage(
-                                image: NetworkImage(
-                                    "https://picsum.photos/250?image=9"),fit: BoxFit.cover),
-                            border: Border.all(
-                                color: ColorConstant.themeColor, width: 2)),
-                      ),
-                    )
-                  : GestureDetector(
-                      onTap: () {
-
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.only(top: Dimens.d30),
-                        height: Dimens.d100,
-                        width: Dimens.d100,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                                image:
-                                    FileImage(File(widget.image?.path ?? "")),fit: BoxFit.cover),
-                            border: Border.all(
-                                color: ColorConstant.themeColor, width: 2)),
-                      ),
-                    ),
+                  ? Container(
+                    margin: const EdgeInsets.only(top: Dimens.d30),
+                    height: Dimens.d100,
+                    width: Dimens.d100,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image:  DecorationImage(
+                            image: NetworkImage(
+                                "https://transformyourmind-server.onrender.com/${widget.imageURL}"),fit: BoxFit.cover),
+                        border: Border.all(
+                            color: ColorConstant.themeColor, width: 2)),
+                  )
+                  : Container(
+                    margin: const EdgeInsets.only(top: Dimens.d30),
+                    height: Dimens.d100,
+                    width: Dimens.d100,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                            image:
+                                FileImage(File(widget.image?.path ?? "")),fit: BoxFit.cover),
+                        border: Border.all(
+                            color: ColorConstant.themeColor, width: 2)),
+                  ),
               if ((widget.image != null || widget.imageURL != null) &&
                   !widget.hideDelete)
                 Padding(

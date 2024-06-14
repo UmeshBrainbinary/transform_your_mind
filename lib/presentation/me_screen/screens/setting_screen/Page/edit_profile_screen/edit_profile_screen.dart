@@ -5,6 +5,7 @@ import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
     as picker;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/date_time.dart';
@@ -25,7 +26,7 @@ import 'package:transform_your_mind/widgets/custom_appbar.dart';
 import 'package:transform_your_mind/widgets/image_picker_action_sheet.dart';
 
 class EditProfileScreen extends StatefulWidget {
-   EditProfileScreen({super.key});
+  EditProfileScreen({super.key});
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
@@ -34,25 +35,29 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final EditProfileController editProfileController = Get.put(EditProfileController());
+  final EditProfileController editProfileController =
+      Get.put(EditProfileController());
 
   ThemeController themeController = Get.find<ThemeController>();
 
- bool _isImageRemoved = false;
+  bool _isImageRemoved = false;
 
- @override
+  @override
   void initState() {
-    editProfileController.emailController.text = PrefService.getString(PrefKey.email);
+    editProfileController.emailController.text =
+        PrefService.getString(PrefKey.email);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: themeController.isDarkMode.value ? ColorConstant.black : ColorConstant.backGround,
+      backgroundColor: themeController.isDarkMode.value
+          ? ColorConstant.black
+          : ColorConstant.backGround,
       appBar: CustomAppBar(
-          title: "personalInformation".tr,
-        ),
+        title: "personalInformation".tr,
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
         child: LayoutBuilder(
@@ -71,34 +76,38 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Dimens.d30.h.spaceHeight,
-                            ValueListenableBuilder(
-                              valueListenable: editProfileController.imageFile,
-                              builder: (context, value, child) {
-                                return AddImageEditWidget(
-                                  onTap: () async {
-                                    await showImagePickerActionSheet(context)
-                                        ?.then((value) async {
-                                      if (value != null) {
-                                        editProfileController.imageFile.value =
-                                            value;
-                                      }
-                                    });
-                                  },
-                                  onDeleteTap: () async {
-                                    editProfileController.imageFile =
-                                        ValueNotifier(null);
-                                    if (editProfileController.image != null) {
-                                      editProfileController.urlImage = null;
-                                      _isImageRemoved = true;
-                                    }
+                           GetBuilder<EditProfileController>(id: "edit",
+                             builder: (controller) {
+                             return  ValueListenableBuilder(
+                               valueListenable: editProfileController.imageFile,
+                               builder: (context, value, child) {
+                                 return AddImageEditWidget(
+                                   onTap: () async {
+                                     await showImagePickerActionSheet(context)
+                                         ?.then((value) async {
+                                       if (value != null) {
 
-                                    setState(() {});
-                                  },
-                                  image: editProfileController.imageFile.value,
-                                  imageURL: editProfileController.urlImage,
-                                );
-                              },
-                            ),
+                                         editProfileController.imageFile.value =
+                                             value;
+                                       }
+                                     });
+                                   },
+                                   onDeleteTap: () async {
+                                     editProfileController.imageFile =
+                                         ValueNotifier(null);
+                                     if (editProfileController.image != null) {
+                                       editProfileController.urlImage = null;
+                                       _isImageRemoved = true;
+                                     }
+
+                                     setState(() {});
+                                   },
+                                   image: editProfileController.imageFile.value,
+                                   imageURL: editProfileController.urlImage,
+                                 );
+                               },
+                             );
+                           },),
                             Dimens.d30.h.spaceHeight,
                             CommonTextField(
                                 labelText: "name".tr,
@@ -154,18 +163,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                         height: Dimens.d5,
                                         width: Dimens.d5)),
                                 readOnly: true,
-                                onTap: ()  {
-                                 showDialog(context: context, builder: (context) {
-                                   return Column(
-                                     crossAxisAlignment: CrossAxisAlignment.center,
-                                     mainAxisAlignment: MainAxisAlignment.center,
-                                     children: [
-                                       Container(
-                                           height: 300,
-                                           child: widgetCalendar()),
-                                     ],
-                                   );
-                                 },);
+                                onTap: () async {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          widgetCalendar(),
+                                        ],
+                                      );
+                                    },
+                                  );
                                 },
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
@@ -291,10 +304,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                         title: "update".tr,
                                         onTap: () async {
                                           FocusScope.of(context).unfocus();
-
-                                          editProfileController.loader.value = true;
-
-
                                           if (editProfileController
                                                   .imageFile.value ==
                                               null) {
@@ -302,14 +311,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                           } else {
                                             if (_formKey.currentState!
                                                 .validate()) {
-                                              editProfileController.updateUser(context);
+                                              await editProfileController
+                                                  .updateUser(context);
+                                              editProfileController.getUser();
                                             }
                                           }
-
-                                          editProfileController.loader.value = false;
-                                  },
-                                ),
-                              ),
+                                        },
+                                      ),
+                                    ),
                             ),
                             Dimens.d50.h.spaceHeight,
                           ],
@@ -318,89 +327,92 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                   ),
                 ),
-                //commonGradiantContainer(color: AppColors.backgroundWhite, h: 20)
               ],
             );
           },
         ),
       ),
-
     );
   }
+
   Widget widgetCalendar() {
     return Container(
+      height: 350,
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         color: ColorConstant.white,
       ),
-
       child: GetBuilder<EditProfileController>(
-        builder: ( controller) {
+        builder: (controller) {
           return CalendarCarousel<Event>(
-
             onDayPressed: (DateTime date, List<Event> events) {
               setState(() => controller.currentDate = date);
-              controller.dobController.text = "${date.day}/${date.month}/${date.year}";
-              controller.select=false;
+              controller.dobController.text = DateFormat('dd/MM/yyyy').format(date);
+                /*  "${date.day}/${date.month}/${date.year}";*/
+              controller.select = false;
               print('==========${controller.currentDate}');
             },
-            weekendTextStyle:
-            TextStyle(color: Colors.black, fontSize: 15), // Customize your text style
+            weekendTextStyle: Style.montserratRegular(fontSize: 15,color: ColorConstant.black),
+            // Customize your text style
             thisMonthDayBorderColor: Colors.transparent,
             customDayBuilder: (
-                bool isSelectable,
-                int index,
-                bool isSelectedDay,
-                bool isToday,
-                bool isPrevMonthDay,
-                TextStyle textStyle,
-                bool isNextMonthDay,
-                bool isThisMonthDay,
-                DateTime day,
-                ) {
+              bool isSelectable,
+              int index,
+              bool isSelectedDay,
+              bool isToday,
+              bool isPrevMonthDay,
+              TextStyle textStyle,
+              bool isNextMonthDay,
+              bool isThisMonthDay,
+              DateTime day,
+            ) {
               if (isSelectedDay) {
-                return Container(
+                return Container(margin: const EdgeInsets.symmetric(horizontal: 5),
+                  height: Dimens.d32,
+                  width: Dimens.d32,
                   decoration: BoxDecoration(
-                    color: ColorConstant.themeColor, // Customize your selected day color
+                    color: ColorConstant.themeColor,
+                    // Customize your selected day color
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Center(
                     child: Text(
                       day.day.toString(),
-                      style: TextStyle(color: Colors.white), // Customize your selected day text style
+                      style: Style.montserratRegular(fontSize: 15,color: ColorConstant.white), // Customize your selected day text style
                     ),
                   ),
                 );
-              }  else {
+              } else {
                 return null;
               }
             },
             weekFormat: false,
-            daysTextStyle: TextStyle(fontSize: 15, color: Colors.black),
+            daysTextStyle: Style.montserratRegular(fontSize: 15,color: ColorConstant.black),
             height: 300.0,
             markedDateIconBorderColor: Colors.transparent,
             childAspectRatio: 1.5,
             dayPadding: 0.0,
-            prevDaysTextStyle: TextStyle(fontSize: 15),
+            prevDaysTextStyle: Style.montserratRegular(fontSize: 15),
             selectedDateTime: controller.currentDate,
-            headerTextStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+            headerTextStyle:
+            Style.montserratRegular(color: ColorConstant.black,fontWeight: FontWeight.bold),
             dayButtonColor: Colors.white,
             weekDayBackgroundColor: Colors.white,
-            markedDateMoreCustomDecoration: const BoxDecoration(color: Colors.white),
+            markedDateMoreCustomDecoration:
+                const BoxDecoration(color: Colors.white),
             shouldShowTransform: false,
             staticSixWeekFormat: false,
-            weekdayTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Colors.grey),
+            weekdayTextStyle:Style.montserratRegular(fontSize: 11,color: ColorConstant.color797B86,fontWeight: FontWeight.bold),
             todayButtonColor: Colors.transparent,
             selectedDayBorderColor: Colors.transparent,
             todayBorderColor: Colors.transparent,
             selectedDayButtonColor: Colors.transparent,
             daysHaveCircularBorder: false,
-            todayTextStyle: TextStyle(fontSize: 15, color: Colors.black),
+            todayTextStyle: Style.montserratRegular(fontSize: 15,color: ColorConstant.black),
           );
         },
       ),
     );
   }
-
 }

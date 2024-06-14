@@ -102,6 +102,8 @@ class ForgotController extends GetxController {
         update();
         PrefService.setValue(PrefKey.token, verifyModel.token);
         PrefService.setValue(PrefKey.userId, verifyModel.user!.id);
+        PrefService.setValue(PrefKey.name,verifyModel.user?.name??"");
+        PrefService.setValue(PrefKey.userImage,verifyModel.user?.userProfile??"");
         showSnackBarSuccess(context, verifyModel.message ?? "");
 
         Get.toNamed(AppRoutes.selectYourFocusPage);

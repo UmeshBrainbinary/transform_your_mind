@@ -15,4 +15,6 @@ class PrefKey{
   static const String premium = "premium";
   static const String subscription = "subscription";
   static const String addGratitude = "addGratitude";
+  static const String name = "name";
+  static const String userImage = "userImage";
 }

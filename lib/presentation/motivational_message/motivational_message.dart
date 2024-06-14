@@ -26,45 +26,50 @@ class MotivationalMessageScreen extends StatelessWidget {
             ? ColorConstant.black
             : ColorConstant.backGround,
         body: SingleChildScrollView(
+         // motivational
           child: Column(
             children: [
               Dimens.d31.spaceHeight,
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Expanded(
-                  child: ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: motivationalController.motivationalList.length,
-                    itemBuilder: (context, index) {
-                      var data = motivationalController.motivationalList[index];
-                      return Container(
-                        margin: const EdgeInsets.only(bottom: 15),
-                        decoration: BoxDecoration(
-                          image: const DecorationImage(
-                              image: NetworkImage(
-                                  "https://farm3.staticflickr.com/2220/1572613671_7311098b76_z_d.jpg"),
-                              fit: BoxFit.cover),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Stack(
-                          children: [
-                            // Image.asset(data["img"],fit: BoxFit.cover,),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 30, vertical: 30),
-                              child: Text(
-                                data["title"],
-                                style:
-                                    Style.cormorantGaramondBold(fontSize: 20),
+                child: GetBuilder<MotivationalController>(
+                  id: "motivational",
+                  builder: (controller) {
+                  return Expanded(
+                    child: ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: motivationalController.motivationalList.length,
+                      itemBuilder: (context, index) {
+                        var data = motivationalController.motivationalList[index];
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 15),
+                          decoration: BoxDecoration(
+                            image:  DecorationImage(
+                                image: NetworkImage(
+                                    data["img"]),
+                                fit: BoxFit.cover),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Stack(
+                            children: [
+                              // Image.asset(data["img"],fit: BoxFit.cover,),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 30, vertical: 30),
+                                child: Text(
+                                  data["title"],textAlign: TextAlign.center,
+                                  style:
+                                  Style.cormorantGaramondBold(fontSize: 20,color: ColorConstant.white),
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                },),
               )
             ],
           ),

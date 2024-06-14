@@ -4,21 +4,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
-    as picker;
+
+import 'package:http/http.dart' as http;
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
 import 'package:transform_your_mind/core/common_widget/on_loading_bottom_indicator.dart';
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
+import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
-import 'package:transform_your_mind/core/utils/date_time.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
+import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/model_class/common_model.dart';
+import 'package:transform_your_mind/model_class/gratitude_model.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_gratitude_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/journal_list_tile_layout.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/journal_no_data.dart';
@@ -63,19 +69,68 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
   ThemeController themeController = Get.find<ThemeController>();
   DateTime _currentDate = DateTime.now();
   bool select = false;
+
   @override
   void initState() {
-    //dateController.text = _formatDate(_currentDate);
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: ColorConstant.backGround, // Status bar background color
       statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
     ));
+    getGratitude();
     super.initState();
   }
-  String _formatDate(DateTime date) {
-    return "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
-  }
 
+  GratitudeModel gratitudeModel = GratitudeModel();
+  CommonModel commonModel = CommonModel();
+
+  getGratitude() async {
+    var headers = {
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.Request(
+        'GET',
+        Uri.parse(
+            '${EndPoints.baseUrl}get-gratitude?created_by=${PrefService.getString(PrefKey.userId)}&date=${dateController.text}'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      gratitudeModel = GratitudeModel();
+      final responseBody = await response.stream.bytesToString();
+      gratitudeModel = gratitudeModelFromJson(responseBody);
+      gratitudeList = gratitudeModel.data!;
+
+      setState(() {
+        debugPrint("gratitude Model $gratitudeList");
+        debugPrint("gratitude Model ${gratitudeModel.data}");
+      });
+    } else {
+      debugPrint(response.reasonPhrase);
+    }
+  }
+  deleteGratitude(id) async {
+    var headers = {
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.Request(
+        'DELETE',
+        Uri.parse(
+            '${EndPoints.baseUrl}delete-gratitude?id=$id'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      final responseBody = await response.stream.bytesToString();
+      commonModel = commonModelFromJson(responseBody);
+      showSnackBarSuccess(context, commonModel.message??"");
+    } else {
+      debugPrint(response.reasonPhrase);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -134,123 +189,8 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                         Expanded(
                           child: Column(
                             children: [
-                              ///draft list
-                              (_isLoadingDraft && pageNumberDrafts == 1)
-                                  ? const JournalListHorizontalShimmer()
-                                  : (gratitudeDraftList.isNotEmpty)
-                                      ? Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: Dimens.d20),
-                                              child: Text(
-                                                "drafts".tr,
-                                                style: Style.montserratRegular(
-                                                  fontSize: Dimens.d18,
-                                                ),
-                                              ),
-                                            ),
-                                            Dimens.d20.h.spaceHeight,
-                                            SizedBox(
-                                              height: Dimens.d70.h,
-                                              child: SmartRefresher(
-                                                controller:
-                                                    _refreshControllerDrafts,
-                                                enablePullUp: true,
-                                                enablePullDown: false,
-                                                // footer: const OnLoadingFooter(),
-                                                onLoading: () {},
-                                                child: ListView.builder(
-                                                  itemCount:
-                                                      gratitudeDraftList.length,
-                                                  scrollDirection:
-                                                      Axis.horizontal,
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: 20),
-                                                  physics:
-                                                      const ClampingScrollPhysics(),
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    var data =
-                                                        gratitudeDraftList[
-                                                            index];
-                                                    return GestureDetector(
-                                                      onTap: () {},
-                                                      child:
-                                                          JournalDraftListTileLayout(
-                                                              margin:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      right: Dimens
-                                                                          .d16),
-                                                              title: data[
-                                                                      "title"] ??
-                                                                  '',
-                                                              image:
-                                                                  'https://picsum.photos/250?image=9' /* data["image"] */ ??
-                                                                      '',
-                                                              createdDate: data[
-                                                                      "createdOn"] ??
-                                                                  '',
-                                                              showDelete: true,
-                                                              onDeleteTapCallback:
-                                                                  () {
-                                                                Navigator.push(
-                                                                    context,
-                                                                    MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) {
-                                                                    return AddGratitudePage(
-                                                                      description:
-                                                                          data[
-                                                                              "des"],
-                                                                      title: data[
-                                                                          "title"],
-                                                                      date: data[
-                                                                              "createdOn"] ??
-                                                                          '',
-                                                                      edit:
-                                                                          true,
-                                                                      isFromMyGratitude:
-                                                                          true,
-                                                                      registerUser:
-                                                                          false,
-                                                                      isSaved:
-                                                                          true,
-                                                                    );
-                                                                  },
-                                                                )).then(
-                                                                  (value) {
-                                                                    if (value !=
-                                                                            null &&
-                                                                        value
-                                                                            is bool) {
-                                                                      _refreshGratitudeList(
-                                                                          value);
-                                                                    }
-                                                                    setState(
-                                                                        () {});
-                                                                  },
-                                                                );
-                                                                /* gratitudeDraftList
-                                                                    .removeAt(
-                                                                        index);*/
-                                                                setState(() {});
-                                                              }),
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        )
-                                      : const SizedBox.shrink(),
+
                               Dimens.d20.spaceHeight,
-                              gratitudeDraftList.isNotEmpty ||
                                       gratitudeList.isNotEmpty
                                   ? Padding(
                                       padding: const EdgeInsets.symmetric(
@@ -258,7 +198,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                       child: GestureDetector(
                                         onTap: () {
                                           setState(() {
-                                            select=!select;
+                                            select = !select;
                                           });
                                         },
                                         child: CommonTextField(
@@ -276,7 +216,8 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                     )
                                   : const SizedBox(),
 
-                              if(select == true)widgetCalendar(),
+                              if (select == true) widgetCalendar(),
+
                               /// saved list
                               Expanded(
                                 child: (_isLoading &&
@@ -318,109 +259,59 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                                 itemBuilder: (context, index) {
                                                   var data =
                                                       gratitudeList[index];
-                                                  return GestureDetector(
-                                                    onTap: () {},
-                                                    child: Slidable(
-                                                      closeOnScroll: true,
-                                                      key: ValueKey<String>(
-                                                          data["createdOn"] ??
-                                                              ""),
-                                                      endActionPane: ActionPane(
-                                                        motion:
-                                                            const ScrollMotion(),
-                                                        dragDismissible: false,
-                                                        extentRatio: 0.26,
-                                                        children: [
-                                                          Dimens.d20.spaceWidth,
-                                                          GestureDetector(
-                                                            onTap: () {
-                                                              _showAlertDialogDelete(context, index);
-                                                              setState(() {});
-                                                            },
-                                                            child: Container(
-                                                              width: Dimens.d65,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                color: Colors
-                                                                    .red
-                                                                    .withOpacity(
-                                                                        0.5),
-                                                                borderRadius:
-                                                                    Dimens.d16
-                                                                        .radiusAll,
-                                                              ),
-                                                              alignment:
-                                                                  Alignment
-                                                                      .center,
-                                                              child: SvgPicture
-                                                                  .asset(
-                                                                ImageConstant
-                                                                    .icDeleteWhite,
-                                                                width:
-                                                                    Dimens.d24,
-                                                                height:
-                                                                    Dimens.d24,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      child:
-                                                          JournalListTileLayout(
-                                                        onDeleteTapCallback:
-                                                            () {
-                                                              _showAlertDialogDelete(context, index);
-                                                              setState(() {});
-
-                                                        },
-                                                        onEditTapCallback: () {
-                                                          Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
+                                                  return   JournalListTileLayout(
+                                                    onDeleteTapCallback:
+                                                        () {
+                                                      _showAlertDialogDelete(
+                                                          context, index,data.id);
+                                                      setState(() {});
+                                                    },
+                                                    onEditTapCallback: () {
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
                                                             builder: (context) {
                                                               return AddGratitudePage(
+                                                                id:data.id ,
                                                                 description:
-                                                                    data["des"],
-                                                                title: data[
-                                                                    "title"],
-                                                                date: data[
-                                                                        "createdOn"] ??
+                                                                data.description ,
+                                                                title: data.name ,
+                                                                date: data.createdAt ??
                                                                     '',
                                                                 edit: true,
                                                                 isFromMyGratitude:
-                                                                    true,
+                                                                true,
                                                                 registerUser:
-                                                                    false,
+                                                                false,
                                                                 isSaved: true,
                                                               );
                                                             },
                                                           )).then(
-                                                            (value) {
-                                                              if (value !=
-                                                                      null &&
-                                                                  value
-                                                                      is bool) {
-                                                                _refreshGratitudeList(
-                                                                    value);
-                                                              }
-                                                              setState(() {});
-                                                            },
-                                                          );
+                                                            (value) async {
+                                                          if (value !=
+                                                              null &&
+                                                              value
+                                                              is bool) {
+                                                            _refreshGratitudeList(
+                                                                value);
+                                                          }
+                                                          await getGratitude();
+                                                          setState(() {});
                                                         },
-                                                        margin: EdgeInsets.only(
-                                                            bottom:
-                                                                Dimens.d20.h),
-                                                        title:
-                                                            data["title"] ?? '',
-                                                        //image: data["image"] ?? '',
-                                                        image:
-                                                            "https://picsum.photos/250?image=9" ??
-                                                                '',
-                                                        createdDate:
-                                                            data["createdOn"] ??
-                                                                '',
-                                                      ),
-                                                    ),
+                                                      );
+                                                    },
+                                                    margin: EdgeInsets.only(
+                                                        bottom:
+                                                        Dimens.d20.h),
+                                                    title:
+                                                    data.name ?? '',
+                                                    //image: data["image"] ?? '',
+                                                    image:
+                                                    "https://picsum.photos/250?image=9" ??
+                                                        '',
+                                                    createdDate:
+                                                    data.createdAt ??
+                                                        '',
                                                   );
                                                 },
                                               ),
@@ -442,7 +333,6 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                                   ))
                                                 : const SizedBox(),
                               ),
-
                             ],
                           ),
                         )
@@ -455,7 +345,8 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
           )),
     );
   }
-  void _showAlertDialogDelete(BuildContext context, int index) {
+
+  void _showAlertDialogDelete(BuildContext context, int index, id) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -477,10 +368,10 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                     ))),
             Center(
                 child: SvgPicture.asset(
-                  ImageConstant.deleteAffirmation,
-                  height: Dimens.d140,
-                  width: Dimens.d140,
-                )),
+              ImageConstant.deleteAffirmation,
+              height: Dimens.d140,
+              width: Dimens.d140,
+            )),
             Dimens.d20.spaceHeight,
             Center(
               child: Text(
@@ -491,23 +382,29 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                   )),
             ),
             Dimens.d24.spaceHeight,
-            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 CommonElevatedButton(
                   height: 33,
                   textStyle: Style.montserratRegular(
                       fontSize: Dimens.d12, color: ColorConstant.white),
                   title: "Delete".tr,
-                  onTap: () {
+                  onTap: () async {
+                   await deleteGratitude(id);
+                    await getGratitude();
                     setState(() {
-                      gratitudeList.removeAt(index);
+
                     });
                     Get.back();
                   },
                 ),
                 Container(
-                  height: 33,margin: const EdgeInsets.symmetric(horizontal: 5),
-                  padding: const EdgeInsets.symmetric(horizontal: 21,),
+                  height: 33,
+                  margin: const EdgeInsets.symmetric(horizontal: 5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 21,
+                  ),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(80),
                       border: Border.all(color: ColorConstant.themeColor)),
@@ -525,6 +422,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
       },
     );
   }
+
   void _onAddClick(BuildContext context) {
     final subscriptionStatus = "SUBSCRIBED";
 
@@ -538,7 +436,9 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
     } else {
       Get.toNamed(AppRoutes.addGratitudePage)!.then((value) {
         setState(() {});
-      });
+      }).then( (value) async {
+        await getGratitude();
+      },);
     }
   }
 
@@ -570,43 +470,49 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
         borderRadius: BorderRadius.circular(16),
         color: ColorConstant.white,
       ),
-
       child: CalendarCarousel<Event>(
-
-        onDayPressed: (DateTime date, List<Event> events) {
+        onDayPressed: (DateTime date, List<Event> events) async {
           setState(() => _currentDate = date);
-          dateController.text = "${date.day}/${date.month}/${date.year}";
-          select=false;
+
+          dateController.text = DateFormat('dd/MM/yyyy').format(date);
+          await getGratitude();
+          setState(() {
+
+          });
+          select = false;
           print('==========${_currentDate}');
         },
-        weekendTextStyle:
-        TextStyle(color: Colors.black, fontSize: 15), // Customize your text style
+        weekendTextStyle: const TextStyle(color: Colors.black, fontSize: 15),
+        // Customize your text style
         thisMonthDayBorderColor: Colors.transparent,
         customDayBuilder: (
-            bool isSelectable,
-            int index,
-            bool isSelectedDay,
-            bool isToday,
-            bool isPrevMonthDay,
-            TextStyle textStyle,
-            bool isNextMonthDay,
-            bool isThisMonthDay,
-            DateTime day,
-            ) {
+          bool isSelectable,
+          int index,
+          bool isSelectedDay,
+          bool isToday,
+          bool isPrevMonthDay,
+          TextStyle textStyle,
+          bool isNextMonthDay,
+          bool isThisMonthDay,
+          DateTime day,
+        ) {
           if (isSelectedDay) {
             return Container(
               decoration: BoxDecoration(
-                color: ColorConstant.themeColor, // Customize your selected day color
+                color: ColorConstant.themeColor,
+                // Customize your selected day color
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Center(
                 child: Text(
                   day.day.toString(),
-                  style: TextStyle(color: Colors.white), // Customize your selected day text style
+                  style: TextStyle(
+                      color: Colors
+                          .white), // Customize your selected day text style
                 ),
               ),
             );
-          }  else {
+          } else {
             return null;
           }
         },
@@ -618,13 +524,16 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
         dayPadding: 0.0,
         prevDaysTextStyle: TextStyle(fontSize: 15),
         selectedDateTime: _currentDate,
-        headerTextStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+        headerTextStyle:
+            TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
         dayButtonColor: Colors.white,
         weekDayBackgroundColor: Colors.white,
-        markedDateMoreCustomDecoration: const BoxDecoration(color: Colors.white),
+        markedDateMoreCustomDecoration:
+            const BoxDecoration(color: Colors.white),
         shouldShowTransform: false,
         staticSixWeekFormat: false,
-        weekdayTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Colors.grey),
+        weekdayTextStyle: TextStyle(
+            fontWeight: FontWeight.bold, fontSize: 11, color: Colors.grey),
         todayButtonColor: Colors.transparent,
         selectedDayBorderColor: Colors.transparent,
         todayBorderColor: Colors.transparent,
@@ -634,6 +543,4 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
       ),
     );
   }
-
-
 }

@@ -12,15 +12,17 @@ import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 class AccountScreen extends StatelessWidget {
-   AccountScreen({super.key});
+  AccountScreen({super.key});
 
-   AccountController accountController = Get.put(AccountController());
-   ThemeController themeController = Get.find<ThemeController>();
+  AccountController accountController = Get.put(AccountController());
+  ThemeController themeController = Get.find<ThemeController>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: themeController.isDarkMode.value ? ColorConstant.black : ColorConstant.backGround,
+      backgroundColor: themeController.isDarkMode.value
+          ? ColorConstant.black
+          : ColorConstant.backGround,
       appBar: CustomAppBar(title: "account".tr),
       body: Stack(
         children: [
@@ -37,8 +39,8 @@ class AccountScreen extends StatelessWidget {
                 child: SvgPicture.asset(ImageConstant.profile2),
               )),
           Padding(
-              padding: Dimens.d20.paddingAll,
-            child:   ListView.separated(
+            padding: Dimens.d20.paddingAll,
+            child: ListView.separated(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               clipBehavior: Clip.none,
@@ -51,17 +53,20 @@ class AccountScreen extends StatelessWidget {
                   title: data.title,
                   //suffixIcon: data.suffixIcon,
                   onTap: () {
-                    if(index==0){
+                    if (index == 0) {
                       Get.toNamed(AppRoutes.editProfileScreen);
-                    } else if(index==1){
+                    } else if (index == 1) {
                       Get.toNamed(AppRoutes.changePassword);
-                    } else if(index==2){
+                    } else if (index == 2) {
                       Get.toNamed(AppRoutes.privacyPolicy);
                     }
                   },
                 );
-              },separatorBuilder: (context, index) {
-                return const SizedBox(height: 15,);
+              },
+              separatorBuilder: (context, index) {
+                return const SizedBox(
+                  height: 15,
+                );
               },
               itemCount: accountController.accountData.length,
             ),
@@ -84,6 +89,7 @@ class AccountListItem extends StatelessWidget {
 
   final String prefixIcon;
   final String title;
+
   //final String suffixIcon;
   final bool isSettings;
   final VoidCallback? onTap;
@@ -92,48 +98,42 @@ class AccountListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return
-
-      GestureDetector(
-        onTap:onTap,
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 1.2),
-          decoration: BoxDecoration(
-            color: themeController.isDarkMode.value
-                ? ColorConstant.textfieldFillColor
-                : ColorConstant.white,
-            borderRadius: BorderRadius.circular(50),
-          ),
-          padding: const EdgeInsets.symmetric(
-            horizontal: Dimens.d10,
-            vertical: Dimens.d5,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Dimens.d12.spaceWidth,
-              Expanded(
-                child: Text(
-                  title,
-                  style: Style.montserratMedium().copyWith(
-                    letterSpacing: Dimens.d0_16,
-                  ),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 1.2),
+        decoration: BoxDecoration(
+          color: themeController.isDarkMode.value
+              ? ColorConstant.textfieldFillColor
+              : ColorConstant.white,
+          borderRadius: BorderRadius.circular(50),
+        ),
+        padding: const EdgeInsets.symmetric(
+          horizontal: Dimens.d10,
+          vertical: Dimens.d5,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Dimens.d12.spaceWidth,
+            Expanded(
+              child: Text(
+                title,
+                style: Style.montserratMedium().copyWith(
+                  letterSpacing: Dimens.d0_16,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SvgPicture.asset(
-                    ImageConstant.settingArrowRight,
-                    color: themeController.isDarkMode.value
-                        ? ColorConstant.white
-                        : ColorConstant.black),
-              )
-            ],
-          ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SvgPicture.asset(ImageConstant.settingArrowRight,
+                  color: themeController.isDarkMode.value
+                      ? ColorConstant.white
+                      : ColorConstant.black),
+            )
+          ],
         ),
-      );
-
+      ),
+    );
   }
-
-
 }

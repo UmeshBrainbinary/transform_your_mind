@@ -30,12 +30,13 @@ class Data {
   String? name;
   String? email;
   String? password;
-  dynamic userProfile;
+  String? userProfile;
   dynamic mobile;
   dynamic countryCode;
   int? gender;
   int? userType;
-  List<dynamic>? focuses;
+  List<String>? focuses;
+  DateTime? dob;
   DateTime? createdAt;
   DateTime? updatedAt;
   int? v;
@@ -52,6 +53,7 @@ class Data {
     this.gender,
     this.userType,
     this.focuses,
+    this.dob,
     this.createdAt,
     this.updatedAt,
     this.v,
@@ -68,7 +70,8 @@ class Data {
     countryCode: json["country_code"],
     gender: json["gender"],
     userType: json["user_type"],
-    focuses: json["focuses"] == null ? [] : List<dynamic>.from(json["focuses"]!.map((x) => x)),
+    focuses: json["focuses"] == null ? [] : List<String>.from(json["focuses"]!.map((x) => x)),
+    dob: json["dob"] == null ? null : DateTime.parse(json["dob"]),
     createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
     updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
     v: json["__v"],
@@ -86,6 +89,7 @@ class Data {
     "gender": gender,
     "user_type": userType,
     "focuses": focuses == null ? [] : List<dynamic>.from(focuses!.map((x) => x)),
+    "dob": dob?.toIso8601String(),
     "createdAt": createdAt?.toIso8601String(),
     "updatedAt": updatedAt?.toIso8601String(),
     "__v": v,

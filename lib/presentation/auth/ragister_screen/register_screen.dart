@@ -189,50 +189,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   readOnly: true,
                                   onTap: () async {
 
-                                    FocusScope.of(context).unfocus();
-                                    await picker.DatePicker.showDatePicker(
-                                        context,
-                                        showTitleActions: true,
-                                        minTime: DateTime(1900, 3, 5),
-                                        maxTime: DateTime.now()
-                                            .subtract(const Duration(days: 1)),
-                                        theme: picker.DatePickerTheme(
-                                            doneStyle: Style.montserratSemiBold(
-                                                color: ColorConstant.white),
-                                            cancelStyle: Style.montserratSemiBold(
-                                                color: ColorConstant.white),
-                                            itemStyle: Style.montserratSemiBold(
-                                                color: ColorConstant.white),
-                                            backgroundColor:
-                                            ColorConstant.themeColor),
-                                        onChanged: (date) {},
-                                        onConfirm: (date) {
-                                          registerController.dobController.text =
-                                              DateTimeUtils.formatDate(date);
-                                          registerController.selectedDob = date;
-                                          // Your input date string
-                                          DateTime dateD = DateFormat('dd/MM/yyyy').parse(  registerController.dobController.text); // Parse the input date string
-                                          String formattedDate = DateFormat('yyyy-MM-dd').format(dateD);
-                                          registerController.dobController.text = formattedDate;
-                                        },
-                                        currentTime: registerController.selectedDob ??
-                                            DateTime.now()
-                                                .subtract(const Duration(days: 1)),
-                                        locale: picker.LocaleType.en);
-
-
-
-                                  /*  showDialog(context: context, builder: (context) {
+                                    showDialog(context: context, builder: (context) {
                                       return Column(
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           SizedBox(
-                                              height: 300,
+                                              height: Dimens.d300,
                                               child: widgetCalendar()),
                                         ],
                                       );
-                                    },);*/
+                                    },);
                                   },
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -418,27 +385,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
   }
-
   Widget widgetCalendar() {
     return Container(
+      height: 350,
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         color: ColorConstant.white,
       ),
-
       child: GetBuilder<RegisterController>(
-        builder: ( controller) {
+        builder: (controller) {
           return CalendarCarousel<Event>(
-
             onDayPressed: (DateTime date, List<Event> events) {
               setState(() => controller.currentDate = date);
-              controller.dobController.text = "${date.day}/${date.month}/${date.year}";
-              controller.select=false;
+              controller.dobController.text =
+              "${date.day}/${date.month}/${date.year}";
+              controller.select = false;
               print('==========${controller.currentDate}');
             },
-            weekendTextStyle:
-            TextStyle(color: Colors.black, fontSize: 15), // Customize your text style
+            weekendTextStyle: Style.montserratRegular(fontSize: 15,color: ColorConstant.black),
+            // Customize your text style
             thisMonthDayBorderColor: Colors.transparent,
             customDayBuilder: (
                 bool isSelectable,
@@ -452,46 +418,53 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 DateTime day,
                 ) {
               if (isSelectedDay) {
-                return Container(
+                return Container(margin: const EdgeInsets.symmetric(horizontal: 5),
+                  height: Dimens.d32,
+                  width: Dimens.d32,
                   decoration: BoxDecoration(
-                    color: ColorConstant.themeColor, // Customize your selected day color
+                    color: ColorConstant.themeColor,
+                    // Customize your selected day color
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Center(
                     child: Text(
                       day.day.toString(),
-                      style: TextStyle(color: Colors.white), // Customize your selected day text style
+                      style: Style.montserratRegular(fontSize: 15,color: ColorConstant.white), // Customize your selected day text style
                     ),
                   ),
                 );
-              }  else {
+              } else {
                 return null;
               }
             },
             weekFormat: false,
-            daysTextStyle: TextStyle(fontSize: 15, color: Colors.black),
+            daysTextStyle: Style.montserratRegular(fontSize: 15,color: ColorConstant.black),
             height: 300.0,
             markedDateIconBorderColor: Colors.transparent,
             childAspectRatio: 1.5,
             dayPadding: 0.0,
-            prevDaysTextStyle: TextStyle(fontSize: 15),
+            prevDaysTextStyle: Style.montserratRegular(fontSize: 15),
             selectedDateTime: controller.currentDate,
-            headerTextStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+            headerTextStyle:
+            Style.montserratRegular(color: ColorConstant.black,fontWeight: FontWeight.bold),
             dayButtonColor: Colors.white,
             weekDayBackgroundColor: Colors.white,
-            markedDateMoreCustomDecoration: const BoxDecoration(color: Colors.white),
+            markedDateMoreCustomDecoration:
+            const BoxDecoration(color: Colors.white),
             shouldShowTransform: false,
             staticSixWeekFormat: false,
-            weekdayTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Colors.grey),
+            weekdayTextStyle:Style.montserratRegular(fontSize: 11,color: ColorConstant.color797B86,fontWeight: FontWeight.bold),
             todayButtonColor: Colors.transparent,
             selectedDayBorderColor: Colors.transparent,
             todayBorderColor: Colors.transparent,
             selectedDayButtonColor: Colors.transparent,
             daysHaveCircularBorder: false,
-            todayTextStyle: TextStyle(fontSize: 15, color: Colors.black),
+            todayTextStyle: Style.montserratRegular(fontSize: 15,color: ColorConstant.black),
           );
         },
       ),
     );
   }
+
+
 }

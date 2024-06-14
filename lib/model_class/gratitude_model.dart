@@ -1,22 +1,22 @@
 // To parse this JSON data, do
 //
-//     final affirmationCategoryModel = affirmationCategoryModelFromJson(jsonString);
+//     final gratitudeModel = gratitudeModelFromJson(jsonString);
 
 import 'dart:convert';
 
-AffirmationCategoryModel affirmationCategoryModelFromJson(String str) => AffirmationCategoryModel.fromJson(json.decode(str));
+GratitudeModel gratitudeModelFromJson(String str) => GratitudeModel.fromJson(json.decode(str));
 
-String affirmationCategoryModelToJson(AffirmationCategoryModel data) => json.encode(data.toJson());
+String gratitudeModelToJson(GratitudeModel data) => json.encode(data.toJson());
 
-class AffirmationCategoryModel {
+class GratitudeModel {
   List<Datum>? data;
 
-  AffirmationCategoryModel({
+  GratitudeModel({
     this.data,
   });
 
-  factory AffirmationCategoryModel.fromJson(Map<String, dynamic> json) => AffirmationCategoryModel(
-    data: json["data"] == null ? [] : List<Datum>.from(json["data"]?.map((x) => Datum.fromJson(x))),
+  factory GratitudeModel.fromJson(Map<String, dynamic> json) => GratitudeModel(
+    data: json["data"] == null ? [] : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -27,8 +27,9 @@ class AffirmationCategoryModel {
 class Datum {
   String? id;
   String? name;
-  int? status;
-  int? type;
+  String? description;
+  DateTime? date;
+  String? createdBy;
   DateTime? createdAt;
   DateTime? updatedAt;
   int? v;
@@ -36,8 +37,9 @@ class Datum {
   Datum({
     this.id,
     this.name,
-    this.status,
-    this.type,
+    this.description,
+    this.date,
+    this.createdBy,
     this.createdAt,
     this.updatedAt,
     this.v,
@@ -46,8 +48,9 @@ class Datum {
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
     id: json["_id"],
     name: json["name"],
-    status: json["status"],
-    type: json["type"],
+    description: json["description"],
+    date: json["date"] == null ? null : DateTime.parse(json["date"]),
+    createdBy: json["created_by"],
     createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
     updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
     v: json["__v"],
@@ -56,8 +59,9 @@ class Datum {
   Map<String, dynamic> toJson() => {
     "_id": id,
     "name": name,
-    "status": status,
-    "type": type,
+    "description": description,
+    "date": date?.toIso8601String(),
+    "created_by": createdBy,
     "createdAt": createdAt?.toIso8601String(),
     "updatedAt": updatedAt?.toIso8601String(),
     "__v": v,
