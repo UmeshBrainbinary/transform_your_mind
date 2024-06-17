@@ -198,7 +198,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
                                               children: [
                                                 InkWell(
                                                   onTap: () {
-                                                    _onAddClick1(context);
+                                                    _onAddClick1(context, _filteredBookmarks?[index]["id"] ?? "");
                                                   },
                                                   child: Container(
                                                     height: 28,
@@ -239,7 +239,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
                                                 Dimens.d15.spaceHeight,
                                                 InkWell(
                                                   onTap: () {
-                                                    _showAlertDialogDelete(context, index);
+                                                    _showAlertDialogDelete(context, index,   _filteredBookmarks?[index]["id"]);
                                                   },
                                                   child: Container(
                                                     height: 28,
@@ -362,7 +362,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
     );
   }
 
-  void _showAlertDialogDelete(BuildContext context, int index) {
+  void _showAlertDialogDelete(BuildContext context, int index, filteredBookmark) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -407,9 +407,9 @@ class _PositiveScreenState extends State<PositiveScreen> {
                   title: "Delete".tr,
                   onTap: () {
                     setState(() {
-
                     });
-                    Get.back();
+                    positiveController.deletePositiveMoment(filteredBookmark);
+                    // Get.back();
                   },
                 ),
                 Container(
@@ -764,21 +764,27 @@ class _PositiveScreenState extends State<PositiveScreen> {
                     ),
                   ],
                 ),
-                Container(
-                  width: 238,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(80),
-                    color: ColorConstant.themeColor,
+                InkWell(
+                  onTap: () {
+
+                    positiveController.filterMoment();
+                  },
+                  child: Container(
+                    width: 238,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(80),
+                      color: ColorConstant.themeColor,
+                    ),
+                    child: Center(
+                        child: Text(
+                      "Apply".tr,
+                      style: Style.montserratRegular(
+                          color: ColorConstant.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w400),
+                    )),
                   ),
-                  child: Center(
-                      child: Text(
-                    "Apply".tr,
-                    style: Style.montserratRegular(
-                        color: ColorConstant.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w400),
-                  )),
                 )
               ],
             ),
@@ -863,7 +869,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
     } else {
       Navigator.push(context, MaterialPageRoute(
         builder: (context) {
-          return const AddPositivePage(
+          return  AddPositivePage(
             isFromMyAffirmation: true,
             isEdit: false,
           );
@@ -875,7 +881,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
       );
     }
   }
-  void _onAddClick1(BuildContext context) {
+  void _onAddClick1(BuildContext context, param1) {
     final subscriptionStatus = "SUBSCRIBED";
 
     /// to check if item counts are not more then the config count in case of no subscription
@@ -888,7 +894,8 @@ class _PositiveScreenState extends State<PositiveScreen> {
     } else {
       Navigator.push(context, MaterialPageRoute(
         builder: (context) {
-          return const AddPositivePage(
+          return  AddPositivePage(
+            id: param1,
             isFromMyAffirmation: true,
             isEdit: true,
           );
