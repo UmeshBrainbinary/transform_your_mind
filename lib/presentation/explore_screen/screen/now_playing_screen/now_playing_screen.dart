@@ -18,6 +18,7 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/presentation/explore_screen/screen/now_playing_screen/now_playing_controller.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
@@ -25,7 +26,9 @@ import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 class NowPlayingScreen extends StatefulWidget {
   AudioPlayerService? audioPlayerService;
-   NowPlayingScreen({super.key,this.audioPlayerService});
+  String? image;
+  String? url;
+   NowPlayingScreen({super.key,this.audioPlayerService,this.url,this.image});
 
   @override
   State<NowPlayingScreen> createState() => _NowPlayingScreenState();
@@ -37,6 +40,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
   int currentAudioSpeedIndex = 0;
   Duration position = Duration.zero;
   Timer? volTimer;
+  final NowPlayingController nowPlayingController = Get.put(NowPlayingController());
   final ValueNotifier<bool> _isVolShowing = ValueNotifier(false);
   ValueNotifier<bool> isActivityApiCalled = ValueNotifier(false);
   final ValueNotifier<Duration> _updatedRealtimeAudioDuration =
@@ -49,7 +53,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
   Timer? _opacityOfSpeedTimer;
   final ValueNotifier<double> _slideValue = ValueNotifier(40.0);
   late final AnimationController _lottieBgController, _lottieController;
- // final AudioPlayerService _audioPlayerService = AudioPlayerService();
+  final AudioPlayerService _audioPlayerService = AudioPlayerService();
   bool isPlaying = false;
   TextEditingController ratingController = TextEditingController();
   FocusNode ratingFocusNode = FocusNode();
@@ -65,8 +69,10 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
 
     _setInitValues();
 
-/*    _audioPlayerService.setUrl(
-        'https://media.shoorah.io/admins/shoorah_pods/audio/1682952330-9588.mp3');*/
+   _audioPlayerService.setUrl(
+     widget.url!
+        // 'https://media.shoorah.io/admins/shoorah_pods/audio/1682952330-9588.mp3'
+   );
   }
 
   @override
@@ -97,7 +103,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                 height: Get.height * 0.78,
                 decoration: BoxDecoration(
                     image: DecorationImage(
-                        image: AssetImage(ImageConstant.bgImagePlaying),
+                        image: NetworkImage(widget.image.toString()),
                         fit: BoxFit.cover)),
               ),
             ),
@@ -211,11 +217,11 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
             mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   StreamBuilder<Duration?>(
-                    stream:  widget.audioPlayerService!.positionStream,
+                    stream:  _audioPlayerService!.positionStream,
                     builder: (context, snapshot) {
                       final position = snapshot.data ?? Duration.zero;
                       return StreamBuilder<Duration?>(
-                        stream:  widget.audioPlayerService!.durationStream,
+                        stream: _audioPlayerService!.durationStream,
                         builder: (context, snapshot) {
                           final duration = snapshot.data ?? Duration.zero;
                           return SeekBar(
@@ -223,13 +229,13 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                             position: position,
                             onChanged: (newPosition) {
                               if (newPosition != null) {
-                                widget.audioPlayerService!.seekForMeditationAudio(
+                                _audioPlayerService!.seekForMeditationAudio(
                                     position: newPosition);
                               }
                             },
                             onChangeEnd: (newPosition) {
                               if (newPosition != null) {
-                                widget.audioPlayerService!.seekForMeditationAudio(
+                                _audioPlayerService!.seekForMeditationAudio(
                                     position: newPosition);
                               }
                         },
@@ -265,7 +271,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                               child: GestureDetector(
                                 onTap: () {
                                   if (!_isAudioLoading.value) {
-                                    widget.audioPlayerService!.skipBackward();
+                                    _audioPlayerService.skipBackward();
                                   }
                                 },
                                 child: Image.asset(
@@ -286,9 +292,9 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                                     onTap: () {
                                       if (isPlaying) {
                                         _lottieController.stop();
-                                        widget.audioPlayerService!.pause();
+                                        _audioPlayerService!.pause();
                                       } else {
-                                        widget.audioPlayerService!.play();
+                                        _audioPlayerService!.play();
                                         _lottieController.repeat();
                                       }
                                       setState(() {
@@ -342,7 +348,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                           child: GestureDetector(
                             onTap: () {
                               if (!_isAudioLoading.value) {
-                                widget.audioPlayerService!.skipForward();
+                                _audioPlayerService.skipForward();
                               }
                             },
                             child: Image.asset(
