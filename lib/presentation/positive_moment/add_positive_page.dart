@@ -6,19 +6,25 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
+import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
+import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/image_utills.dart';
+import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/model_class/create_positive_moment_model.dart';
+import 'package:transform_your_mind/model_class/update_positive_moment_model.dart';
 import 'package:transform_your_mind/presentation/home_screen/widgets/add_image_gratitude.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/my_affirmation_page.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
+import 'package:http/http.dart' as http;
 import 'package:transform_your_mind/widgets/custom_view_controller.dart';
 import 'package:transform_your_mind/widgets/image_picker_action_sheet.dart';
 
@@ -27,13 +33,15 @@ class AddPositivePage extends StatefulWidget {
   final bool? isEdit;
   final bool? isSaved;
   final String? title, des;
+  String? id;
 
-  const AddPositivePage(
+  AddPositivePage(
       {required this.isFromMyAffirmation,
       this.isSaved,
       this.title,
       this.des,
       this.isEdit,
+      this.id,
       super.key});
 
   @override
@@ -43,9 +51,9 @@ class AddPositivePage extends StatefulWidget {
 class _AddPositivePageState extends State<AddPositivePage>
     with SingleTickerProviderStateMixin {
   final TextEditingController titleController = TextEditingController();
+  final TextEditingController descController = TextEditingController();
   ValueNotifier<int> currentLength = ValueNotifier(0);
 
-  final TextEditingController descController = TextEditingController();
   ThemeController themeController = Get.find<ThemeController>();
 
   final FocusNode titleFocus = FocusNode();
@@ -57,7 +65,13 @@ class _AddPositivePageState extends State<AddPositivePage>
   File? selectedImage;
   late final AnimationController _lottieIconsController;
   bool _isImageRemoved = false;
+  Rx<bool> loader = false.obs;
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  CreatePositiveMomentsModel createPositiveMomentsModel =
+      CreatePositiveMomentsModel();
+  UpdatePositiveMomentsModel updatePositiveMomentsModel =
+      UpdatePositiveMomentsModel();
 
   @override
   void initState() {
@@ -79,6 +93,81 @@ class _AddPositivePageState extends State<AddPositivePage>
     super.initState();
   }
 
+  createPositiveMoment() async {
+    try {
+      var headers = {
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+      };
+
+      var request = http.MultipartRequest(
+          'POST', Uri.parse(EndPoints.createPositiveMoment));
+      request.fields.addAll({
+        'title': titleController.text.trim(),
+        'description': descController.text.trim(),
+      });
+      if (imageFile.value != null) {
+        request.files.add(
+            await http.MultipartFile.fromPath('image', imageFile.value!.path));
+      }
+      // request.files.add(await http.MultipartFile.fromPath('image', imageFile.value!.path));
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response = await request.send();
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final responseBody = await response.stream.bytesToString();
+        loader.value = false;
+
+        createPositiveMomentsModel =
+            createPositiveMomentsModelFromJson(responseBody);
+        Get.back();
+        setState(() {});
+      } else {
+        print(response.reasonPhrase);
+      }
+    } catch (e) {
+      loader.value = false;
+
+      debugPrint(e.toString());
+    }
+  }
+
+  updatePositiveMoments(filteredBookmark) async {
+    try {
+      var headers = {
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+      };
+
+      var request = http.MultipartRequest('POST',
+          Uri.parse('${EndPoints.updatePositiveMoment}$filteredBookmark'));
+
+      request.fields.addAll({
+        'title': titleController.text.trim(),
+        'description': descController.text.trim(),
+      });
+      if (imageFile.value != null) {
+        request.files.add(
+            await http.MultipartFile.fromPath('image', imageFile.value!.path));
+        request.headers.addAll(headers);
+
+        http.StreamedResponse response = await request.send();
+        if (response.statusCode == 200) {
+          final responseBody = await response.stream.bytesToString();
+
+          updatePositiveMomentsModel =
+              updatePositiveMomentsModelFromJson(responseBody);
+          Get.back();
+          Get.back();
+        } else {
+          print(response.reasonPhrase);
+        }
+      }
+    } catch (e) {
+      loader.value = false;
+
+      debugPrint(e.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -87,7 +176,8 @@ class _AddPositivePageState extends State<AddPositivePage>
             ? ColorConstant.black
             : ColorConstant.backGround,
         appBar: CustomAppBar(
-          title: widget.isEdit! ?"Edit Positive Moments" :"positiveMoments".tr,
+          title:
+              widget.isEdit! ? "Edit Positive Moments" : "positiveMoments".tr,
         ),
         body: Stack(
           children: [
@@ -188,28 +278,29 @@ class _AddPositivePageState extends State<AddPositivePage>
                                 Dimens.d20.h.spaceHeight,
                                 Row(
                                   children: [
-                                    if(widget.isEdit!)
-                                    Expanded(
-                                      child: CommonElevatedButton(
-                                        title: "cancel".tr,
-                                        outLined: true,
-                                        textStyle: Style.montserratRegular(
-                                            color: ColorConstant.textDarkBlue),
-                                        onTap: () {
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            affirmationDraftList.add({
-                                              "title": titleController.text,
-                                              "des": descController.text,
-                                              "image": imageFile.value,
-                                              "createdOn": "",
-                                            });
-                                            setState(() {});
-                                            Get.back();
-                                          }
-                                        },
+                                    if (widget.isEdit!)
+                                      Expanded(
+                                        child: CommonElevatedButton(
+                                          title: "cancel".tr,
+                                          outLined: true,
+                                          textStyle: Style.montserratRegular(
+                                              color:
+                                                  ColorConstant.textDarkBlue),
+                                          onTap: () {
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              affirmationDraftList.add({
+                                                "title": titleController.text,
+                                                "des": descController.text,
+                                                "image": imageFile.value,
+                                                "createdOn": "",
+                                              });
+                                              setState(() {});
+                                              Get.back();
+                                            }
+                                          },
+                                        ),
                                       ),
-                                    ),
                                     Dimens.d20.spaceWidth,
                                     Expanded(
                                       child: CommonElevatedButton(
@@ -237,8 +328,9 @@ class _AddPositivePageState extends State<AddPositivePage>
                                                 "image": imageFile.value,
                                                 "createdOn": "",
                                               });
+                                              createPositiveMoment();
                                               setState(() {});
-                                              Get.back();
+                                              // Get.back();
                                             }
                                           }
                                         },
@@ -306,8 +398,9 @@ class _AddPositivePageState extends State<AddPositivePage>
                     fontSize: Dimens.d12, color: ColorConstant.white),
                 title: "ok".tr,
                 onTap: () {
-                  Get.back();
-                  Get.back();
+                  updatePositiveMoments(widget.id);
+                  // Get.back();
+                  // Get.back();
                 },
               ),
             )

@@ -66,6 +66,67 @@ class PositiveController extends GetxController {
   Rx<bool> loader = false.obs;
   PositiveModel positiveModel = PositiveModel();
 
+  deletePositiveMoment(filteredBookmark) async {
+    try {
+      var headers = {
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+      };
+      var request = http.Request('DELETE',
+          Uri.parse('${EndPoints.deletePositiveMoment}$filteredBookmark'));
+      print('id ============= ${filteredBookmark}');
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response = await request.send();
+      if (response.statusCode == 200) {
+        final responseBody = await response.stream.bytesToString();
+        loader.value = false;
+        Get.back();
+        update(['moment']);
+
+        // createPositiveMomentsModel = createPositiveMomentsModelFromJson(responseBody);
+      } else {
+        print(response.reasonPhrase);
+      }
+    } catch (e) {
+      loader.value = false;
+
+      debugPrint(e.toString());
+    }
+    update(['moment']);
+  }
+
+  filterMoment() async {
+    loader.value = true;
+
+    try {
+      var headers = {
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+      };
+      var request = http.Request(
+        'GET',
+        Uri.parse(
+          EndPoints.getMoment,
+        ),
+      );
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        final responseBody = await response.stream.bytesToString();
+        loader.value = false;
+
+        positiveModel = positiveModelFromJson(responseBody);
+        Get.back();
+      } else {
+        print(response.reasonPhrase);
+      }
+    } catch (e) {
+      loader.value = false;
+
+      debugPrint(e.toString());
+    }
+  }
+
   getPositiveMoments() async {
     loader.value = true;
 
@@ -92,12 +153,13 @@ class PositiveController extends GetxController {
           for (int i = 0; i < positiveModel.data!.length; i++) {
             positiveMomentList.add({
               "title": positiveModel.data?[i].title ?? '',
-              "img": positiveModel.data?[i].image ?? ''
+              "img": positiveModel.data?[i].image ?? '',
+              'id': positiveModel.data![i].id,
             });
           }
         }
 
-        update();
+        update(['moment']);
       } else {
         loader.value = false;
 
@@ -108,5 +170,6 @@ class PositiveController extends GetxController {
 
       debugPrint(e.toString());
     }
+    update(['moment']);
   }
 }

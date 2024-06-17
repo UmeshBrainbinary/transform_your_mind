@@ -20,6 +20,9 @@ class EndPoints {
   static String getUser = "${baseUrl}user-details?id=";
   static String getMoment = "${baseUrl}get-moment?isLastWeek=true";
   static String getPod = "${baseUrl}get-pod";
+  static String createPositiveMoment = "${baseUrl}add-moment";
+  static String deletePositiveMoment = "${baseUrl}delete-moment?id=";
+  static String updatePositiveMoment = "${baseUrl}update-moment?id=";
 
 
 }
