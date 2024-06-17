@@ -38,6 +38,7 @@ class _ExploreScreenState extends State<ExploreScreen>
   final AudioPlayerService _audioPlayerService = AudioPlayerService();
 
   ThemeController themeController = Get.find<ThemeController>();
+
   @override
   void initState() {
     _lottieBgController = AnimationController(vsync: this);
@@ -181,7 +182,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                                 suffixIcon: Padding(
                                   padding: const EdgeInsets.all(5.0),
                                   child: SvgPicture.asset(
-                                      ImageConstant.searchExplore,
+                                    ImageConstant.searchExplore,
                                   ),
                                 ),
                                 hintText: "search".tr,
@@ -191,9 +192,165 @@ class _ExploreScreenState extends State<ExploreScreen>
                           // const TransFormRitualsButton(),
                           Dimens.d20.h.spaceHeight,
                           Expanded(
-                              child: Obx(
-                            () => exploreController.filteredList!=null
-                                ? GridView.builder(
+                            child: exploreController.filteredList != null
+                                ? GetBuilder<ExploreController>(
+                                    id: 'update',
+                                    builder: (exploreController) {
+                                      return GridView.builder(
+                                          controller: scrollController,
+                                          padding: const EdgeInsets.only(
+                                              bottom: Dimens.d20),
+                                          physics:
+                                              const BouncingScrollPhysics(),
+                                          gridDelegate:
+                                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                            childAspectRatio: 0.71,
+                                            crossAxisCount: 2,
+                                            // Number of columns
+                                            crossAxisSpacing: 20,
+                                            // Spacing between columns
+                                            mainAxisSpacing:
+                                                20, // Spacing between rows
+                                          ),
+                                          itemCount: exploreController
+                                                  .getPodsModel.data?.length ??
+                                              0,
+                                          // exploreController.filteredList?.length??0,
+                                          itemBuilder: (context, index) {
+                                            return GestureDetector(
+                                              onTap: () {
+                                                searchFocusNode.unfocus();
+                                                _audioPlayerService.dispose();
+
+                                                _audioPlayerService.setUrl(
+                                                  "https://transformyourmind-server.onrender.com/${exploreController.getPodsModel.data![index].audioFile.toString()}",
+                                                  //'https://media.shoorah.io/admins/shoorah_pods/audio/1682952330-9588.mp3'
+                                                );
+                                                _onTileClick(
+                                                  index,
+                                                  context,
+                                                  _audioPlayerService,
+                                                    "https://transformyourmind-server.onrender.com/${exploreController.getPodsModel.data![index].audioFile.toString()}",
+                                                    "https://transformyourmind-server.onrender.com/${exploreController.getPodsModel.data![index].image}"
+                                                );
+                                              },
+                                              child: Column(
+                                                children: [
+                                                  Stack(
+                                                    alignment:
+                                                        Alignment.topRight,
+                                                    children: [
+                                                      CustomImageView(
+                                                        imagePath:
+                                                            "https://transformyourmind-server.onrender.com/${exploreController.getPodsModel.data![index].image}",
+                                                        /*exploreController
+                                                          .filteredList![index]
+                                                      ['image'],*/
+                                                        height: Dimens.d135,
+                                                        radius: BorderRadius
+                                                            .circular(10),
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                      Align(
+                                                        alignment:
+                                                            Alignment.topRight,
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .only(
+                                                                  right: 10,
+                                                                  top: 10),
+                                                          child:
+                                                              SvgPicture.asset(
+                                                                  ImageConstant
+                                                                      .play),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                  Dimens.d10.spaceHeight,
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      SizedBox(
+                                                        width: 90,
+                                                        child: Text(
+                                                          exploreController
+                                                              .getPodsModel
+                                                              .data![index]
+                                                              .name
+                                                              .toString(),
+                                                          // "Motivational",
+                                                          style: Style
+                                                              .montserratMedium(
+                                                            fontSize:
+                                                                Dimens.d12,
+                                                          ),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          maxLines: 1,
+                                                        ),
+                                                      ),
+                                                      const CircleAvatar(
+                                                        radius: 2,
+                                                        backgroundColor:
+                                                            ColorConstant
+                                                                .colorD9D9D9,
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          SvgPicture.asset(
+                                                            ImageConstant
+                                                                .rating,
+                                                            color: ColorConstant
+                                                                .colorFFC700,
+                                                            height: 10,
+                                                            width: 10,
+                                                          ),
+                                                          Text(
+                                                            "4.0" ?? '',
+                                                            style: Style
+                                                                .montserratMedium(
+                                                              fontSize:
+                                                                  Dimens.d12,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      SvgPicture.asset(
+                                                          ImageConstant
+                                                              .downloadCircle,
+                                                          height: Dimens.d25,
+                                                          width: Dimens.d25)
+                                                    ],
+                                                  ),
+                                                  Dimens.d7.spaceHeight,
+                                                  Text(
+                                                    exploreController
+                                                        .getPodsModel
+                                                        .data![index]
+                                                        .expertName
+                                                        .toString()
+                                                    /*exploreController
+                                                  .filteredList![index]['title']*/
+                                                    ,
+                                                    maxLines: Dimens.d2.toInt(),
+                                                    style:
+                                                        Style.montserratMedium(
+                                                            fontSize:
+                                                                Dimens.d14),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          });
+                                    },
+                                  )
+                                : GridView.builder(
                                     controller: scrollController,
                                     padding: const EdgeInsets.only(
                                         bottom: Dimens.d20),
@@ -209,16 +366,21 @@ class _ExploreScreenState extends State<ExploreScreen>
                                           20, // Spacing between rows
                                     ),
                                     itemCount:
-                                        exploreController.filteredList?.length??0,
+                                        exploreController.exploreList.length,
                                     itemBuilder: (context, index) {
                                       return GestureDetector(
                                         onTap: () {
                                           searchFocusNode.unfocus();
                                           _audioPlayerService.dispose();
-
                                           _audioPlayerService.setUrl(
                                               'https://media.shoorah.io/admins/shoorah_pods/audio/1682952330-9588.mp3');
-                                          _onTileClick(index, context,_audioPlayerService);
+                                          _onTileClick(index, context,
+                                              _audioPlayerService,
+                                              'https://media.shoorah.io/admins/shoorah_pods/audio/1682952330-9588.mp3',
+                                        '');
+                                        //  "https://transformyourmind-server.onrender.com/${exploreController.getPodsModel.data![index].image}");
+
+                                          //  "https://transformyourmind-server.onrender.com/${exploreController.getPodsModel.data![index].audioFile.toString()}");
                                         },
                                         child: Column(
                                           children: [
@@ -227,7 +389,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                                               children: [
                                                 CustomImageView(
                                                   imagePath: exploreController
-                                                          .filteredList![index]
+                                                          .exploreList[index]
                                                       ['image'],
                                                   height: Dimens.d135,
                                                   radius:
@@ -291,7 +453,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                                             Dimens.d7.spaceHeight,
                                             Text(
                                               exploreController
-                                                  .filteredList![index]['title'],
+                                                  .exploreList[index]['title'],
                                               maxLines: Dimens.d2.toInt(),
                                               style: Style.montserratMedium(
                                                   fontSize: Dimens.d14),
@@ -300,113 +462,8 @@ class _ExploreScreenState extends State<ExploreScreen>
                                           ],
                                         ),
                                       );
-                                    })
-                                : GridView.builder(
-                                    controller: scrollController,
-                                    padding: const EdgeInsets.only(
-                                        bottom: Dimens.d20),
-                                    physics: const BouncingScrollPhysics(),
-                                    gridDelegate:
-                                        const SliverGridDelegateWithFixedCrossAxisCount(
-                                      childAspectRatio: 0.71,
-                                      crossAxisCount: 2,
-                                      // Number of columns
-                                      crossAxisSpacing: 20,
-                                    // Spacing between columns
-                                    mainAxisSpacing: 20, // Spacing between rows
-                                  ),
-                                    itemCount:
-                                        exploreController.exploreList.length,
-                                    itemBuilder: (context, index) {
-                                      return GestureDetector(
-                                        onTap: () {
-                                          searchFocusNode.unfocus();
-                                          _audioPlayerService.dispose();
-                                          _audioPlayerService.setUrl(
-                                              'https://media.shoorah.io/admins/shoorah_pods/audio/1682952330-9588.mp3');
-                                          _onTileClick(index, context,_audioPlayerService);
-                                      },
-                                      child: Column(
-                                        children: [
-                                          Stack(
-                                            alignment: Alignment.topRight,
-                                            children: [
-                                              CustomImageView(
-                                                  imagePath: exploreController
-                                                          .exploreList[index]
-                                                      ['image'],
-                                                  height: Dimens.d135,
-                                                  radius:
-                                                      BorderRadius.circular(10),
-                                                  fit: BoxFit.cover,
-                                                ),
-                                                Align(
-                                                  alignment: Alignment.topRight,
-                                                child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            right: 10, top: 10),
-                                                    child: SvgPicture.asset(
-                                                        ImageConstant.play),
-                                                  ),
-                                                )
-                                            ],
-                                          ),
-                                          Dimens.d10.spaceHeight,
-                                          Row(
-                                            mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  "Motivational",
-                                                  style: Style.montserratMedium(
-                                                  fontSize: Dimens.d12,
-                                                ),
-                                              ),
-                                              const CircleAvatar(
-                                                radius: 2,
-                                                backgroundColor:
-                                                      ColorConstant.colorD9D9D9,
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    SvgPicture.asset(
-                                                      ImageConstant.rating,
-                                                      color: ColorConstant
-                                                          .colorFFC700,
-                                                      height: 10,
-                                                      width: 10,
-                                                    ),
-                                                    Text(
-                                                      "4.0" ?? '',
-                                                      style: Style
-                                                          .montserratMedium(
-                                                        fontSize: Dimens.d12,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                SvgPicture.asset(
-                                                    ImageConstant.downloadCircle,
-                                                  height: Dimens.d25,
-                                                  width: Dimens.d25)
-                                            ],
-                                          ),
-                                          Dimens.d7.spaceHeight,
-                                          Text(
-                                              exploreController
-                                                  .exploreList[index]['title'],
-                                              maxLines: Dimens.d2.toInt(),
-                                              style: Style.montserratMedium(
-                                                  fontSize: Dimens.d14),
-                                              overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ],
-                                      ),
-                                    );
                                     }),
-                          )),
+                          ),
                         ],
                       ),
                     ),
@@ -420,7 +477,8 @@ class _ExploreScreenState extends State<ExploreScreen>
     );
   }
 
-  void _onTileClick(int index, BuildContext context, AudioPlayerService audioPlayerService) {
+  void _onTileClick(
+      int index, BuildContext context, AudioPlayerService audioPlayerService, String s, exploreList) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -432,7 +490,11 @@ class _ExploreScreenState extends State<ExploreScreen>
         ),
       ),
       builder: (BuildContext context) {
-        return  NowPlayingScreen(audioPlayerService: audioPlayerService,);
+        return NowPlayingScreen(
+          image: exploreList,
+          url: s,
+          audioPlayerService: audioPlayerService,
+        );
       },
     );
   }
