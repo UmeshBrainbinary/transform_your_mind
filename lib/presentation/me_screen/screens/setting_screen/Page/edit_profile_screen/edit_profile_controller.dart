@@ -54,7 +54,7 @@ class EditProfileController extends GetxController {
     genderController.text = getUserModel.data!.gender==1?"Male":getUserModel.data!.gender==2?"Female":"Other";
     if( getUserModel.data?.userProfile !=null){
       urlImage = getUserModel.data?.userProfile?? "";
-
+    await PrefService.setValue(PrefKey.userImage,getUserModel.data?.userProfile);
     }
     update();
     update(["edit"]);
@@ -124,11 +124,11 @@ class EditProfileController extends GetxController {
 
       if (response.statusCode == 200) {
         await PrefService.setValue(PrefKey.focuses, true);
+        showSnackBarSuccess(context,"User updated successfully"?? "");
 
         loader.value = false;
         update();
 
-        showSnackBarSuccess(context, updateUserModel.message ?? "");
         Get.back();
       } else {
         loader.value = false;

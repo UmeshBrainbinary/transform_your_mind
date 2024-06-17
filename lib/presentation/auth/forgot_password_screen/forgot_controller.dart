@@ -50,6 +50,7 @@ class ForgotController extends GetxController {
   String? tokenVerify = "";
 ResendModel resendModel = ResendModel();
   resendApi(String? token, bool? forgot, String? email, BuildContext context) async {
+    loader.value = true;
     var headers = {
       'Content-Type': 'application/json',
     };
@@ -71,6 +72,8 @@ ResendModel resendModel = ResendModel();
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
+      loader.value = false;
+
       final responseBody = await response.stream.bytesToString();
       resendModel = resendModelFromJson(responseBody);
       tokenVerify = resendModel.token;
@@ -79,8 +82,11 @@ ResendModel resendModel = ResendModel();
 
     }
     else {
+      loader.value = false;
+
       debugPrint(response.reasonPhrase);
     }
+    loader.value = false;
 
   }
 

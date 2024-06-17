@@ -96,7 +96,7 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
         setState(() {
           loader = false;
         });
-        Navigator.pushReplacement(context, MaterialPageRoute(
+        Navigator.push(context, MaterialPageRoute(
           builder: (context) {
             return const SelectYourAffirmationFocusPage(isFromMe: false);
           },
@@ -142,7 +142,7 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
       child: Stack(
         children: [
           Scaffold(
-            appBar: const CustomAppBar(
+            appBar: const CustomAppBar(showBack: false,
               title: "Select Your Focus",
             ),
             body: Stack(

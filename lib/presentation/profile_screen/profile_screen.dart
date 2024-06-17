@@ -345,7 +345,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Dimens.d25.spaceHeight,
                 GestureDetector(
                   onTap: () {
-                    Get.toNamed(AppRoutes.settingScreen);
+                    Get.toNamed(AppRoutes.settingScreen)!.then((value) {
+                      profileController.getUserDetail();
+                      setState(() {
+                      });
+                    },);
                   },
                   child: Container(
                     margin: const EdgeInsets.symmetric(horizontal: 20),

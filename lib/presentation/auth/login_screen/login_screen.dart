@@ -69,7 +69,7 @@ class LoginScreen extends StatelessWidget {
                                       hintText: "enterEmail".tr,
                                       controller:
                                           loginController.emailController,
-                                      focusNode: FocusNode(),
+                                      focusNode:  loginController.emailFocus,
                                       prefixIcon: Image.asset(
                                           ImageConstant.email,
                                           scale: Dimens.d4),
@@ -88,6 +88,7 @@ class LoginScreen extends StatelessWidget {
                                     valueListenable: loginController.securePass,
                                     builder: (context, value, child) {
                                       return CommonTextField(
+
                                         labelText: "password".tr,
                                         hintText: "enterPassword".tr,
                                         controller:
@@ -106,7 +107,7 @@ class LoginScreen extends StatelessWidget {
                                           }
                                           return null;
                                         },
-                                        focusNode: FocusNode(),
+                                        focusNode: loginController.passwordFocus,
                                         prefixIcon: Image.asset(
                                             ImageConstant.lock,
                                             scale: Dimens.d4),
@@ -140,6 +141,8 @@ class LoginScreen extends StatelessWidget {
                                     title: "login".tr,
                                     onTap: () async {
                                       FocusScope.of(context).unfocus();
+                                      loginController.emailFocus.unfocus();
+                                      loginController.passwordFocus.unfocus();
 
                                       if (_formKey.currentState!
                                           .validate()) {

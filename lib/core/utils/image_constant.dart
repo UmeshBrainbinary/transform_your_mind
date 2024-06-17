@@ -136,6 +136,7 @@ class ImageConstant {
   static  String journalIconQuick = "$iconHomePath/ic_journal_quick.svg";
   static  String podIconQuick = "$iconHomePath/ic_pod_quick.svg";
   static  String sleepIconQuick = "$iconHomePath/ic_sleep_quick.svg";
+  static  String homeAffirmation = "$iconHomePath/home_affirmation_icon.svg";
   static  String meditationIconQuick = "$iconHomePath/ic_meditation_quick.svg";
   static  String transformPodIcon = "$iconPath/ic_pod_selected.svg";
   static  String ritualIcon = "$iconPath/ic_rituals_selected.svg";

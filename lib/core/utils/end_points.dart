@@ -18,6 +18,7 @@ class EndPoints {
   static String updateAffirmation = "update-affirmation?id=";
   static String categoryAffirmation = "get-affirmation?category=";
   static String getUser = "${baseUrl}user-details?id=";
+  static String getMoment = "${baseUrl}get-moment?isLastWeek=true";
 
 
 }

@@ -50,6 +50,7 @@ class _HomeScreenState extends State<HomeScreen>
     {"title": "transformPods".tr, "icon": ImageConstant.podIconQuick},
     {"title": "gratitudeJournal".tr, "icon": ImageConstant.journalIconQuick},
     {"title": "positiveMoments".tr, "icon": ImageConstant.sleepIconQuick},
+    {"title": "affirmation".tr, "icon": ImageConstant.homeAffirmation},
   ];
   List gratitudeList = [];
   GratitudeModel gratitudeModel = GratitudeModel();
@@ -402,7 +403,8 @@ class _HomeScreenState extends State<HomeScreen>
                                 .then((value) {
                               setState(() {});
                             });
-                          } else {
+                          } else if (quickAccessList[index]["title"] ==
+                              "positiveMoments".tr){
                             Navigator.push(context, MaterialPageRoute(
                               builder: (context) {
                                 return const PositiveScreen();
@@ -412,7 +414,18 @@ class _HomeScreenState extends State<HomeScreen>
                                 setState(() {});
                               },
                             );
+                          }else{
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) {
+                                return   const MyAffirmationPage();
+                              },
+                            )).then(
+                                  (value) {
+                                setState(() {});
+                              },
+                            );
                           }
+
                         },
                         child: Container(
                           decoration: BoxDecoration(

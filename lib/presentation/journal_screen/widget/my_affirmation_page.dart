@@ -486,7 +486,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   Widget yourAffirmationWidget() {
     return Expanded(
       child: SingleChildScrollView(
-        child: affirmationModel.data == null
+        child: (affirmationModel.data??[]).isEmpty
             ? Center(
               child: SizedBox(height: Get.height-300,
                 child: Column(crossAxisAlignment: CrossAxisAlignment.center,
@@ -716,7 +716,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 20.0),
-              child: _filteredBookmarks != null
+              child: (_filteredBookmarks??[]).isNotEmpty
                   ? ListView.builder(
                       itemCount: _filteredBookmarks?.length ?? 0,
                       physics: const NeverScrollableScrollPhysics(),
@@ -848,7 +848,18 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                         );
                       },
                     )
-                  : const SizedBox(),
+                  : Center(
+                child: SizedBox(height: Get.height-300,
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(ImageConstant.noData),
+                      Dimens.d20.spaceHeight,
+                      Text("Data Not Found",style: Style.montserratBold(fontSize: 24),)
+                    ],
+                  ),
+                ),
+              ),
             ),
           ],
         ),

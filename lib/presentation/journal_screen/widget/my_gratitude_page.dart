@@ -427,6 +427,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
         AppConstants.subscriptionMessage: i10n.journalNoSubscriptionMessage,
       });*/
     } else {
+      dateController.clear();
       Get.toNamed(AppRoutes.addGratitudePage)!.then((value) {
         setState(() {});
       }).then(

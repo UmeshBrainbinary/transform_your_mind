@@ -17,7 +17,8 @@ import 'package:transform_your_mind/routes/app_routes.dart';
 class LoginController extends GetxController {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-
+ FocusNode emailFocus = FocusNode();
+ FocusNode passwordFocus = FocusNode();
   ValueNotifier<bool> securePass = ValueNotifier(true);
   ValueNotifier<bool> rememberMe = ValueNotifier(false);
 

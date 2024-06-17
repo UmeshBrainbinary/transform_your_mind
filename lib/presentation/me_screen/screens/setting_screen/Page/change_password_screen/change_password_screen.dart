@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
@@ -193,6 +194,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 },
               ),
             ),
+            Obx(() => changePasswordController.loader.isTrue?commonLoader():const SizedBox(),)
           ],
         ),
 
