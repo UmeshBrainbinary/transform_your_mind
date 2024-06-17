@@ -9,14 +9,14 @@ GetPodsModel getPodsModelFromJson(String str) => GetPodsModel.fromJson(json.deco
 String getPodsModelToJson(GetPodsModel data) => json.encode(data.toJson());
 
 class GetPodsModel {
-  List<Datum>? data;
+  List<AudioData>? data;
 
   GetPodsModel({
     this.data,
   });
 
   factory GetPodsModel.fromJson(Map<String, dynamic> json) => GetPodsModel(
-    data: json["data"] == null ? [] : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
+    data: json["data"] == null ? [] : List<AudioData>.from(json["data"]!.map((x) => AudioData.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -24,7 +24,7 @@ class GetPodsModel {
   };
 }
 
-class Datum {
+class AudioData {
   String? id;
   String? name;
   String? description;
@@ -39,7 +39,7 @@ class Datum {
   DateTime? updatedAt;
   int? v;
 
-  Datum({
+  AudioData({
     this.id,
     this.name,
     this.description,
@@ -55,7 +55,7 @@ class Datum {
     this.v,
   });
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory AudioData.fromJson(Map<String, dynamic> json) => AudioData(
     id: json["_id"],
     name: json["name"],
     description: json["description"],

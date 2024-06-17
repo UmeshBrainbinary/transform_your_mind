@@ -10,6 +10,8 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_controller.dart';
+import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_screen.dart';
 import 'package:transform_your_mind/presentation/notification_screen/notification_screen.dart';
 import 'package:transform_your_mind/presentation/transform_pods_screen/transform_pods_screen.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
@@ -46,7 +48,7 @@ class _ToolsScreenState extends State<ToolsScreen>
   ];
   ValueNotifier<bool> isTutorialVideoVisible = ValueNotifier(false);
   ValueNotifier<bool> info = ValueNotifier(false);
-
+  final audioPlayerController = Get.find<NowPlayingController>();
   @override
   void initState() {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -298,6 +300,117 @@ class _ToolsScreenState extends State<ToolsScreen>
                     ),
                   )
                 : const SizedBox(),
+            Obx(() {
+              if (!audioPlayerController.isVisible.value) {
+                return const SizedBox.shrink();
+              }
+
+              final currentPosition =
+                  audioPlayerController.positionStream.value ?? Duration.zero;
+              final duration =
+                  audioPlayerController.durationStream.value ?? Duration.zero;
+              final isPlaying = audioPlayerController.isPlaying.value;
+
+              return GestureDetector(
+                onTap: () {
+                  Get.to(() => NowPlayingScreen());
+                },
+                child: Align(alignment: Alignment.bottomCenter,
+                  child: Container(
+                    height: 87,
+                    width: Get.width,padding: const EdgeInsets.only(top: 8.0,left: 8,right: 8),
+                    margin: const EdgeInsets.symmetric(horizontal: 10,vertical: 50),
+                    decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [ColorConstant.colorB9CCD0,
+                            ColorConstant.color86A6AE,
+                            ColorConstant.color86A6AE,
+                          ], // Your gradient colors
+                          begin: Alignment.bottomLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        color: ColorConstant.themeColor,
+                        borderRadius: BorderRadius.circular(6)),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            SvgPicture.asset(ImageConstant.userProfile,width: 47,
+                                height: 47),
+
+                            /*   CommonLoadImage(
+                                url: audioPlayerController.currentImage!,
+                                width: 52,
+                                height: 52),*/
+                            Dimens.d12.spaceWidth,
+                            GestureDetector(
+                                onTap: () async {
+                                  if (isPlaying) {
+                                    await audioPlayerController.pause();
+                                  } else {
+                                    await audioPlayerController.play();
+                                  }
+                                },
+                                child: SvgPicture.asset(isPlaying
+                                    ? ImageConstant.pause
+                                    : ImageConstant.play,height: 17,width: 17,)),
+                            Dimens.d10.spaceWidth,
+                            Expanded(
+                              child: Text(
+                                audioPlayerController.currentName!,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: Style.montserratRegular(
+                                    fontSize: 12, color: ColorConstant.white),
+                              ),
+                            ),
+                            Dimens.d10.spaceWidth,
+                            GestureDetector(
+                                onTap: () async {
+                                  await audioPlayerController.reset();
+                                },
+                                child: SvgPicture.asset(
+                                  ImageConstant.closePlayer,
+                                  color: ColorConstant.white,height: 24,width: 24,
+                                )),
+                            Dimens.d10.spaceWidth,
+                          ],
+                        ),
+                        SliderTheme(
+                          data: SliderTheme.of(context).copyWith(
+
+                            activeTrackColor:
+                            ColorConstant.white.withOpacity(0.2),
+                            inactiveTrackColor: ColorConstant.color6E949D,
+                            trackHeight: 1.5,
+                            thumbColor: ColorConstant.transparent,
+                            // Color of the thumb
+                            thumbShape:SliderComponentShape.noThumb,
+                            // Customize the thumb shape and size
+                            overlayColor: ColorConstant.backGround.withAlpha(32),
+                            // Color when thumb is pressed
+                            overlayShape: const RoundSliderOverlayShape(
+                                overlayRadius:
+                                16.0), // Customize the overlay shape and size
+                          ),
+                          child: Slider(thumbColor: Colors.transparent,
+
+                            activeColor: ColorConstant.backGround,
+                            value: currentPosition.inMilliseconds.toDouble(),
+                            max: duration.inMilliseconds.toDouble(),
+                            onChanged: (value) {
+                              audioPlayerController.seekForMeditationAudio(
+                                  position:
+                                  Duration(milliseconds: value.toInt()));
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            })
           ],
         ),
       ),

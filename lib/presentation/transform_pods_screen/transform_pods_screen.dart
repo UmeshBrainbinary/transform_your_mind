@@ -9,8 +9,8 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
-import 'package:transform_your_mind/presentation/explore_screen/explore_controller.dart';
-import 'package:transform_your_mind/presentation/explore_screen/screen/now_playing_screen/now_playing_screen.dart';
+import 'package:transform_your_mind/presentation/audio_content_screen/audio_content_controller.dart';
+import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_screen.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 import 'package:transform_your_mind/widgets/custom_image_view.dart';
@@ -29,7 +29,7 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
   late AnimationController _controller;
   int ritualAddedCount = 0;
   late ScrollController scrollController = ScrollController();
-  final ExploreController exploreController = Get.put(ExploreController());
+  final AudioContentController exploreController = Get.put(AudioContentController());
   TextEditingController searchController = TextEditingController();
   FocusNode searchFocusNode = FocusNode();
   List? _filteredBookmarks;
@@ -110,7 +110,7 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
                             onChanged: (value) {
                               setState(() {
                                 _filteredBookmarks = searchBookmarks(
-                                    value, exploreController.exploreList);
+                                    value, exploreController.audioData);
                               });
                             },
                           ),
@@ -202,87 +202,7 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
                                 ),
                               );
                             })
-                        : GridView.builder(
-                            controller: scrollController,
-                            padding: const EdgeInsets.only(bottom: Dimens.d20),
-                            physics: const BouncingScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              childAspectRatio: 0.71,
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 20,
-                              mainAxisSpacing: 20,
-                            ),
-                            itemCount: exploreController.exploreList.length,
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  _onTileClick(index, context);
-                                },
-                                child: Column(
-                                  children: [
-                                    Stack(
-                                      alignment: Alignment.topRight,
-                                      children: [
-                                        CustomImageView(
-                                          imagePath: exploreController
-                                              .exploreList[index]['image'],
-                                          height: Dimens.d135,
-                                          radius: BorderRadius.circular(10),
-                                          fit: BoxFit.cover,
-                                        ),
-                                        Align(
-                                          alignment: Alignment.topRight,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                right: 10, top: 10),
-                                            child: SvgPicture.asset(
-                                                ImageConstant.play),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    Dimens.d10.spaceHeight,
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "Meditation",
-                                          style: Style.montserratMedium(
-                                            fontSize: Dimens.d12,
-                                          ),
-                                        ),
-                                        const CircleAvatar(
-                                          radius: 2,
-                                          backgroundColor:
-                                              ColorConstant.colorD9D9D9,
-                                        ),
-                                        Text(
-                                          "12:00" ?? '',
-                                          style: Style.montserratMedium(
-                                            fontSize: Dimens.d12,
-                                          ),
-                                        ),
-                                        SvgPicture.asset(
-                                            ImageConstant.downloadCircle,
-                                            height: Dimens.d25,
-                                            width: Dimens.d25)
-                                      ],
-                                    ),
-                                    Dimens.d7.spaceHeight,
-                                    Text(
-                                      exploreController.exploreList[index]
-                                          ['title'],
-                                      maxLines: Dimens.d2.toInt(),
-                                      style: Style.montserratMedium(
-                                          fontSize: Dimens.d14),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
-                                ),
-                              );
-                            })),
+                        :SizedBox()),
               ],
             ),
           )),

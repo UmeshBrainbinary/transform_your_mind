@@ -1,15 +1,16 @@
 
 import 'package:get/get.dart';
-import 'package:transform_your_mind/presentation/explore_screen/explore_controller.dart';
+import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_controller.dart';
+
 
 
 /// A binding class for the SplashScreen.
 ///
 /// This class ensures that the SplashController is created when the
 /// SplashScreen is first loaded.
-class ExploreBinding extends Bindings {
+class NowPlayingBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => ExploreController());
+    Get.lazyPut(() => NowPlayingController());
   }
 }

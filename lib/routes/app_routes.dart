@@ -2,6 +2,10 @@
 import 'package:get/get.dart';
 import 'package:transform_your_mind/presentation/affirmation_alarm_screen/affirmation_alarm_screen.dart';
 import 'package:transform_your_mind/presentation/affirmation_alarm_screen/binding/affirmation_alarm_binding.dart';
+import 'package:transform_your_mind/presentation/audio_content_screen/audio_content_screen.dart';
+import 'package:transform_your_mind/presentation/audio_content_screen/binding/audio_binding.dart';
+import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/binding/now_playing_binding.dart';
+import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_screen.dart';
 import 'package:transform_your_mind/presentation/auth/forgot_password_screen/binding/forgot_binding.dart';
 import 'package:transform_your_mind/presentation/auth/forgot_password_screen/forgot_password_screen.dart';
 import 'package:transform_your_mind/presentation/auth/forgot_password_screen/new_password_screen.dart';
@@ -12,8 +16,6 @@ import 'package:transform_your_mind/presentation/auth/ragister_screen/binding/re
 import 'package:transform_your_mind/presentation/auth/ragister_screen/register_screen.dart';
 import 'package:transform_your_mind/presentation/dash_board_screen/binding/dash_board_binding.dart';
 import 'package:transform_your_mind/presentation/dash_board_screen/dash_board_screen.dart';
-import 'package:transform_your_mind/presentation/explore_screen/binding/explore_binding.dart';
-import 'package:transform_your_mind/presentation/explore_screen/explore_screen.dart';
 import 'package:transform_your_mind/presentation/feedback_screen/binding/feedback_binding.dart';
 import 'package:transform_your_mind/presentation/feedback_screen/feedback_screen.dart';
 import 'package:transform_your_mind/presentation/home_screen/binding/home_binding.dart';
@@ -73,7 +75,7 @@ class AppRoutes {
   static const String dashBoardScreen = '/dashBoardScreen';
   static const String meScreen = '/meScreen';
   static const String homeScreen = '/homeScreen';
-  static const String exploreScreen = '/exploreScreen';
+  static const String audioScreen = '/audioScreen';
   static const String toolsScreen = '/toolsScreen';
   static const String initialRoute = '/initialRoute';
   static const String nowPlayingScreen = '/now_playing_screen';
@@ -100,6 +102,7 @@ class AppRoutes {
   static const String affirmationAlarmScreen = '/affirmationAlarmScreen';
   static const String positiveScreen = '/positiveScreen';
   static const String feedbackScreen = '/feedbackScreen';
+  static const String nowPlayScreen = '/nowPlayScreen';
 
   static List<GetPage> pages = [
 
@@ -190,10 +193,10 @@ class AppRoutes {
     ),
     GetPage(
       transition: Transition.rightToLeft,
-      name: exploreScreen,
-      page: () =>  ExploreScreen(),
+      name: audioScreen,
+      page: () =>  const AudioContentScreen(),
       bindings: [
-        ExploreBinding(),
+        AudioContentBinding(),
       ],
     ),
     GetPage(
@@ -383,6 +386,12 @@ class AppRoutes {
       name: feedbackScreen,
       page: () => const FeedbackScreen(),
       bindings: [FeedbackBinding()],
+    ),
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: nowPlayScreen,
+      page: () =>  NowPlayingScreen(),
+      bindings: [NowPlayingBinding()],
     ),
 
     ///

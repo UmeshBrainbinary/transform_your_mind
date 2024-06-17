@@ -181,6 +181,7 @@ class ImageConstant {
   static String likeRedTools = "$iconPath/like_red_tools.svg";
   static String likeTools = "$iconPath/like_tools.svg";
   static String close = "$iconPath/close.svg";
+  static String closePlayer = "$iconPath/close_player.svg";
   static String delete = "$iconPath/delete.svg";
   static String profile1 = "$imagePath/profile1_back.svg";
   static String profile2 = "$imagePath/profile2_back.svg";

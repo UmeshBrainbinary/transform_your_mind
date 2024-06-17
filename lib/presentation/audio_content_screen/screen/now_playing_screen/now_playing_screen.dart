@@ -7,28 +7,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
-import 'package:transform_your_mind/core/common_widget/pods_play_service.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/utils/audio_manager/audio_player_manager.dart';
 import 'package:transform_your_mind/core/utils/audio_manager/seek_bar.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
-import 'package:transform_your_mind/core/utils/duration_formatter.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
-import 'package:transform_your_mind/presentation/explore_screen/screen/now_playing_screen/now_playing_controller.dart';
+import 'package:transform_your_mind/model_class/get_pods_model.dart';
+import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_controller.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
+import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 class NowPlayingScreen extends StatefulWidget {
-  AudioPlayerService? audioPlayerService;
-  String? image;
-  String? url;
-   NowPlayingScreen({super.key,this.audioPlayerService,this.url,this.image});
+  AudioData? audioData;
+
+  NowPlayingScreen({super.key, this.audioData});
 
   @override
   State<NowPlayingScreen> createState() => _NowPlayingScreenState();
@@ -38,27 +37,25 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
     with TickerProviderStateMixin {
   List<AudioSpeed> audioSpeedList = AudioSpeed.getAudioSpeedList();
   int currentAudioSpeedIndex = 0;
-  Duration position = Duration.zero;
   Timer? volTimer;
-  final NowPlayingController nowPlayingController = Get.put(NowPlayingController());
+  final NowPlayingController nowPlayingController =
+      Get.put(NowPlayingController());
   final ValueNotifier<bool> _isVolShowing = ValueNotifier(false);
   ValueNotifier<bool> isActivityApiCalled = ValueNotifier(false);
-  final ValueNotifier<Duration> _updatedRealtimeAudioDuration =
-      ValueNotifier(const Duration(hours: 0, minutes: 0, seconds: 0));
-  final ValueNotifier<bool> _isAudioLoading = ValueNotifier(false);
 
   Random randomNumberGenerator = Random();
   late int randomNumberForSelectingLottie;
   double _opacityOfSpeedText = 0.0;
   Timer? _opacityOfSpeedTimer;
-  final ValueNotifier<double> _slideValue = ValueNotifier(40.0);
+
   late final AnimationController _lottieBgController, _lottieController;
-  final AudioPlayerService _audioPlayerService = AudioPlayerService();
-  bool isPlaying = false;
+
   TextEditingController ratingController = TextEditingController();
   FocusNode ratingFocusNode = FocusNode();
   int? _currentRating = 0;
   ThemeController themeController = Get.find<ThemeController>();
+
+  //____________________________________ playing controller ___________________________//
   @override
   void initState() {
     super.initState();
@@ -69,10 +66,11 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
 
     _setInitValues();
 
-   _audioPlayerService.setUrl(
-     widget.url!
-        // 'https://media.shoorah.io/admins/shoorah_pods/audio/1682952330-9588.mp3'
-   );
+    nowPlayingController.setUrl(img:  widget.audioData?.image ?? "",
+        description: widget.audioData?.description ?? "",
+        expertName: widget.audioData?.expertName ?? "",
+        name: widget.audioData?.name ?? "",
+        "https://media.shoorah.io/admins/shoorah_pods/audio/1682952330-9588.mp3");
   }
 
   @override
@@ -80,12 +78,6 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
     _lottieController.dispose();
     _lottieBgController.dispose();
     super.dispose();
-  }
-  String formatDuration(Duration duration) {
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    final minutes = twoDigits(duration.inMinutes.remainder(60));
-    final seconds = twoDigits(duration.inSeconds.remainder(60));
-    return "$minutes:$seconds";
   }
 
   @override
@@ -99,12 +91,11 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
             alignment: Alignment.bottomCenter,
             child: ClipPath(
               clipper: BgSemiCircleClipPath(),
-              child: Container(
+              child: CommonLoadImage(
+                url: widget.audioData?.image ?? '',
                 height: Get.height * 0.78,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: NetworkImage(widget.image.toString()),
-                        fit: BoxFit.cover)),
+                borderRadius: Dimens.d16,
+                width: Get.width,
               ),
             ),
           ),
@@ -115,27 +106,40 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 60),
+                  padding: const EdgeInsets.symmetric(horizontal: 35),
                   child: Text(
-                    "Your Way Out Of Addiction - Ep 4 How Addiction Starts",
+                    nowPlayingController.currentDescription ??
+                        widget.audioData?.description ??
+                        "",
                     textAlign: TextAlign.center,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
                     style: Style.montserratRegular(
-                        fontSize: 17, color: ColorConstant.white),
+                        fontSize: 16, color: ColorConstant.white),
                   ),
                 ),
                 Dimens.d20.spaceHeight,
                 Text(
-                  "Chris Hill",
+                  nowPlayingController.currentExpertName ??
+                      widget.audioData?.expertName ??
+                      "",
                   textAlign: TextAlign.center,
                   style: Style.montserratRegular(
                       fontSize: 15, color: ColorConstant.white),
                 ),
                 Dimens.d20.spaceHeight,
-                Text(
-                  "Meditation",
-                  textAlign: TextAlign.center,
-                  style: Style.montserratRegular(
-                      fontSize: 15, color: ColorConstant.white),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 35),
+                  child: Text(
+                    nowPlayingController.currentName ??
+                        widget.audioData?.name ??
+                        "",
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Style.montserratRegular(
+                        fontSize: 15, color: ColorConstant.white),
+                  ),
                 ),
               ],
             ),
@@ -144,55 +148,55 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
           /// app bar
           Column(
             children: [
-                  Dimens.d30.h.spaceHeight,
-                  CustomAppBar(
-                    showBack: true,
-                    title: "nowPlaying".tr,
-                    leading: GestureDetector(
-                        onTap: () {
-                          Get.back();
-                          widget.audioPlayerService!.dispose();
-                          //_audioPlayerService.pause();
-                        },
-                        child: const Icon(
-                          Icons.close,
+              Dimens.d30.h.spaceHeight,
+              CustomAppBar(
+                showBack: true,
+                title: "nowPlaying".tr,
+                leading: GestureDetector(
+                    onTap: () {
+                      Get.back();
+                      //_audioPlayerService!.dispose();
+                      //_audioPlayerService.pause();
+                    },
+                    child: const Icon(
+                      Icons.close,
                       color: ColorConstant.black,
                     )),
                 action: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            _showAlertDialog(context);
-                          },
-                          child: SvgPicture.asset(
-                            ImageConstant.ratingIcon,
-                          ),
-                        ),
-                        Dimens.d10.h.spaceWidth,
-                        GestureDetector(
-                          onTap: () async {},
-                          child: SvgPicture.asset(
-                            height: 25.h,
-                            ImageConstant.share,
-                          ),
-                        ),
-                        Dimens.d10.h.spaceWidth,
-                        GestureDetector(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        _showAlertDialog(context);
+                      },
+                      child: SvgPicture.asset(
+                        ImageConstant.ratingIcon,
+                      ),
+                    ),
+                    Dimens.d10.h.spaceWidth,
+                    GestureDetector(
+                      onTap: () async {},
+                      child: SvgPicture.asset(
+                        height: 25.h,
+                        ImageConstant.share,
+                      ),
+                    ),
+                    Dimens.d10.h.spaceWidth,
+                    GestureDetector(
                       onTap: () async {
                         showSnackBarSuccess(
-                            context, "Your Sounds Successfully Bookmarked.");
+                            context, "yourSoundsSuccessfullyBookmarked".tr);
                       },
                       child: SvgPicture.asset(
                         height: 25.h,
-                            ImageConstant.bookmark,
-                          ),
-                        ),
-                        Dimens.d20.h.spaceWidth,
-                      ],
+                        ImageConstant.bookmark,
+                      ),
                     ),
-                  ),
-                ],
+                    Dimens.d20.h.spaceWidth,
+                  ],
+                ),
               ),
+            ],
+          ),
 
           /// center widget
           Positioned(
@@ -215,29 +219,29 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
           ///seekbar
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  StreamBuilder<Duration?>(
-                    stream:  _audioPlayerService!.positionStream,
+            children: [
+              StreamBuilder<Duration?>(
+                stream: nowPlayingController.audioPlayer.positionStream,
+                builder: (context, snapshot) {
+                  final position = snapshot.data ?? Duration.zero;
+                  return StreamBuilder<Duration?>(
+                    stream: nowPlayingController.audioPlayer.durationStream,
                     builder: (context, snapshot) {
-                      final position = snapshot.data ?? Duration.zero;
-                      return StreamBuilder<Duration?>(
-                        stream: _audioPlayerService!.durationStream,
-                        builder: (context, snapshot) {
-                          final duration = snapshot.data ?? Duration.zero;
-                          return SeekBar(
-                            duration: duration,
-                            position: position,
-                            onChanged: (newPosition) {
-                              if (newPosition != null) {
-                                _audioPlayerService!.seekForMeditationAudio(
-                                    position: newPosition);
-                              }
-                            },
-                            onChangeEnd: (newPosition) {
-                              if (newPosition != null) {
-                                _audioPlayerService!.seekForMeditationAudio(
-                                    position: newPosition);
-                              }
+                      final duration = snapshot.data ?? Duration.zero;
+                      return SeekBar(
+                        duration: duration,
+                        position: position,
+                        onChanged: (newPosition) {
+                          if (newPosition != null) {
+                            nowPlayingController.seekForMeditationAudio(
+                                position: newPosition);
+                          }
+                        },
+                        onChangeEnd: (newPosition) {
+                          if (newPosition != null) {
+                            nowPlayingController.seekForMeditationAudio(
+                                position: newPosition);
+                          }
                         },
                       );
                     },
@@ -247,64 +251,70 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
               Dimens.d20.h.spaceHeight,
 
               ///player buttons
-                  ValueListenableBuilder(
-                      valueListenable: _isAudioLoading,
-                      builder: (BuildContext context, value, Widget? child) {
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Expanded(
+              ValueListenableBuilder(
+                  valueListenable: nowPlayingController.isAudioLoading,
+                  builder: (BuildContext context, value, Widget? child) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              if (!nowPlayingController.isAudioLoading.value) {
+                                _volumeTapHandler();
+                                nowPlayingController.update();
+                              }
+                            },
+                            child: SvgPicture.asset(ImageConstant.loudSpeaker,
+                                color: nowPlayingController.isAudioLoading.value
+                                    ? ColorConstant.grey
+                                    : ColorConstant.white),
+                          ),
+                        ),
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              if (!nowPlayingController.isAudioLoading.value) {
+                                nowPlayingController.skipBackward();
+                                nowPlayingController.update();
+                              }
+                            },
+                            child: Image.asset(
+                              ImageConstant.audio15second,
+                              color: nowPlayingController.isAudioLoading.value
+                                  ? ColorConstant.grey
+                                  : ColorConstant.white,
+                              width: Dimens.d24,
+                              height: Dimens.d24,
+                            ),
+                          ),
+                        ),
+                        ValueListenableBuilder(
+                          builder: (context, value, child) {
+                            return Flexible(
+                              fit: FlexFit.loose,
                               child: GestureDetector(
                                 onTap: () {
-                                  if (!_isAudioLoading.value) {
-                                    _volumeTapHandler();
+                                  if (nowPlayingController.isPlaying.value) {
+                                    _lottieController.stop();
+                                    nowPlayingController.pause();
+                                    nowPlayingController.update();
+                                  } else {
+                                    nowPlayingController.play();
+                                    _lottieController.repeat();
+                                    nowPlayingController.update();
                                   }
+                                  setState(() {
+                                    nowPlayingController.isPlaying.value =
+                                        !nowPlayingController.isPlaying.value;
+                                    nowPlayingController.update();
+                                  });
+                                  nowPlayingController.update();
                                 },
-                                child: SvgPicture.asset(
-                                    ImageConstant.loudSpeaker,
-                                    color: _isAudioLoading.value
-                                        ? ColorConstant.grey
-                                        : ColorConstant.white),
-                              ),
-                            ),
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  if (!_isAudioLoading.value) {
-                                    _audioPlayerService.skipBackward();
-                                  }
-                                },
-                                child: Image.asset(
-                                  ImageConstant.audio15second,
-                                  color: _isAudioLoading.value
-                                      ? ColorConstant.grey
-                                      : ColorConstant.white,
-                                  width: Dimens.d24,
-                                  height: Dimens.d24,
-                                ),
-                              ),
-                            ),
-                            ValueListenableBuilder(
-                              builder: (context, value, child) {
-                                return Flexible(
-                                  fit: FlexFit.loose,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      if (isPlaying) {
-                                        _lottieController.stop();
-                                        _audioPlayerService!.pause();
-                                      } else {
-                                        _audioPlayerService!.play();
-                                        _lottieController.repeat();
-                                      }
-                                      setState(() {
-                                        isPlaying = !isPlaying;
-                                      });
-                                    },
-                                    child: Container(
-                                      height: Dimens.d64.h,
-                                      width: Dimens.d64.h,
-                                      decoration: const BoxDecoration(
+                                child: Container(
+                                  height: Dimens.d64.h,
+                                  width: Dimens.d64.h,
+                                  decoration: const BoxDecoration(
                                       shape: BoxShape.circle,
                                       color: ColorConstant.themeColor),
                                   child: Padding(
@@ -327,7 +337,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                                         child: ScaleTransition(
                                             scale: animation, child: child),
                                       ),
-                                      child: isPlaying
+                                      child: nowPlayingController
+                                              .isPlaying.value
                                           ? SvgPicture.asset(
                                               ImageConstant.pause,
                                               key: const ValueKey('ic_pause'))
@@ -347,13 +358,14 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                         Expanded(
                           child: GestureDetector(
                             onTap: () {
-                              if (!_isAudioLoading.value) {
-                                _audioPlayerService.skipForward();
+                              if (!nowPlayingController.isAudioLoading.value) {
+                                nowPlayingController.skipForward();
                               }
+                              nowPlayingController.update();
                             },
                             child: Image.asset(
                               ImageConstant.audio15second2,
-                              color: _isAudioLoading.value
+                              color: nowPlayingController.isAudioLoading.value
                                   ? ColorConstant.grey
                                   : ColorConstant.white,
                               width: Dimens.d24,
@@ -377,7 +389,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                                           ImageConstant.playbackSpeed,
                                           width: Dimens.d20,
                                           height: Dimens.d20,
-                                          color: _isAudioLoading.value
+                                          color: nowPlayingController
+                                                  .isAudioLoading.value
                                               ? ColorConstant.grey
                                               : ColorConstant.white,
                                         ),
@@ -409,7 +422,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                                           textAlign: TextAlign.center,
                                           maxLines: 1,
                                           style: Style.montserratMedium(
-                                            color: _isAudioLoading.value
+                                            color: nowPlayingController
+                                                    .isAudioLoading.value
                                                 ? ColorConstant.grey
                                                 : ColorConstant.white,
                                             fontSize: 10,
@@ -428,81 +442,90 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                   }),
 
               /// end image time duration
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      height: Dimens.d140,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(ImageConstant.curveBottomImg),
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding:
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  height: Dimens.d140,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(ImageConstant.curveBottomImg),
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding:
                             const EdgeInsets.symmetric(horizontal: Dimens.d20),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                SizedBox(
-                                  height: Dimens.d35,
-                                  width: Dimens.d55,
-                                  child: Center(
-                                    child: ValueListenableBuilder(
-                                      valueListenable:
-                                      _updatedRealtimeAudioDuration,
-                                      builder: (BuildContext context, value,
-                                          Widget? child) {
-                                        return   StreamBuilder<Duration?>(
-                                          stream:  widget.audioPlayerService!.positionStream,
-                                          builder: (context, snapshot) {
-                                            final currentDuration = snapshot.data ?? Duration.zero;
-                                            return  Text(
-                                              currentDuration.toString().split('.').first,
-                                              style: Style.montserratMedium(
-                                                  fontSize: Dimens.d14,
-                                                  color: ColorConstant.white),
-                                            );
-                                          },
-                                        );
-
-
-                                  },
-                                ),
-                              ),
-                            ),
-                                /// music animation
-                                Lottie.asset(
-                                  ImageConstant.lottieAudio,
-                                  controller: _lottieController,
-                                  height: Dimens.d40,
-                                  width: Dimens.d40,
-                                  fit: BoxFit.fill,
-                                  repeat: true,
-                                  onLoaded: (composition) {
-                                    _lottieController.duration =
-                                        composition.duration;
-                                  },
-                                ),
-                                SizedBox(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(
                               height: Dimens.d35,
                               width: Dimens.d55,
                               child: Center(
                                 child: ValueListenableBuilder(
-                                  valueListenable:
-                                      _updatedRealtimeAudioDuration,
+                                  valueListenable: nowPlayingController
+                                      .updatedRealtimeAudioDuration,
                                   builder: (BuildContext context, value,
                                       Widget? child) {
-                                    return    StreamBuilder<Duration?>(
-                                      stream:  widget.audioPlayerService!.durationStream,
+                                    return StreamBuilder<Duration?>(
+                                      stream: nowPlayingController
+                                          .audioPlayer.positionStream,
                                       builder: (context, snapshot) {
-                                        final totalDuration = snapshot.data ?? Duration.zero;
-                                        return  Text(
-                                          totalDuration.toString().split('.').first,
+                                        final currentDuration =
+                                            snapshot.data ?? Duration.zero;
+                                        return Text(
+                                          currentDuration
+                                              .toString()
+                                              .split('.')
+                                              .first,
+                                          style: Style.montserratMedium(
+                                              fontSize: Dimens.d14,
+                                              color: ColorConstant.white),
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+
+                            /// music animation
+                            Lottie.asset(
+                              ImageConstant.lottieAudio,
+                              controller: _lottieController,
+                              height: Dimens.d40,
+                              width: Dimens.d40,
+                              fit: BoxFit.fill,
+                              repeat: true,
+                              onLoaded: (composition) {
+                                _lottieController.duration =
+                                    composition.duration;
+                              },
+                            ),
+                            SizedBox(
+                              height: Dimens.d35,
+                              width: Dimens.d55,
+                              child: Center(
+                                child: ValueListenableBuilder(
+                                  valueListenable: nowPlayingController
+                                      .updatedRealtimeAudioDuration,
+                                  builder: (BuildContext context, value,
+                                      Widget? child) {
+                                    return StreamBuilder<Duration?>(
+                                      stream: nowPlayingController
+                                          .audioPlayer.durationStream,
+                                      builder: (context, snapshot) {
+                                        final totalDuration =
+                                            snapshot.data ?? Duration.zero;
+                                        return Text(
+                                          totalDuration
+                                              .toString()
+                                              .split('.')
+                                              .first,
                                           style: Style.montserratMedium(
                                               fontSize: Dimens.d14,
                                               color: ColorConstant.white),
@@ -524,73 +547,75 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
           ),
 
           ValueListenableBuilder(
-                valueListenable: _isVolShowing,
-                builder: (context, value, child) {
-                  if (value) {
-                    return Container(
-                      color: ColorConstant.transparent,
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(
-                          sigmaX: 1.5,
-                          sigmaY: 1.5,
+            valueListenable: _isVolShowing,
+            builder: (context, value, child) {
+              if (value) {
+                return Container(
+                  color: ColorConstant.transparent,
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(
+                      sigmaX: 1.5,
+                      sigmaY: 1.5,
+                    ),
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(
+                            vertical: Dimens.d200, horizontal: Dimens.d16),
+                        padding: const EdgeInsets.all(Dimens.d10),
+                        height: Dimens.d60,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: ColorConstant.color3d5157,
+                          borderRadius: Dimens.d40.radiusAll,
                         ),
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(
-                                vertical: Dimens.d200, horizontal: Dimens.d16),
-                            padding: const EdgeInsets.all(Dimens.d10),
-                            height: Dimens.d60,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: ColorConstant.color3d5157,
-                              borderRadius: Dimens.d40.radiusAll,
+                        child: Row(
+                          children: [
+                            Dimens.d10.spaceWidth,
+                            SvgPicture.asset(
+                              ImageConstant.loudSpeaker,
+                              color: ColorConstant.white,
                             ),
-                            child: Row(
-                              children: [
-                                Dimens.d10.spaceWidth,
-                                SvgPicture.asset(
-                                  ImageConstant.loudSpeaker,
-                                  color: ColorConstant.white,
-                                ),
-                                Dimens.d10.spaceWidth,
-                                ValueListenableBuilder(
-                                  valueListenable: _slideValue,
-                                  builder: (context, value, child) {
-                                    return Expanded(
-                                      child: Slider(
-                                        min: Dimens.d0,
-                                        max: Dimens.d100,
-                                        value: _slideValue.value,
-                                        activeColor: ColorConstant.themeColor,
-                                        onChanged: (value) {
-                                          _slideValue.value = value;
-                                        },
-                                        onChangeStart: (_) {
-                                          volTimer?.cancel();
-                                        },
-                                        onChangeEnd: (_) {
-                                          Future.delayed(
-                                            const Duration(milliseconds: 500),
-                                                () =>
-                                            _isVolShowing.value = false,
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
+                            Dimens.d10.spaceWidth,
+                            ValueListenableBuilder(
+                              valueListenable: nowPlayingController.slideValue,
+                              builder: (context, value, child) {
+                                return Expanded(
+                                  child: Slider(
+                                    min: Dimens.d0,
+                                    max: Dimens.d100,
+                                    value:
+                                        nowPlayingController.slideValue.value,
+                                    activeColor: ColorConstant.themeColor,
+                                    onChanged: (value) {
+                                      nowPlayingController.slideValue.value =
+                                          value;
+                                      nowPlayingController.update();
+                                    },
+                                    onChangeStart: (_) {
+                                      volTimer?.cancel();
+                                    },
+                                    onChangeEnd: (_) {
+                                      Future.delayed(
+                                        const Duration(milliseconds: 500),
+                                        () => _isVolShowing.value = false,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
                             ),
-                          ),
+                          ],
                         ),
                       ),
-                    );
-                  } else {
-                    return const Offstage();
-                  }
-                },
-              ),
+                    ),
+                  ),
+                );
+              } else {
+                return const Offstage();
+              }
+            },
+          ),
         ],
       ),
     ));
@@ -694,8 +719,6 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
   Future<void> _setInitValues() async {
     randomNumberForSelectingLottie = Dimens.d1.toInt() +
         randomNumberGenerator.nextInt(Dimens.d7.toInt() - Dimens.d1.toInt());
-
-
   }
 
   Duration parseAudioDuration(String audioDurationInString) {

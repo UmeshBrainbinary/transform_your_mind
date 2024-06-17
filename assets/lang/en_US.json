@@ -282,6 +282,7 @@
      "areYouSureDeleteGratitude": "Are you sure you want to delete gratitude ?",
       "wellDone": "Well done, you completed all your Gratitude today.",
       "delete": "Delete",
-      "noAffirmationFound": "No affirmation found"
+      "noAffirmationFound": "No affirmation found",
+      "yourSoundsSuccessfullyBookmarked.": "Your Sounds Successfully Bookmarked."
 
 }

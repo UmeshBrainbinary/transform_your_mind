@@ -1,6 +1,5 @@
 
 import 'package:get/get.dart';
-import 'package:transform_your_mind/presentation/explore_screen/explore_controller.dart';
 import 'package:transform_your_mind/presentation/feedback_screen/feedback_controller.dart';
 
 

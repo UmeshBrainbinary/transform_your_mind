@@ -12,6 +12,7 @@ class ColorConstant {
   static const textfieldFillColor = Color(0XFF1c1f1f);
 
   static const colorbfd0d4 = Color(0XFFbfd0d4);
+  static const color6E949D= Color(0XFF6E949D);
   static const colorebebeb = Color(0XFFebebeb);
   static const color4f4f4f = Color(0XFF4f4f4f);
   static const color545454 = Color(0XFF545454);
@@ -27,6 +28,8 @@ class ColorConstant {
 
   static const colorBFD0D4 = Color(0XFFBFD0D4);
   static const colorD9D9D9 = Color(0XFFD9D9D9);
+  static const colorB9CCD0 = Color(0XFFB9CCD0);
+  static const color86A6AE = Color(0XFF86A6AE);
   static const colorECF1F3 = Color(0XFFECF1F3);
 
   static const color8BA4E5 = Color(0XFF8BA4E5);

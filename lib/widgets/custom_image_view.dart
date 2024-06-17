@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
+import 'package:transform_your_mind/core/utils/color_constant.dart';
 
 class CustomImageView extends StatelessWidget {
   ///[imagePath] is required parameter for showing image
@@ -31,7 +31,6 @@ class CustomImageView extends StatelessWidget {
     this.color,
     this.fit,
     this.alignment,
-
     this.radius,
     this.margin,
     this.border,
@@ -121,11 +120,12 @@ class CustomImageView extends StatelessWidget {
                 backgroundColor: Colors.grey.shade100,
               ),
             ),
-            errorWidget: (context, url, error) => Image.asset(
-              placeHolder,
+            errorWidget: (context, url, error) => Container(
               height: height,
               width: width,
-              fit: fit ?? BoxFit.cover,
+              decoration: BoxDecoration(
+                  color: ColorConstant.colorD9D9D9,
+                  borderRadius: BorderRadius.circular(10)),
             ),
           );
         case ImageType.png:
@@ -139,7 +139,7 @@ class CustomImageView extends StatelessWidget {
           );
       }
     }
-    return SizedBox();
+    return const SizedBox();
   }
 }
 

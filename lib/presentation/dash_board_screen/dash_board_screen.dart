@@ -8,8 +8,8 @@ import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/presentation/audio_content_screen/audio_content_screen.dart';
 import 'package:transform_your_mind/presentation/dash_board_screen/dash_board_controller.dart';
-import 'package:transform_your_mind/presentation/explore_screen/explore_screen.dart';
 import 'package:transform_your_mind/presentation/home_screen/home_screen.dart';
 import 'package:transform_your_mind/presentation/profile_screen/profile_screen.dart';
 import 'package:transform_your_mind/presentation/search_screen/search_screen.dart';
@@ -40,7 +40,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     const HomeScreen(),
     const ToolsScreen(),
     Container(),
-    ExploreScreen(),
+    const AudioContentScreen(),
     const ProfileScreen(),
   ];
   @override
@@ -163,7 +163,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   height: Dimens.d20,
                   width: Dimens.d20,
                 ),
-                label: 'Audio Content'.tr,
+                label: 'audioContent'.tr,
                 activeIcon: SvgPicture.asset(
                   ImageConstant.exploreSelected,
                   height: Dimens.d20,
