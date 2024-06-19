@@ -5,13 +5,11 @@ import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
-import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/setting_screen.dart';
 import 'package:transform_your_mind/presentation/support_screen/contact_support_screen.dart';
 import 'package:transform_your_mind/presentation/support_screen/faq_screen.dart';
 import 'package:transform_your_mind/presentation/support_screen/support_controller.dart';
 import 'package:transform_your_mind/presentation/support_screen/trouble_guide_screen.dart';
-import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 import '../../theme/theme_controller.dart';
@@ -21,9 +19,12 @@ class SupportScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ThemeController themeController = Get.find<ThemeController>();
     SupportController supportController =Get.put(SupportController());
     return Scaffold(
-      backgroundColor: ColorConstant.backGround,
+      backgroundColor: themeController.isDarkMode.isTrue
+          ? ColorConstant.black
+          : ColorConstant.backGround,
       appBar: const CustomAppBar(title: "Support"),
       body: SingleChildScrollView(
         child: Stack(
@@ -71,12 +72,12 @@ class SupportScreen extends StatelessWidget {
                               },));
                             } else if (index == 1) {
                               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                return ContactSupportScreen();
-                              },));
+                                  return const ContactSupportScreen();
+                                },));
                             } else  {
                               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                return TroubleGuideScreen();
-                              },));                            }
+                                  return const TroubleGuideScreen();
+                                },));                            }
                           },
                         ),
                       );

@@ -63,6 +63,7 @@
   "newPassword": "New Password",
   "submit": "Submit",
   "ok": "Ok",
+  "incorrectEmail": "Incorrect Email",
   "passwordChanged": "Password Changed!",
   "yourPassword": "Your password has been changed successfully.",
   "confirmPassword": "Confirm Password",
@@ -277,12 +278,26 @@
     "completedGratitude": "Completed Gratitude",
     "WellDone": "Well done, you completed all your affirmations today.",
     "otpSendEmail" : "Otp send to your email address",
-     "otpResent": "OTP Resent",
+     "otpResent": "OTP resent successfully",
      "areYouSureDeleteAffirmation": "Are you sure you want to delete affirmation ?",
      "areYouSureDeleteGratitude": "Are you sure you want to delete gratitude ?",
       "wellDone": "Well done, you completed all your Gratitude today.",
       "delete": "Delete",
       "noAffirmationFound": "No affirmation found",
-      "yourSoundsSuccessfullyBookmarked.": "Your Sounds Successfully Bookmarked."
+      "editPositiveMoments": "Edit Positive Moments",
+      "momentCreatedSuccess": "Moment created successfully!",
+      "ratingsAdded": "The rating has been added successfully.",
+      "alreadyRated": "You have already rated this pod",
+      "selectPlan": "Select plan",
+      "purchase": "Purchase",
+      "dataNotFound": "Data Not Found",
+      "trailEnds": "If you don’t cancel before the trial ends. you will be automatically charged based on selected plan until you cancel.",
+
+      "restorePurchase": "Restore Purchase",
+      "discountsSub": "We are giving discounts based on the plan user has selected. 3 days free trial available on every plan. you can cancel your subscription at any time.",
+      "subscribeNow": "Subscribe now and receive a 3-day free trial to access all the features of TransformYourMind",
+      "chooseSub": "Choose a subscription plan to unlock all the functionality’s of the application.",
+      "yourSoundsSuccessfullyBookmarked": "Your Sounds Successfully Bookmarked."
+
 
 }

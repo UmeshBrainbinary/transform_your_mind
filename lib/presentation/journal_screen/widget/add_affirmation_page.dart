@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -7,6 +6,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:transform_your_mind/core/app_export.dart';
+import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
@@ -15,10 +15,8 @@ import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
-import 'package:transform_your_mind/core/utils/progress_dialog_utils.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
-import 'package:transform_your_mind/presentation/journal_screen/widget/my_affirmation_page.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
@@ -291,7 +289,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                 );
               },
             ),
-            loader==true?const CommonLoader():const SizedBox()
+            loader == true ? commonLoader() : const SizedBox()
           ],
         ),
       ),

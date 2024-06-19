@@ -1,11 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:transform_your_mind/core/app_export.dart';
+import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
-import 'package:transform_your_mind/core/utils/progress_dialog_utils.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/core/utils/validation_functions.dart';
@@ -197,7 +197,7 @@ class LoginScreen extends StatelessWidget {
             ),
             Obx(
               () => loginController.loader.isTrue
-                  ? const CommonLoader()
+                  ? commonLoader()
                   : const SizedBox(),
             )
           ],

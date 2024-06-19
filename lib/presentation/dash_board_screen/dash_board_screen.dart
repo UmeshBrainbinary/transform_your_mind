@@ -17,7 +17,7 @@ import 'package:transform_your_mind/presentation/tools_screen/tools_screen.dart'
 import 'package:transform_your_mind/theme/theme_controller.dart';
 
 class DashBoardScreen extends StatefulWidget {
-  DashBoardScreen({super.key});
+  const DashBoardScreen({super.key});
 
   @override
   State<DashBoardScreen> createState() => _DashBoardScreenState();
@@ -61,7 +61,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
       child: Scaffold(
         floatingActionButton: Visibility(
           visible: MediaQuery.of(context).viewInsets.bottom == 0.0,
-
           child: FloatingActionButton(
             foregroundColor: Colors.transparent,
             backgroundColor: Colors.transparent,
@@ -194,12 +193,16 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             selectedFontSize: Dimens.d12,
             unselectedFontSize: Dimens.d12,
             selectedLabelStyle: Style.montserratSemiBold(
-              color: ColorConstant.black,
+              color: themeController.isDarkMode.isTrue
+                  ? ColorConstant.white
+                  : ColorConstant.black,
               fontSize: Dimens.d10,
             ),
             showUnselectedLabels: true,
             unselectedLabelStyle: Style.montserratRegular(
-              color: Colors.black,
+              color: themeController.isDarkMode.isTrue
+                  ? ColorConstant.white
+                  : ColorConstant.black,
               fontSize: Dimens.d10,
             ),
             onTap: (v){

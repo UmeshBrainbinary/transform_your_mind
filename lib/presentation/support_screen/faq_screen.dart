@@ -7,6 +7,7 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/support_screen/support_controller.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 class FaqScreen extends StatefulWidget {
@@ -18,21 +19,21 @@ class FaqScreen extends StatefulWidget {
 
 class _FaqScreenState extends State<FaqScreen> {
   SupportController supportController = Get.put(SupportController());
-  List<bool> faq = [];
 
+  ThemeController themeController = Get.find<ThemeController>();
   @override
   void initState() {
-    List.generate(
-      supportController.faqList.length,
-      (index) => faq.add(false),
-    );
+    supportController.getFaqList();
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorConstant.backGround,
+      backgroundColor: themeController.isDarkMode.isTrue
+          ? ColorConstant.black
+          : ColorConstant.backGround,
       appBar: const CustomAppBar(title: "FAQ"),
       body: Stack(
         children: [
@@ -53,18 +54,20 @@ class _FaqScreenState extends State<FaqScreen> {
               Dimens.d10.spaceHeight,
               Expanded(
                   child: ListView.builder(
-                itemCount: supportController.faqList.length,
+                itemCount: supportController.faqList?.length ?? 0,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
-                  var data = supportController.faqList[index];
+                  var data = supportController.faqList?[index];
                   return Container(
                     margin:
                         const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
                     padding:
                         const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
                     decoration: BoxDecoration(
-                        color: ColorConstant.white,
+                        color: themeController.isDarkMode.isTrue
+                            ? ColorConstant.textfieldFillColor
+                            : ColorConstant.white,
                         borderRadius: BorderRadius.circular(12)),
                     child: Column(
                       children: [
@@ -74,32 +77,36 @@ class _FaqScreenState extends State<FaqScreen> {
                             SizedBox(
                                 width: 260,
                                 child: Text(
-                                  data["title"],
+                                  data?.question ?? "",
                                   style: Style.montserratSemiBold(fontSize: 14),
                                 )),
                             GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    faq[index] = !faq[index];
+                                    supportController.faq[index] =
+                                        !supportController.faq[index];
                                   });
                                 },
                                 child: SvgPicture.asset(
-                                  faq[index]
+                                  supportController.faq[index]
                                       ? ImageConstant.upArrowFaq
                                       : ImageConstant.downArrowFaq,
                                   height: 18,
                                   width: 18,
+                                  color: themeController.isDarkMode.isTrue
+                                      ? ColorConstant.white
+                                      : ColorConstant.black,
                                 )),
                           ],
                         ),
-                        faq[index]
+                        supportController.faq[index]
                             ? Column(
                                 children: [
                                   const Divider(
                                     thickness: 0.7,
                                   ),
                                   Text(
-                                    data["des"],
+                                    data?.answer ?? "",
                                     style: Style.montserratRegular(fontSize: 10)
                                         .copyWith(height: 1.5),
                                   )

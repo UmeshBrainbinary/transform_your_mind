@@ -18,7 +18,6 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/model_class/affirmation_model.dart';
-import 'package:transform_your_mind/model_class/focus_model.dart';
 import 'package:transform_your_mind/presentation/intro_screen/select_your_focus_page.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
@@ -26,9 +25,9 @@ import 'package:transform_your_mind/widgets/custom_appbar.dart';
 import '../me_screen/screens/setting_screen/Page/notification_setting_screen/widget/reminder_time_utils.dart';
 class SelectYourAffirmationFocusPage extends StatefulWidget {
   const SelectYourAffirmationFocusPage({
-    Key? key,
+    super.key,
     required this.isFromMe,
-  }) : super(key: key);
+  });
 
   final bool isFromMe;
 
@@ -99,7 +98,7 @@ class _SelectYourAffirmationFocusPageState
         setState(() {
           loader = false;
         });
-        Navigator.pushReplacement(context, MaterialPageRoute(
+        Navigator.push(context, MaterialPageRoute(
           builder: (context) {
             return const FreeTrialPage();
           },

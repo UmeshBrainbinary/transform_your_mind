@@ -1,26 +1,20 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
-    as picker;
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
-import 'package:transform_your_mind/core/utils/date_time.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
-import 'package:transform_your_mind/core/utils/toast_message.dart';
 import 'package:transform_your_mind/core/utils/validation_functions.dart';
 import 'package:transform_your_mind/presentation/auth/ragister_screen/register_controller.dart';
 import 'package:transform_your_mind/presentation/auth/ragister_screen/widget/add_image.dart';
-import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
@@ -99,7 +93,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   labelText: "name".tr,
                                   hintText: "enterName".tr,
                                   controller: registerController.nameController,
-                                  focusNode: FocusNode(),
+                                  focusNode: registerController.nameFocus,
                                   prefixIcon: Transform.scale(
                                     scale: 0.5,
                                     child: SvgPicture.asset(ImageConstant.user),
@@ -118,7 +112,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   hintText: "enterEmail".tr,
                                   controller:
                                       registerController.emailController,
-                                  focusNode: FocusNode(),
+                                  focusNode: registerController.emailFocus,
                                   prefixIcon: Image.asset(ImageConstant.email,
                                       scale: Dimens.d4),
                                   keyboardType: TextInputType.emailAddress,
@@ -149,7 +143,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       }
                                       return null;
                                     },
-                                    focusNode: FocusNode(),
+                                    focusNode: registerController.passwordFocus,
+
                                     prefixIcon: Image.asset(ImageConstant.lock,
                                         scale: Dimens.d4),
                                     suffixIcon: GestureDetector(
@@ -180,7 +175,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   labelText: "dateOfBirth".tr,
                                   hintText: "DD/MM/YYYY",
                                   controller: registerController.dobController,
-                                  focusNode: FocusNode(),
+                                  focusNode: registerController.dobFocus,
                                   prefixIcon: Transform.scale(
                                       scale: 0.5,
                                       child: SvgPicture.asset(
@@ -214,7 +209,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   hintText: "selectGender".tr,
                                   controller:
                                       registerController.genderController,
-                                  focusNode: FocusNode(),
+                                  focusNode: registerController.genderFocus,
                                   prefixIcon: Transform.scale(
                                       scale: 0.5,
                                       child: SvgPicture.asset(
@@ -322,10 +317,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               CommonElevatedButton(
                                 title: "register".tr,
                                 onTap: () async {
-                                  FocusScope.of(context).unfocus();
+                                  registerController.genderFocus.unfocus();
+                                  registerController.emailFocus.unfocus();
+                                  registerController.nameFocus.unfocus();
+                                  registerController.dobFocus.unfocus();
 
-
-                                    if (_formKey.currentState!.validate()) {
+                                  if (_formKey.currentState!.validate()) {
                                       registerController.onTapRegister(context,registerController.imageFile.value?.path??"");
                                     }
 

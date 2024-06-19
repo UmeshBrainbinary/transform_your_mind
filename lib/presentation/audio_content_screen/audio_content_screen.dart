@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:transform_your_mind/core/app_export.dart';
-import 'package:transform_your_mind/core/common_widget/pods_play_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
+import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
@@ -18,7 +18,6 @@ import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
-import 'package:transform_your_mind/widgets/custom_image_view.dart';
 
 class AudioContentScreen extends StatefulWidget {
   const AudioContentScreen({super.key});
@@ -37,7 +36,6 @@ class _AudioContentScreenState extends State<AudioContentScreen>
   TextEditingController ratingController = TextEditingController();
   FocusNode ratingFocusNode = FocusNode();
   int? _currentRating = 0;
-
 
   ThemeController themeController = Get.find<ThemeController>();
   final nowPlayController = Get.put(NowPlayingController());
@@ -180,10 +178,8 @@ class _AudioContentScreenState extends State<AudioContentScreen>
                                 onChanged: (value) {
                                   setState(() {
                                     audioContentController.audioData =
-                                        audioContentController.filterList(
-                                            value,
-                                            audioContentController
-                                                .audioData);
+                                        audioContentController.filterList(value,
+                                            audioContentController.audioData);
                                   });
                                 },
                                 suffixIcon: Padding(
@@ -193,8 +189,10 @@ class _AudioContentScreenState extends State<AudioContentScreen>
                                   ),
                                 ),
                                 hintText: "search".tr,
-                                controller: audioContentController.searchController,
-                                focusNode: audioContentController.searchFocusNode),
+                                controller:
+                                    audioContentController.searchController,
+                                focusNode:
+                                    audioContentController.searchFocusNode),
                           ),
                           // const TransFormRitualsButton(),
                           Dimens.d20.h.spaceHeight,
@@ -210,7 +208,7 @@ class _AudioContentScreenState extends State<AudioContentScreen>
                                         physics: const BouncingScrollPhysics(),
                                         gridDelegate:
                                             const SliverGridDelegateWithFixedCrossAxisCount(
-                                          childAspectRatio: 0.71,
+                                          childAspectRatio: 0.78,
                                           crossAxisCount: 2,
                                           // Number of columns
                                           crossAxisSpacing: 20,
@@ -221,38 +219,30 @@ class _AudioContentScreenState extends State<AudioContentScreen>
                                         itemCount: controller
                                                 .getPodsModel.data?.length ??
                                             0,
-                                        // exploreController.filteredList?.length??0,
                                         itemBuilder: (context, index) {
                                           return GestureDetector(
                                             onTap: () {
-                                              audioContentController.searchFocusNode.unfocus();
+                                              audioContentController
+                                                  .searchFocusNode
+                                                  .unfocus();
 
                                               _onTileClick(
                                                   audioContent: controller
                                                       .getPodsModel
                                                       .data![index],
-                                                  context
-
-                                                  // "https://transformyourmind-server.onrender.com/${audioController.getPodsModel.data![index].audioFile.toString()}",
-                                                  // "https://transformyourmind-server.onrender.com/${audioController.getPodsModel.data![index].image}"
-                                                  );
+                                                  context);
                                             },
                                             child: Column(
                                               children: [
                                                 Stack(
                                                   alignment: Alignment.topRight,
                                                   children: [
-                                                    CustomImageView(
-                                                      imagePath:
-                                                          "https://transformyourmind-server.onrender.com/${controller.getPodsModel.data![index].image}",
-                                                      /*exploreController
-                                                          .filteredList![index]
-                                                      ['image'],*/
-                                                      height: Dimens.d135,
-                                                      radius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      fit: BoxFit.cover,
+                                                    CommonLoadImage(
+                                                      borderRadius: 10,
+                                                      url:
+                                                          "${EndPoints.baseUrlImg}${controller.getPodsModel.data![index].image}",
+                                                      width: Dimens.d156,
+                                                      height: Dimens.d113,
                                                     ),
                                                     Align(
                                                       alignment:
@@ -364,14 +354,18 @@ class _AudioContentScreenState extends State<AudioContentScreen>
                 onTap: () {
                   Get.to(() => NowPlayingScreen());
                 },
-                child: Align(alignment: Alignment.bottomCenter,
+                child: Align(
+                  alignment: Alignment.bottomCenter,
                   child: Container(
                     height: 87,
-                    width: Get.width,padding: const EdgeInsets.only(top: 8.0,left: 8,right: 8),
-                    margin: const EdgeInsets.symmetric(horizontal: 10,vertical: 50),
+                    width: Get.width,
+                    padding: const EdgeInsets.only(top: 8.0, left: 8, right: 8),
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 50),
                     decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [ColorConstant.colorB9CCD0,
+                          colors: [
+                            ColorConstant.colorB9CCD0,
                             ColorConstant.color86A6AE,
                             ColorConstant.color86A6AE,
                           ], // Your gradient colors
@@ -384,10 +378,10 @@ class _AudioContentScreenState extends State<AudioContentScreen>
                       children: [
                         Row(
                           children: [
-                            SvgPicture.asset(ImageConstant.userProfile,width: 47,
-                                height: 47),
+                            SvgPicture.asset(ImageConstant.userProfile,
+                                width: 47, height: 47),
 
-                         /*   CommonLoadImage(
+                            /*   CommonLoadImage(
                                 url: audioPlayerController.currentImage!,
                                 width: 52,
                                 height: 52),*/
@@ -400,9 +394,13 @@ class _AudioContentScreenState extends State<AudioContentScreen>
                                     await audioPlayerController.play();
                                   }
                                 },
-                                child: SvgPicture.asset(isPlaying
-                                    ? ImageConstant.pause
-                                    : ImageConstant.play,height: 17,width: 17,)),
+                                child: SvgPicture.asset(
+                                  isPlaying
+                                      ? ImageConstant.pause
+                                      : ImageConstant.play,
+                                  height: 17,
+                                  width: 17,
+                                )),
                             Dimens.d10.spaceWidth,
                             Expanded(
                               child: Text(
@@ -420,37 +418,39 @@ class _AudioContentScreenState extends State<AudioContentScreen>
                                 },
                                 child: SvgPicture.asset(
                                   ImageConstant.closePlayer,
-                                  color: ColorConstant.white,height: 24,width: 24,
+                                  color: ColorConstant.white,
+                                  height: 24,
+                                  width: 24,
                                 )),
                             Dimens.d10.spaceWidth,
                           ],
                         ),
                         SliderTheme(
                           data: SliderTheme.of(context).copyWith(
-
                             activeTrackColor:
-                            ColorConstant.white.withOpacity(0.2),
+                                ColorConstant.white.withOpacity(0.2),
                             inactiveTrackColor: ColorConstant.color6E949D,
                             trackHeight: 1.5,
                             thumbColor: ColorConstant.transparent,
                             // Color of the thumb
-                            thumbShape:SliderComponentShape.noThumb,
+                            thumbShape: SliderComponentShape.noThumb,
                             // Customize the thumb shape and size
-                            overlayColor: ColorConstant.backGround.withAlpha(32),
+                            overlayColor:
+                                ColorConstant.backGround.withAlpha(32),
                             // Color when thumb is pressed
                             overlayShape: const RoundSliderOverlayShape(
                                 overlayRadius:
-                                16.0), // Customize the overlay shape and size
+                                    16.0), // Customize the overlay shape and size
                           ),
-                          child: Slider(thumbColor: Colors.transparent,
-
+                          child: Slider(
+                            thumbColor: Colors.transparent,
                             activeColor: ColorConstant.backGround,
                             value: currentPosition.inMilliseconds.toDouble(),
                             max: duration.inMilliseconds.toDouble(),
                             onChanged: (value) {
                               audioPlayerController.seekForMeditationAudio(
                                   position:
-                                  Duration(milliseconds: value.toInt()));
+                                      Duration(milliseconds: value.toInt()));
                             },
                           ),
                         ),

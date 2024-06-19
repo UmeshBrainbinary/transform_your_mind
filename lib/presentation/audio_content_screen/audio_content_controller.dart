@@ -1,32 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart'as http;
+import 'package:http/http.dart' as http;
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/model_class/get_pods_model.dart';
+import 'package:transform_your_mind/model_class/get_user_model.dart';
 
-class AudioContentController extends GetxController{
-
+class AudioContentController extends GetxController {
   RxList<AudioData> audioData = <AudioData>[].obs;
-
 
   @override
   void onInit() {
     super.onInit();
-
-
     getPodsData();
+    getUser();
   }
+
   TextEditingController searchController = TextEditingController();
   FocusNode searchFocusNode = FocusNode();
 
-   filterList(String query, List dataList) {
+  filterList(String query, List dataList) {
     return dataList
         .where((dataList) =>
             dataList['title']!.toLowerCase().contains(query.toLowerCase()))
         .toList();
-
   }
 
   getPodsData() async {
@@ -35,11 +33,12 @@ class AudioContentController extends GetxController{
     loader.value = false;
     update(['update']);
   }
+
   RxBool loader = false.obs;
   GetPodsModel getPodsModel = GetPodsModel();
 
   getPodApi() async {
-    try{
+    try {
       var headers = {
         'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
       };
@@ -51,18 +50,49 @@ class AudioContentController extends GetxController{
         final responseBody = await response.stream.bytesToString();
 
         getPodsModel = getPodsModelFromJson(responseBody);
-        audioData.value = getPodsModel.data??[];
+        audioData.value = getPodsModel.data ?? [];
         debugPrint("filter Data $audioData");
         update(['update']);
-      }
-      else {
+      } else {
         debugPrint(response.reasonPhrase);
         update(['update']);
       }
-    }catch(e){
+    } catch (e) {
       loader.value = false;
       debugPrint(e.toString());
     }
     update(['update']);
+  }
+
+  GetUserModel getUserModel = GetUserModel();
+
+  getUser() async {
+    try {
+      var headers = {
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+      };
+      var request = http.Request(
+        'GET',
+        Uri.parse(
+          "${EndPoints.getUser}${PrefService.getString(PrefKey.userId)}",
+        ),
+      );
+
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        final responseBody = await response.stream.bytesToString();
+
+        getUserModel = getUserModelFromJson(responseBody);
+      } else {
+        debugPrint(response.reasonPhrase);
+      }
+    } catch (e) {
+      loader.value = false;
+
+      debugPrint(e.toString());
+    }
+    loader.value = false;
   }
 }

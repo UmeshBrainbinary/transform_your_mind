@@ -1,6 +1,7 @@
 class EndPoints {
   static String baseUrl =
       "https://transformyourmind-server.onrender.com/api/v1/";
+  static String baseUrlImg = "https://transformyourmind-server.onrender.com/";
   static String registerApi = "signup";
   static String verifyOtp = "verify-otp";
   static String login = "login";
@@ -18,11 +19,12 @@ class EndPoints {
   static String updateAffirmation = "update-affirmation?id=";
   static String categoryAffirmation = "get-affirmation?category=";
   static String getUser = "${baseUrl}user-details?id=";
-  static String getMoment = "${baseUrl}get-moment?isLastWeek=true";
+  static String getMoment = "${baseUrl}get-moment";
   static String getPod = "${baseUrl}get-pod";
+  static String multipleBookmarksPods = "${baseUrl}multiple-pod?ids=";
   static String createPositiveMoment = "${baseUrl}add-moment";
   static String deletePositiveMoment = "${baseUrl}delete-moment?id=";
   static String updatePositiveMoment = "${baseUrl}update-moment?id=";
-
-
+  static String getFaqApi = "${baseUrl}get-faq";
+  static String getGuideApi = "${baseUrl}get-guideline";
 }

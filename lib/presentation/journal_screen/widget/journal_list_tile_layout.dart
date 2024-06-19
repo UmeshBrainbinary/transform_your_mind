@@ -74,8 +74,9 @@ class JournalListTileLayout extends StatelessWidget {
                         onTap: () => onEditTapCallback?.call(),
                         child: SvgPicture.asset(
                           ImageConstant.editTools,
-                          color: ColorConstant.black,
-                        ),
+                          color: themeController.isDarkMode.value
+                              ? ColorConstant.white
+                              : ColorConstant.black),
                       ),
                     Dimens.d10.spaceWidth,
 
@@ -83,8 +84,10 @@ class JournalListTileLayout extends StatelessWidget {
                         onTap: () => onDeleteTapCallback?.call(),
                         child: SvgPicture.asset(
                           ImageConstant.delete,
-                          color: ColorConstant.black,
-                        ),
+                        color: themeController.isDarkMode.value
+                            ? ColorConstant.white
+                            : ColorConstant.black,
+                      ),
                       ),
                     Dimens.d15.spaceWidth,
                   ],

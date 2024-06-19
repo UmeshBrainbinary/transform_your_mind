@@ -3,11 +3,10 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 
-class CommonLoadImage extends StatefulWidget {
+class CommonLoadImage extends StatelessWidget {
   final String url;
   final double width;
   final double height;
@@ -19,8 +18,7 @@ class CommonLoadImage extends StatefulWidget {
   int? indexP;
   VoidCallback? onTap;
 
-  CommonLoadImage(
-      {Key? key,
+  CommonLoadImage({super.key,
       required this.url,
       this.imagePath = "",
       required this.width,
@@ -30,17 +28,11 @@ class CommonLoadImage extends StatefulWidget {
       this.customBorderRadius,
       this.pName,
       this.indexP,
-      this.onTap})
-      : super(key: key);
+      this.onTap});
 
-  @override
-  State<CommonLoadImage> createState() => _CommonLoadImageState();
-}
-
-class _CommonLoadImageState extends State<CommonLoadImage> {
   @override
   Widget build(BuildContext context) {
-    return widget.imagePath.isNotEmpty
+    return imagePath.isNotEmpty
         ? Stack(
             children: [
               Padding(
@@ -48,9 +40,9 @@ class _CommonLoadImageState extends State<CommonLoadImage> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(Dimens.d16),
                   child: Image.file(
-                    File(widget.imagePath),
-                    height: widget.height,
-                    width: widget.width,
+                    File(imagePath),
+                    height: height,
+                    width: width,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -59,7 +51,7 @@ class _CommonLoadImageState extends State<CommonLoadImage> {
                 left: 0,
                 top: 0,
                 child: InkWell(
-                  onTap: widget.onTap,
+                  onTap: onTap,
                   child: const CircleAvatar(
                     backgroundColor: ColorConstant.themeColor,
                     radius: 12,
@@ -73,20 +65,19 @@ class _CommonLoadImageState extends State<CommonLoadImage> {
               )
             ],
           )
-        : widget.url.isNotEmpty
+        : url.isNotEmpty
             ? CachedNetworkImage(
-                height: widget.height,
-                width: widget.width,
-                imageUrl: widget.url,
+                height: height,
+                width: width,
+                imageUrl: url,
                 imageBuilder: (context, imageProvider) => Container(
                   decoration: BoxDecoration(
-                    shape:
-                        widget.isRounded ? BoxShape.circle : BoxShape.rectangle,
-                    borderRadius: widget.isRounded
+                    shape: isRounded ? BoxShape.circle : BoxShape.rectangle,
+                    borderRadius: isRounded
                         ? null
-                        : widget.customBorderRadius ??
+                        : customBorderRadius ??
                             BorderRadius.circular(
-                              widget.borderRadius,
+                              borderRadius,
                             ),
                     image: DecorationImage(
                       image: imageProvider,
@@ -95,28 +86,28 @@ class _CommonLoadImageState extends State<CommonLoadImage> {
                   ),
                 ),
                 placeholder: (context, url) => PlaceHolderCNI(
-                  width: widget.width,
-                  height: widget.height,
-                  isRounded: widget.isRounded,
-                  borderRadius: widget.borderRadius,
-                  customBorderRadius: widget.customBorderRadius,
+                  width: width,
+                  height: height,
+                  isRounded: isRounded,
+                  borderRadius: borderRadius,
+                  customBorderRadius: customBorderRadius,
                 ),
                 errorWidget: (context, url, error) => PlaceHolderCNI(
-                  width: widget.width,
-                  height: widget.height,
+                  width: width,
+                  height: height,
                   isShowLoader: false,
-                  isRounded: widget.isRounded,
-                  borderRadius: widget.borderRadius,
-                  customBorderRadius: widget.customBorderRadius,
+                  isRounded: isRounded,
+                  borderRadius: borderRadius,
+                  customBorderRadius: customBorderRadius,
                 ),
               )
             : PlaceHolderCNI(
-                width: widget.width,
-                height: widget.height,
+                width: width,
+                height: height,
                 isShowLoader: false,
-                isRounded: widget.isRounded,
-                borderRadius: widget.borderRadius,
-                customBorderRadius: widget.customBorderRadius,
+                isRounded: isRounded,
+                borderRadius: borderRadius,
+                customBorderRadius: customBorderRadius,
               );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
+import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/motivational_message/motivational_controller.dart';
@@ -26,7 +27,7 @@ class MotivationalMessageScreen extends StatelessWidget {
             ? ColorConstant.black
             : ColorConstant.backGround,
         body: SingleChildScrollView(
-         // motivational
+          // motivational
           child: Column(
             children: [
               Dimens.d31.spaceHeight,
@@ -35,39 +36,37 @@ class MotivationalMessageScreen extends StatelessWidget {
                 child: GetBuilder<MotivationalController>(
                   id: "motivational",
                   builder: (controller) {
-                  return ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: motivationalController.motivationalList.length,
-                    itemBuilder: (context, index) {
-                      var data = motivationalController.motivationalList[index];
-                      return Container(
-                        margin: const EdgeInsets.only(bottom: 15),
-                        decoration: BoxDecoration(
-                          image:  DecorationImage(
-                              image: NetworkImage(
-                                  "https://transformyourmind-server.onrender.com/${data["img"]}"),
-                              fit: BoxFit.cover),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Stack(
-                          children: [
-                            // Image.asset(data["img"],fit: BoxFit.cover,),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 30, vertical: 30),
-                              child: Text(
-                                data["title"],textAlign: TextAlign.center,
-                                style:
-                                Style.cormorantGaramondBold(fontSize: 20,color: ColorConstant.white),
-                              ),
+                    return ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: motivationalController.motivationalList.length,
+                      itemBuilder: (context, index) {
+                        var data =
+                            motivationalController.motivationalList[index];
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 15),
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: NetworkImage(
+                                    "${EndPoints.baseUrlImg}${data["img"]}"),
+                                fit: BoxFit.cover),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 30, vertical: 30),
+                            child: Text(
+                              data["title"],
+                              textAlign: TextAlign.center,
+                              style: Style.cormorantGaramondBold(
+                                  fontSize: 20, color: ColorConstant.white),
                             ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                },),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
               )
             ],
           ),

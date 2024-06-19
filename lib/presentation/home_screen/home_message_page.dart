@@ -5,11 +5,11 @@ import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:lottie/lottie.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
@@ -17,6 +17,7 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/dash_board_screen/dash_board_screen.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 
 
@@ -34,7 +35,7 @@ class HomeMessagePage extends StatefulWidget {
 class _HomeMessagePageState extends State<HomeMessagePage> {
   bool _isBookmarked = false;
   ScreenshotController screenshotController = ScreenshotController();
-
+  ThemeController themeController = Get.find<ThemeController>();
   @override
   void initState() {
     super.initState();
@@ -48,7 +49,9 @@ class _HomeMessagePageState extends State<HomeMessagePage> {
         return true;
       },
       child: Scaffold(
-        backgroundColor: ColorConstant.backGround,
+        backgroundColor: themeController.isDarkMode.isTrue
+            ? ColorConstant.black
+            : ColorConstant.backGround,
         body: Stack(
           children: [
             Screenshot(

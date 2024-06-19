@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -9,7 +10,6 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/image_utills.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
-import 'package:transform_your_mind/presentation/auth/ragister_screen/widget/add_image.dart';
 import 'package:transform_your_mind/presentation/home_screen/widgets/add_image_gratitude.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
@@ -50,36 +50,8 @@ class _GratitudeScreenState extends State<GratitudeScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: CustomAppBar(
-        title:"Gratitude",
-     /*   action: !(widget.isFromMyGratitude)
-            ? Row(children: [
-          GestureDetector(
-              onTap: () {
-                dashboardBloc.add(UpdateOnboardingStepEvent(
-                    request: OnboardingStep(onBoardStep: 5)));
-                Navigator.pushNamedAndRemoveUntil(
-                    context, AddGoalsPage.addGoals, (route) => false,
-                    arguments: {AppConstants.isFromMyGoals: false});
-              },
-              child: Text(i10n.skip)),
-          Dimens.d20.spaceWidth,
-        ])
-            : widget.gratitudeData != null
-            ? LottieIconButton(
-          icon: AppAssets.lottieDeleteAccount,
-          onTap: () {
-            _gratitudeBloc.add(
-              DeleteGratitudeEvent(
-                  deleteGratitudeRequest: DeleteGratitudeRequest(
-                      userGratitudeId:
-                      widget.gratitudeData?.userGratitudeId ??
-                          ""),
-                  isFromDraft: true),
-            );
-          },
-        )
-            : const SizedBox.shrink(),*/
-      ),
+          title: "gratitude".tr,
+        ),
       body:LayoutBuilder(builder: (context, constraints) {
         return Stack(
           children: [

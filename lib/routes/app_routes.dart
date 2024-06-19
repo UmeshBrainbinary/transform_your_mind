@@ -48,7 +48,6 @@ import 'package:transform_your_mind/presentation/me_screen/screens/setting_scree
 import 'package:transform_your_mind/presentation/motivational_message/binding/motivational_binding.dart';
 import 'package:transform_your_mind/presentation/motivational_message/motivational_message.dart';
 import 'package:transform_your_mind/presentation/positive_moment/binding/positive_binding.dart';
-import 'package:transform_your_mind/presentation/positive_moment/positive_controller.dart';
 import 'package:transform_your_mind/presentation/positive_moment/positive_screen.dart';
 import 'package:transform_your_mind/presentation/profile_screen/binding/profile_binding.dart';
 import 'package:transform_your_mind/presentation/profile_screen/profile_screen.dart';
@@ -56,8 +55,6 @@ import 'package:transform_your_mind/presentation/splash_screen/binding/splash_bi
 import 'package:transform_your_mind/presentation/splash_screen/splash_screen.dart';
 import 'package:transform_your_mind/presentation/subscription_screen/binding/subscription_binding.dart';
 import 'package:transform_your_mind/presentation/subscription_screen/subscription_screen.dart';
-import 'package:transform_your_mind/presentation/today_cleanse_screen/binding/cleanse_binding.dart';
-import 'package:transform_your_mind/presentation/today_cleanse_screen/today_cleanse_screen.dart';
 import 'package:transform_your_mind/presentation/today_gratitude_screen/binding/gratitude_binding.dart';
 import 'package:transform_your_mind/presentation/today_gratitude_screen/gratitude_screen.dart';
 import 'package:transform_your_mind/presentation/tools_screen/binding/tools_binding.dart';
@@ -172,8 +169,7 @@ class AppRoutes {
       name: dashBoardScreen,
       page: () =>  DashBoardScreen(),
       bindings: [
-        DashBoardBinding(),
-      ],
+        DashBoardBinding(), NowPlayingBinding()],
     ),
    GetPage(
       transition: Transition.rightToLeft,
@@ -270,14 +266,6 @@ class AppRoutes {
       page: () => const GratitudeScreen(),
       bindings: [
         GratitudeBinding(),
-      ],
-    ),
-    GetPage(
-      transition: Transition.rightToLeft,
-      name: todayCleanseScreen,
-      page: () => const TodayCleanseScreen(),
-      bindings: [
-        CleanseBinding(),
       ],
     ),
 

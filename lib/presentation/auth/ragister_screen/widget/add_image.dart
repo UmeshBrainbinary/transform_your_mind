@@ -61,24 +61,18 @@ class _AddImageWidgetState extends State<AddImageWidget> {
                     height: Dimens.d100,
                     width: Dimens.d100,
                     child: widget.image != null
-                        ? Hero(
-                          tag: widget.image?.path ?? '',
-                          child: Image.file(
+                        ? Image.file(
                             File(widget.image?.path ?? ""),
                             fit: BoxFit.cover,
                             height: Dimens.d100,
                             width: Dimens.d100,
-                          ),
-                        )
+                          )
                         : (widget.imageURL != null)
-                            ? Hero(
-                              tag: widget.imageURL ?? '',
-                              child: CommonLoadImage(
+                            ? CommonLoadImage(
                                 url: widget.imageURL ?? '',
                                 height: Dimens.d100,
                                 width: Dimens.d100,
-                              ),
-                            )
+                              )
                             : (widget.imageURL?.isNotEmpty ?? false)
                                 ? const SizedBox()
                                 : Material(

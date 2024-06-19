@@ -1,9 +1,6 @@
 import 'dart:io';
 
-
 import 'package:flutter/material.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 
@@ -43,26 +40,23 @@ class _ViewFullScreenImageState extends State<ViewFullScreenImage> {
       backgroundColor: ColorConstant.black,
       body: Stack(
         children: [
-          Hero(
-            tag: imageUrl,
-            child: isNetworkImage
-                ? Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(imageUrl),
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  )
-                : Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: FileImage(File(imageUrl)),
-                        fit: BoxFit.contain,
-                      ),
+          isNetworkImage
+              ? Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(imageUrl),
+                      fit: BoxFit.contain,
                     ),
                   ),
-          ),
+                )
+              : Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: FileImage(File(imageUrl)),
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
           Positioned(
             top: kToolbarHeight,
             right: 20,

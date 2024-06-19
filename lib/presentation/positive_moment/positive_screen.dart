@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
+import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
-import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/edit_profile_screen/edit_profile_screen.dart';
 import 'package:transform_your_mind/presentation/positive_moment/add_positive_page.dart';
 import 'package:transform_your_mind/presentation/positive_moment/positive_controller.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
+import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
@@ -30,7 +32,6 @@ class _PositiveScreenState extends State<PositiveScreen> {
   PositiveController positiveController = Get.put(PositiveController());
   late ScrollController scrollController = ScrollController();
   ValueNotifier<bool> showScrollTop = ValueNotifier(false);
-  List? _filteredBookmarks;
 
   @override
   void initState() {
@@ -47,9 +48,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
         showScrollTop.value = false;
       }
     });
-    setState(() {
-      _filteredBookmarks = positiveController.positiveMomentList;
-    });
+
     super.initState();
   }
 
@@ -89,280 +88,331 @@ class _PositiveScreenState extends State<PositiveScreen> {
             ),
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Column(
-            children: [
-              Dimens.d15.h.spaceHeight,
-              Row(
+        body: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
                 children: [
-                  Container(
-                    width: Get.width - 100,
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: ColorConstant.themeColor.withOpacity(0.1),
-                          blurRadius: Dimens.d8,
-                        )
-                      ],
-                    ),
-                    child: CommonTextField(
-                        onChanged: (value) {
-                          setState(() {
-                            _filteredBookmarks = searchBookmarks(
-                                value, positiveController.positiveMomentList);
-                          });
-                        },
-                        suffixIcon: Padding(
-                          padding: const EdgeInsets.all(7.0),
-                          child: SvgPicture.asset(ImageConstant.searchExplore),
+                  Dimens.d15.h.spaceHeight,
+                  Row(
+                    children: [
+                      Container(
+                        width: Get.width - 100,
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: ColorConstant.themeColor.withOpacity(0.1),
+                              blurRadius: Dimens.d8,
+                            )
+                          ],
                         ),
-                        hintText: "search".tr,
-                        controller: searchController,
-                        focusNode: searchFocusNode),
+                        child: CommonTextField(
+                            onChanged: (value) {
+                              setState(() {
+                                positiveController.filteredBookmarks =
+                                    searchBookmarks(value,
+                                        positiveController.positiveMomentList);
+                              });
+                            },
+                            suffixIcon: Padding(
+                              padding: const EdgeInsets.all(7.0),
+                              child:
+                                  SvgPicture.asset(ImageConstant.searchExplore),
+                            ),
+                            hintText: "search".tr,
+                            controller: searchController,
+                            focusNode: searchFocusNode),
+                      ),
+                      Dimens.d10.spaceWidth,
+                      GestureDetector(
+                          onTap: () {
+                            _showAlertDialogFilter(context, themeController);
+                          },
+                          child: SvgPicture.asset(ImageConstant.filterPositive))
+                    ],
                   ),
-                  Dimens.d10.spaceWidth,
-                  GestureDetector(
-                      onTap: () {
-                        _showAlertDialogFilter(context);
-                      },
-                      child: SvgPicture.asset(ImageConstant.filterPositive))
-                ],
-              ),
-              Dimens.d30.h.spaceHeight,
-              Expanded(
-                child: _filteredBookmarks != null
-                    ? GridView.builder(
-                        controller: scrollController,
-                        padding: const EdgeInsets.only(bottom: Dimens.d20),
-                        physics: const BouncingScrollPhysics(),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          childAspectRatio: 1,
-                          crossAxisCount: 2,
-                          // Number of columns
-                          crossAxisSpacing: 20,
-                          // Spacing between columns
-                          mainAxisSpacing: 20, // Spacing between rows
-                        ),
-                        itemCount: _filteredBookmarks?.length ?? 0,
-                        itemBuilder: (context, index) {
-                          return Container(
-                            height: 156,
-                            width: 156,
-                            padding: const EdgeInsets.only(
-                                left: 10, right: 10, top: 10),
-                            decoration: BoxDecoration(
-                                color: ColorConstant.colorDCE9EE,
-                                borderRadius: BorderRadius.circular(18)),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                GestureDetector(
+                  Dimens.d30.h.spaceHeight,
+                  Obx(
+                    () => Expanded(
+                      child: positiveController.filteredBookmarks != null
+                          ? GridView.builder(
+                              controller: scrollController,
+                              padding:
+                                  const EdgeInsets.only(bottom: Dimens.d20),
+                              physics: const BouncingScrollPhysics(),
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                childAspectRatio: 1,
+                                crossAxisCount: 2,
+                                // Number of columns
+                                crossAxisSpacing: 20,
+                                // Spacing between columns
+                                mainAxisSpacing: 20, // Spacing between rows
+                              ),
+                              itemCount: positiveController
+                                      .filteredBookmarks?.length ??
+                                  0,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  height: 156,
+                                  width: 156,
+                                  padding: const EdgeInsets.only(
+                                      left: 10, right: 10, top: 10),
+                                  decoration: BoxDecoration(
+                                      color: themeController.isDarkMode.isTrue
+                                          ? ColorConstant.textfieldFillColor
+                                          : ColorConstant.colorDCE9EE,
+                                      borderRadius: BorderRadius.circular(18)),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          searchFocusNode.unfocus();
+                                          _showAlertDialog(context);
+                                        },
+                                        child: CommonLoadImage(
+                                            borderRadius: 10.0,
+                                            url:
+                                                "${EndPoints.baseUrlImg}${positiveController.filteredBookmarks?[index]["img"]}" ??
+                                                    "",
+                                            width: Dimens.d139,
+                                            height: Dimens.d101),
+                                      ),
+                                      Dimens.d10.spaceHeight,
+                                      Row(
+                                        children: [
+                                          const Spacer(),
+                                          PopupMenuButton(
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(10.0),
+                                              ),
+                                            ),
+                                            color: themeController
+                                                    .isDarkMode.isTrue
+                                                ? ColorConstant
+                                                    .textfieldFillColor
+                                                : ColorConstant.white,
+                                            child: SvgPicture.asset(
+                                              ImageConstant.moreVert,
+                                              height: 4,
+                                            ),
+                                            itemBuilder: (context) {
+                                              return List.generate(
+                                                1,
+                                                (indexPop) {
+                                                  return PopupMenuItem(
+                                                      child: Column(
+                                                    children: [
+                                                      InkWell(
+                                                        onTap: () {
+                                                          Get.back();
+                                                          _onAddClick1(
+                                                              title: positiveController
+                                                                          .filteredBookmarks?[
+                                                                      index]
+                                                                  ["title"],
+                                                              description:
+                                                                  positiveController
+                                                                              .filteredBookmarks?[
+                                                                          index]
+                                                                      ["des"],
+                                                              context,
+                                                              positiveController
+                                                                              .filteredBookmarks?[
+                                                                          index]
+                                                                      ["id"] ??
+                                                                  "");
+                                                        },
+                                                        child: Container(
+                                                          height: 28,
+                                                          width: 86,
+                                                          decoration: BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          5),
+                                                              color: ColorConstant
+                                                                  .color5B93FF
+                                                                  .withOpacity(
+                                                                      0.05)),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceAround,
+                                                            children: [
+                                                              SvgPicture.asset(
+                                                                ImageConstant
+                                                                    .editTools,
+                                                                color: ColorConstant
+                                                                    .color5B93FF,
+                                                              ),
+                                                              Text(
+                                                                'edit'.tr,
+                                                                style: Style
+                                                                    .montserratRegular(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: ColorConstant
+                                                                      .color5B93FF,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Dimens.d15.spaceHeight,
+                                                      InkWell(
+                                                        onTap: () {
+                                                          Get.back();
+
+                                                          _showAlertDialogDelete(
+                                                              context,
+                                                              index,
+                                                              positiveController
+                                                                      .filteredBookmarks?[
+                                                                  index]["id"]);
+                                                        },
+                                                        child: Container(
+                                                          height: 28,
+                                                          width: 86,
+                                                          decoration: BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          5),
+                                                              color: ColorConstant
+                                                                  .colorE71D36
+                                                                  .withOpacity(
+                                                                      0.05)),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceAround,
+                                                            children: [
+                                                              SvgPicture.asset(
+                                                                ImageConstant
+                                                                    .delete,
+                                                                color: ColorConstant
+                                                                    .colorE71D36,
+                                                              ),
+                                                              Text(
+                                                                'delete'.tr,
+                                                                style: Style
+                                                                    .montserratRegular(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: ColorConstant
+                                                                      .colorE71D36,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ));
+                                                },
+                                              );
+                                            },
+                                          )
+                                        ],
+                                      ),
+                                      Text(
+                                        positiveController
+                                                    .filteredBookmarks?[index]
+                                                ['title'] ??
+                                            "",
+                                        maxLines: 1,
+                                        style: Style.montserratMedium(
+                                            fontSize: Dimens.d14),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              })
+                          : GridView.builder(
+                              controller: scrollController,
+                              padding:
+                                  const EdgeInsets.only(bottom: Dimens.d20),
+                              physics: const BouncingScrollPhysics(),
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                childAspectRatio: 1,
+                                crossAxisCount: 2,
+                                // Number of columns
+                                crossAxisSpacing: 20,
+                                // Spacing between columns
+                                mainAxisSpacing: 20, // Spacing between rows
+                              ),
+                              itemCount:
+                                  positiveController.positiveMomentList.length,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
                                   onTap: () {
                                     searchFocusNode.unfocus();
                                     _showAlertDialog(context);
+                                    // _onTileClick(index, context);
                                   },
-                                  child: Image.asset(
-                                    _filteredBookmarks?[index]["img"] ?? "",
-                                    height: 101,
-                                    width: 138,
-                                  ),
-                                ),
-                                /*      CustomImageView(
-                                  imagePath: positiveController
-                                      .positiveMomentList[index]['image'],
-                                  height: Dimens.d135,
-                                  radius: BorderRadius.circular(10),
-                                  fit: BoxFit.cover,
-                                ),*/
-                                Dimens.d10.spaceHeight,
-                                Row(
-                                  children: [
-                                    Spacer(),
-                                    PopupMenuButton(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(10.0),
+                                  child: Container(
+                                    height: 156,
+                                    width: 156,
+                                    padding: const EdgeInsets.only(
+                                        left: 10, right: 10, top: 10),
+                                    decoration: BoxDecoration(
+                                        color: ColorConstant.colorDCE9EE,
+                                        borderRadius:
+                                            BorderRadius.circular(18)),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        CommonLoadImage(
+                                            url: positiveController
+                                                    .positiveMomentList[index]
+                                                ["img"],
+                                            width: Dimens.d156,
+                                            height: Dimens.d113),
+                                        Dimens.d12.spaceHeight,
+                                        Text(
+                                          positiveController
+                                                  .positiveMomentList[index]
+                                              ['title'],
+                                          maxLines: Dimens.d2.toInt(),
+                                          style: Style.montserratMedium(
+                                              fontSize: Dimens.d14),
+                                          overflow: TextOverflow.ellipsis,
                                         ),
-                                      ),
-                                      color: ColorConstant.white,
-                                      child: SvgPicture.asset(
-                                          ImageConstant.moreVert),
-                                      itemBuilder: (context) {
-                                        return List.generate(
-                                          1,
-                                          (index) {
-                                            return PopupMenuItem(
-                                                child: Column(
-                                              children: [
-                                                InkWell(
-                                                  onTap: () {
-                                                    _onAddClick1(context, _filteredBookmarks?[index]["id"] ?? "");
-                                                  },
-                                                  child: Container(
-                                                    height: 28,
-                                                    width: 86,
-                                                    decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                        color: ColorConstant
-                                                            .color5B93FF
-                                                            .withOpacity(0.05)),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceAround,
-                                                      children: [
-                                                        SvgPicture.asset(
-                                                          ImageConstant
-                                                              .editTools,
-                                                          color: ColorConstant
-                                                              .color5B93FF,
-                                                        ),
-                                                        Text(
-                                                          'Edit',
-                                                          style: Style
-                                                              .montserratRegular(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            color: ColorConstant
-                                                                .color5B93FF,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                                Dimens.d15.spaceHeight,
-                                                InkWell(
-                                                  onTap: () {
-                                                    _showAlertDialogDelete(context, index,   _filteredBookmarks?[index]["id"]);
-                                                  },
-                                                  child: Container(
-                                                    height: 28,
-                                                    width: 86,
-                                                    decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                        color: ColorConstant
-                                                            .colorE71D36
-                                                            .withOpacity(0.05)),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceAround,
-                                                      children: [
-                                                        SvgPicture.asset(
-                                                          ImageConstant.delete,
-                                                          color: ColorConstant
-                                                              .colorE71D36,
-                                                        ),
-                                                        Text(
-                                                          'Delete',
-                                                          style: Style
-                                                              .montserratRegular(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            color: ColorConstant
-                                                                .colorE71D36,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ));
-                                          },
-                                        );
-                                      },
-                                    )
-                                  ],
-                                ),
-                                Text(
-                                  _filteredBookmarks?[index]['title'] ?? "",
-                                  maxLines: Dimens.d2.toInt(),
-                                  style: Style.montserratMedium(
-                                      fontSize: Dimens.d14),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
-                          );
-                        })
-                    : GridView.builder(
-                        controller: scrollController,
-                        padding: const EdgeInsets.only(bottom: Dimens.d20),
-                        physics: const BouncingScrollPhysics(),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          childAspectRatio: 1,
-                          crossAxisCount: 2,
-                          // Number of columns
-                          crossAxisSpacing: 20,
-                          // Spacing between columns
-                          mainAxisSpacing: 20, // Spacing between rows
-                        ),
-                        itemCount: positiveController.positiveMomentList.length,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              searchFocusNode.unfocus();
-                              _showAlertDialog(context);
-                              // _onTileClick(index, context);
-                            },
-                            child: Container(
-                              height: 156,
-                              width: 156,
-                              padding: const EdgeInsets.only(
-                                  left: 10, right: 10, top: 10),
-                              decoration: BoxDecoration(
-                                  color: ColorConstant.colorDCE9EE,
-                                  borderRadius: BorderRadius.circular(18)),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Image.asset(
-                                    positiveController.positiveMomentList[index]
-                                        ["img"],
-                                    height: 101,
-                                    width: 138,
+                                      ],
+                                    ),
                                   ),
-                                  /*      CustomImageView(
-                                        imagePath: positiveController
-                                            .positiveMomentList[index]['image'],
-                                        height: Dimens.d135,
-                                        radius: BorderRadius.circular(10),
-                                        fit: BoxFit.cover,
-                                      ),*/
-                                  Dimens.d12.spaceHeight,
-                                  Text(
-                                    positiveController.positiveMomentList[index]
-                                        ['title'],
-                                    maxLines: Dimens.d2.toInt(),
-                                    style: Style.montserratMedium(
-                                        fontSize: Dimens.d14),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }),
-              )
-            ],
-          ),
+                                );
+                              }),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Obx(
+              () => positiveController.loader.isTrue
+                  ? commonLoader()
+                  : const SizedBox(),
+            )
+          ],
         ),
       ),
     );
   }
 
-  void _showAlertDialogDelete(BuildContext context, int index, filteredBookmark) {
+  void _showAlertDialogDelete(BuildContext context, int index, id) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -384,10 +434,10 @@ class _PositiveScreenState extends State<PositiveScreen> {
                     ))),
             Center(
                 child: SvgPicture.asset(
-                  ImageConstant.deleteAffirmation,
-                  height: Dimens.d140,
-                  width: Dimens.d140,
-                )),
+              ImageConstant.deleteAffirmation,
+              height: Dimens.d140,
+              width: Dimens.d140,
+            )),
             Dimens.d20.spaceHeight,
             Center(
               child: Text(
@@ -398,30 +448,45 @@ class _PositiveScreenState extends State<PositiveScreen> {
                   )),
             ),
             Dimens.d24.spaceHeight,
-            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 CommonElevatedButton(
                   height: 33,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 25),
                   textStyle: Style.montserratRegular(
                       fontSize: Dimens.d12, color: ColorConstant.white),
-                  title: "Delete".tr,
-                  onTap: () {
-                    setState(() {
-                    });
-                    positiveController.deletePositiveMoment(filteredBookmark);
-                    // Get.back();
+                  title: "delete".tr,
+                  onTap: () async {
+                    Get.back();
+                    await positiveController.deletePositiveMoment(id);
+                    Future.delayed(const Duration(seconds: 1)).then(
+                      (value) async {
+                        await positiveController.getPositiveMoments();
+                        setState(() {});
+                      },
+                    );
+                    setState(() {});
                   },
                 ),
-                Container(
-                  height: 33,margin: const EdgeInsets.symmetric(horizontal: 5),
-                  padding: const EdgeInsets.symmetric(horizontal: 21,),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(80),
-                      border: Border.all(color: ColorConstant.themeColor)),
-                  child: Center(
-                    child: Text(
-                      "cancel".tr,
-                      style: Style.montserratRegular(fontSize: 14),
+                GestureDetector(
+                  onTap: () {
+                    Get.back();
+                  },
+                  child: Container(
+                    height: 33,
+                    margin: const EdgeInsets.symmetric(horizontal: 5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 21,
+                    ),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(80),
+                        border: Border.all(color: ColorConstant.themeColor)),
+                    child: Center(
+                      child: Text(
+                        "cancel".tr,
+                        style: Style.montserratRegular(fontSize: 14),
+                      ),
                     ),
                   ),
                 )
@@ -432,6 +497,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
       },
     );
   }
+
   void _showAlertDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -482,18 +548,21 @@ class _PositiveScreenState extends State<PositiveScreen> {
     );
   }
 
-  void _showAlertDialogFilter(BuildContext context) {
+  void _showAlertDialogFilter(
+      BuildContext context, ThemeController themeController) {
     showModalBottomSheet(
       context: context,
       builder: (context) {
         return Container(
           height: 299,
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(11),
               topRight: Radius.circular(11),
             ),
-            color: ColorConstant.white,
+            color: themeController.isDarkMode.isTrue
+                ? ColorConstant.textfieldFillColor
+                : ColorConstant.white,
           ),
           child: Padding(
             padding:
@@ -517,7 +586,9 @@ class _PositiveScreenState extends State<PositiveScreen> {
                       },
                       child: SvgPicture.asset(
                         ImageConstant.close,
-                        color: ColorConstant.hintText,
+                        color: themeController.isDarkMode.isTrue
+                            ? ColorConstant.white
+                            : ColorConstant.hintText,
                       ),
                     ),
                   ],
@@ -527,7 +598,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
                   children: [
                     InkWell(
                       onTap: () {
-                        positiveController.onTapCon("value");
+                        positiveController.onTapCon("isLastWeek");
                       },
                       child: Container(
                         height: 42,
@@ -548,12 +619,12 @@ class _PositiveScreenState extends State<PositiveScreen> {
                                     border: Border.all(
                                         color: ColorConstant.colorAFAFAF),
                                     color: positiveController.conTap.value ==
-                                            'value'
+                                            'isLastWeek'
                                         ? ColorConstant.themeColor
                                         : ColorConstant.transparent),
-                                child:
-                                    positiveController.conTap.value == 'value'
-                                        ? Center(
+                                child: positiveController.conTap.value ==
+                                        'isLastWeek'
+                                    ? Center(
                                             child: SvgPicture.asset(
                                               ImageConstant.done,
                                               height: 5.5,
@@ -574,7 +645,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
                     ),
                     InkWell(
                       onTap: () {
-                        positiveController.onTapCon1("select");
+                        positiveController.onTapCon1("isLastMonth");
                       },
                       child: Container(
                         height: 42,
@@ -595,12 +666,12 @@ class _PositiveScreenState extends State<PositiveScreen> {
                                     border: Border.all(
                                         color: ColorConstant.colorAFAFAF),
                                     color: positiveController.conTap.value ==
-                                            'select'
+                                            'isLastMonth'
                                         ? ColorConstant.themeColor
                                         : ColorConstant.transparent),
-                                child:
-                                    positiveController.conTap.value == 'select'
-                                        ? Center(
+                                child: positiveController.conTap.value ==
+                                        'isLastMonth'
+                                    ? Center(
                                             child: SvgPicture.asset(
                                               ImageConstant.done,
                                               height: 5,
@@ -623,7 +694,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
                 ),
                 InkWell(
                   onTap: () {
-                    positiveController.onTapCon2("year");
+                    positiveController.onTapCon2("isLastYear");
                   },
                   child: Container(
                     height: 42,
@@ -643,12 +714,14 @@ class _PositiveScreenState extends State<PositiveScreen> {
                               borderRadius: BorderRadius.circular(50),
                               border:
                                   Border.all(color: ColorConstant.colorAFAFAF),
-                              color: positiveController.conTap.value == 'year'
+                              color: positiveController.conTap.value ==
+                                      'isLastYear'
                                   ? ColorConstant.themeColor
                                   : ColorConstant.transparent,
                             ),
-                            child: positiveController.conTap.value == 'year'
-                                ? Center(
+                            child:
+                                positiveController.conTap.value == 'isLastYear'
+                                    ? Center(
                                     child: SvgPicture.asset(
                                       ImageConstant.done,
                                       height: 5,
@@ -672,7 +745,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
                   children: [
                     InkWell(
                       onTap: () {
-                        positiveController.onTapCon3("month");
+                        positiveController.onTapCon3("isLastThreeMonths");
                       },
                       child: Container(
                         height: 42,
@@ -693,12 +766,12 @@ class _PositiveScreenState extends State<PositiveScreen> {
                                       border: Border.all(
                                           color: ColorConstant.colorAFAFAF),
                                       color: positiveController.conTap.value ==
-                                              'month'
+                                              'isLastThreeMonths'
                                           ? ColorConstant.themeColor
                                           : ColorConstant.transparent),
-                                  child:
-                                      positiveController.conTap.value == 'month'
-                                          ? Center(
+                                  child: positiveController.conTap.value ==
+                                          'isLastThreeMonths'
+                                      ? Center(
                                               child: SvgPicture.asset(
                                                 ImageConstant.done,
                                                 height: 5,
@@ -718,7 +791,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
                     ),
                     InkWell(
                       onTap: () {
-                        positiveController.onTapCon4("selectMonth");
+                        positiveController.onTapCon4("isLastSixMonths");
                       },
                       child: Container(
                         height: 42,
@@ -739,11 +812,11 @@ class _PositiveScreenState extends State<PositiveScreen> {
                                       border: Border.all(
                                           color: ColorConstant.colorAFAFAF),
                                       color: positiveController.conTap.value ==
-                                              'selectMonth'
+                                              'isLastSixMonths'
                                           ? ColorConstant.themeColor
                                           : ColorConstant.transparent),
                                   child: positiveController.conTap.value ==
-                                          'selectMonth'
+                                          'isLastSixMonths'
                                       ? Center(
                                           child: SvgPicture.asset(
                                             ImageConstant.done,
@@ -765,9 +838,9 @@ class _PositiveScreenState extends State<PositiveScreen> {
                   ],
                 ),
                 InkWell(
-                  onTap: () {
-
-                    positiveController.filterMoment();
+                  onTap: () async {
+                    await positiveController
+                        .filterMoment(positiveController.conTap.value);
                   },
                   child: Container(
                     width: 238,
@@ -778,7 +851,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
                     ),
                     child: Center(
                         child: Text(
-                      "Apply".tr,
+                      "apply".tr,
                       style: Style.montserratRegular(
                           color: ColorConstant.white,
                           fontSize: 18,
@@ -794,68 +867,6 @@ class _PositiveScreenState extends State<PositiveScreen> {
     );
   }
 
-  // void _showAlertDialogFilter(BuildContext context) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return StatefulBuilder(
-  //         builder: (context, setState) {
-  //           return AlertDialog(
-  //             //backgroundColor: Colors.white,
-  //             shape: RoundedRectangleBorder(
-  //               borderRadius: BorderRadius.circular(11.0), // Set border radius
-  //             ),
-  //             content: Column(mainAxisSize: MainAxisSize.min,
-  //               children: [
-  //                 Dimens.d5.spaceHeight,
-  //                 GestureDetector(
-  //                     onTap: () {
-  //                       Get.back();
-  //                     },
-  //                     child: Align(
-  //                       alignment: Alignment.topRight,
-  //                       child: SvgPicture.asset(
-  //                         ImageConstant.closePositive,
-  //                         height: 28,
-  //                         width: 28,
-  //                       ),
-  //                     )),
-  //                 Dimens.d10.spaceHeight,
-  //                 SizedBox(
-  //                   height: Dimens.d150,
-  //                   width: Dimens.d100,
-  //                   child: ListView.builder(
-  //                     itemCount: positiveMoment.length,
-  //                     itemBuilder: (context, index) {
-  //                       return Padding(
-  //                         padding: const EdgeInsets.only(bottom: 10.0),
-  //                         child: Center(
-  //                             child: Text(
-  //                           positiveMoment[index],
-  //                           style: Style.montserratRegular(fontSize: 18),
-  //                         )),
-  //                       );
-  //                     },
-  //                   ),
-  //                 ),
-  //                 Dimens.d10.spaceHeight,
-  //                 Padding(
-  //                   padding:EdgeInsets.symmetric(horizontal: 40),
-  //                   child: CommonElevatedButton(
-  //                     height: 30,
-  //                     title: "submit".tr,
-  //                     onTap: () {},
-  //                   ),
-  //                 )
-  //               ],
-  //             ),
-  //           );
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
-
   void _onAddClick(BuildContext context) {
     final subscriptionStatus = "SUBSCRIBED";
 
@@ -869,19 +880,22 @@ class _PositiveScreenState extends State<PositiveScreen> {
     } else {
       Navigator.push(context, MaterialPageRoute(
         builder: (context) {
-          return  AddPositivePage(
+          return AddPositivePage(
             isFromMyAffirmation: true,
             isEdit: false,
           );
         },
       )).then(
-        (value) {
+        (value) async {
+          await positiveController.getPositiveMoments();
           setState(() {});
         },
       );
     }
   }
-  void _onAddClick1(BuildContext context, param1) {
+
+  void _onAddClick1(BuildContext context, param1,
+      {String? title, String? description}) {
     final subscriptionStatus = "SUBSCRIBED";
 
     /// to check if item counts are not more then the config count in case of no subscription
@@ -894,14 +908,17 @@ class _PositiveScreenState extends State<PositiveScreen> {
     } else {
       Navigator.push(context, MaterialPageRoute(
         builder: (context) {
-          return  AddPositivePage(
+          return AddPositivePage(
             id: param1,
+            title: title,
+            des: description,
             isFromMyAffirmation: true,
             isEdit: true,
           );
         },
       )).then(
-            (value) {
+        (value) async {
+          await positiveController.getPositiveMoments();
           setState(() {});
         },
       );

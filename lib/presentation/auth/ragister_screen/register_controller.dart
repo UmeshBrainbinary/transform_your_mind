@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -6,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
@@ -15,7 +13,6 @@ import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/model_class/common_model.dart';
 import 'package:transform_your_mind/model_class/register_model.dart';
 import 'package:transform_your_mind/presentation/auth/forgot_password_screen/verification_screen.dart';
-import 'package:transform_your_mind/routes/app_routes.dart';
 
 class RegisterController extends GetxController {
   TextEditingController nameController = TextEditingController();
@@ -23,7 +20,11 @@ class RegisterController extends GetxController {
   TextEditingController passwordController = TextEditingController();
   TextEditingController dobController = TextEditingController();
   TextEditingController genderController = TextEditingController();
-
+  FocusNode nameFocus = FocusNode();
+  FocusNode emailFocus = FocusNode();
+  FocusNode passwordFocus = FocusNode();
+  FocusNode dobFocus = FocusNode();
+  FocusNode genderFocus = FocusNode();
   ValueNotifier<bool> securePass = ValueNotifier(true);
   ValueNotifier<XFile?> imageFile = ValueNotifier(null);
 
@@ -103,12 +104,16 @@ class RegisterController extends GetxController {
        token: registerModel.token,
      ));
 
-
     } else {
+      loader.value = false;
+
       final responseBody = await response.stream.bytesToString();
       commonModel = commonModelFromJson(responseBody);
+      showSnackBarError(context, commonModel.message.toString());
+
       debugPrint("message For CommonModel $commonModel");
       debugPrint(response.reasonPhrase);
     }
+    loader.value = false;
   }
 }

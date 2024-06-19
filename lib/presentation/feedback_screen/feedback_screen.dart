@@ -32,7 +32,6 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   ValueNotifier<int> currentLength = ValueNotifier(0);
   ThemeController themeController = Get.put(ThemeController());
   int? _currentRating = 0;
-
   @override
   void initState() {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -45,7 +44,9 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorConstant.backGround,
+      backgroundColor: themeController.isDarkMode.isTrue
+          ? ColorConstant.black
+          : ColorConstant.backGround,
       appBar: CustomAppBar(title: "feedback".tr),
       body: SingleChildScrollView(
         child: Stack(
@@ -119,7 +120,9 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                     height: Dimens.d54,
                     width: 315,
                     decoration: BoxDecoration(
-                        color: ColorConstant.white,
+                        color: themeController.isDarkMode.isTrue
+                            ? ColorConstant.textfieldFillColor
+                            : ColorConstant.white,
                         borderRadius: BorderRadius.circular(9)),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,

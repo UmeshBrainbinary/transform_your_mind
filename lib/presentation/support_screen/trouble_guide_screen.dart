@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:transform_your_mind/core/app_export.dart';
+import 'package:get/get.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
-import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/presentation/profile_screen/profile_controller.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 class TroubleGuideScreen extends StatelessWidget {
@@ -13,8 +15,12 @@ class TroubleGuideScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeController = Get.find<ThemeController>();
+    final profileController = Get.find<ProfileController>();
     return Scaffold(
-      backgroundColor: ColorConstant.backGround,
+      backgroundColor: themeController.isDarkMode.isTrue
+          ? ColorConstant.black
+          : ColorConstant.backGround,
       appBar: CustomAppBar(title: "troubleshootingGuides".tr),
       body: Stack(
         children: [
@@ -30,16 +36,36 @@ class TroubleGuideScreen extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: Dimens.d120),
                 child: SvgPicture.asset(ImageConstant.profile2),
               )),
-          Column(
-            children: [
-              Dimens.d30.spaceHeight,
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Text(
-                  "1. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                  style: Style.montserratRegular(fontSize: 14),),
-              )
-            ],
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                Dimens.d30.spaceHeight,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Html(
+                    style: {
+                      "p": Style(
+                          fontFamily: 'Montserrat-Medium',
+                          fontSize: FontSize(14.0),
+                          fontWeight: FontWeight.w400,
+                          color: themeController.isDarkMode.isTrue
+                              ? ColorConstant.white
+                              : ColorConstant.black),
+                      "strong": Style(
+                          fontFamily: 'Montserrat-Bold',
+                          fontSize: FontSize(14.0),
+                          fontWeight: FontWeight.bold,
+                          color: themeController.isDarkMode.isTrue
+                              ? ColorConstant.white
+                              : ColorConstant.black),
+                    },
+                    data: """
+              ${profileController.guideModel.data?.description ?? ""}
+            """,
+                  ),
+                )
+              ],
+            ),
           ),
         ],
       ),

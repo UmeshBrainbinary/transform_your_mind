@@ -5,6 +5,7 @@ import 'package:pie_chart/pie_chart.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
+import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
@@ -37,12 +38,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     profileController.getUserDetail();
+    profileController.getFaq();
+    profileController.getGuide();
+    profileController.getPrivacy();
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorConstant.colorBFD0D4,
+      backgroundColor: themeController.isDarkMode.isTrue
+          ? ColorConstant.textfieldFillColor
+          : ColorConstant.colorBFD0D4,
       appBar: CustomAppBar(
         title: "profile".tr,
         showBack: false,
@@ -62,7 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     width: Get.width,
                     decoration: BoxDecoration(
                         color: themeController.isDarkMode.value
-                            ? ColorConstant.textfieldFillColor
+                            ? ColorConstant.black
                             : ColorConstant.backGround,
                         borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(20),
@@ -96,7 +102,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       shape: BoxShape.circle,
                       image:  DecorationImage(
                           image: NetworkImage(
-                             "https://transformyourmind-server.onrender.com/${profileController.image?.value}" ??
+                              "${EndPoints.baseUrlImg}${profileController.image?.value}" ??
                                   ""),fit: BoxFit.cover),
                       border: Border.all(
                           color: ColorConstant.themeColor, width: 2)),
@@ -139,7 +145,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 10, vertical: 30),
                   decoration: BoxDecoration(
-                      color: ColorConstant.white,
+                      color: themeController.isDarkMode.isTrue
+                          ? ColorConstant.textfieldFillColor
+                          : ColorConstant.white,
                       borderRadius: BorderRadius.circular(10)),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),

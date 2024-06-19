@@ -9,22 +9,25 @@ AffirmationModel affirmationModelFromJson(String str) => AffirmationModel.fromJs
 String affirmationModelToJson(AffirmationModel data) => json.encode(data.toJson());
 
 class AffirmationModel {
-  List<Datum>? data;
+  List<AffirmationData>? data;
 
   AffirmationModel({
     this.data,
   });
 
   factory AffirmationModel.fromJson(Map<String, dynamic> json) => AffirmationModel(
-    data: json["data"] == null ? [] : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
-  );
+        data: json["data"] == null
+            ? []
+            : List<AffirmationData>.from(
+                json["data"]!.map((x) => AffirmationData.fromJson(x))),
+      );
 
   Map<String, dynamic> toJson() => {
     "data": data == null ? [] : List<dynamic>.from(data!.map((x) => x.toJson())),
   };
 }
 
-class Datum {
+class AffirmationData {
   String? id;
   String? name;
   String? description;
@@ -38,7 +41,7 @@ class Datum {
   DateTime? updatedAt;
   int? v;
 
-  Datum({
+  AffirmationData({
     this.id,
     this.name,
     this.description,
@@ -53,8 +56,9 @@ class Datum {
     this.v,
   });
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-    id: json["_id"],
+  factory AffirmationData.fromJson(Map<String, dynamic> json) =>
+      AffirmationData(
+        id: json["_id"],
     name: json["name"],
     description: json["description"],
     category: json["category"],

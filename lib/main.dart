@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:transform_your_mind/core/service/notification_service.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
@@ -15,7 +17,9 @@ import 'core/utils/logger.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await AppTranslations.loadTranslations(); // Ensure translations are loaded
+  await AppTranslations.loadTranslations();
+  tz.initializeTimeZones();
+  await NotificationService.initializeNotifications();
 
   await PrefService.init();
 
@@ -29,13 +33,9 @@ Future<void> main() async {
 
   await Alarm.init();*/
 
-  /// localization on tap
-  //var locale = const Locale('de', 'De');
-  //Get.updateLocale(locale);
-
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: ColorConstant.backGround, // Status bar background color
-    statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+    statusBarColor: ColorConstant.backGround,
+    statusBarIconBrightness: Brightness.dark,
   ));
 }
 
@@ -48,6 +48,7 @@ class _MyAppState extends State<MyApp> {
   late ThemeController themeController;
   String currentLanguage = PrefService.getString(PrefKey.language);
   Locale? newLocale;
+
   @override
   void initState() {
     super.initState();
@@ -56,8 +57,12 @@ class _MyAppState extends State<MyApp> {
     print("isDarkTheme:- ${PrefService.getBool(PrefKey.isDarkTheme)}");
     themeController.isDarkMode.value = PrefService.getBool(PrefKey.isDarkTheme);
     setAlarm();
-
+    _initializeNotificationService();
     getLanguages();
+  }
+
+  Future<void> _initializeNotificationService() async {
+    await NotificationService.requestPermissions();
   }
 
   void setAlarm() async {

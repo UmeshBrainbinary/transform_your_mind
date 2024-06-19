@@ -83,7 +83,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: Dimens.d45),
                 child: Text(
-                  "Choose a subscription plan to unlock all the functionality’s of the application.",
+                  "chooseSub".tr,
                   textAlign: TextAlign.center,
                   style: Style.montserratRegular(
                     fontSize: Dimens.d13,
@@ -94,7 +94,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: Dimens.d45),
                 child: Text(
-                  "Subscribe now and receive a 3-day free trial to access all the features of TransformYourMind",
+                  "subscribeNow".tr,
                   textAlign: TextAlign.center,
                   style: Style.montserratRegular(
                     color: ColorConstant.themeColor,
@@ -118,7 +118,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Select plan",
+            "selectPlan".tr,
             textAlign: TextAlign.center,
             style: Style.montserratRegular(
               fontSize: Dimens.d16,
@@ -126,7 +126,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           ),
           Dimens.d10.spaceHeight,
           Text(
-            "We are giving discounts based on the plan user has selected. 3 days free trial available on every plan. you can cancel your subscription at any time.",
+            "discountsSub".tr,
             style: Style.montserratRegular(
               fontSize: Dimens.d12,
             ),
@@ -156,11 +156,18 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       decoration: BoxDecoration(
                           color: subscriptionController.plan[index] == true
                               ? ColorConstant.color7C9EA7.withOpacity(0.20)
-                              : ColorConstant.white.withOpacity(0.9),
+                              : themeController.isDarkMode.isTrue
+                                  ? ColorConstant.textfieldFillColor
+                                  : ColorConstant.white.withOpacity(0.9),
                           border: Border.all(
                               color: subscriptionController.plan[index] == true
-                                  ? ColorConstant.themeColor
-                                  : ColorConstant.colorE3E1E1,
+                                  ? themeController.isDarkMode.isTrue
+                                      ? ColorConstant.themeColor
+                                      : ColorConstant.themeColor
+                                  : themeController.isDarkMode.isTrue
+                                      ? ColorConstant.colorE3E1E1
+                                          .withOpacity(0.2)
+                                      : ColorConstant.colorE3E1E1,
                               width: 1),
                           borderRadius: BorderRadius.circular(15)),
                       child: Column(
@@ -180,8 +187,11 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                                       decoration: BoxDecoration(
                                           shape: BoxShape.circle,
                                           border: Border.all(
-                                              color:
-                                                  ColorConstant.colorE3E1E1)),
+                                              color: themeController
+                                                      .isDarkMode.isTrue
+                                                  ? ColorConstant.colorE3E1E1
+                                                      .withOpacity(0.2)
+                                                  : ColorConstant.colorE3E1E1)),
                                     ),
                               Dimens.d10.spaceWidth,
                               Text(
@@ -212,14 +222,14 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30.0),
             child: CommonElevatedButton(
-              title: "Purchase",
+              title: "purchase".tr,
               onTap: () {},
             ),
           ),
           Dimens.d20.spaceHeight,
           Center(
             child: Text(
-              "Restore Purchase",
+              "restorePurchase".tr,
               textAlign: TextAlign.center,
               style: Style.montserratRegular(
                 fontSize: Dimens.d15,
@@ -229,7 +239,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           Dimens.d33.spaceHeight,
           Text(
             textAlign: TextAlign.center,
-            "If you don’t cancel before the trial ends. you will be automatically charged based on selected plan until you cancel.",
+            "trailEnds".tr,
             style: Style.montserratRegular(
               fontSize: Dimens.d11,
             ),

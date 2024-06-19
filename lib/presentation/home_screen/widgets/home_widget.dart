@@ -3,10 +3,13 @@ import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/model_class/bookmarked_model.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
 
 class BookmarkListTile extends StatelessWidget {
-  const BookmarkListTile({Key? key, }) : super(key: key);
+  Datum? dataList;
+
+  BookmarkListTile({Key? key, this.dataList}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

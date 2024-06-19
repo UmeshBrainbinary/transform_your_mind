@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:transform_your_mind/core/common_widget/custom_chip.dart';
+import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/select_focus_button.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
@@ -15,7 +16,6 @@ import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
-import 'package:transform_your_mind/core/utils/progress_dialog_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/model_class/focus_model.dart';
 import 'package:transform_your_mind/presentation/intro_screen/select_your_affirmation_focus_page.dart';
@@ -214,7 +214,7 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
               ],
             ),
           ),
-          loader == true ? const CommonLoader() : const SizedBox()
+          loader == true ? commonLoader() : const SizedBox()
         ],
       ),
     );

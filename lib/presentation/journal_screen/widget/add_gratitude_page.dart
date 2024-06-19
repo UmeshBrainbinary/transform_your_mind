@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart' as http ;
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:transform_your_mind/core/app_export.dart';
@@ -20,7 +20,6 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/model_class/common_model.dart';
-import 'package:transform_your_mind/presentation/journal_screen/widget/my_gratitude_page.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
@@ -28,7 +27,6 @@ import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 import '../../../core/utils/style.dart';
-import 'package:http/http.dart' as http ;
 class AddGratitudePage extends StatefulWidget {
   AddGratitudePage(
       {super.key,
@@ -385,7 +383,9 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
         margin: const EdgeInsets.symmetric(horizontal: 16.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: ColorConstant.white,
+          color: themeController.isDarkMode.isTrue
+              ? ColorConstant.textfieldFillColor
+              : ColorConstant.white,
         ),
         child: CalendarCarousel<Event>(
           onDayPressed: (DateTime date, List<Event> events) {
@@ -394,7 +394,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
 
               print("==========$_currentDate");
               setState.call(() {
-                dateController.text = "${date.day}/${date.month}/${date.year}";
+                dateController.text = DateFormat('dd/MM/yyyy').format(date);
                 select = false;
               });
               setState((){});
@@ -402,8 +402,11 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
 
           },
 
-          weekendTextStyle:
-              Style.montserratRegular(fontSize: 15, color: ColorConstant.black),
+          weekendTextStyle: Style.montserratRegular(
+              fontSize: 15,
+              color: themeController.isDarkMode.isTrue
+                  ? ColorConstant.white
+                  : ColorConstant.black),
           // Customize your text style
           thisMonthDayBorderColor: Colors.transparent,
           customDayBuilder: (
@@ -442,8 +445,11 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
             }
           },
           weekFormat: false,
-          daysTextStyle:
-              Style.montserratRegular(fontSize: 15, color: ColorConstant.black),
+          daysTextStyle: Style.montserratRegular(
+              fontSize: 15,
+              color: themeController.isDarkMode.isTrue
+                  ? ColorConstant.white
+                  : ColorConstant.black),
           height: 300.0,
           markedDateIconBorderColor: Colors.transparent,
           childAspectRatio: 1.5,
@@ -451,24 +457,38 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
           prevDaysTextStyle: Style.montserratRegular(fontSize: 15),
           selectedDateTime: _currentDate,
           headerTextStyle: Style.montserratRegular(
-              color: ColorConstant.black, fontWeight: FontWeight.bold),
-          dayButtonColor: Colors.white,
-          weekDayBackgroundColor: Colors.white,
-          markedDateMoreCustomDecoration:
-              const BoxDecoration(color: Colors.white),
+              color: themeController.isDarkMode.isTrue
+                  ? ColorConstant.white
+                  : ColorConstant.black,
+              fontWeight: FontWeight.bold),
+          dayButtonColor: themeController.isDarkMode.isTrue
+              ? ColorConstant.textfieldFillColor
+              : Colors.white,
+          weekDayBackgroundColor: themeController.isDarkMode.isTrue
+              ? ColorConstant.textfieldFillColor
+              : Colors.white,
+          markedDateMoreCustomDecoration: BoxDecoration(
+              color: themeController.isDarkMode.isTrue
+                  ? ColorConstant.black
+                  : Colors.white),
           shouldShowTransform: false,
           staticSixWeekFormat: false,
           weekdayTextStyle: Style.montserratRegular(
               fontSize: 11,
-              color: ColorConstant.color797B86,
+              color: themeController.isDarkMode.isTrue
+                  ? ColorConstant.white
+                  : ColorConstant.color797B86,
               fontWeight: FontWeight.bold),
           todayButtonColor: Colors.transparent,
           selectedDayBorderColor: Colors.transparent,
           todayBorderColor: Colors.transparent,
           selectedDayButtonColor: Colors.transparent,
           daysHaveCircularBorder: false,
-          todayTextStyle:
-              Style.montserratRegular(fontSize: 15, color: ColorConstant.black),
+          todayTextStyle: Style.montserratRegular(
+              fontSize: 15,
+              color: themeController.isDarkMode.isTrue
+                  ? ColorConstant.white
+                  : ColorConstant.black),
         ));
   }
 }

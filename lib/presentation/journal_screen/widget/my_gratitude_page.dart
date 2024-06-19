@@ -4,14 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
-
-import 'package:http/http.dart' as http;
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
-import 'package:transform_your_mind/core/common_widget/on_loading_bottom_indicator.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
@@ -26,7 +24,6 @@ import 'package:transform_your_mind/model_class/common_model.dart';
 import 'package:transform_your_mind/model_class/gratitude_model.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_gratitude_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/journal_list_tile_layout.dart';
-import 'package:transform_your_mind/presentation/journal_screen/widget/journal_no_data.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/journal_shimmer_widget.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
@@ -221,90 +218,61 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                     ? const JournalListShimmer()
                                     : (gratitudeList.isNotEmpty)
                                         ? LayoutContainer(
-                                            child: SmartRefresher(
-                                              controller: _refreshController,
-                                              enablePullUp: true,
-                                              enablePullDown: true,
-                                              footer: const OnLoadingFooter(),
-                                              onLoading: () {
-                                                if (gratitudeList.length <
-                                                    totalItemCountOfGratitude) {
-                                                  pageNumber += 1;
-                                                  _refreshController
-                                                      .loadComplete();
-                                                } else {
-                                                  _refreshController
-                                                      .loadComplete();
-                                                }
+                                            child: ListView.builder(
+                                              itemCount: gratitudeList.length,
+                                              physics:
+                                                  const BouncingScrollPhysics(),
+                                              itemBuilder: (context, index) {
+                                                var data = gratitudeList[index];
+                                                return JournalListTileLayout(
+                                                  onDeleteTapCallback: () {
+                                                    _showAlertDialogDelete(
+                                                        context,
+                                                        index,
+                                                        data.id);
+                                                    setState(() {});
+                                                  },
+                                                  onEditTapCallback: () {
+                                                    Navigator.push(context,
+                                                        MaterialPageRoute(
+                                                      builder: (context) {
+                                                        return AddGratitudePage(
+                                                          id: data.id,
+                                                          description:
+                                                              data.description,
+                                                          title: data.name,
+                                                          date:
+                                                              data.createdAt ??
+                                                                  '',
+                                                          edit: true,
+                                                          isFromMyGratitude:
+                                                              true,
+                                                          registerUser: false,
+                                                          isSaved: true,
+                                                        );
+                                                      },
+                                                    )).then(
+                                                      (value) async {
+                                                        if (value != null &&
+                                                            value is bool) {
+                                                          _refreshGratitudeList(
+                                                              value);
+                                                        }
+                                                        await getGratitude();
+                                                        setState(() {});
+                                                      },
+                                                    );
+                                                  },
+                                                  margin: EdgeInsets.only(
+                                                      bottom: Dimens.d20.h),
+                                                  title: data.name ?? '',
+                                                  //image: data["image"] ?? '',
+                                                  image:
+                                                      "https://picsum.photos/250?image=9" ??
+                                                          '',
+                                                  createdDate: data.date ?? '',
+                                                );
                                               },
-                                              onRefresh: () {
-                                                pageNumber = 1;
-                                                _isSearching = false;
-                                                gratitudeList.clear();
-
-                                                _refreshController
-                                                    .loadComplete();
-                                                _refreshController
-                                                    .refreshCompleted();
-                                              },
-                                              child: ListView.builder(
-                                                itemCount: gratitudeList.length,
-                                                physics:
-                                                    const BouncingScrollPhysics(),
-                                                itemBuilder: (context, index) {
-                                                  var data =
-                                                      gratitudeList[index];
-                                                  return JournalListTileLayout(
-                                                    onDeleteTapCallback: () {
-                                                      _showAlertDialogDelete(
-                                                          context,
-                                                          index,
-                                                          data.id);
-                                                      setState(() {});
-                                                    },
-                                                    onEditTapCallback: () {
-                                                      Navigator.push(context,
-                                                          MaterialPageRoute(
-                                                        builder: (context) {
-                                                          return AddGratitudePage(
-                                                            id: data.id,
-                                                            description: data
-                                                                .description,
-                                                            title: data.name,
-                                                            date:
-                                                                data.createdAt ??
-                                                                    '',
-                                                            edit: true,
-                                                            isFromMyGratitude:
-                                                                true,
-                                                            registerUser: false,
-                                                            isSaved: true,
-                                                          );
-                                                        },
-                                                      )).then(
-                                                        (value) async {
-                                                          if (value != null &&
-                                                              value is bool) {
-                                                            _refreshGratitudeList(
-                                                                value);
-                                                          }
-                                                          await getGratitude();
-                                                          setState(() {});
-                                                        },
-                                                      );
-                                                    },
-                                                    margin: EdgeInsets.only(
-                                                        bottom: Dimens.d20.h),
-                                                    title: data.name ?? '',
-                                                    //image: data["image"] ?? '',
-                                                    image:
-                                                        "https://picsum.photos/250?image=9" ??
-                                                            '',
-                                                    createdDate:
-                                                        data.date ?? '',
-                                                  );
-                                                },
-                                              ),
                                             ),
                                           )
                                         : _isLoadingDraft
@@ -465,28 +433,30 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
         margin: const EdgeInsets.symmetric(horizontal: 16.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: ColorConstant.white,
+          color: themeController.isDarkMode.isTrue
+              ? ColorConstant.textfieldFillColor
+              : ColorConstant.white,
         ),
         child: CalendarCarousel<Event>(
-          onDayPressed: (DateTime date, List<Event> events) async {
+          onDayPressed: (DateTime date, List<Event> events) {
             if (date.isBefore(DateTime.now())) {
               setState.call(() => _currentDate = date);
 
               print("==========$_currentDate");
               setState.call(() {
                 dateController.text = DateFormat('dd/MM/yyyy').format(date);
-
-                /*dateController.text = "${date.day}/${date.month}/${date.year}";*/
                 select = false;
               });
-              await getGratitude();
               setState((){});
             }
 
           },
 
-          weekendTextStyle:
-          Style.montserratRegular(fontSize: 15, color: ColorConstant.black),
+          weekendTextStyle: Style.montserratRegular(
+              fontSize: 15,
+              color: themeController.isDarkMode.isTrue
+                  ? ColorConstant.white
+                  : ColorConstant.black),
           // Customize your text style
           thisMonthDayBorderColor: Colors.transparent,
           customDayBuilder: (
@@ -525,8 +495,11 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
             }
           },
           weekFormat: false,
-          daysTextStyle:
-          Style.montserratRegular(fontSize: 15, color: ColorConstant.black),
+          daysTextStyle: Style.montserratRegular(
+              fontSize: 15,
+              color: themeController.isDarkMode.isTrue
+                  ? ColorConstant.white
+                  : ColorConstant.black),
           height: 300.0,
           markedDateIconBorderColor: Colors.transparent,
           childAspectRatio: 1.5,
@@ -534,24 +507,38 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
           prevDaysTextStyle: Style.montserratRegular(fontSize: 15),
           selectedDateTime: _currentDate,
           headerTextStyle: Style.montserratRegular(
-              color: ColorConstant.black, fontWeight: FontWeight.bold),
-          dayButtonColor: Colors.white,
-          weekDayBackgroundColor: Colors.white,
-          markedDateMoreCustomDecoration:
-          const BoxDecoration(color: Colors.white),
+              color: themeController.isDarkMode.isTrue
+                  ? ColorConstant.white
+                  : ColorConstant.black,
+              fontWeight: FontWeight.bold),
+          dayButtonColor: themeController.isDarkMode.isTrue
+              ? ColorConstant.textfieldFillColor
+              : Colors.white,
+          weekDayBackgroundColor: themeController.isDarkMode.isTrue
+              ? ColorConstant.textfieldFillColor
+              : Colors.white,
+          markedDateMoreCustomDecoration: BoxDecoration(
+              color: themeController.isDarkMode.isTrue
+                  ? ColorConstant.black
+                  : Colors.white),
           shouldShowTransform: false,
           staticSixWeekFormat: false,
           weekdayTextStyle: Style.montserratRegular(
               fontSize: 11,
-              color: ColorConstant.color797B86,
+              color: themeController.isDarkMode.isTrue
+                  ? ColorConstant.white
+                  : ColorConstant.color797B86,
               fontWeight: FontWeight.bold),
           todayButtonColor: Colors.transparent,
           selectedDayBorderColor: Colors.transparent,
           todayBorderColor: Colors.transparent,
           selectedDayButtonColor: Colors.transparent,
           daysHaveCircularBorder: false,
-          todayTextStyle:
-          Style.montserratRegular(fontSize: 15, color: ColorConstant.black),
+          todayTextStyle: Style.montserratRegular(
+              fontSize: 15,
+              color: themeController.isDarkMode.isTrue
+                  ? ColorConstant.white
+                  : ColorConstant.black),
         ));
 
   }

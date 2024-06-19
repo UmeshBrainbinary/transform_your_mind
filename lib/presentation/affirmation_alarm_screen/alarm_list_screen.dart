@@ -8,8 +8,6 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
-import 'package:transform_your_mind/presentation/journal_screen/widget/add_affirmation_page.dart';
-import 'package:transform_your_mind/presentation/journal_screen/widget/my_affirmation_page.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
@@ -32,6 +30,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
   int selectedSeconds = 0;
   bool soundMute = false;
   bool playPause = false;
+  List affirmationList = [];
   final String audioFilePath = 'assets/audio/audio.mp3';
   @override
   Widget build(BuildContext context) {
@@ -136,94 +135,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
             },
           ),
         ),
-        SingleChildScrollView(
-          child: ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: affirmationDraftList.length,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () {
-
-                },
-                child: Container(
-                  margin: const EdgeInsets.symmetric(
-                      horizontal: 20.0, vertical: 10),
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                      color: ColorConstant.white,
-                      borderRadius: BorderRadius.circular(15)),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(children: [
-                        Text(
-                          "9:30",
-                          style: Style.montserratRegular(
-                            fontSize: 30,
-                          ),
-                        ), Text(
-                          " PM",
-                          style: Style.montserratRegular(
-                            fontSize: 22,
-                          ),
-                        ),
-                        const Spacer(),
-                        Dimens.d10.spaceWidth,
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (context) {
-                                return AddAffirmationPage(
-                                      index: index,
-                                      isEdit: true,
-                                  title: affirmationDraftList[index]["title"],
-                                  des: affirmationDraftList[index]["des"],
-                                  isFromMyAffirmation: true,
-                                );
-                              },
-                            ));
-                          },
-                          child: SvgPicture.asset(
-                            ImageConstant.editTools,
-                            height: 18,
-                            width: 18,
-                            color: ColorConstant.black,
-                          ),
-                        ),
-                        Dimens.d10.spaceWidth,
-                        GestureDetector(
-                          onTap: () {
-                                _showAlertDialogDelete(context, index, false);
-                              },
-                          child: SvgPicture.asset(
-                            ImageConstant.delete,
-                            height: 18,
-                            width: 18,
-                            color: ColorConstant.black,
-                          ),
-                        ),
-                        Dimens.d10.spaceWidth,
-                      ],),
-                      Text(
-                        affirmationDraftList[index]["title"],
-                        style: Style.cormorantGaramondBold(
-                          fontSize: 18,
-                        ),
-                      ),
-                      Dimens.d10.spaceHeight,
-                      Text(
-                        affirmationDraftList[index]["des"],
-                        style: Style.montserratRegular(fontSize: 11),
-                      )
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ],),
+        ],),
     );
   }
 
@@ -273,11 +185,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                   title: "Delete".tr,
                   onTap: () {
                     setState(() {
-                      if (value == true) {
-                        affirmationList.removeAt(index);
-                      } else {
-                        affirmationDraftList.removeAt(index);
-                      }
+                      affirmationList.removeAt(index);
                     });
                     Get.back();
                   },

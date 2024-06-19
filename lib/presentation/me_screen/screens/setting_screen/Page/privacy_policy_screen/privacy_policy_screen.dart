@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
-import 'package:transform_your_mind/core/utils/style.dart';
-import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/privacy_policy_screen/privacy_policy_controller.dart';
+import 'package:transform_your_mind/presentation/profile_screen/profile_controller.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 class PrivacyPolicyScreen extends StatelessWidget {
@@ -14,11 +15,14 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    PrivacyPolicyController controller = Get.put(PrivacyPolicyController());
+    ThemeController themeController = Get.find<ThemeController>();
+    ProfileController profileController = Get.find<ProfileController>();
     return SafeArea(
       child: Scaffold(
-        backgroundColor: ColorConstant.backGround,
-        appBar: CustomAppBar(title: "privacySettings".tr),
+        backgroundColor: themeController.isDarkMode.isTrue
+            ? ColorConstant.black
+            : ColorConstant.backGround,
+        appBar: CustomAppBar(title: "privacyPolicy".tr),
         body: SingleChildScrollView(
           child: Stack(
             children: [
@@ -40,53 +44,38 @@ class PrivacyPolicyScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Dimens.d30.spaceHeight,
-                    /*   commonText("account"),
-                    Dimens.d20.spaceHeight,
-                    Container(
-                      decoration: BoxDecoration(
-                        color: ColorConstant.transparent,
-                        borderRadius: BorderRadius.circular(Dimens.d16),
-                      ),
-                      child: ListView.separated(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        clipBehavior: Clip.none,
-                        padding: EdgeInsets.zero,
-                        itemBuilder: (context, index) {
-                          var data = controller.privacyData[index];
-                          return SettingListItem(
-                            isSettings: true,
-                            prefixIcon: data.prefixIcon,
-                            title: data.title,
-                            suffixIcon: data.suffixIcon,
-                            onTap: () {
-                              if (index == 0) {
-                                Get.toNamed(AppRoutes.editProfileScreen);
-                              } else if (index == 1) {
-                                Get.toNamed(AppRoutes.changePassword);
-                              } else {
-                                // Get.toNamed(AppRoutes.personalizationScreen);
-                              }
-                            },
-                          );
-                        },
-                        separatorBuilder: (context, index) => Padding(
-                          padding: Dimens.d20.paddingHorizontal,
-                          child: const SizedBox(
-                            height: Dimens.d20,
-                          ),
-                        ),
-                        itemCount: controller.privacyData.length,
-                      ),
-                    ),*/
-
-                    commonText("PrivacyPolicy"),
-                    Dimens.d10.spaceHeight,
                     Text(
-                      "1. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.",
-                      style: Style.montserratRegular(fontSize: 14)
-                          .copyWith(height: 2),
-                    )
+                      "privacyPolicy".tr,
+                      style: TextStyle(
+                          fontFamily: 'Montserrat-Medium',
+                          fontSize: 18,
+                          fontWeight: FontWeight.w400,
+                          color: themeController.isDarkMode.isTrue
+                              ? ColorConstant.white
+                              : ColorConstant.black),
+                    ),
+                    Dimens.d10.spaceHeight,
+                    Html(
+                      style: {
+                        "p": Style(
+                            fontFamily: 'Montserrat-Medium',
+                            fontSize: FontSize(14.0),
+                            fontWeight: FontWeight.w400,
+                            color: themeController.isDarkMode.isTrue
+                                ? ColorConstant.white
+                                : ColorConstant.black),
+                        "strong": Style(
+                            fontFamily: 'Montserrat-Bold',
+                            fontSize: FontSize(14.0),
+                            fontWeight: FontWeight.bold,
+                            color: themeController.isDarkMode.isTrue
+                                ? ColorConstant.white
+                                : ColorConstant.black),
+                      },
+                      data: """
+              ${profileController.privacyModel.data?.description ?? ""}
+            """,
+                    ),
                   ],
                 ),
               ),
@@ -94,13 +83,6 @@ class PrivacyPolicyScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget commonText(String title) {
-    return Text(
-      title.tr,
-      style: Style.cormorantGaramondBold(fontSize: 18),
     );
   }
 }

@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:numberpicker/numberpicker.dart';
+import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
@@ -16,7 +17,6 @@ import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
-import 'package:transform_your_mind/core/utils/progress_dialog_utils.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/model_class/affirmation_category_model.dart';
@@ -32,9 +32,6 @@ import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 import 'package:transform_your_mind/widgets/divider.dart';
 import 'package:voice_message_package/voice_message_package.dart';
-
-List affirmationList = [];
-List affirmationDraftList = [];
 
 class MyAffirmationPage extends StatefulWidget {
   const MyAffirmationPage({super.key});
@@ -61,6 +58,8 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   int _currentTabIndex = 0;
   ValueNotifier<bool> isDraftAdded = ValueNotifier(false);
   List categoryList = [];
+  List affirmationList = [];
+
   final TextEditingController _userAffirmationController =
       TextEditingController();
   final FocusNode _userAffirmationFocus = FocusNode();
@@ -103,10 +102,6 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
         (value) async {
           await getAffirmation();
           setState(() {});
-          if (value != null && value is bool) {
-            value ? affirmationList.clear() : affirmationDraftList.clear();
-            setState(() {});
-          }
         },
       );
     }
@@ -134,6 +129,8 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
       AffirmationCategoryModel();
   AffirmationDataModel affirmationDataModel = AffirmationDataModel();
   bool loader = false;
+  List<AffirmationData>? data;
+  DateTime todayDate = DateTime.now();
 
   getAffirmation() async {
     setState(() {
@@ -154,14 +151,17 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
       final responseBody = await response.stream.bytesToString();
 
       affirmationModel = affirmationModelFromJson(responseBody);
-      for (int i = 0; i < affirmationModel.data!.length; i++) {
-        like.add(affirmationModel.data![i].isLiked!);
+      if (affirmationModel.data != null) {
+        for (int i = 0; i < affirmationModel.data!.length; i++) {
+          like.add(affirmationModel.data![i].isLiked!);
+        }
       }
+
       setState(() {
         loader = false;
       });
     } else {
-      affirmationModel  = AffirmationModel();
+      affirmationModel = AffirmationModel();
       setState(() {
         loader = false;
       });
@@ -468,7 +468,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                 ],
               ),
             ),
-            loader == true ? const CommonLoader() : const SizedBox()
+            loader == true ? commonLoader() : const SizedBox()
           ],
         ),
       ),
@@ -486,19 +486,24 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   Widget yourAffirmationWidget() {
     return Expanded(
       child: SingleChildScrollView(
-        child: (affirmationModel.data??[]).isEmpty
+        child: (affirmationModel.data ?? []).isEmpty
             ? Center(
-              child: SizedBox(height: Get.height-300,
-                child: Column(crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset(ImageConstant.noData),
-                    Dimens.d20.spaceHeight,
-                    Text("Data Not Found",style: Style.montserratBold(fontSize: 24),)
-                  ],
+                child: SizedBox(
+                  height: Get.height - 300,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(ImageConstant.noData),
+                      Dimens.d20.spaceHeight,
+                      Text(
+                        "Data Not Found",
+                        style: Style.montserratBold(fontSize: 24),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            )
+              )
             : Column(
                 children: [
                   Align(
@@ -530,7 +535,9 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                           padding: const EdgeInsets.symmetric(
                               horizontal: Dimens.d11, vertical: Dimens.d11),
                           decoration: BoxDecoration(
-                            color: ColorConstant.white,
+                            color: themeController.isDarkMode.isTrue
+                                ? ColorConstant.textfieldFillColor
+                                : ColorConstant.white,
                             borderRadius: Dimens.d16.radiusAll,
                           ),
                           child: Column(
@@ -544,7 +551,10 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                       style: Style.montserratRegular(
                                               height: Dimens.d1_3.h,
                                               fontSize: Dimens.d18,
-                                              color: Colors.black)
+                                              color: themeController
+                                                      .isDarkMode.isTrue
+                                                  ? ColorConstant.white
+                                                  : Colors.black)
                                           .copyWith(wordSpacing: Dimens.d4),
                                       maxLines: 1,
                                     ),
@@ -573,12 +583,6 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                           await getAffirmation();
 
                                           setState(() {});
-                                          if (value != null && value is bool) {
-                                            value
-                                                ? affirmationList.clear()
-                                                : affirmationDraftList.clear();
-                                            setState(() {});
-                                          }
                                         },
                                       );
                                     },
@@ -586,7 +590,9 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                       ImageConstant.editTools,
                                       height: Dimens.d18,
                                       width: Dimens.d18,
-                                      color: ColorConstant.black,
+                                      color: themeController.isDarkMode.isTrue
+                                          ? ColorConstant.white
+                                          : ColorConstant.black,
                                     ),
                                   ),
                                   Dimens.d10.spaceWidth,
@@ -602,7 +608,9 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                       ImageConstant.delete,
                                       height: Dimens.d18,
                                       width: Dimens.d18,
-                                      color: ColorConstant.black,
+                                      color: themeController.isDarkMode.isTrue
+                                          ? ColorConstant.white
+                                          : ColorConstant.black,
                                     ),
                                   ),
                                   Dimens.d10.spaceWidth,
@@ -636,7 +644,9 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                       width: Dimens.d18,
                                       color: like[index]
                                           ? ColorConstant.deleteRed
-                                          : ColorConstant.black,
+                                          : themeController.isDarkMode.isTrue
+                                              ? ColorConstant.white
+                                              : ColorConstant.black,
                                     ),
                                   )
                                 ],
@@ -647,7 +657,9 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                 style: Style.montserratRegular(
                                         height: Dimens.d2,
                                         fontSize: Dimens.d11,
-                                        color: Colors.black)
+                                        color: themeController.isDarkMode.isTrue
+                                            ? ColorConstant.white
+                                            : Colors.black)
                                     .copyWith(wordSpacing: Dimens.d4),
                                 maxLines: 4,
                               ),
@@ -716,7 +728,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 20.0),
-              child: (_filteredBookmarks??[]).isNotEmpty
+              child: (_filteredBookmarks ?? []).isNotEmpty
                   ? ListView.builder(
                       itemCount: _filteredBookmarks?.length ?? 0,
                       physics: const NeverScrollableScrollPhysics(),
@@ -739,7 +751,9 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                             padding: const EdgeInsets.symmetric(
                                 horizontal: Dimens.d11, vertical: Dimens.d11),
                             decoration: BoxDecoration(
-                              color: ColorConstant.white,
+                              color: themeController.isDarkMode.isTrue
+                                  ? ColorConstant.textfieldFillColor
+                                  : ColorConstant.white,
                               borderRadius: Dimens.d16.radiusAll,
                             ),
                             child: Column(
@@ -753,7 +767,10 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                         style: Style.montserratRegular(
                                                 height: Dimens.d1_3.h,
                                                 fontSize: Dimens.d18,
-                                                color: Colors.black)
+                                                color: themeController
+                                                        .isDarkMode.isTrue
+                                                    ? ColorConstant.white
+                                                    : Colors.black)
                                             .copyWith(wordSpacing: Dimens.d4),
                                         maxLines: 1,
                                       ),
@@ -769,10 +786,13 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                         setState(() {});
                                       },
                                       child: SvgPicture.asset(
-                                        ImageConstant.addAffirmation,
-                                        height: 18,
-                                        width: 18,
-                                      ),
+                                          ImageConstant.addAffirmation,
+                                          height: 18,
+                                          width: 18,
+                                          color:
+                                              themeController.isDarkMode.isTrue
+                                                  ? ColorConstant.white
+                                                  : ColorConstant.black),
                                     ),
                                     Dimens.d10.spaceWidth,
                                     GestureDetector(
@@ -787,6 +807,9 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                         ImageConstant.playAffirmation,
                                         height: 18,
                                         width: 18,
+                                        color: themeController.isDarkMode.isTrue
+                                            ? ColorConstant.white
+                                            : ColorConstant.black,
                                       ),
                                     ),
                                     Dimens.d10.spaceWidth,
@@ -797,7 +820,12 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                           );
                                         },
                                         child: SvgPicture.asset(
-                                            ImageConstant.alarm)),
+                                          ImageConstant.alarm,
+                                          color:
+                                              themeController.isDarkMode.isTrue
+                                                  ? ColorConstant.white
+                                                  : ColorConstant.black,
+                                        )),
                                     Dimens.d8.spaceWidth,
                                     GestureDetector(
                                       onTap: () async {
@@ -827,7 +855,9 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                         width: Dimens.d18,
                                         color: like[index]
                                             ? ColorConstant.deleteRed
-                                            : ColorConstant.black,
+                                            : themeController.isDarkMode.isTrue
+                                                ? ColorConstant.white
+                                                : ColorConstant.black,
                                       ),
                                     )
                                   ],
@@ -838,7 +868,10 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                   style: Style.montserratRegular(
                                           height: Dimens.d2,
                                           fontSize: Dimens.d11,
-                                          color: Colors.black)
+                                          color:
+                                              themeController.isDarkMode.isTrue
+                                                  ? ColorConstant.white
+                                                  : Colors.black)
                                       .copyWith(wordSpacing: Dimens.d4),
                                   maxLines: 4,
                                 ),
@@ -849,17 +882,22 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                       },
                     )
                   : Center(
-                child: SizedBox(height: Get.height-300,
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SvgPicture.asset(ImageConstant.noData),
-                      Dimens.d20.spaceHeight,
-                      Text("Data Not Found",style: Style.montserratBold(fontSize: 24),)
-                    ],
-                  ),
-                ),
-              ),
+                      child: SizedBox(
+                        height: Get.height - 300,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(ImageConstant.noData),
+                            Dimens.d20.spaceHeight,
+                            Text(
+                              "Data Not Found",
+                              style: Style.montserratBold(fontSize: 24),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
             ),
           ],
         ),
@@ -1172,6 +1210,9 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                     },
                     child: SvgPicture.asset(
                       ImageConstant.close,
+                      color: themeController.isDarkMode.isTrue
+                          ? ColorConstant.white
+                          : ColorConstant.black,
                     ))),
             Center(
                 child: SvgPicture.asset(
@@ -1194,10 +1235,11 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
               children: [
                 CommonElevatedButton(
                   height: 33,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: Dimens.d28),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: Dimens.d28),
                   textStyle: Style.montserratRegular(
                       fontSize: Dimens.d12, color: ColorConstant.white),
-                  title: "Delete".tr,
+                  title: "delete".tr,
                   onTap: () async {
                     Get.back();
                     await deleteAffirmation(id);
@@ -1463,7 +1505,6 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
     affirmationList.clear();
 
     pageNumberDrafts = 1;
-    affirmationDraftList.clear();
   }
 
   void _fetchInitialRecords() {

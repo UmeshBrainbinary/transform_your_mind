@@ -14,7 +14,6 @@ import 'package:transform_your_mind/presentation/affirmation_alarm_screen/affirm
 import 'package:transform_your_mind/presentation/affirmation_alarm_screen/alarm_list_screen.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_affirmation_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/affirmation_share_screen.dart';
-import 'package:transform_your_mind/presentation/journal_screen/widget/my_affirmation_page.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
@@ -36,6 +35,7 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
     {"title": "Health"},
     {"title": "Success"},
   ];
+  List affirmationList = [];
   bool am = true;
   bool pm = false;
   Duration selectedDuration = const Duration(hours: 0, minutes: 0, seconds: 0);
@@ -243,100 +243,6 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
                             )
                           ],
                         ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-            SingleChildScrollView(
-              child: ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: affirmationDraftList.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (context) {
-                          return AffirmationShareScreen(
-                            des: affirmationDraftList[index]["des"],
-                            title: affirmationDraftList[index]["title"],
-                          );
-                        },
-                      )).then(
-                        (value) {
-                          getStatusBar();
-                        },
-                      );
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 20.0, vertical: 10),
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                          color: ColorConstant.white,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  affirmationDraftList[index]["title"],
-                                  style: Style.cormorantGaramondBold(
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  _showAlertDialog(context);
-                                },
-                                child: SvgPicture.asset(
-                                  ImageConstant.alarm,
-                                  height: 18,
-                                  width: 18,
-                                ),
-                              ),
-                              Dimens.d10.spaceWidth,
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) {
-                                      return AddAffirmationPage(
-                                        index: index,
-                                        isEdit: true,
-                                        title: affirmationDraftList[index]
-                                            ["title"],
-                                        des: affirmationDraftList[index]["des"],
-                                        isFromMyAffirmation: true,
-                                      );
-                                    },
-                                  )).then(
-                                    (value) {
-                                      getStatusBar();
-                                    },
-                                  );
-                                },
-                                child: SvgPicture.asset(
-                                  ImageConstant.editTools,
-                                  height: 18,
-                                  width: 18,
-                                  color: ColorConstant.black,
-                                ),
-                              ),
-                              Dimens.d10.spaceWidth,
-                              Dimens.d10.spaceWidth,
-                            ],
-                          ),
-                          Dimens.d10.spaceHeight,
-                          Text(
-                            affirmationDraftList[index]["des"],
-                            style: Style.montserratRegular(fontSize: 11),
-                          )
-                        ],
                       ),
                     ),
                   );
