@@ -9,5 +9,6 @@ class Family{
   static String cormorantGaramondMedium ="CormorantGaramond-Medium";
   static String cormorantGaramondRegular ="CormorantGaramond-Regular";
   static String cormorantGaramondSemiBold ="CormorantGaramond-SemiBold";
+  static String gothamMedium ="GothamMedium";
 
 }

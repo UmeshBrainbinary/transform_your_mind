@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
@@ -58,7 +59,7 @@ class PositiveController extends GetxController {
   Rx<bool> loader = false.obs;
   PositiveModel positiveModel = PositiveModel();
 
-  deletePositiveMoment(id) async {
+  deletePositiveMoment(id, BuildContext context) async {
     loader.value = true;
 
     try {
@@ -73,7 +74,7 @@ class PositiveController extends GetxController {
       http.StreamedResponse response = await request.send();
       if (response.statusCode == 200) {
         loader.value = false;
-
+       showSnackBarSuccess(context, "positiveDeleted".tr);
         update(['moment']);
       } else {
         debugPrint(response.reasonPhrase);
@@ -98,7 +99,7 @@ class PositiveController extends GetxController {
       var request = http.Request(
         'GET',
         Uri.parse(
-          "${EndPoints.getMoment}?$weeks=true",
+          "${EndPoints.getMoment}created_by=${PrefService.getString(PrefKey.userId)}?$weeks=true",
         ),
       );
       request.headers.addAll(headers);
@@ -119,9 +120,9 @@ class PositiveController extends GetxController {
           }
           filteredBookmarks = positiveMomentList;
         }
-
-        Get.back();
+         update(["update"]);
       } else {
+        loader.value = false;
         debugPrint(response.reasonPhrase);
       }
     } catch (e) {
@@ -129,6 +130,9 @@ class PositiveController extends GetxController {
 
       debugPrint(e.toString());
     }
+    loader.value = false;
+    update(["update"]);
+
   }
 
   getPositiveMoments() async {
@@ -143,7 +147,7 @@ class PositiveController extends GetxController {
       var request = http.Request(
         'GET',
         Uri.parse(
-          EndPoints.getMoment,
+          "${EndPoints.getMoment}?created_by=${PrefService.getString(PrefKey.userId)}",
         ),
       );
 
@@ -168,6 +172,8 @@ class PositiveController extends GetxController {
         }
 
         update(['moment']);
+        update(["update"]);
+
       } else {
         loader.value = false;
 
@@ -179,5 +185,7 @@ class PositiveController extends GetxController {
       debugPrint(e.toString());
     }
     update(['moment']);
+    update(["update"]);
+
   }
 }

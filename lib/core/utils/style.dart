@@ -16,6 +16,8 @@ class FontFamily {
   static String cormorantGaramondMedium ="CormorantGaramond-Medium";
   static String cormorantGaramondRegular ="CormorantGaramond-Regular";
   static String cormorantGaramondSemiBold ="CormorantGaramond-SemiBold";
+  static String gothamMedium ="GothamMedium";
+  static String gothamLight ="GothamLight";
 
 }
 
@@ -155,6 +157,40 @@ class Style {
     return TextStyle(
       color: color,
       fontFamily: FontFamily.cormorantGaramondSemiBold,
+      fontWeight: fontWeight,
+      fontStyle: fontStyle,
+      fontSize: fontSize ?? 14,
+      height: height,
+    );
+  }
+
+
+ static TextStyle gothamMedium({
+    Color? color,
+    FontWeight fontWeight = FontWeight.w600,
+    FontStyle fontStyle = FontStyle.normal,
+    double? fontSize,
+    double? height,
+  }) {
+    return TextStyle(
+      color: color,
+      fontFamily: FontFamily.gothamMedium,
+      fontWeight: fontWeight,
+      fontStyle: fontStyle,
+      fontSize: fontSize ?? 14,
+      height: height,
+    );
+  }
+  static TextStyle gothamLight({
+    Color? color,
+    FontWeight fontWeight = FontWeight.w600,
+    FontStyle fontStyle = FontStyle.normal,
+    double? fontSize,
+    double? height,
+  }) {
+    return TextStyle(
+      color: color,
+      fontFamily: FontFamily.gothamLight,
       fontWeight: fontWeight,
       fontStyle: fontStyle,
       fontSize: fontSize ?? 14,

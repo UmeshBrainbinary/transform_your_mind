@@ -77,7 +77,8 @@ class SupportScreen extends StatelessWidget {
                             } else  {
                               Navigator.push(context, MaterialPageRoute(builder: (context) {
                                   return const TroubleGuideScreen();
-                                },));                            }
+                                },));
+                            }
                           },
                         ),
                       );

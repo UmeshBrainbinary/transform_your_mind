@@ -33,7 +33,7 @@ class AddPositivePage extends StatefulWidget {
   final bool isFromMyAffirmation;
   final bool? isEdit;
   final bool? isSaved;
-  final String? title, des;
+  final String? title, des, image;
   final String? id;
 
   const AddPositivePage(
@@ -43,6 +43,7 @@ class AddPositivePage extends StatefulWidget {
       this.des,
       this.isEdit,
       this.id,
+      this.image,
       super.key});
 
   @override
@@ -56,7 +57,7 @@ class _AddPositivePageState extends State<AddPositivePage>
   ValueNotifier<int> currentLength = ValueNotifier(0);
 
   ThemeController themeController = Get.find<ThemeController>();
-
+  bool imageValid = false;
   final FocusNode titleFocus = FocusNode();
   final FocusNode descFocus = FocusNode();
   ValueNotifier<XFile?> imageFile = ValueNotifier(null);
@@ -67,7 +68,7 @@ class _AddPositivePageState extends State<AddPositivePage>
   late final AnimationController _lottieIconsController;
   bool _isImageRemoved = false;
   Rx<bool> loader = false.obs;
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   CreatePositiveMomentsModel createPositiveMomentsModel =
       CreatePositiveMomentsModel();
@@ -86,6 +87,12 @@ class _AddPositivePageState extends State<AddPositivePage>
         descController.text = widget.des.toString();
       });
     }
+    if (widget.image != null) {
+      setState(() {
+        urlImage = widget.image.toString();
+      });
+    }
+
     _lottieIconsController = AnimationController(vsync: this);
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: ColorConstant.backGround, // Status bar background color
@@ -107,6 +114,7 @@ class _AddPositivePageState extends State<AddPositivePage>
       request.fields.addAll({
         'title': titleController.text.trim(),
         'description': descController.text.trim(),
+        'created_by':PrefService.getString(PrefKey.userId)
       });
       if (imageFile.value != null) {
         request.files.add(
@@ -153,8 +161,8 @@ class _AddPositivePageState extends State<AddPositivePage>
 
         http.StreamedResponse response = await request.send();
         if (response.statusCode == 200) {
-          Get.back();
-          Get.back();
+        showSnackBarSuccess(context, "positiveUpdated".tr);
+        Get.back();
         } else {
         debugPrint(response.reasonPhrase);
       }
@@ -173,8 +181,9 @@ class _AddPositivePageState extends State<AddPositivePage>
             ? ColorConstant.black
             : ColorConstant.backGround,
         appBar: CustomAppBar(
-          title:
-              widget.isEdit! ? "editPositiveMoments".tr : "positiveMoments".tr,
+          title: widget.isEdit!
+              ? "editPositiveMoments".tr
+              : "addPositiveMoments".tr,
         ),
         body: Stack(
           children: [
@@ -223,6 +232,14 @@ class _AddPositivePageState extends State<AddPositivePage>
                                     );
                                   },
                                 ),
+                                imageValid == true
+                                    ? Text(
+                                        "imageRequired".tr,
+                                        style: Style.montserratRegular(
+                                            color: ColorConstant.colorFF0000,
+                                            fontSize: Dimens.d12),
+                                      )
+                                    : const SizedBox(),
                                 Dimens.d20.spaceHeight,
                                 CommonTextField(
                                   hintText: "enterTitle".tr,
@@ -302,13 +319,26 @@ class _AddPositivePageState extends State<AddPositivePage>
                                             ? "update".tr
                                             : "save".tr,
                                         onTap: () async {
+                                          titleFocus.unfocus();
+                                          descFocus.unfocus();
                                           if (_formKey.currentState!
-                                              .validate()) {
+                                                      .validate() &&
+                                                  imageFile.value != null ||
+                                              urlImage != null) {
+                                            setState(() {
+                                              imageValid = false;
+                                            });
                                             if (widget.isEdit!) {
-                                              _showAlertDialog(context);
+                                              await updatePositiveMoments(
+                                                  widget.id);
+                                              /* _showAlertDialog(context);*/
                                             } else {
                                               await createPositiveMoment();
                                             }
+                                          } else {
+                                            setState(() {
+                                              imageValid = true;
+                                            });
                                           }
                                         },
                                       ),
@@ -365,7 +395,7 @@ class _AddPositivePageState extends State<AddPositivePage>
             Center(
               child: Text(
                   textAlign: TextAlign.center,
-                  "Affirmation updated successfully".tr,
+                  "areYouSureYouWantToDeletePo".tr,
                   style: Style.montserratRegular(
                     fontSize: Dimens.d12,
                   )),

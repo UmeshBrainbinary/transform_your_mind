@@ -72,13 +72,30 @@ class NowPlayingController extends GetxController {
       String? description,
       String? img}) async {
     currentName = name;
-    currentName = expertName;
-    currentName = description;
+    currentExpertName = expertName;
+    currentDescription = description;
     currentImage = img;
     update();
     if (_currentUrl == url) return;
     _currentUrl = url;
     await _audioPlayer.setUrl(url);
+    setPlaybackSpeed(1.0);
+  }
+
+  Future<void> setUrlFile(String url,
+      {String? name,
+      String? expertName,
+      String? description,
+      String? img}) async {
+    currentName = name;
+    currentExpertName = expertName;
+    currentDescription = description;
+    currentImage = img;
+    update();
+    if (_currentUrl == url) return;
+    _currentUrl = url;
+    await _audioPlayer.setFilePath(url);
+    setPlaybackSpeed(1.0);
   }
 
   Future<void> play() async {
@@ -122,6 +139,10 @@ class NowPlayingController extends GetxController {
     _isVisible.value = false;
   }
 
+  void setPlaybackSpeed(double speed) {
+    audioPlayer.setSpeed(speed);
+  }
+
   addBookmark(id, BuildContext context, bool value) async {
     try {
       var headers = {
@@ -137,8 +158,11 @@ class NowPlayingController extends GetxController {
       http.StreamedResponse response = await request.send();
 
       if (response.statusCode == 200) {
-        /*  showSnackBarSuccess(
-            context, "yourSoundsSuccessfullyBookmarked".tr);*/
+        if (value == true) {
+          showSnackBarSuccess(context, "yourSoundsSuccessfullyBookmarked".tr);
+        } else {
+          showSnackBarSuccess(context, "yourSoundsSuccessfullyUnBookmarked".tr);
+        }
       } else {
         debugPrint(response.reasonPhrase);
       }
@@ -173,6 +197,7 @@ class NowPlayingController extends GetxController {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
+      rated.value = true;
       loader.value = false;
       Get.back();
       showSnackBarSuccess(context!, "ratingsAdded".tr);
@@ -200,7 +225,8 @@ class NowPlayingController extends GetxController {
     currentRating = 0;
     ratingController.clear();
     bookmarkedList = [];
-    bookmark = false.obs;
+    ratedList = [];
+
     try {
       var headers = {
         'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
@@ -223,11 +249,7 @@ class NowPlayingController extends GetxController {
         for (int i = 0; i < getUserModel.data!.bookmarkedPods!.length; i++) {
           bookmarkedList.add(getUserModel.data!.bookmarkedPods![i]);
         }
-        if (bookmarkedList.contains(id)) {
-          bookmark.value = true;
-        } else {
-          bookmark.value = false;
-        }
+
         for (int i = 0; i < getUserModel.data!.ratedPods!.length; i++) {
           if (getUserModel.data!.ratedPods![i].podId == id) {
             currentRating = getUserModel.data!.ratedPods![i].star;
@@ -235,7 +257,20 @@ class NowPlayingController extends GetxController {
             ratedList.add(getUserModel.data!.ratedPods![i]);
           }
         }
-
+        update();
+        /*  for (int i = 0; i < ratedList.length; i++) {
+          if (ratedList[i].podId == id) {
+            rated.value = true;
+          } else {
+            rated.value = false;
+          }
+        }
+        if (bookmarkedList.contains(id)) {
+          bookmark.value = true;
+        } else {
+          bookmark.value = false;
+        }*/
+        update();
         debugPrint("Bookmark List $bookmarkedList");
         debugPrint("rated List $ratedList");
       } else {
@@ -246,6 +281,8 @@ class NowPlayingController extends GetxController {
 
       debugPrint(e.toString());
     }
+    update();
+
     loader.value = false;
   }
 
@@ -277,6 +314,28 @@ class NowPlayingController extends GetxController {
       loader.value = false;
       debugPrint(e.toString());
     }
+    update(['update']);
+  }
+
+  addRecently(id) async {
+    var headers = {
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.MultipartRequest(
+        'POST',
+        Uri.parse(
+            '${EndPoints.baseUrl}${EndPoints.updateUser}${PrefService.getString(PrefKey.userId)}'));
+    request.fields.addAll({'podId': id, 'isRecentlyPlayed': 'true'});
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      debugPrint(await response.stream.bytesToString());
+    } else {
+      debugPrint(response.reasonPhrase);
+    }
+
     update(['update']);
   }
 }

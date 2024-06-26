@@ -10,38 +10,41 @@ String affirmationModelToJson(AffirmationModel data) => json.encode(data.toJson(
 
 class AffirmationModel {
   List<AffirmationData>? data;
+  int? total;
 
   AffirmationModel({
     this.data,
+    this.total,
   });
 
   factory AffirmationModel.fromJson(Map<String, dynamic> json) => AffirmationModel(
-        data: json["data"] == null
-            ? []
-            : List<AffirmationData>.from(
-                json["data"]!.map((x) => AffirmationData.fromJson(x))),
-      );
+    data: json["data"] == null ? [] : List<AffirmationData>.from(json["data"]!.map((x) => AffirmationData.fromJson(x))),
+    total: json["total"],
+  );
 
   Map<String, dynamic> toJson() => {
     "data": data == null ? [] : List<dynamic>.from(data!.map((x) => x.toJson())),
+    "total": total,
   };
 }
 
 class AffirmationData {
+  bool? userLiked;
   String? id;
   String? name;
   String? description;
-  dynamic category;
+  String? category;
   int? status;
   String? createdBy;
   bool? isDefault;
   bool? isLiked;
-  dynamic audioFile;
+  String? audioFile;
   DateTime? createdAt;
   DateTime? updatedAt;
   int? v;
 
   AffirmationData({
+    this.userLiked,
     this.id,
     this.name,
     this.description,
@@ -56,9 +59,9 @@ class AffirmationData {
     this.v,
   });
 
-  factory AffirmationData.fromJson(Map<String, dynamic> json) =>
-      AffirmationData(
-        id: json["_id"],
+  factory AffirmationData.fromJson(Map<String, dynamic> json) => AffirmationData(
+    userLiked: json["userLiked"],
+    id: json["_id"],
     name: json["name"],
     description: json["description"],
     category: json["category"],
@@ -73,12 +76,13 @@ class AffirmationData {
   );
 
   Map<String, dynamic> toJson() => {
+    "userLiked": userLiked,
     "_id": id,
     "name": name,
     "description": description,
     "category": category,
     "status": status,
-    "created_by": createdBy,
+    "created_by":createdBy,
     "isDefault": isDefault,
     "isLiked": isLiked,
     "audioFile": audioFile,
@@ -87,3 +91,4 @@ class AffirmationData {
     "__v": v,
   };
 }
+

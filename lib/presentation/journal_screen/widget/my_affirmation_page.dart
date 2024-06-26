@@ -22,8 +22,11 @@ import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/model_class/affirmation_category_model.dart';
 import 'package:transform_your_mind/model_class/affirmation_data_model.dart';
 import 'package:transform_your_mind/model_class/affirmation_model.dart';
+import 'package:transform_your_mind/model_class/alarm_model.dart';
+import 'package:transform_your_mind/model_class/common_model.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_affirmation_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/affirmation_share_screen.dart';
+import 'package:transform_your_mind/presentation/journal_screen/widget/audio_list.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/edit_affirmation_dialog_widget.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/app_confirmation_dialog.dart';
@@ -55,6 +58,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   TextEditingController searchController = TextEditingController();
   ThemeController themeController = Get.find<ThemeController>();
   FocusNode searchFocus = FocusNode();
+
   int _currentTabIndex = 0;
   ValueNotifier<bool> isDraftAdded = ValueNotifier(false);
   List categoryList = [];
@@ -66,6 +70,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   int perPageCount = 100;
   ValueNotifier selectedCategory = ValueNotifier(null);
   List<bool> like = [];
+  List<bool> likeAffirmation = [];
   List? _filteredBookmarks;
 
   @override
@@ -81,8 +86,9 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   }
 
   getData() async {
-    await getAffirmation();
     await getAffirmationData();
+    await getAffirmation();
+
     await getCategoryAffirmation();
   }
 
@@ -131,10 +137,32 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   bool loader = false;
   List<AffirmationData>? data;
   DateTime todayDate = DateTime.now();
+  AlarmModel alarmModel = AlarmModel();
+
+  getAffirmationAlarm() async {
+    alarmModel = AlarmModel();
+    var headers = {
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.Request(
+        'GET',
+        Uri.parse(
+            '${EndPoints.baseUrl}get-alarm?created_by=${PrefService.getString(PrefKey.userId)}'));
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      final responseBody = await response.stream.bytesToString();
+      alarmModel = alarmModelFromJson(responseBody);
+    } else {
+      debugPrint(response.reasonPhrase);
+    }
+  }
 
   getAffirmation() async {
     setState(() {
-      loader = true;
+      loader = false;
     });
     var headers = {
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
@@ -154,12 +182,11 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
       if (affirmationModel.data != null) {
         for (int i = 0; i < affirmationModel.data!.length; i++) {
           like.add(affirmationModel.data![i].isLiked!);
+          // likeAffirmation.add(affirmationModel.data![i].userLiked!);
         }
       }
-
-      setState(() {
-        loader = false;
-      });
+      loader = false;
+      setState(() {});
     } else {
       affirmationModel = AffirmationModel();
       setState(() {
@@ -169,7 +196,62 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
     }
   }
 
+  createAlarm(id, String? title, String? des) async {
+    setState(() {
+      loader == true;
+    });
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.Request('POST', Uri.parse(EndPoints.addAlarm));
+    request.body = json.encode({
+      "hours": selectedHour,
+      "minutes": selectedMinute,
+      "seconds": selectedSeconds,
+      "time": am == true ? "AM" : "PM",
+      "affirmationId": id,
+      "created_by": PrefService.getString(PrefKey.userId)
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      selectedSeconds = 0;
+      selectedMinute = 0;
+      selectedHour = 0;
+      setState(() {
+        loader == false;
+      });
+
+      debugPrint(await response.stream.bytesToString());
+      showSnackBarSuccess(context, "alarmSet".tr);
+      Get.back();
+    } else {
+      selectedSeconds = 0;
+      selectedMinute = 0;
+      selectedHour = 0;
+      final responseBody = await response.stream.bytesToString();
+      commonModel = commonModelFromJson(responseBody);
+      showSnackBarSuccess(context, commonModel.message ?? "alarmAlreadySet".tr);
+      Get.back();
+
+      setState(() {
+        loader == false;
+      });
+
+      debugPrint(response.reasonPhrase);
+    }
+    setState(() {
+      loader == false;
+    });
+  }
+
   getCategoryListAffirmation() async {
+    setState(() {
+      loader = true;
+    });
     var headers = {
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
@@ -182,6 +264,9 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
+      setState(() {
+        loader = false;
+      });
       final responseBody = await response.stream.bytesToString();
 
       affirmationDataModel = affirmationDataModelFromJson(responseBody);
@@ -189,14 +274,24 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
         _filteredBookmarks = affirmationDataModel.data;
         for (int i = 0; i < _filteredBookmarks!.length; i++) {
           like.add(_filteredBookmarks![i].isLiked);
+          likeAffirmation.add(_filteredBookmarks![i].userLiked);
         }
       });
     } else {
+      setState(() {
+        loader = false;
+      });
       debugPrint(response.reasonPhrase);
     }
+    setState(() {
+      loader = false;
+    });
   }
 
   getCategoryAffirmation() async {
+    setState(() {
+      loader = true;
+    });
     var headers = {
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
@@ -213,37 +308,60 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
       for (int i = 0; i < affirmationCategoryModel.data!.length; i++) {
         categoryList.add({"title": affirmationCategoryModel.data![i].name});
       }
+        setState(() {
+    loader = false;
+    });
     } else {
+      setState(() {
+        loader = false;
+      });
       debugPrint(response.reasonPhrase);
     }
+    setState(() {
+      loader = false;
+    });
   }
 
   getAffirmationData() async {
+    setState(() {
+      loader = true;
+    });
     var headers = {
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
     var request = http.Request(
-        'GET', Uri.parse('${EndPoints.baseUrl}${EndPoints.getAffirmation}'));
+        'GET',
+        Uri.parse(
+            '${EndPoints.baseUrl}${EndPoints.getAffirmation}&userId=${PrefService.getString(PrefKey.userId)}'));
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
+      setState(() {
+        loader = false;
+      });
       final responseBody = await response.stream.bytesToString();
 
       affirmationDataModel = affirmationDataModelFromJson(responseBody);
-      setState(() {
-        _filteredBookmarks = affirmationDataModel.data;
-        for (int i = 0; i < _filteredBookmarks!.length; i++) {
-          like.add(_filteredBookmarks![i].isLiked);
-        }
-      });
+      _filteredBookmarks = affirmationDataModel.data;
+      for (int i = 0; i < _filteredBookmarks!.length; i++) {
+        // like.add(_filteredBookmarks![i].isLiked);
+        likeAffirmation.add(_filteredBookmarks![i].userLiked);
+      }
       setState(() {});
     } else {
+      setState(() {
+        loader = false;
+      });
       debugPrint(response.reasonPhrase);
     }
+    setState(() {
+      loader = false;
+    });
   }
 
+  CommonModel commonModel = CommonModel();
   addAffirmation({String? title, String? des}) async {
     setState(() {
       loader = true;
@@ -253,8 +371,8 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
-    var request = http.MultipartRequest(
-        'POST', Uri.parse('${EndPoints.baseUrl}${EndPoints.addAffirmation}'));
+    var request =
+        http.MultipartRequest('POST', Uri.parse(EndPoints.addAffirmation));
     request.fields.addAll({
       'created_by': PrefService.getString(PrefKey.userId),
       'name': title!,
@@ -269,17 +387,24 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
       setState(() {
         loader = false;
       });
-      showSnackBarSuccess(context, "Successfully add in your affirmation");
+      showSnackBarSuccess(context, "successfullyAddedAffirmation".tr);
       setState(() {});
     } else {
       setState(() {
         loader = false;
       });
+      final responseBody = await response.stream.bytesToString();
+      commonModel = commonModelFromJson(responseBody);
+      showSnackBarError(context, commonModel.message ?? "");
+
       debugPrint(response.reasonPhrase);
     }
   }
 
   updateLike({String? id, bool? isLiked}) async {
+    setState(() {
+      loader = true;
+    });
     debugPrint("User Id ${PrefService.getString(PrefKey.userId)}");
     var headers = {
       'Content-Type': 'application/json',
@@ -293,13 +418,58 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200 || response.statusCode == 201) {
+      setState(() {
+        loader = false;
+      });
       setState(() {});
     } else {
+      setState(() {
+        loader = false;
+      });
       debugPrint(response.reasonPhrase);
     }
+    setState(() {
+      loader = false;
+    });
+  }
+
+  updateAffirmationLike({String? id, bool? isLiked}) async {
+    setState(() {
+      loader = true;
+    });
+    debugPrint("User Id ${PrefService.getString(PrefKey.userId)}");
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.MultipartRequest(
+        'POST',
+        Uri.parse(
+            '${EndPoints.baseUrl}${EndPoints.updateUser}${PrefService.getString(PrefKey.userId)}'));
+
+    request.fields.addAll({'isLike': "$isLiked", 'affirmationId': "$id"});
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      setState(() {
+        loader = false;
+      });
+      setState(() {});
+    } else {
+      setState(() {
+        loader = false;
+      });
+      debugPrint(response.reasonPhrase);
+    }
+    setState(() {
+      loader = false;
+    });
   }
 
   deleteAffirmation(id) async {
+
     setState(() {
       loader = true;
     });
@@ -314,7 +484,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
 
     if (response.statusCode == 200) {
       affirmationList = [];
-      showSnackBarSuccess(context, "Affirmation Deleted");
+      // showSnackBarSuccess(context, "Affirmation Deleted");
       setState(() {
         loader = false;
       });
@@ -328,149 +498,149 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: themeController.isDarkMode.value
-            ? ColorConstant.black
-            : ColorConstant.backGround,
-        appBar: CustomAppBar(
-          showBack: true,
-          title: "myAffirmation".tr,
-          action: (_isLoading)
-              ? const Offstage()
-              : Padding(
-                  padding: const EdgeInsets.only(right: Dimens.d20),
-                  child: GestureDetector(
-                    onTap: () {
-                      _onAddClick(context);
-                    },
-                    child: SvgPicture.asset(
-                      ImageConstant.addTools,
-                      height: Dimens.d22,
-                      width: Dimens.d22,
-                    ),
+    return Scaffold(
+      backgroundColor: themeController.isDarkMode.value
+          ? ColorConstant.black
+          : ColorConstant.backGround,
+      appBar: CustomAppBar(
+        showBack: true,
+        title: "myAffirmation".tr,
+        action: (_isLoading)
+            ? const Offstage()
+            : Padding(
+                padding: const EdgeInsets.only(right: Dimens.d20),
+                child: GestureDetector(
+                  onTap: () {
+                    _onAddClick(context);
+                  },
+                  child: SvgPicture.asset(
+                    ImageConstant.addTools,
+                    height: Dimens.d22,
+                    width: Dimens.d22,
                   ),
                 ),
-        ),
-        body: Stack(
-          children: [
-            SizedBox(
-              height: Get.height,
-              width: Get.width,
-              child: Stack(
-                children: [
-                  Align(
-                      alignment: Alignment.topRight,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: Dimens.d100),
-                        child: SvgPicture.asset(ImageConstant.profile1),
-                      )),
-                  Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: Dimens.d120),
-                        child: SvgPicture.asset(ImageConstant.profile2),
-                      )),
-                  LayoutContainer(
-                    vertical: 0,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Dimens.d13.spaceHeight,
-                        Row(
-                          children: [
-                            const Spacer(),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  getAffirmation();
-                                  _currentTabIndex = 0;
-                                });
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: Dimens.d14),
-                                height: Dimens.d38,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: _currentTabIndex == 0
-                                            ? ColorConstant.transparent
-                                            : themeController.isDarkMode.value
-                                                ? ColorConstant.white
-                                                : ColorConstant.black,
-                                        width: 0.5),
-                                    borderRadius: BorderRadius.circular(33),
-                                    color: _currentTabIndex == 0
-                                        ? ColorConstant.themeColor
-                                        : ColorConstant.transparent),
-                                child: Center(
-                                  child: Text(
-                                    "yourAffirmation".tr,
-                                    style: Style.montserratRegular(
-                                        fontSize: Dimens.d14,
-                                        color: _currentTabIndex == 0
-                                            ? ColorConstant.white
-                                            : themeController.isDarkMode.value
-                                                ? ColorConstant.white
-                                                : ColorConstant.black),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const Spacer(),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _currentTabIndex = 1;
-                                });
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: Dimens.d34),
-                                height: Dimens.d38,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(33),
-                                    border: Border.all(
-                                        color: _currentTabIndex == 1
-                                            ? ColorConstant.transparent
-                                            : themeController.isDarkMode.value
-                                                ? ColorConstant.white
-                                                : ColorConstant.black,
-                                        width: 0.5),
-                                    color: _currentTabIndex == 1
-                                        ? ColorConstant.themeColor
-                                        : ColorConstant.transparent),
-                                child: Center(
-                                  child: Text(
-                                    "affirmation".tr,
-                                    style: Style.montserratRegular(
-                                        fontSize: Dimens.d14,
-                                        color: _currentTabIndex == 1
-                                            ? ColorConstant.white
-                                            : themeController.isDarkMode.value
-                                                ? ColorConstant.white
-                                                : ColorConstant.black),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const Spacer(),
-                          ],
-                        ),
-                        Dimens.d16.spaceHeight,
-                        const DividerWidget(),
-                        Dimens.d20.spaceHeight,
-                        _getTabListOfGoals(),
-                      ],
-                    ),
-                  ),
-                ],
               ),
+      ),
+      body: Stack(
+        children: [
+          SizedBox(
+            height: Get.height,
+            width: Get.width,
+            child: Stack(
+              children: [
+                Align(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: Dimens.d100),
+                      child: SvgPicture.asset(ImageConstant.profile1),
+                    )),
+                Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: Dimens.d120),
+                      child: SvgPicture.asset(ImageConstant.profile2),
+                    )),
+                LayoutContainer(
+                  vertical: 0,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Dimens.d13.spaceHeight,
+                      Row(
+                        children: [
+                          const Spacer(),
+                          GestureDetector(
+                            onTap: () {
+                              getAffirmation();
+                              setState(() {
+                                _currentTabIndex = 0;
+                              });
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: Dimens.d14),
+                              height: Dimens.d38,
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: _currentTabIndex == 0
+                                          ? ColorConstant.transparent
+                                          : themeController.isDarkMode.value
+                                              ? ColorConstant.white
+                                              : ColorConstant.black,
+                                      width: 0.5),
+                                  borderRadius: BorderRadius.circular(33),
+                                  color: _currentTabIndex == 0
+                                      ? ColorConstant.themeColor
+                                      : ColorConstant.transparent),
+                              child: Center(
+                                child: Text(
+                                  "yourAffirmation".tr,
+                                  style: Style.montserratRegular(
+                                      fontSize: Dimens.d14,
+                                      color: _currentTabIndex == 0
+                                          ? ColorConstant.white
+                                          : themeController.isDarkMode.value
+                                              ? ColorConstant.white
+                                              : ColorConstant.black),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedCategory = ValueNotifier(null);
+                                _currentTabIndex = 1;
+                                getAffirmationData();
+                              });
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: Dimens.d34),
+                              height: Dimens.d38,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(33),
+                                  border: Border.all(
+                                      color: _currentTabIndex == 1
+                                          ? ColorConstant.transparent
+                                          : themeController.isDarkMode.value
+                                              ? ColorConstant.white
+                                              : ColorConstant.black,
+                                      width: 0.5),
+                                  color: _currentTabIndex == 1
+                                      ? ColorConstant.themeColor
+                                      : ColorConstant.transparent),
+                              child: Center(
+                                child: Text(
+                                  "affirmation".tr,
+                                  style: Style.montserratRegular(
+                                      fontSize: Dimens.d14,
+                                      color: _currentTabIndex == 1
+                                          ? ColorConstant.white
+                                          : themeController.isDarkMode.value
+                                              ? ColorConstant.white
+                                              : ColorConstant.black),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                        ],
+                      ),
+                      Dimens.d16.spaceHeight,
+                      const DividerWidget(),
+                      Dimens.d20.spaceHeight,
+                      _getTabListOfGoals(),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            loader == true ? commonLoader() : const SizedBox()
-          ],
-        ),
+          ),
+          loader == true ? commonLoader() : const SizedBox()
+        ],
       ),
     );
   }
@@ -497,7 +667,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                       SvgPicture.asset(ImageConstant.noData),
                       Dimens.d20.spaceHeight,
                       Text(
-                        "Data Not Found",
+                        "dataNotFound".tr,
                         style: Style.montserratBold(fontSize: 24),
                       )
                     ],
@@ -524,8 +694,10 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                           Navigator.push(context, MaterialPageRoute(
                             builder: (context) {
                               return AffirmationShareScreen(
-                                des: affirmationList[index]["des"],
-                                title: affirmationList[index]["title"],
+                                des:
+                                    affirmationModel.data?[index].description ??
+                                        "",
+                                title: affirmationModel.data?[index].name ?? "",
                               );
                             },
                           ));
@@ -798,6 +970,8 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                     GestureDetector(
                                       onTap: () {
                                         _showAlertDialogPlayPause(context,
+                                            mp3: _filteredBookmarks?[index]
+                                                .audioFile,
                                             title:
                                                 _filteredBookmarks?[index].name,
                                             des: _filteredBookmarks?[index]
@@ -816,8 +990,13 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                     GestureDetector(
                                         onTap: () {
                                           _showAlertDialog(
-                                            context,
-                                          );
+                                              index: index,
+                                              des: _filteredBookmarks?[index]
+                                                  .description,
+                                              context,
+                                              title: _filteredBookmarks?[index]
+                                                  .name,
+                                              _filteredBookmarks?[index].id);
                                         },
                                         child: SvgPicture.asset(
                                           ImageConstant.alarm,
@@ -830,16 +1009,17 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                     GestureDetector(
                                       onTap: () async {
                                         setState(() {
-                                          like[index] = !like[index];
+                                          likeAffirmation[index] =
+                                              !likeAffirmation[index];
                                         });
                                         if (_filteredBookmarks![index]
                                             .isLiked) {
-                                          await updateLike(
+                                          await updateAffirmationLike(
                                               id: _filteredBookmarks?[index].id,
                                               isLiked: false);
                                           await getAffirmationData();
                                         } else {
-                                          await updateLike(
+                                          await updateAffirmationLike(
                                               id: _filteredBookmarks?[index].id,
                                               isLiked: true);
                                           await getAffirmationData();
@@ -848,12 +1028,12 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                         setState(() {});
                                       },
                                       child: SvgPicture.asset(
-                                        like[index]
+                                        likeAffirmation[index]
                                             ? ImageConstant.likeRedTools
                                             : ImageConstant.likeTools,
                                         height: Dimens.d18,
                                         width: Dimens.d18,
-                                        color: like[index]
+                                        color: likeAffirmation[index]
                                             ? ColorConstant.deleteRed
                                             : themeController.isDarkMode.isTrue
                                                 ? ColorConstant.white
@@ -891,7 +1071,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                             SvgPicture.asset(ImageConstant.noData),
                             Dimens.d20.spaceHeight,
                             Text(
-                              "Data Not Found",
+                              "dataNotFound".tr,
                               style: Style.montserratBold(fontSize: 24),
                             )
                           ],
@@ -905,7 +1085,8 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
     );
   }
 
-  void _showAlertDialog(BuildContext context, {String? title}) {
+  void _showAlertDialog(BuildContext context, id,
+      {String? title, String? des, int? index}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -921,7 +1102,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                 Row(
                   children: [
                     Text(
-                      "New Alarms".tr,
+                      "newAlarms".tr,
                       style: Style.montserratRegular(fontSize: 20),
                     ),
                     const Spacer(),
@@ -989,7 +1170,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                     ),
                   ],
                 ),
-                Dimens.d26.spaceHeight,
+                Dimens.d10.spaceHeight,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -1007,7 +1188,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                     ),
                   ],
                 ),
-                Dimens.d26.spaceHeight,
+                Dimens.d10.spaceHeight,
                 Row(
                   children: [
                     NumberPicker(
@@ -1060,126 +1241,66 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                     ),
                   ],
                 ),
-                /*  SizedBox(
-                  height: 100,
-                  width: Get.width - 60,
-                  child: Stack(
-                    alignment: Alignment.topCenter,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-
-
-                          // Hours Selector
-                          Expanded(
-                              child:ListWheelScrollView(
-                                itemExtent: 30,
-                                onSelectedItemChanged: (val) {
-                                  setState(() {
-                                    selectedHour = val;
-                                  });
-                                },
-                                children: List.generate(
-                                    24,
-                                        (index) => Container(
-                                      alignment: Alignment.center,
-                                      height: 20,
-                                      child: Text(
-                                        index.toString().padLeft(2, '0'),
-                                        style: Style.montserratRegular(
-                                          fontSize: 20,
-                                          color: selectedHour == index
-                                              ? ColorConstant.black
-                                              : ColorConstant.themeColor,
-                                        ),
-                                      ),
-                                    )).toList(),
-                              ),),
-                          const Spacer(),
-                          // Minutes Selector
-                          Expanded(
-                            child: ListWheelScrollView(
-                              itemExtent: 30,
-                              onSelectedItemChanged: (val) {
-                                setState(() {
-                                  selectedMinute = val;
-                                });
-                              },
-                              children: List.generate(
-                                  60,
-                                  (index) => Container(
-                                        alignment: Alignment.center,
-                                        height: 20,
-                                        child: Text(
-                                          index.toString().padLeft(2, '0'),
-                                          style: Style.montserratRegular(
-                                            fontSize: 20,
-                                            color: selectedMinute == index
-                                                ? ColorConstant.black
-                                                : ColorConstant.themeColor,
-                                          ),
-                                        ),
-                                      )).toList(),
-                            ),
-                          ),
-                          const Spacer(),
-
-                          Expanded(
-                            child: ListWheelScrollView(
-                              itemExtent: 30,
-                              onSelectedItemChanged: (val) {
-                                setState(() {
-                                  selectedSeconds = val;
-                                });
-                              },
-                              children: List.generate(
-                                  60,
-                                  (index) => Container(
-                                        alignment: Alignment.center,
-                                        height: 20,
-                                        child: Text(
-                                          index.toString().padLeft(2, '0'),
-                                          style: Style.montserratRegular(
-                                            fontSize: 20,
-                                            color: selectedSeconds == index
-                                                ? ColorConstant.black
-                                                : ColorConstant.themeColor,
-                                          ),
-                                        ),
-                                      )).toList(),
-                            ),
-                          ),
-
-                        ],
-                      ),
-                    ],
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) {
+                        return const AudioList();
+                      },
+                    ));
+                  },
+                  child: Container(
+                    height: Dimens.d51,
+                    width: Get.width,
+                    decoration: BoxDecoration(
+                        color: ColorConstant.backGround,
+                        borderRadius: BorderRadius.circular(6)),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Dimens.d14.spaceWidth,
+                        Text(
+                          "sound".tr,
+                          style: Style.montserratRegular(fontSize: 14),
+                        ),
+                        const Spacer(),
+                        Text(
+                          "default".tr,
+                          style: Style.montserratRegular(
+                              fontSize: 14, color: ColorConstant.color787878),
+                        ),
+                        SvgPicture.asset(
+                          ImageConstant.settingArrowRight,
+                          color: ColorConstant.color787878,
+                        ),
+                        Dimens.d14.spaceWidth,
+                      ],
+                    ),
                   ),
-                ),*/
-                /*     SizedBox(
-                  height: 100,
-                  width: Get.width,
-                  child: CupertinoTimerPicker(
-                    backgroundColor: Colors.transparent,
-                    mode: CupertinoTimerPickerMode.hms,
-                    initialTimerDuration: selectedDuration,
-                    onTimerDurationChanged: (Duration newDuration) {
-                      setState(() {
-                        selectedDuration = newDuration;
-                      });
-                    },
-                  ),
-                ),*/
-
-                Dimens.d26.spaceHeight,
+                ),
+                Dimens.d20.spaceHeight,
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: Dimens.d70.h),
                   child: CommonElevatedButton(
                     textStyle: Style.montserratRegular(
                         fontSize: Dimens.d12, color: ColorConstant.white),
                     title: "save".tr,
-                    onTap: () {
-                      Get.back();
+                    onTap: () async {
+                      /*final alarmSettings = AlarmSettings(
+                          id:index!+1,
+                          dateTime: DateTime.now().add(const Duration(seconds: 20)),
+                          assetAudioPath: 'assets/audio/audio.mp3',
+                          loopAudio: true,
+                          vibrate: true,
+                          volume: 0.8,androidFullScreenIntent: true,
+                          fadeDuration: 3.0,
+                          notificationTitle: title!,
+                          notificationBody: des!,
+                          enableNotificationOnKill: Platform.isAndroid);
+                      await Alarm.set(alarmSettings: alarmSettings,);*/
+                      await createAlarm(id, title, des);
+
+                      //await getAffirmationAlarm();
                     },
                   ),
                 )
@@ -1217,8 +1338,8 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
             Center(
                 child: SvgPicture.asset(
               ImageConstant.deleteAffirmation,
-              height: Dimens.d140,
-              width: Dimens.d140,
+              height: Dimens.d96,
+              width: Dimens.d96,
             )),
             Dimens.d20.spaceHeight,
             Center(
@@ -1247,19 +1368,23 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                     setState(() {});
                   },
                 ),
-                Container(
-                  height: 33,
-                  margin: const EdgeInsets.symmetric(horizontal: 5),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 21,
-                  ),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(80),
-                      border: Border.all(color: ColorConstant.themeColor)),
-                  child: Center(
-                    child: Text(
-                      "cancel".tr,
-                      style: Style.montserratRegular(fontSize: 14),
+                GestureDetector( onTap: () {
+                  Get.back();
+                },
+                  child: Container(
+                    height: 33,
+                    margin: const EdgeInsets.symmetric(horizontal: 5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 21,
+                    ),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(80),
+                        border: Border.all(color: ColorConstant.themeColor)),
+                    child: Center(
+                      child: Text(
+                        "cancel".tr,
+                        style: Style.montserratRegular(fontSize: 14),
+                      ),
                     ),
                   ),
                 )
@@ -1278,7 +1403,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   }
 
   void _showAlertDialogPlayPause(BuildContext context,
-      {String? title, String? des}) {
+      {String? title, String? des, String? mp3}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1356,8 +1481,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                           VoiceMessageView(
                             size: 0.0,
                             controller: VoiceController(
-                              audioSrc:
-                                  'https://dl.solahangs.com/Music/1403/02/H/128/Hiphopologist%20-%20Shakkak%20%28128%29.mp3',
+                              audioSrc: mp3!,
                               onComplete: () {
                                 /// do something on complete
                               },
@@ -1433,6 +1557,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                 padding: const EdgeInsets.only(left: 18, top: 17),
                 child: Text(
                   item["title"] ?? '',
+                  maxLines: 1,
                   style: Style.montserratRegular(
                     fontSize: Dimens.d14,
                     color: Colors.white,

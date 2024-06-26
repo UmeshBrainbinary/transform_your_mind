@@ -11,9 +11,13 @@ import 'package:transform_your_mind/presentation/auth/forgot_password_screen/for
 import 'package:transform_your_mind/presentation/auth/forgot_password_screen/new_password_screen.dart';
 import 'package:transform_your_mind/presentation/auth/forgot_password_screen/verification_screen.dart';
 import 'package:transform_your_mind/presentation/auth/login_screen/binding/login_binding.dart';
+import 'package:transform_your_mind/presentation/auth/login_screen/login_preview_view.dart';
 import 'package:transform_your_mind/presentation/auth/login_screen/login_screen.dart';
 import 'package:transform_your_mind/presentation/auth/ragister_screen/binding/register_binding.dart';
 import 'package:transform_your_mind/presentation/auth/ragister_screen/register_screen.dart';
+import 'package:transform_your_mind/presentation/breath_screen/binding/breath_binding.dart';
+import 'package:transform_your_mind/presentation/breath_screen/breath_screen.dart';
+import 'package:transform_your_mind/presentation/breath_screen/notice_how_you_feel_screen.dart';
 import 'package:transform_your_mind/presentation/dash_board_screen/binding/dash_board_binding.dart';
 import 'package:transform_your_mind/presentation/dash_board_screen/dash_board_screen.dart';
 import 'package:transform_your_mind/presentation/feedback_screen/binding/feedback_binding.dart';
@@ -22,12 +26,12 @@ import 'package:transform_your_mind/presentation/home_screen/binding/home_bindin
 import 'package:transform_your_mind/presentation/home_screen/home_screen.dart';
 import 'package:transform_your_mind/presentation/intro_screen/about_page.dart';
 import 'package:transform_your_mind/presentation/intro_screen/select_your_focus_page.dart';
+import 'package:transform_your_mind/presentation/intro_screen/welcome_screen.dart';
 import 'package:transform_your_mind/presentation/journal_screen/binding/journal_binding.dart';
 import 'package:transform_your_mind/presentation/journal_screen/journal_screen.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_gratitude_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/my_affirmation_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/my_gratitude_page.dart';
-import 'package:transform_your_mind/presentation/journal_screen/widget/my_notes_page.dart';
 import 'package:transform_your_mind/presentation/me_screen/binding/me_binding.dart';
 import 'package:transform_your_mind/presentation/me_screen/me_screen.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/account_screen/account_screen.dart';
@@ -52,16 +56,18 @@ import 'package:transform_your_mind/presentation/positive_moment/positive_screen
 import 'package:transform_your_mind/presentation/profile_screen/binding/profile_binding.dart';
 import 'package:transform_your_mind/presentation/profile_screen/profile_screen.dart';
 import 'package:transform_your_mind/presentation/splash_screen/binding/splash_binding.dart';
+import 'package:transform_your_mind/presentation/splash_screen/information_screen.dart';
+import 'package:transform_your_mind/presentation/splash_screen/intro_screen.dart';
 import 'package:transform_your_mind/presentation/splash_screen/splash_screen.dart';
 import 'package:transform_your_mind/presentation/subscription_screen/binding/subscription_binding.dart';
 import 'package:transform_your_mind/presentation/subscription_screen/subscription_screen.dart';
 import 'package:transform_your_mind/presentation/today_gratitude_screen/binding/gratitude_binding.dart';
-import 'package:transform_your_mind/presentation/today_gratitude_screen/gratitude_screen.dart';
 import 'package:transform_your_mind/presentation/tools_screen/binding/tools_binding.dart';
 import 'package:transform_your_mind/presentation/tools_screen/tools_screen.dart';
 
 class AppRoutes {
   static const String loginScreen = '/login_screen';
+  static const String loginPreviewScreen = '/loginPreviewScreen';
   static const String splashScreen = '/splash_screen';
   static const String registerScreen = '/register_screen';
   static const String successPopupScreen = '/success_popup_screen';
@@ -75,8 +81,8 @@ class AppRoutes {
   static const String audioScreen = '/audioScreen';
   static const String toolsScreen = '/toolsScreen';
   static const String initialRoute = '/initialRoute';
+  static const String welcomeScreen = '/welcomeScreen';
   static const String nowPlayingScreen = '/now_playing_screen';
-  static const String gratitudeScreen = '/gratitudeScreen';
   static const String todayCleanseScreen = '/todayCleanseScreen';
   static const String journalScreen = '/journalScreen';
   static const String settingScreen = '/setting_screen';
@@ -100,6 +106,10 @@ class AppRoutes {
   static const String positiveScreen = '/positiveScreen';
   static const String feedbackScreen = '/feedbackScreen';
   static const String nowPlayScreen = '/nowPlayScreen';
+  static const String introScreen = '/introScreen';
+  static const String informationScreen = '/informationScreen';
+  static const String breathScreen = '/breathScreen';
+  static const String noticeHowYouFeel = '/noticeHowYouFeel';
 
   static List<GetPage> pages = [
 
@@ -107,6 +117,22 @@ class AppRoutes {
       transition: Transition.rightToLeft,
       name: splashScreen,
       page: () => const SplashScreen(),
+      bindings: [
+        SplashBinding(),
+      ],
+    ),
+ GetPage(
+      transition: Transition.rightToLeft,
+      name: introScreen,
+      page: () => const IntroScreen(),
+      bindings: [
+        SplashBinding(),
+      ],
+    ),
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: informationScreen,
+      page: () => const InformationScreen(),
       bindings: [
         SplashBinding(),
       ],
@@ -119,11 +145,25 @@ class AppRoutes {
       bindings: [
         LoginBinding(),
       ],
+    ), GetPage(
+      transition: Transition.rightToLeft,
+      name: loginPreviewScreen,
+      page: () => const LoginPreviewView(),
+      bindings: [
+        LoginBinding(),
+      ],
     ),
     GetPage(
       transition: Transition.rightToLeft,
       name: initialRoute,
       page: () => LoginScreen(),
+      bindings: [
+        LoginBinding(),
+      ],
+    ),    GetPage(
+      transition: Transition.rightToLeft,
+      name: welcomeScreen,
+      page: () => const WelcomeScreen(),
       bindings: [
         LoginBinding(),
       ],
@@ -133,7 +173,7 @@ class AppRoutes {
     GetPage(
       transition: Transition.rightToLeft,
       name: registerScreen,
-      page: () => RegisterScreen(),
+      page: () => const RegisterScreen(),
       bindings: [
         RegisterBinding(),
       ],
@@ -150,7 +190,7 @@ class AppRoutes {
     GetPage(
       transition: Transition.rightToLeft,
       name: verificationsScreen,
-      page: () => VerificationsScreen(),
+      page: () => const VerificationsScreen(),
       bindings: [
         ForgotBinding(),
       ],
@@ -167,7 +207,7 @@ class AppRoutes {
     GetPage(
       transition: Transition.rightToLeft,
       name: dashBoardScreen,
-      page: () =>  DashBoardScreen(),
+      page: () =>  const DashBoardScreen(),
       bindings: [
         DashBoardBinding(), NowPlayingBinding()],
     ),
@@ -253,21 +293,13 @@ class AppRoutes {
     GetPage(
       transition: Transition.rightToLeft,
       name: notificationSetting,
-      page: () =>  NotificationSettingScreen(),
+      page: () =>  const NotificationSettingScreen(),
       bindings: [
         NotificationSettingBinding(),
       ],
     ),
 
 
-    GetPage(
-      transition: Transition.rightToLeft,
-      name: gratitudeScreen,
-      page: () => const GratitudeScreen(),
-      bindings: [
-        GratitudeBinding(),
-      ],
-    ),
 
     GetPage(
       transition: Transition.rightToLeft,
@@ -303,14 +335,7 @@ class AppRoutes {
       ],
     ),
 
-    GetPage(
-      transition: Transition.rightToLeft,
-      name: myNotesPage,
-      page: () =>  const MyNotesPage(),
-      bindings: [
-        JournalBinding(),
-      ],
-    ),
+
     GetPage(
       transition: Transition.rightToLeft,
       name: aboutPage,
@@ -332,7 +357,7 @@ class AppRoutes {
     GetPage(
       transition: Transition.rightToLeft,
       name: personalizationScreen,
-      page: () => PersonalizationScreenScreen(),
+      page: () => const PersonalizationScreenScreen(),
       bindings: [
         PersonalisationsBinding()
       ],
@@ -378,8 +403,21 @@ class AppRoutes {
     GetPage(
       transition: Transition.rightToLeft,
       name: nowPlayScreen,
-      page: () =>  NowPlayingScreen(),
+      page: () =>   NowPlayingScreen(),
       bindings: [NowPlayingBinding()],
+    ),
+
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: breathScreen,
+      page: () =>    BreathScreen(),
+      bindings: [BreathBinding()],
+    ),
+  GetPage(
+      transition: Transition.rightToLeft,
+      name: noticeHowYouFeel,
+      page: () =>   const NoticeHowYouFeelScreen(),
+      bindings: [BreathBinding()],
     ),
 
     ///

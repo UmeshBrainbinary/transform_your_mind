@@ -37,9 +37,9 @@ class MyGratitudePage extends StatefulWidget {
   final bool fromNotification;
 
   const MyGratitudePage({
-    Key? key,
+    super.key,
     this.fromNotification = false,
-  }) : super(key: key);
+  });
 
   @override
   State<MyGratitudePage> createState() => _MyGratitudePageState();
@@ -49,6 +49,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
   TextEditingController dateController = TextEditingController();
   FocusNode dateFocus = FocusNode();
   List gratitudeList = [];
+  List categoryList = [];
 
   bool _isLoading = false;
   bool _isLoadingDraft = false;
@@ -65,6 +66,10 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
   ThemeController themeController = Get.find<ThemeController>();
   DateTime _currentDate = DateTime.now();
   bool select = false;
+  ValueNotifier selectedCategory = ValueNotifier(null);
+  FocusNode searchFocus = FocusNode();
+  TextEditingController searchController = TextEditingController();
+  List? _filteredBookmarks;
 
   @override
   void initState() {
@@ -76,10 +81,20 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
     super.initState();
   }
 
+  searchBookmarks(String query, List bookmarks) {
+    return bookmarks
+        .where((bookmark) =>
+            bookmark.name!.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+  }
+
   GratitudeModel gratitudeModel = GratitudeModel();
   CommonModel commonModel = CommonModel();
-
+  bool loader = false;
   getGratitude() async {
+    setState(() {
+      loader = true;
+    });
     var headers = {
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
@@ -97,17 +112,28 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
       final responseBody = await response.stream.bytesToString();
       gratitudeModel = gratitudeModelFromJson(responseBody);
       gratitudeList = gratitudeModel.data!;
-
+      categoryList = [];
+      for (int i = 0; i < gratitudeList.length; i++) {
+        categoryList.add(gratitudeList[i].name);
+      }
+      debugPrint("gratitude Model $gratitudeList");
+      debugPrint("gratitude Model ${gratitudeModel.data}");
       setState(() {
-        debugPrint("gratitude Model $gratitudeList");
-        debugPrint("gratitude Model ${gratitudeModel.data}");
+        loader = false;
       });
+      setState(() {});
     } else {
+      setState(() {
+        loader = false;
+      });
       debugPrint(response.reasonPhrase);
     }
   }
 
   deleteGratitude(id) async {
+    setState(() {
+      loader = true;
+    });
     var headers = {
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
@@ -127,9 +153,22 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
     }
   }
 
+  getFilterData() {
+    gratitudeList = gratitudeModel.data!
+        .where((item) => item.name == selectedCategory.value)
+        .toList();
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          select = false;
+        });
+      },
       child: Scaffold(
           backgroundColor: themeController.isDarkMode.value
               ? ColorConstant.black
@@ -142,6 +181,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
               padding: const EdgeInsets.only(right: Dimens.d20),
               child: GestureDetector(
                 onTap: () {
+                  selectedCategory = ValueNotifier(null);
                   _onAddClick(context);
                 },
                 child: SvgPicture.asset(
@@ -184,31 +224,82 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                         Expanded(
                           child: Column(
                             children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: Dimens.d30),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      select = !select;
+                                    });
+                                  },
+                                  child: CommonTextField(
+                                      enabled: false,
+                                      suffixIcon: Padding(
+                                        padding: const EdgeInsets.all(13.0),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              select = !select;
+                                            });
+                                          },
+                                          child: SvgPicture.asset(
+                                              ImageConstant.calendar),
+                                        ),
+                                      ),
+                                      hintText: "DD/MM/YYYY",
+                                      controller: dateController,
+                                      focusNode: dateFocus),
+                                ),
+                              ),
                               Dimens.d20.spaceHeight,
-                               Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: Dimens.d30),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            select = !select;
-                                          });
-                                        },
-                                        child: CommonTextField(
-                                            enabled: false,
-                                            suffixIcon: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(13.0),
-                                              child: SvgPicture.asset(
-                                                  ImageConstant.calendar),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20.0),
+                                child: Row(
+                                  children: [
+                                    _buildCategoryDropDown(context),
+                                    Dimens.d10.spaceWidth,
+                                    Expanded(
+                                      child: Container(
+                                        height: 38,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(25),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: ColorConstant.colorBFD0D4
+                                                  .withOpacity(0.5),
+                                              blurRadius: 8.0,
+                                              spreadRadius:
+                                                  0.5, // Spread the shadow slightly
                                             ),
-                                            hintText: "DD/MM/YYYY",
-                                            controller: dateController,
-                                            focusNode: dateFocus),
+                                          ],
+                                        ),
+                                        child: CommonTextField(
+                                          hintText: "search".tr,
+                                          controller: searchController,
+                                          focusNode: searchFocus,
+                                          prefixLottieIcon:
+                                              ImageConstant.lottieSearch,
+                                          textInputAction: TextInputAction.done,
+                                          onChanged: (value) async {
+                                            if (value.isEmpty) {
+                                              await getGratitude();
+                                            } else {
+                                              gratitudeList = searchBookmarks(
+                                                  value, gratitudeList);
+                                            }
+                                            setState(()  {
+
+                                            });
+                                          },
+                                        ),
                                       ),
                                     ),
-
-                              if (select == true) widgetCalendar(),
+                                  ],
+                                ),
+                              ),
 
                               /// saved list
                               Expanded(
@@ -225,6 +316,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                               itemBuilder: (context, index) {
                                                 var data = gratitudeList[index];
                                                 return JournalListTileLayout(
+                                                  description: data.description,
                                                   onDeleteTapCallback: () {
                                                     _showAlertDialogDelete(
                                                         context,
@@ -237,6 +329,8 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                                         MaterialPageRoute(
                                                       builder: (context) {
                                                         return AddGratitudePage(
+                                                          categoryList:
+                                                              categoryList,
                                                           id: data.id,
                                                           description:
                                                               data.description,
@@ -279,16 +373,31 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                             ? const SizedBox.shrink()
                                             : gratitudeList.isEmpty
                                                 ? Padding(
-                                                  padding: const EdgeInsets.only(bottom: Dimens.d150),
-                                                  child: Column(crossAxisAlignment: CrossAxisAlignment.center,
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      SvgPicture.asset(ImageConstant.noData),
-                                                      Dimens.d20.spaceHeight,
-                                                      Text("Data Not Found",style: Style.montserratBold(fontSize: 24),)
-                                                    ],
-                                                  ),
-                                                )
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            bottom:
+                                                                Dimens.d150),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        SvgPicture.asset(
+                                                            ImageConstant
+                                                                .noData),
+                                                        Dimens.d20.spaceHeight,
+                                                        Text(
+                                                          "dataNotFound".tr,
+                                                          style: Style
+                                                              .montserratBold(
+                                                                  fontSize: 24),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  )
                                                 : const SizedBox(),
                               ),
                             ],
@@ -299,6 +408,11 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                   )
                 ],
               ),
+              if (select == true)
+                Padding(
+                  padding: const EdgeInsets.only(top: Dimens.d100),
+                  child: widgetCalendar(),
+                ),
             ],
           )),
     );
@@ -327,8 +441,8 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
             Center(
                 child: SvgPicture.asset(
               ImageConstant.deleteAffirmation,
-              height: Dimens.d140,
-              width: Dimens.d140,
+              height: Dimens.d96,
+              width: Dimens.d96,
             )),
             Dimens.d20.spaceHeight,
             Center(
@@ -356,6 +470,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                   });
                     await deleteGratitude(id);
                     await getGratitude();
+                    getFilterData();
                     setState(() {});
                     Get.back();
                   },
@@ -385,6 +500,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
   }
 
   void _onAddClick(BuildContext context) {
+    _currentDate = DateTime.now();
     final subscriptionStatus = "SUBSCRIBED";
 
     /// to check if item counts are not more then the config count in case of no subscription
@@ -396,11 +512,18 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
       });*/
     } else {
       dateController.clear();
-      Get.toNamed(AppRoutes.addGratitudePage)!.then((value) {
-        setState(() {});
-      }).then(
+      Navigator.push(context, MaterialPageRoute(
+        builder: (context) {
+          return AddGratitudePage(
+            categoryList: categoryList,
+            isFromMyGratitude: true,
+            registerUser: false,
+          );
+        },
+      )).then(
         (value) async {
           await getGratitude();
+          setState(() {});
         },
       );
     }
@@ -413,19 +536,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
 
   }
 
-  void _onSearchChanged(String query) {
-    if (_debounce?.isActive ?? false) _debounce?.cancel();
-    _debounce = Timer(const Duration(milliseconds: 500), () {
-      // do something with query
-      _isSearching = true;
-      pageNumber = 1;
-      query.trim();
 
-      if (query.isNotEmpty) {
-        if (!RegExp(r'[^\w\s]').hasMatch(query)) {}
-      } else {}
-    });
-  }
 
   Widget widgetCalendar() {
     return Container(
@@ -438,15 +549,17 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
               : ColorConstant.white,
         ),
         child: CalendarCarousel<Event>(
-          onDayPressed: (DateTime date, List<Event> events) {
+          onDayPressed: (DateTime date, List<Event> events) async {
             if (date.isBefore(DateTime.now())) {
               setState.call(() => _currentDate = date);
 
-              print("==========$_currentDate");
+              debugPrint("==========$_currentDate");
               setState.call(() {
                 dateController.text = DateFormat('dd/MM/yyyy').format(date);
                 select = false;
               });
+              await getGratitude();
+
               setState((){});
             }
 
@@ -470,7 +583,25 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
               bool isThisMonthDay,
               DateTime day,
               ) {
-            if (isSelectedDay) {
+            if (day.isAfter(DateTime.now())) {
+              return Container(
+                margin: const EdgeInsets.symmetric(horizontal: 5),
+                height: Dimens.d32,
+                width: Dimens.d32,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Center(
+                  child: Text(
+                    day.day.toString(),
+                    style: Style.montserratRegular(
+                        fontSize: 15,
+                        color: Colors
+                            .grey), // Customize your future day text style
+                  ),
+                ),
+              );
+            } else if (isSelectedDay) {
               return Container(
                 margin: const EdgeInsets.symmetric(horizontal: 5),
                 height: Dimens.d32,
@@ -540,6 +671,101 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                   ? ColorConstant.white
                   : ColorConstant.black),
         ));
+  }
 
+  Widget _buildCategoryDropDown(BuildContext context) {
+    return Expanded(
+      child: Container(
+        height: 38,
+        decoration: BoxDecoration(
+          border: Border.all(color: ColorConstant.lightGrey),
+          borderRadius: BorderRadius.circular(30),
+          color: ColorConstant.themeColor,
+        ),
+        child: DropdownButton(
+          value: selectedCategory.value,
+          borderRadius: BorderRadius.circular(30),
+          onChanged: (value) async {
+            {
+              setState(() {
+                selectedCategory.value = value;
+              });
+              getFilterData();
+              setState(() {});
+            }
+          },
+          selectedItemBuilder: (_) {
+            return categoryList.map<Widget>((item) {
+              bool isSelected = selectedCategory.value == item;
+              return Padding(
+                padding: const EdgeInsets.only(left: 18, top: 8),
+                child: Text(
+                  item ?? '',
+                  maxLines: 1,
+                  style: Style.montserratRegular(
+                    fontSize: Dimens.d14,
+                    color: Colors.white,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                  ),
+                ),
+              );
+            }).toList();
+          },
+          style: Style.montserratRegular(
+            fontSize: Dimens.d14,
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+          ),
+          hint: Padding(
+            padding: const EdgeInsets.only(left: 15),
+            child: Text(
+              "selectCategory".tr,
+              style: Style.montserratRegular(
+                  fontSize: Dimens.d14, color: Colors.white),
+            ),
+          ),
+          icon: Padding(
+            padding: const EdgeInsets.only(right: 15),
+            child: SvgPicture.asset(
+              ImageConstant.icDownArrow,
+              height: 20,
+              color: Colors.white,
+            ),
+          ),
+          elevation: 16,
+          itemHeight: 50,
+          menuMaxHeight: 350.h,
+          underline: const SizedBox(
+            height: 0,
+          ),
+          isExpanded: true,
+          dropdownColor: ColorConstant.themeColor,
+          items: categoryList.map<DropdownMenuItem>((item) {
+            bool isSelected = selectedCategory.value == item;
+            return DropdownMenuItem(
+              value: item,
+              child: AnimatedBuilder(
+                animation: selectedCategory,
+                builder: (BuildContext context, Widget? child) {
+                  return child!;
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(
+                    item ?? '',
+                    style: Style.montserratRegular(
+                      fontSize: Dimens.d14,
+                      color: ColorConstant.white,
+                      fontWeight:
+                          isSelected ? FontWeight.bold : FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    );
   }
 }

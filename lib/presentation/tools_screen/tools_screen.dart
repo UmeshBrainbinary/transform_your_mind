@@ -81,7 +81,7 @@ class _ToolsScreenState extends State<ToolsScreen>
                 ));
               },
               child: SvgPicture.asset(
-                height: 25.h,
+                height: Dimens.d25,
                 ImageConstant.notification,
               ),
             ),
@@ -304,16 +304,16 @@ class _ToolsScreenState extends State<ToolsScreen>
               if (!audioPlayerController.isVisible.value) {
                 return const SizedBox.shrink();
               }
-
+      
               final currentPosition =
                   audioPlayerController.positionStream.value ?? Duration.zero;
               final duration =
                   audioPlayerController.durationStream.value ?? Duration.zero;
               final isPlaying = audioPlayerController.isPlaying.value;
-
+      
               return GestureDetector(
                 onTap: () {
-                  Get.to(() => NowPlayingScreen());
+                  Get.to(() =>  NowPlayingScreen());
                 },
                 child: Align(alignment: Alignment.bottomCenter,
                   child: Container(
@@ -337,7 +337,7 @@ class _ToolsScreenState extends State<ToolsScreen>
                           children: [
                             SvgPicture.asset(ImageConstant.userProfile,width: 47,
                                 height: 47),
-
+      
                             /*   CommonLoadImage(
                                 url: audioPlayerController.currentImage!,
                                 width: 52,
@@ -378,7 +378,7 @@ class _ToolsScreenState extends State<ToolsScreen>
                         ),
                         SliderTheme(
                           data: SliderTheme.of(context).copyWith(
-
+      
                             activeTrackColor:
                             ColorConstant.white.withOpacity(0.2),
                             inactiveTrackColor: ColorConstant.color6E949D,
@@ -394,7 +394,7 @@ class _ToolsScreenState extends State<ToolsScreen>
                                 16.0), // Customize the overlay shape and size
                           ),
                           child: Slider(thumbColor: Colors.transparent,
-
+      
                             activeColor: ColorConstant.backGround,
                             value: currentPosition.inMilliseconds.toDouble(),
                             max: duration.inMilliseconds.toDouble(),

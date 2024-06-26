@@ -124,7 +124,7 @@ class _AddImageWidgetState extends State<AddImageWidget> {
             ),
           ),
           Dimens.d10.spaceHeight,
-          CommonElevatedButton(
+          CommonElevatedButton(height: Dimens.d46,
             title: widget.title??'addProfileImage'.tr,
             onTap: widget.onTap,
             width: Dimens.d200,

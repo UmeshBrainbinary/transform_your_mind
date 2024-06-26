@@ -59,7 +59,7 @@ class _AddGratitudeImageWidgetState extends State<AddGratitudeImageWidget> {
                         ),
                     )
                     : (widget.imageURL != null)
-                        ? CommonLoadImage(
+                        ? CommonLoadImage(borderRadius: 10,
                             url: widget.imageURL ?? '',
                             height: Dimens.d100,
                             width: Dimens.d100,

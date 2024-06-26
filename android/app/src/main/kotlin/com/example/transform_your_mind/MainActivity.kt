@@ -1,4 +1,4 @@
-package com.example.transform_your_mind
+package com.app.transformyourmind
 
 import io.flutter.embedding.android.FlutterActivity
 

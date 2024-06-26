@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -58,20 +59,24 @@ class RegisterController extends GetxController {
   }
 
 
-  onTapRegister(BuildContext context, String path) async {
+  onTapRegister(BuildContext context, ValueNotifier<XFile?> imageFile, ) async {
     loader.value = true;
 
     debugPrint("loader ${loader.value}");
-    await registerApi(context, path);
+    await registerApi(context, imageFile);
 
     update();
   }
   CommonModel commonModel = CommonModel();
   RegisterModel registerModel = RegisterModel();
-  registerApi(BuildContext context, String path) async {
-    var request = http.MultipartRequest(
-        'POST', Uri.parse("${EndPoints.baseUrl}${EndPoints.registerApi}"));
-    request.fields.addAll({
+  registerApi(BuildContext context, ValueNotifier<XFile?> path) async {
+    var headers = {
+      'Content-Type': 'application/json',
+
+    };
+
+    var request = http.Request('POST', Uri.parse("${EndPoints.baseUrl}${EndPoints.registerApi}"));
+    request.body = json.encode({
       "name": nameController.text,
       "email": emailController.text,
       "password": passwordController.text,
@@ -79,18 +84,16 @@ class RegisterController extends GetxController {
       "gender": genderController.text == "Male"
           ? "1"
           : genderController.text == "Female"
-              ? "2"
-              : genderController.text == "Other"
-                  ? "3"
-                  : "0",
-      "user_type": "0",
+          ? "2"
+          : genderController.text == "Other"
+          ? "3"
+          : "0",
+      "user_type": "2",
     });
-    if(path.isNotEmpty){
-      request.files.add(await http.MultipartFile.fromPath('user_profile', path));
-    }
+
+    request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
-
     if (response.statusCode == 200 || response.statusCode == 201) {
       loader.value = false;
       PrefService.setValue(PrefKey.email, emailController.text);
@@ -100,7 +103,7 @@ class RegisterController extends GetxController {
       // Parse the string into JSON and then into CommonModel
       registerModel = registerModelFromJson(responseBody);
      Get.to(VerificationsScreen(
-       forgot: false,
+       forgot: false,imagePath: path,
        token: registerModel.token,
      ));
 

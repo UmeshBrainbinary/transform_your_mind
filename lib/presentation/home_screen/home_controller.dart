@@ -1,13 +1,20 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/end_points.dart';
+import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/model_class/affirmation_model.dart';
 import 'package:transform_your_mind/model_class/bookmarked_model.dart';
+import 'package:transform_your_mind/model_class/common_model.dart';
 import 'package:transform_your_mind/model_class/get_pods_model.dart';
 import 'package:transform_your_mind/model_class/get_user_model.dart';
+import 'package:transform_your_mind/model_class/recently_model.dart';
+import 'package:transform_your_mind/model_class/today_affirmation.dart';
+import 'package:transform_your_mind/model_class/today_gratitude.dart';
 
 class HomeController extends GetxController {
   //_______________________________________  Variables __________________________
@@ -16,27 +23,38 @@ class HomeController extends GetxController {
   GetPodsModel getPodsModel = GetPodsModel();
   RxBool loader = false.obs;
   List<String> bookmarkedList = [];
-  List<AffirmationData>? affirmationList = [];
+
   DateTime todayDate = DateTime.now();
   List<bool> affirmationCheckList = [];
-
+  List<bool> gratitudeCheckList = [];
+  List<Map<String, dynamic>> quickAccessList = [
+    {"title": "motivational", "icon": ImageConstant.meditationIconQuick},
+    {"title": "transformPods", "icon": ImageConstant.podIconQuick},
+    {"title": "gratitudeJournal", "icon": ImageConstant.journalIconQuick},
+    {"title": "positiveMoments", "icon": ImageConstant.sleepIconQuick},
+    {"title": "affirmation", "icon": ImageConstant.homeAffirmation},
+    {"title": "breathingExerciseTitle", "icon": ImageConstant.breathing},
+  ];
   //_______________________________________  Model Class __________________________
   GetUserModel getUserModel = GetUserModel();
   BookmarkedModel bookmarkedModel = BookmarkedModel();
   AffirmationModel affirmationModel = AffirmationModel();
-
+  RecentlyModel recentlyModel = RecentlyModel();
+  TodayAffirmation todayAffirmation = TodayAffirmation();
+  List<TodayAData>? todayAList = [];
+  List<TodayGData>? todayGList = [];
+  TodayGratitude todayGratitude = TodayGratitude();
   //_______________________________________  init Methods  __________________________
 
   @override
   void onInit() {
-    getUsersApi();
-    super.onInit();
-  }
+    Future.delayed(
+      const Duration(milliseconds: 100),
+      () {
 
-  getUsersApi() async {
-    await getUSer();
-    await getPodApi();
-    await getBookMarkedList();
+      },
+    );
+    super.onInit();
   }
 
   //_______________________________________  Api Call Functions  __________________________
@@ -50,8 +68,7 @@ class HomeController extends GetxController {
 
       var request = http.Request(
           'GET',
-          Uri.parse(
-              '${EndPoints.getPod}?isRecommended=true&created_by=6667e00b474a3621861060c0'));
+          Uri.parse('${EndPoints.getPod}?isRecommended=true'));
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();
 
@@ -103,6 +120,9 @@ class HomeController extends GetxController {
         for (int i = 0; i < getUserModel.data!.bookmarkedPods!.length; i++) {
           bookmarkedList.add(getUserModel.data!.bookmarkedPods![i].toString());
         }
+        await PrefService.setValue(
+            PrefKey.userImage, getUserModel.data?.userProfile ?? "");
+
         update(["home"]);
         debugPrint("Bookmark List $bookmarkedList");
       } else {
@@ -117,92 +137,180 @@ class HomeController extends GetxController {
   }
 
   getBookMarkedList() async {
-    try {
-      var headers = {
-        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
-      };
-      var request = http.Request(
-        'GET',
-        Uri.parse(
-          "${EndPoints.multipleBookmarksPods}$bookmarkedList",
-        ),
-      );
-
-      request.headers.addAll(headers);
-      http.StreamedResponse response = await request.send();
-
-      if (response.statusCode == 200) {
-        final responseBody = await response.stream.bytesToString();
-        bookmarkedModel = bookmarkedModelFromJson(responseBody);
-        update(["home"]);
-
-        debugPrint("Bookmark List $bookmarkedModel");
-      } else {
-        update(["home"]);
-
-        debugPrint(response.reasonPhrase);
-      }
-    } catch (e) {
-      loader.value = false;
-
-      debugPrint(e.toString());
-    }
-    update(["home"]);
-  }
-
-  getAffirmation() async {
-    affirmationCheckList = [];
-    affirmationList = [];
     var headers = {
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
     var request = http.Request(
         'GET',
         Uri.parse(
-            '${EndPoints.baseUrl}${EndPoints.getYourAffirmation}${PrefService.getString(PrefKey.userId)}'));
+            '${EndPoints.baseUrl}get-pod?isBookmarked=true&userId=${PrefService.getString(PrefKey.userId)}'));
+
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
       final responseBody = await response.stream.bytesToString();
+      bookmarkedModel = bookmarkedModelFromJson(responseBody);
 
-      affirmationModel = affirmationModelFromJson(responseBody);
-      if (affirmationModel.data != null) {
-        for (int i = 0; i < affirmationModel.data!.length; i++) {
-          if (affirmationModel.data![i].createdAt!.year == todayDate.year &&
-              affirmationModel.data![i].createdAt!.month == todayDate.month &&
-              affirmationModel.data![i].createdAt!.day == todayDate.day) {
-            affirmationList!.add(affirmationModel.data![i]);
-          }
-        }
-      }
-      List.generate(
-        affirmationList!.length,
-        (index) => affirmationCheckList.add(false),
-      );
-      update();
-      debugPrint("affirmation List (--------- )  $affirmationList");
+      update(["home"]);
     } else {
-      affirmationModel = AffirmationModel();
-
       debugPrint(response.reasonPhrase);
     }
+    update(["home"]);
   }
 
-  deleteAffirmation(id) async {
+  getRecentlyList() async {
     var headers = {
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
-    var request = http.Request('DELETE',
-        Uri.parse('${EndPoints.baseUrl}${EndPoints.deleteAffirmation}$id'));
+    var request = http.Request(
+        'GET',
+        Uri.parse(
+            '${EndPoints.getPod}?isRecentlyPlayed=true&userId=${PrefService.getString(PrefKey.userId)}'));
+
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
+      final responseBody = await response.stream.bytesToString();
+      recentlyModel = recentlyModelFromJson(responseBody);
+
+      update(["home"]);
     } else {
       debugPrint(response.reasonPhrase);
     }
+    update(["home"]);
+  }
+
+  getTodayAffirmation() async {
+    affirmationCheckList = [];
+    update(["home"]);
+
+    var headers = {
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.Request(
+        'GET',
+        Uri.parse(
+            '${EndPoints.todayAffirmation}${PrefService.getString(PrefKey.userId)}'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      final responseBody = await response.stream.bytesToString();
+      todayAffirmation = todayAffirmationFromJson(responseBody);
+      todayAList = todayAffirmation.data;
+      if (todayAffirmation.data != null) {
+        List.generate(
+          todayAffirmation.data!.length,
+          (index) => affirmationCheckList.add(false),
+        );
+      }
+
+      update(["home"]);
+    } else {
+      debugPrint(response.reasonPhrase);
+    }
+    update(["home"]);
+  }
+
+  CommonModel commonModel = CommonModel();
+
+  getMotivationalMessage() async {
+    var headers = {
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.Request(
+        'GET',
+        Uri.parse(
+            '${EndPoints.randomFeedback}${PrefService.getString(PrefKey.userId)}'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      final responseBody = await response.stream.bytesToString();
+      commonModel = commonModelFromJson(responseBody);
+      //motivationalMessage = commonModel.message??"";
+      update(["home"]);
+    } else {
+      debugPrint(response.reasonPhrase);
+    }
+    update(["home"]);
+  }
+
+  getTodayGratitude() async {
+
+    gratitudeCheckList = [];
+    update(["home"]);
+
+    var headers = {
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.Request(
+        'GET',
+        Uri.parse(
+            '${EndPoints.todayGratitude}${PrefService.getString(PrefKey.userId)}'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      loader.value = false;
+
+      final responseBody = await response.stream.bytesToString();
+      todayGratitude = todayGratitudeFromJson(responseBody);
+      todayGList = todayGratitude.data;
+      if (todayGratitude.data != null) {
+        List.generate(
+          todayGratitude.data!.length,
+          (index) => gratitudeCheckList.add(false),
+        );
+      }
+
+      update(["home"]);
+      loader.value = false;
+    } else {
+      loader.value = false;
+
+      debugPrint(response.reasonPhrase);
+    }
+    loader.value = false;
+
+    update(["home"]);
+  }
+
+  updateTodayData(id, url) async {
+    loader.value=true;
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request =
+        http.Request('POST', Uri.parse('${EndPoints.baseUrl}$url?id=$id'));
+    request.body = json.encode({"isCompleted": true});
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      loader.value=false;
+
+      final responseBody = await response.stream.bytesToString();
+
+      Get.back();
+    } else {
+      loader.value=false;
+
+      final responseBody = await response.stream.bytesToString();
+    }
+    loader.value=false;
+
   }
 }

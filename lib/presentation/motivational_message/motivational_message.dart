@@ -39,27 +39,31 @@ class MotivationalMessageScreen extends StatelessWidget {
                     return ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: motivationalController.motivationalList.length,
+                      itemCount: controller.motivationalList.length,
                       itemBuilder: (context, index) {
                         var data =
-                            motivationalController.motivationalList[index];
+                        controller.motivationalList[index];
                         return Container(
                           margin: const EdgeInsets.only(bottom: 15),
                           decoration: BoxDecoration(
                             image: DecorationImage(
                                 image: NetworkImage(
-                                    "${EndPoints.baseUrlImg}${data["img"]}"),
+                                    data["img"]),
                                 fit: BoxFit.cover),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 30, vertical: 30),
-                            child: Text(
-                              data["title"],
-                              textAlign: TextAlign.center,
-                              style: Style.cormorantGaramondBold(
-                                  fontSize: 20, color: ColorConstant.white),
+                            child: Stack(
+                              children: [
+                                Text(
+                                  data["title"],
+                                  textAlign: TextAlign.center,
+                                  style: Style.cormorantGaramondBold(
+                                      fontSize: 20, color: ColorConstant.white),
+                                ),
+                              ],
                             ),
                           ),
                         );

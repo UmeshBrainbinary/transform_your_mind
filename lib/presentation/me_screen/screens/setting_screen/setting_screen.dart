@@ -11,6 +11,7 @@ import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/auth/login_screen/login_controller.dart';
 import 'package:transform_your_mind/presentation/auth/ragister_screen/register_controller.dart';
+import 'package:transform_your_mind/presentation/downloaded_pods_screen/downloaded_pods_screen.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/setting_controller.dart';
 import 'package:transform_your_mind/presentation/support_screen/support_screen.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
@@ -33,15 +34,16 @@ class _SettingScreenState extends State<SettingScreen> {
 
   @override
   void initState() {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.backGround, // Status bar background color
-      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
-    ));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.backGround, // Status bar background color
+      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+    ));
+
     return Scaffold(
       backgroundColor: themeController.isDarkMode.value
           ? ColorConstant.black
@@ -104,10 +106,16 @@ class _SettingScreenState extends State<SettingScreen> {
                                   Get.toNamed(AppRoutes.personalizationScreen);
                                 } else if (index == 5) {
                                   Get.toNamed(AppRoutes.feedbackScreen);
-                                } else {
+                                } else if (index == 6) {
                                   Navigator.push(context, MaterialPageRoute(
                                     builder: (context) {
                                       return const SupportScreen();
+                                    },
+                                  ));
+                                } else {
+                                  Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) {
+                                      return const DownloadedPodsScreen();
                                     },
                                   ));
                                 }

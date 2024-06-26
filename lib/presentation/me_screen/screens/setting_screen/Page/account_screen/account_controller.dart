@@ -15,10 +15,8 @@ class AccountController extends GetxController {
 
   @override
   void onInit() {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.backGround, // Status bar background color
-      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
-    ));
+
+
     accountData.value = _AccountData.getAccountData;
     super.onInit();
   }

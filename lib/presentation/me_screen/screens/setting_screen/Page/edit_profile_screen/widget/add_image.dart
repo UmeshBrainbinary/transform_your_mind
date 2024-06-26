@@ -58,7 +58,7 @@ class _AddImageEditWidgetState extends State<AddImageEditWidget> {
                               borderRadius: BorderRadius.circular(100),
                               child: Image(
                                 image: NetworkImage(
-                                    "${EndPoints.baseUrlImg}${widget.imageURL}"),
+                                    widget.imageURL??""),
                                 fit: BoxFit.fill,
                               ),
                             )

@@ -8,10 +8,11 @@ import 'package:transform_your_mind/model_class/faq_model.dart';
 import 'package:transform_your_mind/model_class/get_user_model.dart';
 import 'package:transform_your_mind/model_class/guide_model.dart';
 import 'package:transform_your_mind/model_class/privacy_model.dart';
+import 'package:transform_your_mind/model_class/progress_model.dart';
 
 class ProfileController extends GetxController {
   RxString? mail = "".obs;
-  RxString? image = "".obs;
+  RxString image = "".obs;
   RxString? name = "".obs;
 
   @override
@@ -27,10 +28,11 @@ class ProfileController extends GetxController {
   GuideModel guideModel = GuideModel();
   PrivacyModel privacyModel = PrivacyModel();
   List<FaqData>? faqData = [];
+  ProgressModel progressModel = ProgressModel();
 
   getUserDetail() {
     mail?.value = PrefService.getString(PrefKey.email).toString();
-    image?.value = PrefService.getString(PrefKey.userImage).toString();
+    image.value = PrefService.getString(PrefKey.userImage).toString();
     name?.value = PrefService.getString(PrefKey.name).toString();
   }
 
@@ -118,6 +120,35 @@ class ProfileController extends GetxController {
       debugPrint(e.toString());
     }
   }
+  getProgress(String data) async {
+    try {
+      var headers = {
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+      };
+      var request = http.Request(
+        'GET',
+        Uri.parse(
+          "${EndPoints.userProgress}${PrefService.getString(PrefKey.userId)}&$data=true",
+        ),
+      );
+
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        final responseBody = await response.stream.bytesToString();
+
+        progressModel = progressModelFromJson(responseBody);
+        update(["update"]);
+
+      } else {
+        debugPrint(response.reasonPhrase);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    update(["update"]);
+  }
 
   getPrivacy() async {
     try {
@@ -145,4 +176,5 @@ class ProfileController extends GetxController {
       debugPrint(e.toString());
     }
   }
+
 }

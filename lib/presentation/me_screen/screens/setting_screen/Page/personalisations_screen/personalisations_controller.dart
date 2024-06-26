@@ -17,8 +17,9 @@ class PersonalizationController extends GetxController {
     if (currentLanguage == "en-US") {
       english.value = true;
       german.value = false;
-    } else {
-      english.value = false;
+    } else if(currentLanguage==""){
+      english.value = true;
+    }else{
       german.value = true;
     }
     super.onInit();

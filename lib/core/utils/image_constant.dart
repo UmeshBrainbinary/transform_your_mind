@@ -9,8 +9,6 @@ class ImageConstant {
 
 
 
-  ///------------
-
   static String iconDashboardPath = '$iconPath/dashboard';
   static String iconExplorePath = '$iconPath/explore';
   static String iconMePath = '$iconPath/me';
@@ -137,6 +135,7 @@ class ImageConstant {
   static  String podIconQuick = "$iconHomePath/ic_pod_quick.svg";
   static  String sleepIconQuick = "$iconHomePath/ic_sleep_quick.svg";
   static  String homeAffirmation = "$iconHomePath/home_affirmation_icon.svg";
+  static  String breathing = "$iconHomePath/breathing.svg";
   static  String meditationIconQuick = "$iconHomePath/ic_meditation_quick.svg";
   static  String transformPodIcon = "$iconPath/ic_pod_selected.svg";
   static  String ritualIcon = "$iconPath/ic_rituals_selected.svg";
@@ -188,7 +187,7 @@ class ImageConstant {
   static String successTools = "$iconPath/success_tools.svg";
   static String affirmationSuccessTools = "$iconPath/affirmation_success_icon.svg";
   static String success = "$iconPath/Success.svg";
-  static String deleteAffirmation = "$iconPath/delete_affirmation.svg";
+  static String deleteAffirmation = "$iconPath/red_delete_icon.svg";
   static String logOut = "$iconPath/logout.svg";
   static String unSelect = "$iconPath/unselect.svg";
   static String select = "$iconPath/select.svg";
@@ -210,6 +209,17 @@ class ImageConstant {
   static String filterPositive = "$iconPath/filter_positive_moment.svg";
   static String subscriptionCheck = "$iconPath/subscription_check.svg";
   static String noData = "$iconPath/no_data.svg";
+  static String breathPause = "$iconPath/breath_pause.svg";
+  static String breathPlay = "$iconPath/breath_play.svg";
+  static String search = "$iconPath/serach_icon.svg";
+  static String sos = "$iconPath/sos.svg";
+  static String noInternet = "$iconPath/noInternet.png";
+  static String searchNotFound = "$imagePath/serach_not_found.png";
+  static String searchDark = "$imagePath/search_dark.png";
+  static String descriptionImage = "$iconPath/description_image.png";
+  static String welcomeBackImage = "$imagePath/welcome_back_image.png";
+  static String noticeImage = "$imagePath/notice_image.png";
+  static String breathInhale = "$lottie/breath_inhale.json";
   static String shapeAffirmationShare =
       "$imagePath/shape_affirmation_share.svg";
   static String settingArrowRight = "$iconPath/setting_arrow_right.svg";

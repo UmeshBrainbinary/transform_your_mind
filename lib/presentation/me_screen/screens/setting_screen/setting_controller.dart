@@ -93,5 +93,11 @@ class _SettingsData {
           suffixIcon: ImageConstant.settingArrowRight,
           index: 6,
         ),
+    _SettingsData(
+          prefixIcon: ImageConstant.settingsLegals,
+          title: "Downloads",
+          suffixIcon: ImageConstant.settingArrowRight,
+          index: 7,
+        ),
       ];
 }

@@ -17,16 +17,17 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/dash_board_screen/dash_board_screen.dart';
+import 'package:transform_your_mind/presentation/home_screen/home_controller.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 
 
 class HomeMessagePage extends StatefulWidget {
   final bool fromNotification;
+  String? motivationalMessage;
 
-  const HomeMessagePage(
-      {Key? key, this.fromNotification = false})
-      : super(key: key);
+   HomeMessagePage(
+      {super.key, this.fromNotification = false,this.motivationalMessage});
 
   @override
   State<HomeMessagePage> createState() => _HomeMessagePageState();
@@ -45,7 +46,6 @@ class _HomeMessagePageState extends State<HomeMessagePage> {
   Widget build(BuildContext context) {
     return  WillPopScope(
       onWillPop: () async {
-      //  Navigator.of(context).pop(widget.affirmationData?.isBookMarked);
         return true;
       },
       child: Scaffold(
@@ -59,36 +59,25 @@ class _HomeMessagePageState extends State<HomeMessagePage> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  const SizedBox(
-                    height: double.infinity,
-                    width: double.infinity,
-                  ),
+
                   Stack(
                     children: [
                       Image.asset(
-                         ImageConstant.splashLogo,
+                        "assets/images/share_background.png",
                           width: double.infinity,
                           fit: BoxFit.fitWidth,
-                          opacity: const AlwaysStoppedAnimation(.85)),
-                      Positioned.fill(
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-                          child: Container(
-                            color: Colors.black.withOpacity(0.0),
-                          ),
-                        ),
                       ),
                     ],
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(
-                        horizontal: 45, vertical: 20.h),
+                        horizontal: 30, vertical: 20.h),
                     child: AutoSizeText(
-                      "“Calm mind brings inner strength and self-confidence, so that's very important for good health” ".tr,
+                      "“${widget.motivationalMessage}”",
                       textAlign: TextAlign.center,
                       wrapWords: false,
                       maxLines: 6,
-                      style: Style.montserratRegular(fontSize: Dimens.d23),
+                      style: Style.montserratRegular(fontSize: Dimens.d23,color: ColorConstant.white),
                     ),
                   ),
                 ],
@@ -109,7 +98,7 @@ class _HomeMessagePageState extends State<HomeMessagePage> {
                       onPressed: () {
                         if (widget.fromNotification) {
                           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                            return DashBoardScreen();
+                            return const DashBoardScreen();
                           },));
                         } else {
                           Navigator.pop(context,);
@@ -139,7 +128,7 @@ class _HomeMessagePageState extends State<HomeMessagePage> {
                           title: _isBookmarked ? "remove".tr : "save".tr,
                           outLined: true,
                           textStyle: Style.montserratRegular(
-                            fontSize: Dimens.d14,
+                            fontSize: Dimens.d14,color: ColorConstant.white
                           ),
                           onTap: () {
                             if (_isBookmarked) {

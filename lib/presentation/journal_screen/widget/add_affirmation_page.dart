@@ -17,6 +17,7 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/model_class/common_model.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
@@ -94,7 +95,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
 
-    var request = http.MultipartRequest('POST', Uri.parse('${EndPoints.baseUrl}${EndPoints.addAffirmation}'));
+    var request = http.MultipartRequest('POST', Uri.parse(EndPoints.addAffirmation));
     request.fields.addAll({
       'created_by':PrefService.getString(PrefKey.userId),
       'name': titleController.text,
@@ -106,9 +107,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      setState(() {
-        loader = false;
-      });
+      loader = false;
       showSnackBarSuccess(context, "successfullyAffirmation".tr);
       setState(() {});
       Get.back();
@@ -119,8 +118,12 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
       });
       debugPrint(response.reasonPhrase);
     }
+    setState(() {
+      loader = false;
+    });
 
   }
+  CommonModel commonModel = CommonModel();
   updateAffirmation() async {
     setState(() {
       loader = true;
@@ -150,6 +153,9 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
       Get.back();
     }
     else {
+              final responseBody = await response.stream.bytesToString();
+    commonModel = commonModelFromJson(responseBody);
+      showSnackBarError(context, commonModel.message.toString());
       setState(() {
         loader = false;
       });
@@ -160,138 +166,140 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: themeController.isDarkMode.value
-            ? ColorConstant.black
-            : ColorConstant.backGround,
-        appBar: CustomAppBar(
-          title: widget.isEdit! ? "editAffirmation".tr : "addAffirmation".tr,
-          action: !(widget.isFromMyAffirmation)
-              ? Row(children: [
-                  GestureDetector(onTap: () {}, child: Text("skip".tr)),
-                  Dimens.d20.spaceWidth,
-                ])
-              : const SizedBox.shrink(),
-        ),
-        body: Stack(
-          children: [
-            LayoutBuilder(
-              builder: (context, constraints) {
-                return Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Expanded(
-                        child: CustomScrollViewWidget(
-                          child: LayoutContainer(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Dimens.d20.spaceHeight,
-                                CommonTextField(
-                                    hintText: "enterTitle".tr,
-                                    labelText: "title".tr,
-                                    controller: titleController,
-                                    focusNode: titleFocus,
-                                    prefixLottieIcon: ImageConstant.lottieTitle,
-                                    maxLength: maxLength,
+    return Scaffold(
+      backgroundColor: themeController.isDarkMode.value
+          ? ColorConstant.black
+          : ColorConstant.backGround,
+      appBar: CustomAppBar(
+        title: widget.isEdit! ? "editAffirmation".tr : "addAffirmation".tr,
+        action: !(widget.isFromMyAffirmation)
+            ? Row(children: [
+                GestureDetector(onTap: () {}, child: Text("skip".tr)),
+                Dimens.d20.spaceWidth,
+              ])
+            : const SizedBox.shrink(),
+      ),
+      body: Stack(
+        children: [
+          LayoutBuilder(
+            builder: (context, constraints) {
+              return Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(
+                      child: CustomScrollViewWidget(
+                        child: LayoutContainer(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Dimens.d20.spaceHeight,
+                              CommonTextField(
+                                  hintText: "enterTitle".tr,
+                                  labelText: "title".tr,
+                                  controller: titleController,
+                                  focusNode: titleFocus,
+                                  prefixLottieIcon: ImageConstant.lottieTitle,
+                                  maxLength: maxLength,
+                                  inputFormatters: [
+                                    LengthLimitingTextInputFormatter(
+                                        maxLength),
+                                  ],
+                                  validator: (value) {
+                                    if (value == "") {
+                                      return "pleaseEnterTitle".tr;
+                                    }
+                                    return null;
+                                  }),
+                              Dimens.d16.spaceHeight,
+                              Stack(
+                                children: [
+                                  CommonTextField(
+                                    hintText: "enterDescription".tr,
+                                    labelText: "description".tr,
+                                    controller: descController,
+                                    focusNode: descFocus,
+                                    transform: Matrix4.translationValues(
+                                        0, -108.h, 0),
+                                    prefixLottieIcon:
+                                        ImageConstant.lottieDescription,
+                                    maxLines: 15,
+                                    maxLength: maxLengthDesc,
                                     inputFormatters: [
                                       LengthLimitingTextInputFormatter(
-                                          maxLength),
+                                          maxLengthDesc),
                                     ],
                                     validator: (value) {
                                       if (value == "") {
-                                        return "pleaseEnterTitle".tr;
+                                        return "pleaseEnterDescription".tr;
                                       }
                                       return null;
-                                    }),
-                                Dimens.d16.spaceHeight,
-                                Stack(
-                                  children: [
-                                    CommonTextField(
-                                      hintText: "enterDescription".tr,
-                                      labelText: "description".tr,
-                                      controller: descController,
-                                      focusNode: descFocus,
-                                      transform: Matrix4.translationValues(
-                                          0, -108.h, 0),
-                                      prefixLottieIcon:
-                                          ImageConstant.lottieDescription,
-                                      maxLines: 15,
-                                      maxLength: maxLengthDesc,
-                                      inputFormatters: [
-                                        LengthLimitingTextInputFormatter(
-                                            maxLengthDesc),
-                                      ],
-                                      validator: (value) {
-                                        if (value == "") {
-                                          return "pleaseEnterDescription".tr;
-                                        }
-                                        return null;
+                                    },
+                                    onChanged: (value) => currentLength
+                                        .value = descController.text.length,
+                                    keyboardType: TextInputType.multiline,
+                                    textInputAction: TextInputAction.newline,
+                                  ),
+                                ],
+                              ),
+                              Dimens.d30.h.spaceHeight,
+                              Row(
+                                children: [
+                                  !widget.isEdit!?const SizedBox():Expanded(
+                                    child: CommonElevatedButton(
+                                      title: "cancel".tr,
+                                      outLined: true,
+                                      textStyle: Style.montserratRegular(
+                                          color: ColorConstant.textDarkBlue),
+                                      onTap: () {
+                                        setState(() {});
+                                        Get.back();
                                       },
-                                      onChanged: (value) => currentLength
-                                          .value = descController.text.length,
-                                      keyboardType: TextInputType.multiline,
-                                      textInputAction: TextInputAction.newline,
                                     ),
-                                  ],
-                                ),
-                                Dimens.d30.h.spaceHeight,
-                                Row(
-                                  children: [
-                                    !widget.isEdit!?const SizedBox():Expanded(
-                                      child: CommonElevatedButton(
-                                        title: "cancel".tr,
-                                        outLined: true,
-                                        textStyle: Style.montserratRegular(
-                                            color: ColorConstant.textDarkBlue),
-                                        onTap: () {
-                                          setState(() {});
-                                          Get.back();
-                                        },
-                                      ),
-                                    ),
-                                    Dimens.d20.spaceWidth,
-                                    Expanded(
-                                      child: CommonElevatedButton(
-                                        textStyle: Style.montserratRegular(
-                                            fontSize: Dimens.d14,
-                                            color: ColorConstant.white),
-                                        title: widget.isEdit!
-                                            ? "update".tr
-                                            : "save".tr,
-                                        onTap: () {
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            if (widget.isEdit!) {
-                                              updateAffirmation();
-                                            } else {
-                                              addAffirmation();
+                                  ),
+                                  Dimens.d20.spaceWidth,
+                                  Expanded(
+                                    child: CommonElevatedButton(
+                                      textStyle: Style.montserratRegular(
+                                          fontSize: Dimens.d14,
+                                          color: ColorConstant.white),
+                                      title: widget.isEdit!
+                                          ? "update".tr
+                                          : "save".tr,
+                                      onTap: () {
+                                        titleFocus.unfocus();
+                                        descFocus.unfocus();
+                                        if (_formKey.currentState!
+                                            .validate()) {
+                                          if (widget.isEdit!) {
+                                            updateAffirmation();
+                                          } else {
+                                            PrefService.setValue(PrefKey.firstTimeUserAffirmation, true);
 
-                                            }
+                                            addAffirmation();
+
                                           }
-                                        },
-                                      ),
+                                        }
+                                      },
                                     ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                      Dimens.d10.spaceHeight,
-                    ],
-                  ),
-                );
-              },
-            ),
-            loader == true ? commonLoader() : const SizedBox()
-          ],
-        ),
+                    ),
+                    Dimens.d10.spaceHeight,
+                  ],
+                ),
+              );
+            },
+          ),
+          loader == true ? commonLoader() : const SizedBox()
+        ],
       ),
     );
   }

@@ -4,22 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
+import 'package:transform_your_mind/core/service/notification_service.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
-import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
-import 'package:transform_your_mind/model_class/common_model.dart';
-import 'package:transform_your_mind/model_class/gratitude_model.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_controller.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_screen.dart';
+import 'package:transform_your_mind/presentation/breath_screen/breath_screen.dart';
 import 'package:transform_your_mind/presentation/home_screen/home_controller.dart';
 import 'package:transform_your_mind/presentation/home_screen/home_message_page.dart';
 import 'package:transform_your_mind/presentation/home_screen/widgets/home_widget.dart';
@@ -44,35 +41,33 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   late final AnimationController _lottieBgController;
-  String _greeting = "";
   late ScrollController scrollController = ScrollController();
   ValueNotifier<bool> showScrollTop = ValueNotifier(false);
-  int? totalCountCleanse = 0;
-  List gratitudeList = [];
-  GratitudeModel gratitudeModel = GratitudeModel();
-  DateTime todayDate = DateTime.now();
+
   HomeController g = Get.put(HomeController());
   ThemeController themeController = Get.find<ThemeController>();
 
-  List<bool> gratitudeCheckList = [];
-  List<Map<String, dynamic>> quickAccessList = [
-    {"title": "Motivational".tr, "icon": ImageConstant.meditationIconQuick},
-    {"title": "transformPods".tr, "icon": ImageConstant.podIconQuick},
-    {"title": "gratitudeJournal".tr, "icon": ImageConstant.journalIconQuick},
-    {"title": "positiveMoments".tr, "icon": ImageConstant.sleepIconQuick},
-    {"title": "affirmation".tr, "icon": ImageConstant.homeAffirmation},
-  ];
+  bool _refreshButtonColorChanged = false;
+  int _startIndex = 0;
+  int currentDataIndex = 0;
+
+  void refreshList() {
+    setState(() {
+      _refreshButtonColorChanged = true;
+      _startIndex += 5;
+      if (_startIndex >= g.audioData.length) {
+        _startIndex = 0;
+      }
+    });
+  }
 
   @override
   void initState() {
+    _setGreetingBasedOnTime();
+
     getStatusBar();
     _lottieBgController = AnimationController(vsync: this);
-    Future.delayed(
-      const Duration(milliseconds: 100),
-      () {
-        _setGreetingBasedOnTime();
-      },
-    );
+
     scrollController.addListener(() {
       //scroll listener
       double showOffset = 10.0;
@@ -83,9 +78,41 @@ class _HomeScreenState extends State<HomeScreen>
         showScrollTop.value = false;
       }
     });
-    getGratitude();
-    g.getAffirmation();
+    g.getMotivationalMessage();
+    g.getUSer();
+    g.getPodApi();
+    g.getBookMarkedList();
+    g.getTodayGratitude();
+    g.getTodayAffirmation();
+    g.getRecentlyList();
+setState(() {
+
+});
     super.initState();
+  }
+
+  String greeting = "";
+
+  void _setGreetingBasedOnTime() {
+    greeting = _getGreetingBasedOnTime();
+   setState(() {
+
+   });
+  }
+
+  String _getGreetingBasedOnTime() {
+    final now = DateTime.now();
+    final hour = now.hour;
+
+    if (hour >= 0 && hour < 12) {
+      return 'goodMorning';
+    } else if (hour >= 12 && hour < 17) {
+      return 'goodAfternoon';
+    } else if (hour >= 17 && hour < 21) {
+      return 'goodEvening';
+    } else {
+      return 'goodNight';
+    }
   }
 
   getStatusBar() {
@@ -94,89 +121,12 @@ class _HomeScreenState extends State<HomeScreen>
       statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
     ));
   }
-
-  getGratitude() async {
-    var headers = {
-      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
-    };
-    var request = http.Request(
-        'GET',
-        Uri.parse(
-            '${EndPoints.baseUrl}get-gratitude?created_by=${PrefService.getString(PrefKey.userId)}&date=${DateFormat('dd/MM/yyyy').format(todayDate)}'));
-
-    request.headers.addAll(headers);
-
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      gratitudeModel = GratitudeModel();
-      final responseBody = await response.stream.bytesToString();
-      gratitudeModel = gratitudeModelFromJson(responseBody);
-      gratitudeList = gratitudeModel.data!;
-      gratitudeCheckList = [];
-      List.generate(
-        gratitudeList.length,
-            (index) => gratitudeCheckList.add(false),
-      );
-      debugPrint("gratitude Model $gratitudeList");
-      debugPrint("gratitude Model ${gratitudeModel.data}");
-      setState(() {});
-    } else {
-      debugPrint(response.reasonPhrase);
-    }
-  }
-
-  CommonModel commonModel = CommonModel();
-
-  deleteGratitude(id) async {
-    var headers = {
-      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
-    };
-    var request = http.Request(
-        'DELETE', Uri.parse('${EndPoints.baseUrl}delete-gratitude?id=$id'));
-
-    request.headers.addAll(headers);
-
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      final responseBody = await response.stream.bytesToString();
-      commonModel = commonModelFromJson(responseBody);
-      //showSnackBarSuccess(context, commonModel.message ?? "");
-    } else {
-      debugPrint(response.reasonPhrase);
-    }
-  }
-
   @override
   void dispose() {
     _lottieBgController.dispose();
     super.dispose();
   }
-
-  void _setGreetingBasedOnTime() {
-    setState(() {
-      _greeting = _getGreetingBasedOnTime();
-    });
-  }
-
-  String _getGreetingBasedOnTime() {
-    final now = DateTime.now();
-    final hour = now.hour;
-
-    if (hour >= 0 && hour < 12) {
-      return 'goodMorning'.tr;
-    } else if (hour >= 12 && hour < 17) {
-      return 'goodAfternoon'.tr;
-    } else if (hour >= 17 && hour < 21) {
-      return 'goodEvening'.tr;
-    } else {
-      return 'goodNight'.tr;
-    }
-  }
-
   final audioPlayerController = Get.find<NowPlayingController>();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -230,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       //__________________________ top view ____________________
-                      topView(),
+                      topView(controller.getUserModel.data?.motivationalMessage?? "Believe in yourself, even when doubt creeps in. Today's progress is a step towards your dreams."),
                       Dimens.d36.spaceHeight,
                       //___________________________ add share view  ______________
                       Center(
@@ -238,30 +188,13 @@ class _HomeScreenState extends State<HomeScreen>
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            GestureDetector(
-                              onTap: () async {
-                                /* DateTime scheduledDate = DateTime.now().add(const Duration(seconds: 10)); // Schedule for 10 seconds from now
-                                await NotificationService.scheduleNotification(scheduledDate); // Schedule for 10 seconds from now*/
 
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) {
-                                    return const HomeMessagePage();
-                                  },
-                                ));
-                              },
-                              child: SvgPicture.asset(
-                                ImageConstant.icAddRounded,
-                                width: Dimens.d46,
-                                height: Dimens.d46,
-                                color: ColorConstant.themeColor,
-                              ),
-                            ),
-                            Dimens.d15.spaceWidth,
                             GestureDetector(
                               onTap: () {
                                 Navigator.push(context, MaterialPageRoute(
                                   builder: (context) {
-                                    return const HomeMessagePage();
+                                    return  HomeMessagePage(
+                                        motivationalMessage: controller.getUserModel.data?.motivationalMessage??"Believe in yourself, even when doubt creeps in. Today's progress is a step towards your dreams.");
                                   },
                                 ));
                               },
@@ -281,18 +214,21 @@ class _HomeScreenState extends State<HomeScreen>
                         padding:
                             const EdgeInsets.symmetric(horizontal: Dimens.d20),
                         child: Text(
-                          "$_greeting, ${PrefService.getString(PrefKey.name).toString()}",
+                          "${greeting.tr}, ${PrefService.getString(PrefKey.name).toString()}",
                           textAlign: TextAlign.center,
-                          style: Style.cormorantGaramondMedium(fontSize: 22),
+                          style: Style.montserratRegular(fontSize: 22),
                         ),
                       ),
                       Dimens.d16.spaceHeight,
 
-                      //______________________________ TrendingThings _______________________
-                      trendingView(),
+                      //______________________________ Recently Played _______________________
+                      recentlyView(),
 
-                      Dimens.d30.spaceHeight,
-                      customDivider(),
+                      Dimens.d20.spaceHeight,
+
+                      yourGratitude(),
+                      Dimens.d20.spaceHeight,
+                      yourAffirmation(),
                       Dimens.d30.spaceHeight,
 
                       //______________________________ yourDaily Recommendations _______________________
@@ -308,10 +244,11 @@ class _HomeScreenState extends State<HomeScreen>
                       ),
                       Dimens.d20.spaceHeight,
                       recommendationsView(controller),
-                      Dimens.d20.spaceHeight,
+                  /*    Dimens.d20.spaceHeight,
                       GestureDetector(
                         onTap: () async {
-                          await controller.getPodApi();
+                          refreshList();
+                          //  await controller.getPodApi();
                         },
                         child: Container(
                           height: 40,
@@ -329,30 +266,29 @@ class _HomeScreenState extends State<HomeScreen>
                             ),
                           ),
                         ),
-                      ),
+                      ),*/
+
                       Dimens.d20.spaceHeight,
 
-                      yourGratitude(),
-                      Dimens.d20.spaceHeight,
-                      yourAffirmation(),
-                      Dimens.d20.spaceHeight,
-                      /*    yourGratitude(),
-                Dimens.d20.spaceHeight,*/
-                      Padding(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: Dimens.d20),
-                        child: Text(
-                          "yourBookmarks".tr,
+                      controller.bookmarkedModel.data == null
+                          ? const SizedBox()
+                          : controller.bookmarkedModel.data!.isNotEmpty
+                              ? Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: Dimens.d20),
+                                  child: Text(
+                                    "yourBookmarks".tr,
                           textAlign: TextAlign.center,
                           style: Style.montserratRegular(fontSize: Dimens.d22),
                         ),
-                      ),
+                                )
+                              : const SizedBox(),
                       Dimens.d20.spaceHeight,
 
                       bookmarkViw(controller),
-                      Dimens.d30.spaceHeight,
-                      customDivider(),
-                      Dimens.d30.spaceHeight,
+                      controller.bookmarkedModel.data == null
+                          ? const SizedBox()
+                          : Dimens.d30.spaceHeight,
 
                       Padding(
                         padding:
@@ -381,21 +317,21 @@ class _HomeScreenState extends State<HomeScreen>
                                   mainAxisSpacing:
                                       30 // Set the aspect ratio as needed
                                   ),
-                          itemCount: quickAccessList.length,
+                          itemCount: g.quickAccessList.length,
                           // Total number of items
                           itemBuilder: (BuildContext context, int index) {
                             // Generating items for the GridView
                             return GestureDetector(
                               onTap: () {
-                                if (quickAccessList[index]["title"] ==
-                                    "motivational".tr) {
+                                if (g.quickAccessList[index]["title"] ==
+                                    "motivational") {
                                   Navigator.pushNamed(context,
                                           AppRoutes.motivationalMessageScreen)
                                       .then((value) {
                                     setState(() {});
                                   });
-                                } else if (quickAccessList[index]["title"] ==
-                                    "transformPods".tr) {
+                                } else if (g.quickAccessList[index]["title"] ==
+                                    "transformPods") {
                                   Navigator.push(context, MaterialPageRoute(
                                     builder: (context) {
                                       return const TransformPodsScreen();
@@ -405,15 +341,15 @@ class _HomeScreenState extends State<HomeScreen>
                                       setState(() {});
                                     },
                                   );
-                                } else if (quickAccessList[index]["title"] ==
-                                    "gratitudeJournal".tr) {
+                                } else if (g.quickAccessList[index]["title"] ==
+                                    "gratitudeJournal") {
                                   Navigator.pushNamed(
                                           context, AppRoutes.myGratitudePage)
                                       .then((value) {
                                     setState(() {});
                                   });
-                                } else if (quickAccessList[index]["title"] ==
-                                    "positiveMoments".tr) {
+                                } else if (g.quickAccessList[index]["title"] ==
+                                    "positiveMoments") {
                                   Navigator.push(context, MaterialPageRoute(
                                     builder: (context) {
                                       return const PositiveScreen();
@@ -423,10 +359,21 @@ class _HomeScreenState extends State<HomeScreen>
                                       setState(() {});
                                     },
                                   );
-                                } else {
+                                } else if (g.quickAccessList[index]["title"] ==
+                                    "affirmation") {
                                   Navigator.push(context, MaterialPageRoute(
                                     builder: (context) {
                                       return const MyAffirmationPage();
+                                    },
+                                  )).then(
+                                    (value) {
+                                      setState(() {});
+                                    },
+                                  );
+                                } else {
+                                  Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) {
+                                      return  BreathScreen(skip: false,);
                                     },
                                   )).then(
                                     (value) {
@@ -447,13 +394,14 @@ class _HomeScreenState extends State<HomeScreen>
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     SvgPicture.asset(
-                                      quickAccessList[index]["icon"],
+                                      g.quickAccessList[index]["icon"],
                                       height: 24,
                                       width: 24,
+                                      color: ColorConstant.themeColor,
                                     ),
                                     Dimens.d10.spaceHeight,
                                     Text(
-                                      quickAccessList[index]["title"],
+                                      "${g.quickAccessList[index]["title"]}".tr,
                                       // Displaying item index
                                       style:
                                           Style.montserratSemiBold(fontSize: 8),
@@ -465,7 +413,7 @@ class _HomeScreenState extends State<HomeScreen>
                           },
                         ),
                       ),
-                      Dimens.d50.spaceHeight,
+                      Dimens.d110.spaceHeight,
                     ],
                   ),
                 ),
@@ -517,8 +465,7 @@ class _HomeScreenState extends State<HomeScreen>
                               children: [
                                 CommonLoadImage(
                                     borderRadius: 6,
-                                    url:
-                                        "${EndPoints.baseUrlImg}${audioPlayerController.currentImage!}",
+                                    url: audioPlayerController.currentImage!,
                                     width: 47,
                                     height: 47),
                                 Dimens.d12.spaceWidth,
@@ -597,7 +544,7 @@ class _HomeScreenState extends State<HomeScreen>
                       ),
                     ),
                   );
-                })
+                }),
               ],
             );
           },
@@ -613,7 +560,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget topView() {
+  Widget topView(String? motivationalMessage) {
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
@@ -643,7 +590,7 @@ class _HomeScreenState extends State<HomeScreen>
                   );
                 },
                 child: SvgPicture.asset(
-                  height: 25.h,
+                  height: Dimens.d25,
                   ImageConstant.notification,
                 ),
               ),
@@ -664,7 +611,7 @@ class _HomeScreenState extends State<HomeScreen>
               bottom: Dimens.d15,
               child: Center(
                 child: AutoSizeText(
-                  "“Calm mind brings inner strength and self-confidence, so that's very important for good health” ",
+                  "“$motivationalMessage”",
                   textAlign: TextAlign.center,
                   wrapWords: false,
                   maxLines: 4,
@@ -679,17 +626,17 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget trendingView() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SingleChildScrollView(
+  Widget recentlyView() {
+    return GetBuilder<HomeController>(
+      id: "home",
+      builder: (controller) {
+        return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: List.generate(10, (index) {
+            children: List.generate(controller.recentlyModel.data?.length ?? 0,
+                (index) {
               return GestureDetector(
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(
@@ -702,13 +649,14 @@ class _HomeScreenState extends State<HomeScreen>
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(right: 20.0),
-                    child: BookmarkListTile(),
+                    child: RecentlyPlayed(
+                      dataList: controller.recentlyModel.data![index],
+                    ),
                   ));
             }),
           ),
-        ),
-        // Dimens.d80.spaceHeight,
-      ],
+        );
+      },
     );
   }
 
@@ -737,7 +685,7 @@ class _HomeScreenState extends State<HomeScreen>
                   child: Padding(
                     padding: const EdgeInsets.only(right: 20.0),
                     child: BookmarkListTile(
-                      dataList: controller.bookmarkedModel.data?[index],
+                      dataList: controller.bookmarkedModel.data![index],
                     ),
                   ));
             }),
@@ -751,26 +699,32 @@ class _HomeScreenState extends State<HomeScreen>
   Widget recommendationsView(HomeController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
-      child: ListView.builder(
-        shrinkWrap: true,
-        padding: EdgeInsets.zero,
-        physics: const NeverScrollableScrollPhysics(),
-        //itemCount:yourDailyRecommendations.length,
-        itemCount: controller.audioData.length,
-
-        itemBuilder: (context, index) {
-          return InkWell(
-            onTap: () {
-              Get.to(() => NowPlayingScreen(
+      child: controller.audioData.isEmpty
+          ? Center(
+              child: Text(
+                "noPodsRecommendation".tr,
+                style: Style.montserratRegular(fontSize: Dimens.d15),
+              ),
+            )
+          : ListView.builder(
+              shrinkWrap: true,
+              padding: EdgeInsets.zero,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount:  controller.audioData.length ,
+              itemBuilder: (context, index) {
+                return InkWell(
+                  onTap: () {
+                    Get.toNamed(AppRoutes.subscriptionScreen);
+                    /*  Get.to(() => NowPlayingScreen(
                     audioData: controller.audioData[index],
-                  ));
-            },
-            child: Container(
-              height: Dimens.d100.h,
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              margin: const EdgeInsets.symmetric(vertical: 10),
-              decoration: BoxDecoration(
+                  ));*/
+                  },
+                  child: Container(
+                    height: Dimens.d70,
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 6),
+                    margin: const EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
                 color: themeController.isDarkMode.value
                     ? ColorConstant.textfieldFillColor
@@ -791,15 +745,13 @@ class _HomeScreenState extends State<HomeScreen>
                   alignment: Alignment.topRight,
                   children: [
                     CachedNetworkImage(
-                      height: Dimens.d80.h,
-                      width: Dimens.d80,
-                      imageUrl:
-                          "${EndPoints.baseUrlImg}${controller.audioData[index].image}" ??
-                              "",
-                      imageBuilder: (context, imageProvider) => Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.circular(
+                            height: 58,
+                            width: 75,
+                            imageUrl: controller.audioData[index].image ?? "",
+                            imageBuilder: (context, imageProvider) => Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.rectangle,
+                                borderRadius: BorderRadius.circular(
                             10.0,
                           ),
                           image: DecorationImage(
@@ -840,32 +792,27 @@ class _HomeScreenState extends State<HomeScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                          const Spacer(),
+                          Text(
                       controller.audioData[index].name ?? "",
-                      style: Style.montserratRegular(
-                        fontSize: 8,
-                      ),
+                            style: Style.cormorantGaramondBold(
+                              fontSize: 20,
+                            ),
                     ),
-                    Dimens.d7.spaceHeight,
-                    SizedBox(
+                          const Spacer(),
+                          SizedBox(
                       width: Dimens.d200,
                       child: Text(
                         controller.audioData[index].description ?? "",
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
-                        style: Style.montserratRegular(
-                          fontSize: 15,
-                        ),
+                              style: Style.gothamLight(
+                                fontSize: 12,
+                              ),
                       ),
                     ),
-                    Dimens.d7.spaceHeight,
-                    Text(
-                      controller.audioData[index].expertName ?? "",
-                      style: Style.montserratRegular(
-                        fontSize: 8,
-                      ),
-                    ),
-                  ],
+                          const Spacer(),
+                        ],
                 )
               ]),
             ),
@@ -906,7 +853,7 @@ class _HomeScreenState extends State<HomeScreen>
                     spreadRadius: 0, // Specify the spread radius
                   )
                 ]),
-            child: (g.affirmationList ?? []).isEmpty
+            child: (g.todayAList ?? []).isEmpty
                 ? Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20.0, vertical: 10.0),
@@ -914,7 +861,7 @@ class _HomeScreenState extends State<HomeScreen>
                       children: [
                         Dimens.d10.spaceHeight,
                         Text(
-                          "WellDone".tr,
+                          g.todayAffirmation.message??"noDataFound".tr,
                           textAlign: TextAlign.center,
                           style: Style.montserratRegular(
                               color: themeController.isDarkMode.isTrue
@@ -925,11 +872,12 @@ class _HomeScreenState extends State<HomeScreen>
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
                           child: CommonElevatedButton(
+                            height: Dimens.d46,
                             title: "addNew".tr,
                             onTap: () {
                               Get.toNamed(AppRoutes.myAffirmationPage)!.then(
                                 (value) async {
-                                  await g.getAffirmation();
+                                  await g.getTodayAffirmation();
                                   setState(() {
                                   });
                                 },
@@ -947,39 +895,55 @@ class _HomeScreenState extends State<HomeScreen>
                         shrinkWrap: true,
                         padding: EdgeInsets.zero,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: g.affirmationList!.length,
+                        itemCount: g.todayAList?.length ?? 0,
                         itemBuilder: (context, index) {
                           return InkWell(
                             onTap: () async {
-                              await g.deleteAffirmation(
-                                  g.affirmationList![index].id);
+                              await g.updateTodayData(g.todayAList![index].id,
+                                  "update-affirmation");
                               g.affirmationCheckList[index] = true;
-                              Future.delayed(const Duration(milliseconds: 800))
+                              Future.delayed(const Duration(milliseconds: 500))
                                   .then(
                                 (value) async {
-                                  g.affirmationList!.removeAt(index);
-                                  await g.getAffirmation();
+                                  g.todayAList!.removeAt(index);
+
+                                  await g.getTodayAffirmation();
                                   setState(() {});
                                 },
                               );
                               setState(() {});
                             },
                             child: ListTile(
-                              title: Text(
-                                g.affirmationList?[index].name ?? "",
+                              subtitle: Text(
+                                g.todayAList?[index].description ?? "",
+                                maxLines: 3,
                                 style: Style.montserratRegular(),
                               ),
-                              trailing: g.affirmationCheckList[index] == true
-                                  ? Container(
-                                      height: 40,
-                                      width: 40,
+                              title: Text(
+                                g.todayAList?[index].name ?? "",
+                                style: Style.montserratSemiBold(),
+                              ),
+                              trailing: g.affirmationCheckList.isNotEmpty
+                                  ? g.affirmationCheckList[index]
+                                      ? Container(
+                                          height: 40,
+                                          width: 40,
                                       decoration: const BoxDecoration(
                                           shape: BoxShape.circle,
                                           color: ColorConstant.themeColor),
                                       child: Center(
                                           child: SvgPicture.asset(
                                               ImageConstant.checkBox)),
-                                    )
+                                        )
+                                      : Container(
+                                          height: 40,
+                                          width: 40,
+                                          decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                  color: ColorConstant
+                                                      .themeColor)),
+                                        )
                                   : Container(
                                       height: 40,
                                       width: 40,
@@ -999,12 +963,14 @@ class _HomeScreenState extends State<HomeScreen>
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: CommonElevatedButton(
+                          height: Dimens.d46,
                           title: "addNew".tr,
                           onTap: () {
                             Get.toNamed(AppRoutes.myAffirmationPage)!.then(
-                              (value) {
+                              (value) async {
+                                await g.getTodayAffirmation();
+
                                 setState(() {
-                                  g.getAffirmation();
                                 });
                               },
                             );
@@ -1014,7 +980,7 @@ class _HomeScreenState extends State<HomeScreen>
                       Dimens.d20.spaceHeight,
                     ],
                   ),
-          )
+          ),
         ],
       ),
     );
@@ -1051,7 +1017,7 @@ class _HomeScreenState extends State<HomeScreen>
                     spreadRadius: 0, // Specify the spread radius
                   )
                 ]),
-            child: gratitudeList.isEmpty
+            child: (g.todayGList ?? []).isEmpty
                 ? Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20.0, vertical: 10.0),
@@ -1059,7 +1025,7 @@ class _HomeScreenState extends State<HomeScreen>
                       children: [
                         Dimens.d10.spaceHeight,
                         Text(
-                          "wellDone".tr,
+                          g.todayGratitude.message??"noDataFound".tr,
                           textAlign: TextAlign.center,
                           style: Style.montserratRegular(
                               color: themeController.isDarkMode.value
@@ -1070,11 +1036,12 @@ class _HomeScreenState extends State<HomeScreen>
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
                           child: CommonElevatedButton(
+                            height: Dimens.d46,
                             title: "addNew".tr,
                             onTap: () {
                               Get.toNamed(AppRoutes.myGratitudePage)!.then(
                                 (value) async {
-                                  await getGratitude();
+                                  await g.getTodayGratitude();
                                   setState(() {});
                                 },
                               );
@@ -1091,41 +1058,62 @@ class _HomeScreenState extends State<HomeScreen>
                         shrinkWrap: true,
                         padding: EdgeInsets.zero,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: gratitudeList.length,
+                        itemCount: g.todayGList?.length ?? 0,
                         itemBuilder: (context, index) {
                           return InkWell(
-                            onTap: () {
+                            onTap: () async {
+                              await g.updateTodayData(
+                                  g.todayGList![index].id,
+                                  "update-gratitude");
+                              g.gratitudeCheckList[index] = true;
+                              Future.delayed(
+                                  const Duration(milliseconds: 500))
+                                  .then(
+                                    (value)  async {
+
+
+                                  g.todayGList!.removeAt(index);
+
+                                  await g.getTodayGratitude();
+                                  setState(() {});
+                                },
+                              );
                               setState(() {
-                                gratitudeCheckList[index] = true;
-                                Future.delayed(
-                                        const Duration(milliseconds: 800))
-                                    .then(
-                                  (value) async {
-                                    await deleteGratitude(
-                                        gratitudeList[index].id);
-                                    gratitudeList.removeAt(index);
-                                    await getGratitude();
-                                    setState(() {});
-                                  },
-                                );
+
+
                               });
                             },
                             child: ListTile(
-                              title: Text(
-                                gratitudeList[index].name,
+                              subtitle: Text(
+                                g.todayGList?[index].description ?? "",
+                                maxLines: 3,
                                 style: Style.montserratRegular(),
                               ),
-                              trailing: gratitudeCheckList[index] == true
-                                  ? Container(
-                                      height: 40,
-                                      width: 40,
-                                      decoration: const BoxDecoration(
+                              title: Text(
+                                g.todayGList?[index].name ?? "",
+                                style: Style.montserratSemiBold(),
+                              ),
+                              trailing: g.gratitudeCheckList.isNotEmpty
+                                  ? g.gratitudeCheckList[index] == true
+                                      ? Container(
+                                          height: 40,
+                                          width: 40,
+                                          decoration: const BoxDecoration(
                                           shape: BoxShape.circle,
                                           color: ColorConstant.themeColor),
                                       child: Center(
                                           child: SvgPicture.asset(
                                               ImageConstant.checkBox)),
-                                    )
+                                        )
+                                      : Container(
+                                          height: 40,
+                                          width: 40,
+                                          decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                  color: ColorConstant
+                                                      .themeColor)),
+                                        )
                                   : Container(
                                       height: 40,
                                       width: 40,
@@ -1145,13 +1133,13 @@ class _HomeScreenState extends State<HomeScreen>
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: CommonElevatedButton(
+                          height: Dimens.d46,
                           title: "addNew".tr,
                           onTap: () {
                             Get.toNamed(AppRoutes.myGratitudePage)!.then(
-                              (value) {
-                                setState(() async {
-                                  await getGratitude();
-                                });
+                              (value) async {
+                                await g.getTodayGratitude();
+                                setState(() {});
                               },
                             );
                           },

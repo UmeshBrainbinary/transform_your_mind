@@ -2,16 +2,16 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
-import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/model_class/common_model.dart';
+import 'package:transform_your_mind/model_class/get_user_model.dart';
 import 'package:transform_your_mind/model_class/login_model.dart';
+import 'package:transform_your_mind/presentation/intro_screen/select_your_affirmation_focus_page.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 
 class LoginController extends GetxController {
@@ -26,10 +26,6 @@ class LoginController extends GetxController {
 
   @override
   void onInit() {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.backGround, // Status bar background color
-      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
-    ));
     if (PrefService.getBool(PrefKey.isRemember) == true) {
       emailController.text = PrefService.getString(PrefKey.email);
       passwordController.text = PrefService.getString(PrefKey.password);
@@ -76,11 +72,13 @@ class LoginController extends GetxController {
         await PrefService.setValue(PrefKey.password, passwordController.text);
         loader.value = false;
 
-        Get.toNamed(AppRoutes.dashBoardScreen);
+        // Get.toNamed(AppRoutes.dashBoardScreen);
+
         final responseBody = await response.stream.bytesToString();
 
         loginModel = loginModelFromJson(responseBody);
-        update();
+        // if(loginModel.data.)
+
         debugPrint("loginModel $loginModel");
         debugPrint("token ${loginModel.meta!.token}");
         debugPrint("userId ${loginModel.data!.id}");
@@ -89,6 +87,7 @@ class LoginController extends GetxController {
         PrefService.setValue(PrefKey.userId, loginModel.data!.id);
         PrefService.setValue(PrefKey.name,loginModel.data?.name??"");
         PrefService.setValue(PrefKey.userImage,loginModel.data?.userProfile??"");
+        await getUSer(context);
       } else if (response.statusCode == 400) {
         loader.value = false;
         final responseBody = await response.stream.bytesToString();
@@ -105,5 +104,49 @@ class LoginController extends GetxController {
 
       debugPrint(e.toString());
     }
+  }
+
+  GetUserModel getUserModel = GetUserModel();
+
+  getUSer(BuildContext context) async {
+    try {
+      var headers = {
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+      };
+      var request = http.Request(
+        'GET',
+        Uri.parse(
+          "${EndPoints.getUser}${PrefService.getString(PrefKey.userId)}",
+        ),
+      );
+
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        final responseBody = await response.stream.bytesToString();
+
+        getUserModel = getUserModelFromJson(responseBody);
+        if ((getUserModel.data?.focuses ?? []).isEmpty) {
+          Get.offAllNamed(AppRoutes.selectYourFocusPage);
+        } else if ((getUserModel.data?.affirmations ?? []).isEmpty) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+          return const SelectYourAffirmationFocusPage(isFromMe: false);
+        },));
+        } else {
+          Get.offAllNamed(AppRoutes.dashBoardScreen);
+        }
+        update();
+        await PrefService.setValue(
+            PrefKey.userImage, getUserModel.data?.userProfile ?? "");
+      } else {
+        debugPrint(response.reasonPhrase);
+      }
+    } catch (e) {
+      loader.value = false;
+
+      debugPrint(e.toString());
+    }
+    update(["home"]);
   }
 }

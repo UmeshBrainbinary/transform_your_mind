@@ -29,10 +29,7 @@ class _FreeTrialPageState extends State<FreeTrialPage>
   @override
   void initState() {
     super.initState();
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.white, // Status bar background color
-      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
-    ));
+
     _lottieBgController = AnimationController(vsync: this);
     _lottieFWController = AnimationController(vsync: this);
   }
@@ -46,6 +43,10 @@ class _FreeTrialPageState extends State<FreeTrialPage>
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.white, // Status bar background color
+      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+    ));
     return SafeArea(
       child: Scaffold(
         body: Stack(

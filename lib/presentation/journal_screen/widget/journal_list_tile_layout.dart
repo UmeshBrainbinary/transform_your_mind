@@ -12,7 +12,7 @@ import 'package:transform_your_mind/theme/theme_controller.dart';
 
 class JournalListTileLayout extends StatelessWidget {
   final EdgeInsets margin;
-  final String title;
+  final String title,description;
   final DateTime createdDate;
   final String image;
   final bool showDelete;
@@ -20,221 +20,122 @@ class JournalListTileLayout extends StatelessWidget {
   final VoidCallback? onEditTapCallback;
 
   const JournalListTileLayout({
-    Key? key,
+    super.key,
     required this.margin,
     required this.title,
     required this.createdDate,
     required this.image,
+    required this.description,
     this.showDelete = false,
     this.onDeleteTapCallback,
     this.onEditTapCallback,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     ThemeController themeController = Get.find<ThemeController>();
 
     return Container(
-      height: Dimens.d70.h,
+
       margin: const EdgeInsets.only(bottom: 20.0),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 14),
       decoration: BoxDecoration(
         color: themeController.isDarkMode.value
             ? ColorConstant.textfieldFillColor
             : ColorConstant.white,
         borderRadius: Dimens.d16.radiusAll,
       ),
-      child: Row(
+      child:       Column(mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
-          Dimens.d16.spaceWidth,
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Dimens.d1.spaceHeight,
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: Style.montserratRegular(
-                          fontSize: Dimens.d18,
-                          color: themeController.isDarkMode.value
-                              ? ColorConstant.white
-                              : ColorConstant.black,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    Dimens.d16.spaceWidth,
-
-                      GestureDetector(
-                        onTap: () => onEditTapCallback?.call(),
-                        child: SvgPicture.asset(
-                          ImageConstant.editTools,
-                          color: themeController.isDarkMode.value
-                              ? ColorConstant.white
-                              : ColorConstant.black),
-                      ),
-                    Dimens.d10.spaceWidth,
-
-                    GestureDetector(
-                        onTap: () => onDeleteTapCallback?.call(),
-                        child: SvgPicture.asset(
-                          ImageConstant.delete,
-                        color: themeController.isDarkMode.value
-                            ? ColorConstant.white
-                            : ColorConstant.black,
-                      ),
-                      ),
-                    Dimens.d15.spaceWidth,
-                  ],
+          Dimens.d1.spaceHeight,
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  title,
+                  style: Style.montserratRegular(
+                    fontSize: Dimens.d18,
+                    color: themeController.isDarkMode.value
+                        ? ColorConstant.white
+                        : ColorConstant.black,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: "createdOn".tr,
-                        style: Style.montserratRegular(
-                          fontSize: Dimens.d12,
-                          color: themeController.isDarkMode.value
-                              ? ColorConstant.white
-                              : ColorConstant.black,
-                        ),
-                      ),
-                      const WidgetSpan(
-                        child: Padding(padding: EdgeInsets.all(Dimens.d4)),
-                      ),
-                      TextSpan(
-                        text: DateTimeUtils.formatDate(
-                          createdDate,
-                          formatDateType: FormatDateType.ddMMMyyyy,
-                        ),
-                        style: Style.montserratRegular(
-                          color: ColorConstant.themeColor,
-                          fontSize: Dimens.d12,
-                        ),
-                      ),
-                    ],
+              ),
+              Dimens.d16.spaceWidth,
+
+              GestureDetector(
+                onTap: () => onEditTapCallback?.call(),
+                child: SvgPicture.asset(
+                    ImageConstant.editTools,
+                    color: themeController.isDarkMode.value
+                        ? ColorConstant.white
+                        : ColorConstant.black),
+              ),
+              Dimens.d10.spaceWidth,
+
+              GestureDetector(
+                onTap: () => onDeleteTapCallback?.call(),
+                child: SvgPicture.asset(
+                  ImageConstant.delete,
+                  color: themeController.isDarkMode.value
+                      ? ColorConstant.white
+                      : ColorConstant.black,
+                ),
+              ),
+
+            ],
+          ),
+          RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: "createdOn".tr,
+                  style: Style.montserratRegular(
+                    fontSize: Dimens.d12,
+                    color: themeController.isDarkMode.value
+                        ? ColorConstant.white
+                        : ColorConstant.black,
                   ),
                 ),
-                Dimens.d5.spaceHeight,
+                const WidgetSpan(
+                  child: Padding(padding: EdgeInsets.all(Dimens.d4)),
+                ),
+                TextSpan(
+                  text: DateTimeUtils.formatDate(
+                    createdDate,
+                    formatDateType: FormatDateType.ddMMMyyyy,
+                  ),
+                  style: Style.montserratRegular(
+                    color: ColorConstant.themeColor,
+                    fontSize: Dimens.d12,
+                  ),
+                ),
               ],
             ),
-          )
+          ),
+          Dimens.d5.spaceHeight,
+          Text(
+            description,
+            style: Style.montserratRegular(
+              fontSize: Dimens.d11,
+              color: themeController.isDarkMode.value
+                  ? ColorConstant.white
+                  : ColorConstant.black,
+            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
         ],
       ),
     );
   }
 }
 
-class JournalDraftListTileLayout extends StatelessWidget {
-  final EdgeInsets margin;
-  final String title;
-  final String createdDate;
-  final String image;
-  final bool showDelete;
-  final VoidCallback? onDeleteTapCallback;
 
-  const JournalDraftListTileLayout({
-    Key? key,
-    required this.margin,
-    required this.title,
-    required this.createdDate,
-    required this.image,
-    this.showDelete = false,
-    this.onDeleteTapCallback,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    ThemeController themeController = Get.find<ThemeController>();
-    return Container(
-      width: Dimens.d335,
-      margin: const EdgeInsets.only(right: 20.0),
-      decoration: BoxDecoration(
-        color: themeController.isDarkMode.value
-            ? ColorConstant.textfieldFillColor
-            : ColorConstant.white,
-        borderRadius: Dimens.d10.radiusAll,
-      ),
-      child: Row(
-        children: [
-          Dimens.d16.spaceWidth,
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Dimens.d1.spaceHeight,
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: Style.montserratRegular(
-                          fontSize: Dimens.d18,
-                          color: themeController.isDarkMode.value
-                              ? ColorConstant.white
-                              : ColorConstant.black,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    Dimens.d16.spaceWidth,
-                    GestureDetector(
-                      onTap: () => onDeleteTapCallback?.call(),
-                      child: SvgPicture.asset(
-                        ImageConstant.editTools,
-                         color: ColorConstant.black,
-                      ),
-                    ),
-
-                    Dimens.d15.spaceWidth,
-                  ],
-                ),
-                RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: "createdOn".tr,
-                        style: Style.montserratRegular(
-                          fontSize: Dimens.d12,
-                          color: themeController.isDarkMode.value
-                              ? ColorConstant.white
-                              : ColorConstant.black,
-                        ),
-                      ),
-                      const WidgetSpan(
-                        child: Padding(padding: EdgeInsets.all(Dimens.d4)),
-                      ),
-                      TextSpan(
-                        text: createdDate.isNotEmpty
-                            ? DateTimeUtils.formatDate(
-                                DateTime.parse(createdDate),
-                                formatDateType: FormatDateType.ddMMMyyyy,
-                              )
-                            : "29 May 2024",
-                        style: Style.montserratRegular(
-                          color: ColorConstant.themeColor,
-                          fontSize: Dimens.d12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Dimens.d5.spaceHeight,
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }
-}
 
 class JournalListTileNotesLayout extends StatelessWidget {
   final EdgeInsets margin;

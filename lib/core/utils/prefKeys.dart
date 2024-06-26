@@ -17,4 +17,8 @@ class PrefKey{
   static const String addGratitude = "addGratitude";
   static const String name = "name";
   static const String userImage = "userImage";
+  static const String firstTimeUserAffirmation = "firstTimeUserAffirmation";
+  static const String firstTimeUserGratitude = "firstTimeUserGratitude";
+  static const String podsSave = "podsSave";
+  static const String subscribed = "subscribed";
 }

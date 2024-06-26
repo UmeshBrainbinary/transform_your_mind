@@ -161,7 +161,7 @@ class _CommonTextFieldState extends State<CommonTextField>
       validator: widget.validator,
       enabled: widget.enabled,
       style: widget.textStyle ??
-          Style.montserratMedium(fontSize: Dimens.d12, color: themeController.isDarkMode.value ? ColorConstant.white : ColorConstant.black),
+          Style.montserratMedium(fontSize: Dimens.d14, color: themeController.isDarkMode.value ? ColorConstant.white : ColorConstant.black),
 
       decoration: InputDecoration(
           alignLabelWithHint: true,
@@ -193,7 +193,7 @@ class _CommonTextFieldState extends State<CommonTextField>
         prefix: widget.prefix,
         suffix: widget.suffix,
 
-        errorStyle: Style.montserratRegular(color: ColorConstant.colorFF0000, fontSize: Dimens.d12),
+        errorStyle: Style.montserratRegular(color: ColorConstant.colorFF0000, fontSize: 12),
         errorMaxLines: 2,
 
       ),

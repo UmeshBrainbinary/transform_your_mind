@@ -29,19 +29,20 @@ class Data {
   String? name;
   String? email;
   String? password;
-  String? userProfile;
-  dynamic mobile;
-  dynamic countryCode;
+  dynamic userProfile;
   int? gender;
   int? userType;
   dynamic otp;
   List<String>? focuses;
+  List<String>? affirmations;
   DateTime? dob;
+  List<String?>? bookmarkedPods;
+  bool? isSubscribed;
+  List<RatedPod>? ratedPods;
   DateTime? createdAt;
   DateTime? updatedAt;
   int? v;
-  List<String>? bookmarkedPods;
-  List<RatedPod>? ratedPods;
+  String? motivationalMessage;
 
   Data({
     this.id,
@@ -49,18 +50,19 @@ class Data {
     this.email,
     this.password,
     this.userProfile,
-    this.mobile,
-    this.countryCode,
     this.gender,
     this.userType,
     this.otp,
     this.focuses,
+    this.affirmations,
     this.dob,
+    this.bookmarkedPods,
+    this.isSubscribed,
+    this.ratedPods,
     this.createdAt,
     this.updatedAt,
     this.v,
-    this.bookmarkedPods,
-    this.ratedPods,
+    this.motivationalMessage,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -69,24 +71,20 @@ class Data {
     email: json["email"],
     password: json["password"],
     userProfile: json["user_profile"],
-    mobile: json["mobile"],
-    countryCode: json["country_code"],
     gender: json["gender"],
     userType: json["user_type"],
-        otp: json["otp"],
-        focuses: json["focuses"] == null ? [] : List<String>.from(json["focuses"]!.map((x) => x)),
+    otp: json["otp"],
+    focuses: json["focuses"] == null ? [] : List<String>.from(json["focuses"]!.map((x) => x)),
+    affirmations: json["affirmations"] == null ? [] : List<String>.from(json["affirmations"]!.map((x) => x)),
     dob: json["dob"] == null ? null : DateTime.parse(json["dob"]),
+    bookmarkedPods: json["bookmarkedPods"] == null ? [] : List<String?>.from(json["bookmarkedPods"]!.map((x) => x)),
+    isSubscribed: json["isSubscribed"],
+    ratedPods: json["ratedPods"] == null ? [] : List<RatedPod>.from(json["ratedPods"]!.map((x) => RatedPod.fromJson(x))),
     createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
     updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
     v: json["__v"],
-        bookmarkedPods: json["bookmarkedPods"] == null
-            ? []
-            : List<String>.from(json["bookmarkedPods"]!.map((x) => x)),
-        ratedPods: json["ratedPods"] == null
-            ? []
-            : List<RatedPod>.from(
-                json["ratedPods"]!.map((x) => RatedPod.fromJson(x))),
-      );
+    motivationalMessage: json["motivationalMessage"],
+  );
 
   Map<String, dynamic> toJson() => {
     "_id": id,
@@ -94,23 +92,20 @@ class Data {
     "email": email,
     "password": password,
     "user_profile": userProfile,
-    "mobile": mobile,
-    "country_code": countryCode,
     "gender": gender,
     "user_type": userType,
-        "otp": otp,
-        "focuses": focuses == null ? [] : List<dynamic>.from(focuses!.map((x) => x)),
+    "otp": otp,
+    "affirmations": affirmations,
+    "focuses": focuses == null ? [] : List<dynamic>.from(focuses!.map((x) => x)),
     "dob": dob?.toIso8601String(),
+    "bookmarkedPods": bookmarkedPods == null ? [] : List<dynamic>.from(bookmarkedPods!.map((x) => x)),
+    "isSubscribed": isSubscribed,
+    "ratedPods": ratedPods == null ? [] : List<dynamic>.from(ratedPods!.map((x) => x.toJson())),
     "createdAt": createdAt?.toIso8601String(),
     "updatedAt": updatedAt?.toIso8601String(),
+    "motivationalMessage": motivationalMessage,
     "__v": v,
-        "bookmarkedPods": bookmarkedPods == null
-            ? []
-            : List<dynamic>.from(bookmarkedPods!.map((x) => x)),
-        "ratedPods": ratedPods == null
-            ? []
-            : List<dynamic>.from(ratedPods!.map((x) => x.toJson())),
-      };
+  };
 }
 
 class RatedPod {
@@ -127,16 +122,16 @@ class RatedPod {
   });
 
   factory RatedPod.fromJson(Map<String, dynamic> json) => RatedPod(
-        podId: json["podId"],
-        note: json["note"],
-        star: json["star"],
-        id: json["_id"],
-      );
+    podId: json["podId"],
+    note: json["note"],
+    star: json["star"],
+    id: json["_id"],
+  );
 
   Map<String, dynamic> toJson() => {
-        "podId": podId,
-        "note": note,
-        "star": star,
-        "_id": id,
-      };
+    "podId": podId,
+    "note": note,
+    "star": star,
+    "_id": id,
+  };
 }

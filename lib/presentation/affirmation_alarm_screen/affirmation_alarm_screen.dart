@@ -271,7 +271,7 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
                 Row(
                   children: [
                     Text(
-                      "New Alarms".tr,
+                      "newAlarms".tr,
                       style: Style.cormorantGaramondBold(fontSize: 20),
                     ),
                     const Spacer(),
@@ -337,7 +337,7 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
                     ),
                   ],
                 ),
-                Dimens.d26.spaceHeight,
+                Dimens.d20.spaceHeight,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -369,7 +369,9 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
                     },
                   ),
                 ),
-                Dimens.d26.spaceHeight,
+
+                Dimens.d20.spaceHeight,
+
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: Dimens.d70.h),
                   child: CommonElevatedButton(

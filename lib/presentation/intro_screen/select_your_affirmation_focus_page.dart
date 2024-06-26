@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -136,6 +137,10 @@ class _SelectYourAffirmationFocusPageState
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.white, // Status bar background color
+      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+    ));
     return SafeArea(
       child: Scaffold(
         appBar: CustomAppBar(
@@ -158,18 +163,18 @@ class _SelectYourAffirmationFocusPageState
                 )),
             Column(
               children: [
-                Dimens.d40.spaceHeight,
+                Dimens.d30.spaceHeight,
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: AutoSizeText(
                     "chooseMinInterest".tr,
                     textAlign: TextAlign.center,
-                    style: Style.montserratRegular(
+                    style: Style.gothamLight(
                         color: themeController.isDarkMode.value
                             ? ColorConstant.white
                             : ColorConstant.black,
-                        fontSize: Dimens.d14,
-                        fontWeight: FontWeight.w600),
+                        fontSize: Dimens.d15,
+                        fontWeight: FontWeight.w500),
                   ),
                 ),
                 Dimens.d24.spaceHeight,
@@ -248,14 +253,11 @@ class _SelectYourAffirmationFocusPageState
                   primaryBtnCallBack: () {
                     //getAffirmation();
                     if (selectedTagNames.length >= 5) {
-                      Navigator.pushReplacement(context, MaterialPageRoute(
-                        builder: (context) {
-                          return const FreeTrialPage();
-                        },
-                      ));
+                      setFocuses();
+
                     } else {
                       showSnackBarError(
-                          context, 'Please choose more than 5 affirmation');
+                          context, 'Please5Affirmation'.tr);
                     }
                   },
                 )
@@ -266,4 +268,44 @@ class _SelectYourAffirmationFocusPageState
       ),
     );
   }
+  setFocuses() async {
+    setState(() {
+      loader = true;
+    });
+    try {
+      var headers = {
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+      };
+      var request = http.MultipartRequest('POST', Uri.parse('${EndPoints.baseUrl}${EndPoints.updateUser}${PrefService.getString(PrefKey.userId)}'));
+      request.fields.addAll({
+        'affirmations': jsonEncode(selectedTagNames)
+      });
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        await PrefService.setValue(PrefKey.affirmation, true);
+        setState(() {
+          loader = false;
+        });
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context) {
+            return const FreeTrialPage();
+          },
+        ));
+      } else {
+        setState(() {
+          loader = false;
+        });
+        debugPrint(response.reasonPhrase);
+      }
+    } catch (e) {
+      setState(() {
+        loader = false;
+      });
+      debugPrint(e.toString());
+    }
+  }
+
 }

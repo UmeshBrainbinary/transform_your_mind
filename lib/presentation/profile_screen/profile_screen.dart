@@ -1,11 +1,10 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:pie_chart/pie_chart.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
-import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
@@ -18,6 +17,7 @@ import 'package:transform_your_mind/presentation/profile_screen/profile_controll
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/app_confirmation_dialog.dart';
+import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -31,8 +31,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   ProfileController profileController = Get.put(ProfileController());
   ThemeController themeController = Get.find<ThemeController>();
   bool progressCall = false;
-  List dList = ["Monthly", "Annually", "Weekly"];
-  String? selectedMonth = "Monthly";
+  List dList = ["monthly", "annually", "weekly"];
+  String? selectedMonth = "monthly".tr;
   final audioPlayerController = Get.find<NowPlayingController>();
 
   @override
@@ -41,6 +41,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     profileController.getFaq();
     profileController.getGuide();
     profileController.getPrivacy();
+    profileController.getProgress("isLastMonth");
     super.initState();
   }
   @override
@@ -94,19 +95,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
           SingleChildScrollView(
             child: Column(
               children: [
-                Container(
-                  margin: const EdgeInsets.only(top: Dimens.d30),
-                  height: Dimens.d120,
-                  width: Dimens.d120,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image:  DecorationImage(
-                          image: NetworkImage(
-                              "${EndPoints.baseUrlImg}${profileController.image?.value}" ??
-                                  ""),fit: BoxFit.cover),
-                      border: Border.all(
-                          color: ColorConstant.themeColor, width: 2)),
-                ),
+                profileController.image.isEmpty
+                    ? Container(
+                        height: Dimens.d120,
+                        width: Dimens.d120,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                        ),
+                        child: SvgPicture.asset(ImageConstant.userProfile),
+                      )
+                    : ClipRRect(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(80)),
+                        child: CommonLoadImage(
+                          url: profileController.image.value,
+                          height: Dimens.d120,
+                          width: Dimens.d120,
+                        ),
+                      ),
                 Dimens.d12.spaceHeight,
                 Text(
                   profileController.name?.value ??
@@ -155,47 +161,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       alignment: Alignment.centerLeft,
                       child: Row(
                         children: [
-                          SizedBox(
-                            height: Dimens.d140,
-                            width: Dimens.d140,
-                            child: PieChart(
-                              dataMap: const {
-                                "Total Hours Spent": 50.0,
-                                "journal entries": 20.0,
-                                "Completed Affirmations": 30.0,
-                              },
-                              animationDuration:
-                                  const Duration(milliseconds: 800),
-                              colorList: const [
-                                ColorConstant.colorBFD0D4,
-                                ColorConstant.themeColor,
-                                ColorConstant.color3D5459,
-                                ColorConstant.colorBDDBE5,
-                              ],
-                              initialAngleInDegree: 20,
-                              chartType: ChartType.ring,
-                              ringStrokeWidth: 40,
-                              legendOptions: LegendOptions(
-                                showLegendsInRow: false,
-                                // legendPosition: LegendPosition.right,
-                                showLegends: false,
-                                legendShape: BoxShape.circle,
-                                legendTextStyle: Style.montserratRegular(
-                                  fontSize: Dimens.d9,
+                          GetBuilder<ProfileController>(
+                            id: "update",
+                            builder: (controller) {
+                              return SizedBox(
+                                height: Dimens.d140,
+                                width: Dimens.d140,
+                                child: PieChart(
+                                  PieChartData(
+                                    sections: getSections(
+                                      gValue: controller
+                                          .progressModel.data?.gratitudeCount?.toDouble()??20.0,
+                                      aValue: controller
+                                          .progressModel.data?.affirmationCount?.toDouble()??20.0,
+                                      pValue: controller
+                                          .progressModel.data?.positiveMomentCount?.toDouble()??20.0,
+                                    ),
+                                    centerSpaceRadius: 40,
+                                    sectionsSpace: 0,
+                                  ),
                                 ),
-                              ),
-                              chartValuesOptions: ChartValuesOptions(
-                                  showChartValueBackground: false,
-                                  showChartValues: false,
-                                  chartValueStyle: Style.montserratRegular(
-                                      fontSize: Dimens.d15,
-                                      color: ColorConstant.black),
-                                  showChartValuesInPercentage: false,
-                                  showChartValuesOutside: false,
-                                  decimalPlaces: 0,
-                                  chartValueBackgroundColor:
-                                      Colors.transparent),
-                            ),
+                              );
+                            },
                           ),
                           Dimens.d40.spaceWidth,
                           Stack(
@@ -223,7 +210,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             MainAxisAlignment.spaceEvenly,
                                         children: [
                                           Text(
-                                            selectedMonth!,
+                                            selectedMonth!.tr,
                                             style: Style.montserratRegular(
                                                 fontSize: 12,
                                                 color: ColorConstant.white),
@@ -249,7 +236,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ),
                                       Dimens.d6.spaceWidth,
                                       Text(
-                                        "Completed Gratitude".tr,
+                                        "completedGratitude".tr,
                                         style: Style.montserratRegular(
                                           fontSize: Dimens.d9,
                                         ),
@@ -269,7 +256,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ),
                                       Dimens.d6.spaceWidth,
                                       Text(
-                                        "journalEntries".tr,
+                                        "positiveMoment".tr,
                                         style: Style.montserratRegular(
                                           fontSize: Dimens.d9,
                                         ),
@@ -316,7 +303,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               spreadRadius: 2.0,
                                             ),
                                           ],
-                                          color: const Color(0xffF3FDFD),
+                                          color: themeController.isDarkMode.isTrue?ColorConstant.themeColor: const Color(0xffF3FDFD),
                                           borderRadius:
                                               BorderRadius.circular(10)),
                                       child: ListView.builder(
@@ -330,14 +317,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 const EdgeInsets.symmetric(
                                                     horizontal: 10,
                                                     vertical: 5),
-                                            child: GestureDetector( onTap: () {
-                                              setState(() {
-                                                selectedMonth =  dList[index];
+                                            child: GestureDetector(
+                                              onTap: () async {
+                                                String selectedData =
+                                                    "${dList[index]}".tr == "monthly".tr
+                                                        ? "isLastMonth"
+                                                        : "${dList[index]}".tr ==
+                                                                "weekly".tr
+                                                            ? "isLastWeek"
+                                                            : "isLastYear";
+                                                await profileController
+                                                    .getProgress(selectedData);
+
+                                                setState(() {
+                                                  selectedMonth =  dList[index];
                                                 progressCall = false;
                                               });
-                                            },
+                                              },
                                               child: Text(
-                                                dList[index],
+                                                "${dList[index]}".tr,
                                                 style: Style.montserratRegular(
                                                     fontSize: 10),
                                               ),
@@ -470,7 +468,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             return GestureDetector(
               onTap: () {
-                Get.to(() => NowPlayingScreen());
+                Get.to(() =>  NowPlayingScreen());
               },
               child: Align(alignment: Alignment.bottomCenter,
                 child: Container(
@@ -571,5 +569,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
     );
+  }
+
+  List<PieChartSectionData> getSections(
+      {double? gValue, double? pValue, double? aValue}) {
+    return [
+      PieChartSectionData(
+        color: ColorConstant.colorBFD0D4,
+
+        value: gValue==0.0?20.0:gValue,
+        title: '$gValue',
+        radius: 40,
+        titleStyle:  Style.montserratBold(
+            fontSize: 12,
+            color: ColorConstant.black),
+      ),
+      PieChartSectionData(
+        color: ColorConstant.color3D5459,
+        value: pValue,
+        title: '$pValue',
+        radius: 40,
+        titleStyle:  Style.montserratBold(
+    fontSize: 12,
+    color: ColorConstant.black),
+      ),
+      PieChartSectionData(
+        color: ColorConstant.colorBDDBE5,
+        value: aValue,
+        title: '$aValue',
+        radius: 40,
+        titleStyle:  Style.montserratBold(
+            fontSize: 12,
+            color: ColorConstant.black),
+      ),
+    ];
   }
 }

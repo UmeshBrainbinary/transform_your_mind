@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
+import 'package:transform_your_mind/model_class/common_model.dart';
 import 'package:transform_your_mind/model_class/forgot_password_model.dart';
 import 'package:transform_your_mind/model_class/resend_model.dart';
 import 'package:transform_your_mind/model_class/verify_model.dart';
@@ -27,9 +29,9 @@ class ForgotController extends GetxController {
   VerifyModel verifyModel = VerifyModel();
   ForgotPassword forgotPassword = ForgotPassword();
 
-  onTapOtpVerify(BuildContext context,token) async {
+  onTapOtpVerify(BuildContext context, token, ValueNotifier<XFile?>? imagePath) async {
     loader.value = true;
-    await otpVerify(context,token);
+    await otpVerify(context, token, imagePath!);
     loader.value = false;
   }
 
@@ -122,18 +124,30 @@ ResendModel resendModel = ResendModel();
       debugPrint(e.toString());
     }
   }
+  CommonModel commonModel = CommonModel();
 
-  otpVerify(BuildContext context, token) async {
+  otpVerify(BuildContext context, token,ValueNotifier<XFile?> imagePath) async {
     try {
-      var headers = {'Content-Type': 'application/json'};
-      var request = http.Request(
-          'POST', Uri.parse('${EndPoints.baseUrl}${EndPoints.verifyOtp}'));
-      request.body = json.encode({
-       // "email": PrefService.getString(PrefKey.email),
-        "otp": otpController.text,
-        "isSignUp": true,
-        "token":tokenVerify!.isNotEmpty?tokenVerify:token
-      });
+     var headers = {'Content-Type': 'application/json'};
+      var request = http.MultipartRequest('POST', Uri.parse('${EndPoints.baseUrl}${EndPoints.verifyOtp}'));
+      if (imagePath.value!=null) {
+        request.files.add(
+            await http.MultipartFile.fromPath('user_profile',imagePath.value!.path));
+        request.fields.addAll({
+          "otp": otpController.text,
+          "isSignUp": "true",
+          "token": tokenVerify!.isNotEmpty ? tokenVerify : token
+        });
+
+      } else {
+        request.fields.addAll({
+          "otp": otpController.text,
+          "isSignUp": "true",
+          "token": tokenVerify!.isNotEmpty ? tokenVerify : token
+        });
+
+      }
+
       request.headers.addAll(headers);
 
       http.StreamedResponse response = await request.send();
@@ -146,17 +160,22 @@ ResendModel resendModel = ResendModel();
         verifyModel = verifyModelFromJson(responseBody);
         update();
         PrefService.setValue(PrefKey.token, verifyModel.token);
+        PrefService.setValue(PrefKey.isLoginOrRegister, true);
+        PrefService.setValue(PrefKey.firstTimeUserAffirmation, false);
+        PrefService.setValue(PrefKey.firstTimeUserGratitude, false);
         PrefService.setValue(PrefKey.userId, verifyModel.user!.id);
         PrefService.setValue(PrefKey.name,verifyModel.user?.name??"");
         PrefService.setValue(PrefKey.userImage,verifyModel.user?.userProfile??"");
         showSnackBarSuccess(context, verifyModel.message ?? "");
 
-        Get.offAllNamed(AppRoutes.selectYourFocusPage);
+        Get.offAllNamed(AppRoutes.welcomeScreen);
 
         debugPrint(await response.stream.bytesToString());
       } else {
+        final responseBody = await response.stream.bytesToString();
+        commonModel = commonModelFromJson(responseBody);
         loader.value = false;
-        showSnackBarError(context, "Incorrect OTP");
+        showSnackBarError(context,commonModel.message??"");
       }
     } catch (e) {
       loader.value = false;

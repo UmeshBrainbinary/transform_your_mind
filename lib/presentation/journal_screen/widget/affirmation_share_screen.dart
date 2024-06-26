@@ -73,7 +73,7 @@ class _AffirmationShareScreenState extends State<AffirmationShareScreen> {
                           children: [
                             Dimens.d115.spaceHeight,
                             Text(
-                              widget.title!,
+                              widget.title??"",
                               style: Style.cormorantGaramondBold(
                                   color: ColorConstant.black,
                                   fontSize: Dimens.d28),
@@ -83,7 +83,7 @@ class _AffirmationShareScreenState extends State<AffirmationShareScreen> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 23),
                               child: Text(
-                                widget.des!,
+                                widget.des??"",
                                 textAlign: TextAlign.center,
                                 style: Style.montserratRegular(
                                     fontSize: Dimens.d14,

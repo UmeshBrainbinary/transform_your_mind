@@ -32,80 +32,78 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
   @override
   void initState() {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.backGround, // Status bar background color
-      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
-    ));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: themeController.isDarkMode.value
-            ? ColorConstant.black
-            : ColorConstant.backGround,
-        appBar: CustomAppBar(
-          title: "subscription".tr,
-          showBack: widget.skip! ? false : true,
-          action: widget.skip!
-              ? Row(children: [
-                  GestureDetector(
-                      onTap: () async {
-                        await PrefService.setValue(PrefKey.subscription, true);
-                        Navigator.pushReplacement(context, MaterialPageRoute(
-                          builder: (context) {
-                            return  AddGratitudePage(
-                              registerUser: true,
-                              isFromMyGratitude: true,
-                              isSaved: true,
-                            );
-                          },
-                        ));
-                      },
-                      child: Text(
-                        "skip".tr,
-                        style: Style.montserratRegular(
-                            color: themeController.isDarkMode.value
-                                ? ColorConstant.white
-                                : ColorConstant.black),
-                      )),
-                  Dimens.d20.spaceWidth,
-                ])
-              : const SizedBox(),
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Dimens.d22.spaceHeight,
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Dimens.d45),
-                child: Text(
-                  "chooseSub".tr,
-                  textAlign: TextAlign.center,
-                  style: Style.montserratRegular(
-                    fontSize: Dimens.d13,
-                  ),
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.backGround, // Status bar background color
+      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+    ));
+    return Scaffold(
+      backgroundColor: themeController.isDarkMode.value
+          ? ColorConstant.black
+          : ColorConstant.backGround,
+      appBar: CustomAppBar(
+        title: "subscription".tr,
+        showBack: widget.skip! ? false : true,
+        action: widget.skip!
+            ? Row(children: [
+                GestureDetector(
+                    onTap: () async {
+                      await PrefService.setValue(PrefKey.subscription, true);
+                      Navigator.pushReplacement(context, MaterialPageRoute(
+                        builder: (context) {
+                          return  AddGratitudePage(
+                            registerUser: true,
+                            isFromMyGratitude: true,
+                            isSaved: true,
+                          );
+                        },
+                      ));
+                    },
+                    child: Text(
+                      "skip".tr,
+                      style: Style.montserratRegular(
+                          color: themeController.isDarkMode.value
+                              ? ColorConstant.white
+                              : ColorConstant.black),
+                    )),
+                Dimens.d20.spaceWidth,
+              ])
+            : const SizedBox(),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Dimens.d22.spaceHeight,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Dimens.d45),
+              child: Text(
+                "chooseSub".tr,
+                textAlign: TextAlign.center,
+                style: Style.montserratRegular(
+                  fontSize: Dimens.d13,
                 ),
               ),
-              Dimens.d20.spaceHeight,
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Dimens.d45),
-                child: Text(
-                  "subscribeNow".tr,
-                  textAlign: TextAlign.center,
-                  style: Style.montserratRegular(
-                    color: ColorConstant.themeColor,
-                    fontSize: Dimens.d12,
-                  ),
+            ),
+            Dimens.d20.spaceHeight,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Dimens.d45),
+              child: Text(
+                "subscribeNow".tr,
+                textAlign: TextAlign.center,
+                style: Style.montserratRegular(
+                  color: ColorConstant.themeColor,
+                  fontSize: Dimens.d12,
                 ),
               ),
-              Dimens.d20.spaceHeight,
-              selectPlan()
-            ],
-          ),
+            ),
+            Dimens.d20.spaceHeight,
+            selectPlan()
+          ],
         ),
       ),
     );

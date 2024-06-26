@@ -2,18 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:transform_your_mind/core/common_widget/layout_container.dart';
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/model_class/get_pods_model.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/audio_content_controller.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_screen.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
+import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
-import 'package:transform_your_mind/widgets/custom_image_view.dart';
 
 class TransformPodsScreen extends StatefulWidget {
   const TransformPodsScreen({super.key});
@@ -29,21 +32,25 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
   late AnimationController _controller;
   int ritualAddedCount = 0;
   late ScrollController scrollController = ScrollController();
-  final AudioContentController exploreController = Get.put(AudioContentController());
+  final AudioContentController audioContentController = Get.put(AudioContentController());
   TextEditingController searchController = TextEditingController();
   FocusNode searchFocusNode = FocusNode();
   List? _filteredBookmarks;
   ValueNotifier selectedCategory = ValueNotifier(null);
-  List categoryList = [
+  ValueNotifier<bool> showScrollTop = ValueNotifier(false);
+  ThemeController themeController = Get.find<ThemeController>();
+/*  List categoryList = [
     {"title": "Self-Esteem"},
     {"title": "Health"},
     {"title": "Sleep"},
     {"title": "Self Love"},
     {"title": "Hobbies"},
-  ];
+  ];*/
 
   @override
   void initState() {
+   searchController.clear();
+   audioContentController.getPodsData();
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: ColorConstant.white, // Status bar background color
       statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
@@ -56,8 +63,18 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
     if (isTutorialVideoVisible.value) {
       _controller.forward();
     }
+   scrollController.addListener(() {
+     double showOffset = 10.0;
+
+     if (scrollController.offset > showOffset) {
+       showScrollTop.value = true;
+     } else {
+       showScrollTop.value = false;
+     }
+   });
     super.initState();
   }
+
 
   searchBookmarks(String query, List bookmarks) {
     return bookmarks
@@ -79,139 +96,194 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                LayoutContainer(
-                  horizontal: 0,
-                  child: Row(
-                    children: [
-                      _buildCategoryDropDown(context),
-                      Dimens.d10.spaceWidth,
-                      Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 5),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25),
-                            boxShadow: [
-                              BoxShadow(
-                                color:
-                                    ColorConstant.colorBFD0D4.withOpacity(0.5),
-                                // Shadow color with transparency
-                                blurRadius: 8.0,
-                                // Blur the shadow for a smoother effect
-                                spreadRadius: 0.5, // Spread the shadow slightly
-                              ),
-                            ],
-                          ),
-                          child: CommonTextField(
-                            hintText: "search".tr,
-                            controller: searchController,
-                            focusNode: searchFocusNode,
-                            prefixLottieIcon: ImageConstant.lottieSearch,
-                            textInputAction: TextInputAction.done,
-                            onChanged: (value) {
-                              setState(() {
-                                _filteredBookmarks = searchBookmarks(
-                                    value, exploreController.audioData);
-                              });
-                            },
-                          ),
-                        ),
-                      ),
+                Dimens.d30.h.spaceHeight,
+                Container(
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color:
+                        ColorConstant.themeColor.withOpacity(0.1),
+                        blurRadius: Dimens.d8,
+                      )
                     ],
                   ),
+                  child: CommonTextField(
+                      onChanged: (value) {
+                        setState(() {
+                          audioContentController.audioData =
+                              audioContentController.filterList(value,
+                                  audioContentController.audioData);
+                        });
+                      },
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: SvgPicture.asset(ImageConstant.search),
+                      ),
+                      suffixIcon: searchController.text.isEmpty?const SizedBox(): Padding(
+                        padding: const EdgeInsets.all(14.0),
+                        child: GestureDetector(
+                        onTap: () {
+                          searchController.clear();
+                          setState(() {
+                            audioContentController.getPodApi();
+                          });
+                        },child: SvgPicture.asset(ImageConstant.close)),
+                      ),
+                      hintText: "search".tr,
+                      textStyle:
+                      Style.montserratRegular(fontSize: 12),
+                      controller: searchController,
+                      focusNode: searchFocusNode),
                 ),
-                Dimens.d10.spaceHeight,
+                // const TransFormRitualsButton(),
+                Dimens.d20.h.spaceHeight,
                 Expanded(
-                    child: _filteredBookmarks != null
-                        ? GridView.builder(
-                            controller: scrollController,
-                            padding: const EdgeInsets.only(bottom: Dimens.d20),
-                            physics: const BouncingScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              childAspectRatio: 0.71,
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 20,
-                              mainAxisSpacing: 20,
-                            ),
-                            itemCount: _filteredBookmarks?.length ?? 0,
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  _onTileClick(index, context);
-                                },
-                                child: Column(
-                                  children: [
-                                    Stack(
-                                      alignment: Alignment.topRight,
-                                      children: [
-                                        CustomImageView(
-                                          imagePath: _filteredBookmarks![index]
-                                              ['image'],
-                                          height: Dimens.d135,
-                                          radius: BorderRadius.circular(10),
-                                          fit: BoxFit.cover,
-                                        ),
-                                        Align(
-                                          alignment: Alignment.topRight,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                right: 10, top: 10),
-                                            child: SvgPicture.asset(
-                                                ImageConstant.play),
+                    child: GetBuilder<AudioContentController>(
+                      id: 'update',
+                      builder: (controller) {
+                        return Expanded(
+                          child: controller.audioData.isNotEmpty
+                              ? GridView.builder(
+                              controller: scrollController,
+                              padding: const EdgeInsets.only(
+                                  bottom: Dimens.d20),
+                              physics: const BouncingScrollPhysics(),
+                              gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                childAspectRatio: 0.78,
+                                crossAxisCount: 2,
+                                // Number of columns
+                                crossAxisSpacing: 20,
+                                // Spacing between columns
+                                mainAxisSpacing:
+                                20, // Spacing between rows
+                              ),
+                              itemCount: controller.audioData.length,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    searchFocusNode.unfocus();
+                                    _onTileClick(
+                                      context: context,
+                                      index: index,
+                                      audioContent:
+                                      controller.audioData[index],
+                                    );
+                                  },
+                                  child: Column(
+                                    children: [
+                                      Stack(
+                                        alignment: Alignment.topRight,
+                                        children: [
+                                          CommonLoadImage(
+                                            borderRadius: 10,
+                                            url: controller
+                                                .audioData[index]
+                                                .image ??
+                                                "",
+                                            width: Dimens.d156,
+                                            height: Dimens.d113,
                                           ),
-                                        )
-                                      ],
-                                    ),
-                                    Dimens.d10.spaceHeight,
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "Meditation",
-                                          style: Style.montserratMedium(
-                                            fontSize: Dimens.d12,
+                                          Align(
+                                            alignment:
+                                            Alignment.topRight,
+                                            child: Padding(
+                                              padding:
+                                              const EdgeInsets
+                                                  .only(
+                                                  right: 10,
+                                                  top: 10),
+                                              child: SvgPicture.asset(
+                                                  ImageConstant.play),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      Dimens.d10.spaceHeight,
+                                      Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment
+                                            .spaceBetween,
+                                        children: [
+                                          SizedBox(
+                                            width: 90,
+                                            child: Text(
+                                              controller
+                                                  .audioData[index]
+                                                  .name
+                                                  .toString(),
+                                              // "Motivational",
+                                              style: Style
+                                                  .montserratMedium(
+                                                fontSize: Dimens.d12,
+                                              ),
+                                              overflow: TextOverflow
+                                                  .ellipsis,
+                                              maxLines: 1,
+                                            ),
                                           ),
-                                        ),
-                                        const CircleAvatar(
-                                          radius: 2,
-                                          backgroundColor:
-                                              ColorConstant.colorD9D9D9,
-                                        ),
-                                        Text(
-                                          "12:00" ?? '',
-                                          style: Style.montserratMedium(
-                                            fontSize: Dimens.d12,
+                                          const CircleAvatar(
+                                            radius: 2,
+                                            backgroundColor:
+                                            ColorConstant
+                                                .colorD9D9D9,
                                           ),
-                                        ),
-                                        SvgPicture.asset(
-                                            ImageConstant.downloadCircle,
-                                            height: Dimens.d25,
-                                            width: Dimens.d25)
-                                      ],
-                                    ),
-                                    Dimens.d7.spaceHeight,
-                                    Text(
-                                      _filteredBookmarks![index]['title'],
-                                      maxLines: Dimens.d2.toInt(),
-                                      style: Style.montserratMedium(
-                                          fontSize: Dimens.d14),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
-                                ),
-                              );
-                            })
-                        :SizedBox()),
+                                          Row(
+                                            children: [
+                                              SvgPicture.asset(
+                                                ImageConstant.rating,
+                                                color: ColorConstant
+                                                    .colorFFC700,
+                                                height: 10,
+                                                width: 10,
+                                              ),
+                                              Text(
+                                                "${controller
+                                                    .audioData[index].rating
+                                                    .toString()}.0" ?? '',
+                                                style: Style
+                                                    .montserratMedium(
+                                                  fontSize:
+                                                  Dimens.d12,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+
+                                        ],
+                                      ),
+                                      Dimens.d7.spaceHeight,
+                                      Text(
+                                        controller.audioData[index]
+                                            .description
+                                            .toString(),
+                                        maxLines: Dimens.d2.toInt(),
+                                        style: Style.montserratMedium(
+                                            fontSize: Dimens.d14),
+                                        overflow:
+                                        TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              })
+                              : Padding(
+                            padding: const EdgeInsets.only(bottom: Dimens.d130),
+                            child: Image.asset(themeController.isDarkMode.isTrue?ImageConstant.searchDark:ImageConstant.searchNotFound,height: 245,width: 288,),
+                          ),
+                        );
+                      },
+                    )),
+
               ],
             ),
           )),
     );
   }
 
-  void _onTileClick(int index, BuildContext context) {
+  void _onTileClick({int? index, BuildContext? context, required AudioData audioContent}) {
     showModalBottomSheet(
-      context: context,
+      context: context!,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
@@ -221,101 +293,10 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
         ),
       ),
       builder: (BuildContext context) {
-        return NowPlayingScreen();
+        return NowPlayingScreen( audioData: audioContent,);
       },
     );
   }
 
-  Widget _buildCategoryDropDown(BuildContext context) {
-    return Expanded(
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: ColorConstant.lightGrey),
-          borderRadius: BorderRadius.circular(30),
-          color: ColorConstant.themeColor,
-        ),
-        child: DropdownButton(
-          value: selectedCategory.value,
-          borderRadius: BorderRadius.circular(30),
-          onChanged: (value) {
-            {
-              setState(() {
-                selectedCategory.value = value;
-              });
-            }
-          },
-          selectedItemBuilder: (_) {
-            return categoryList.map<Widget>((item) {
-              bool isSelected =
-                  selectedCategory.value?["title"] == item["title"];
-              return Padding(
-                padding: const EdgeInsets.only(left: 18, top: 17),
-                child: Text(
-                  item["title"] ?? '',
-                  style: Style.montserratRegular(
-                    fontSize: Dimens.d14,
-                    color: Colors.white,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                  ),
-                ),
-              );
-            }).toList();
-          },
-          style: Style.montserratRegular(
-            fontSize: Dimens.d14,
-            color: Colors.white,
-            fontWeight: FontWeight.w500,
-          ),
-          hint: Padding(
-            padding: const EdgeInsets.only(left: 15),
-            child: Text(
-              "selectCategory".tr,
-              style: Style.montserratRegular(
-                  fontSize: Dimens.d14, color: Colors.white),
-            ),
-          ),
-          icon: Padding(
-            padding: const EdgeInsets.only(right: 15),
-            child: SvgPicture.asset(
-              ImageConstant.icDownArrow,
-              height: 20,
-              color: Colors.white,
-            ),
-          ),
-          elevation: 16,
-          itemHeight: 50,
-          menuMaxHeight: 350.h,
-          underline: const SizedBox(
-            height: 0,
-          ),
-          isExpanded: true,
-          dropdownColor: ColorConstant.colorECF1F3,
-          items: categoryList.map<DropdownMenuItem>((item) {
-            bool isSelected = selectedCategory.value?["title"] == item["title"];
-            return DropdownMenuItem(
-              value: item,
-              child: AnimatedBuilder(
-                animation: selectedCategory,
-                builder: (BuildContext context, Widget? child) {
-                  return child!;
-                },
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Text(
-                    item["title"] ?? '',
-                    style: Style.montserratRegular(
-                      fontSize: Dimens.d14,
-                      color: ColorConstant.textGreyColor,
-                      fontWeight:
-                          isSelected ? FontWeight.bold : FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ),
-            );
-          }).toList(),
-        ),
-      ),
-    );
-  }
+
 }

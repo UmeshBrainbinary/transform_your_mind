@@ -117,11 +117,9 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
 
   @override
   void initState() {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.white, // Status bar background color
-      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
-    ));
+
     getFocuses();
+    setState(() {});
     super.initState();
   }
 
@@ -138,12 +136,16 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.white, // Status bar background color
+      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+    ));
     return SafeArea(
       child: Stack(
         children: [
           Scaffold(
-            appBar: const CustomAppBar(showBack: false,
-              title: "Select Your Focus",
+            appBar:  CustomAppBar(showBack: false,
+              title: "selectYourFocus".tr,
             ),
             body: Stack(
               alignment: Alignment.bottomCenter,
@@ -164,17 +166,20 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
                   padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
                   child: Column(
                     children: [
-                      Dimens.d40.spaceHeight,
-                      Text(
-                        "What areas in your life do you want to focus on and to receive daily doses of positivity? Select minimum 5",
-                        style: Style.montserratRegular(
-                            color: themeController.isDarkMode.value
-                                ? ColorConstant.white
-                                : ColorConstant.black,
-                            fontSize: Dimens.d14,
-                            fontWeight: FontWeight.w600),
+                      Dimens.d30.spaceHeight,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Text(
+                          "chooseMinInterest".tr,textAlign: TextAlign.center,
+                          style: Style.gothamLight(
+                              color: themeController.isDarkMode.value
+                                  ? ColorConstant.white
+                                  : ColorConstant.black,
+                              fontSize: Dimens.d15,
+                              fontWeight: FontWeight.w500),
+                        ),
                       ),
-                      Dimens.d24.spaceHeight,
+                      Dimens.d18.spaceHeight,
                       Expanded(
                         child: ListView(
                           shrinkWrap: true,
@@ -204,7 +209,7 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
                             setFocuses();
                           } else {
                             showSnackBarError(
-                                context, 'Please add more than 5 Focuses');
+                                context, 'Please5Focuses'.tr);
                           }
                         },
                       ),

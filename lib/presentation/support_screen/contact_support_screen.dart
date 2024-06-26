@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:transform_your_mind/core/app_export.dart';
+import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
@@ -26,117 +27,97 @@ class ContactSupportScreen extends StatelessWidget {
           ? ColorConstant.black
           : ColorConstant.backGround,
       appBar: CustomAppBar(title: "contactSupport".tr),
-      body: SingleChildScrollView(
-        child: Stack(
-          children: [
-            Align(
-                alignment: Alignment.topRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: Dimens.d100),
-                  child: SvgPicture.asset(ImageConstant.profile1),
-                )),
-            Align(
-                alignment: Alignment.bottomLeft,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: Dimens.d300),
-                  child: SvgPicture.asset(ImageConstant.profile2),
-                )),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Stack(
+              children: [
+                Align(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: Dimens.d100),
+                      child: SvgPicture.asset(ImageConstant.profile1),
+                    )),
+                Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: Dimens.d300),
+                      child: SvgPicture.asset(ImageConstant.profile2),
+                    )),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        Dimens.d15.spaceHeight,
+                        CommonTextField(
+                            labelText: "name".tr,
+                            hintText: "enterName".tr,
+                            focusNode: supportController.nameFocus,
+                            controller: supportController.name,
+                            validator: (value) {
+                              if (value == "") {
+                                return "theNameFieldIsRequired".tr;
+                              }
+                              return null;
+                            }),
+                        Dimens.d24.h.spaceHeight,
+                        CommonTextField(
+                          labelText: "email".tr,
+                          hintText: "enterEmail".tr,
+                          focusNode: supportController.emailFocus,
+                          prefixIcon: Image.asset(ImageConstant.email,
+                              scale: Dimens.d4),
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (value) {
+                            if (value == "") {
+                              return "theEmailFieldIsRequired".tr;
+                            } else if (!isValidEmail(value, isRequired: true)) {
+                              return "pleaseEnterValidEmail".tr;
+                            }
+                            return null;
+                          },
+                          controller: supportController.email,
+                        ),
+                        Dimens.d24.h.spaceHeight,
+                        CommonTextField(
+                            labelText: "comment".tr,
+                            hintText: "enterComment".tr,
+                            controller: supportController.comment,
+                            focusNode: supportController.commentFocus,
+                            maxLines: 7,
+                            validator: (value) {
+                              if (value == "") {
+                                return "theCommentFiledRequired".tr;
+                              }
+                              return null;
+                            }),
+                        Dimens.d50.spaceHeight,
+                        CommonElevatedButton(
+                          title: "submit".tr,
+                          onTap: () async {
+                            FocusScope.of(context).unfocus();
 
-            Padding(
-                padding:  const EdgeInsets.symmetric(horizontal: 30.0),
-                child: Form(key: _formKey,
-                  child:Column(
-                children: [
-                Dimens.d15.spaceHeight,
-                CommonTextField(
-                labelText: "name".tr,
-                hintText: "enterName".tr,
-                focusNode: supportController.nameFocus,
-                controller: supportController.name,
-
-                    validator: (value) {
-            if (value == "") {
-            return "theNameFieldIsRequired".tr;
-            }
-            return null;
-            }),
-            Dimens.d24.h.spaceHeight,
-            CommonTextField(
-              labelText: "email".tr,
-              hintText: "enterEmail".tr,
-              focusNode: supportController.emailFocus,
-              prefixIcon: Image.asset(
-                  ImageConstant.email,
-                  scale: Dimens.d4),
-              keyboardType: TextInputType.emailAddress,
-              validator: (value) {
-                if (value == "") {
-                  return "theEmailFieldIsRequired".tr;
-                } else if (!isValidEmail(value,
-                    isRequired: true)) {
-                  return "pleaseEnterValidEmail".tr;
-                }
-                return null;
-              },
-              controller: supportController.email,),
-            Dimens.d24.h.spaceHeight,
-            CommonTextField(
-                labelText: "comment".tr,
-                hintText: "enterComment".tr,
-                controller: supportController.comment,
-                focusNode: supportController.commentFocus,
-                maxLines: 7,
-                validator: (value) {
-                  if (value == "") {
-                    return "theCommentFiledRequired".tr;
-                  }
-                  return null;
-                }),
-            Dimens.d50.spaceHeight,
-            CommonElevatedButton(
-              title: "submit".tr,
-              onTap: () async {
-                FocusScope.of(context).unfocus();
-
-                if (_formKey.currentState!
-                    .validate()) {
-
-                }
-              },
+                            if (_formKey.currentState!.validate()) {
+                              await supportController.addSupport(context: context);
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
-            /*    ListView.builder(
-                                  itemCount: supportController.contactSupport.length,
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemBuilder: (context, index) {
-                    var data = supportController.contactSupport[index];
-                    return Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 14),
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 18, vertical: 21),
-                      decoration: BoxDecoration(
-                        color: ColorConstant.white,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        children: [
-                          SvgPicture.asset(data["img"]),
-                          Dimens.d16.spaceWidth,
-                          Text(data["title"],style: Style.montserratRegular(fontSize: 16),)
-                        ],
-                      ),
-                    );
-                                  },
-                                )*/
-          ],
-        ),
+          ),
+          Obx(
+            () => supportController.loader.isTrue
+                ? commonLoader()
+                : const SizedBox(),
+          )
+        ],
       ),
-    ),]
-    ,
-    )
-    ,
-    )
-    ,
     );
   }
 }

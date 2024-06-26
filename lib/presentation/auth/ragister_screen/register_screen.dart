@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:flutter_svg/svg.dart';
@@ -22,14 +23,14 @@ import 'package:transform_your_mind/widgets/custom_appbar.dart';
 import 'package:transform_your_mind/widgets/image_picker_action_sheet.dart';
 
 class RegisterScreen extends StatefulWidget {
-  RegisterScreen({super.key});
+  const RegisterScreen({super.key});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   RegisterController registerController = Get.put(RegisterController());
 
@@ -37,6 +38,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.backGround,
+      statusBarIconBrightness: Brightness.dark,
+    ));
     return SafeArea(
       child: Scaffold(
         backgroundColor: themeController.isDarkMode.value
@@ -314,7 +319,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     : const SizedBox(),
                               ),
                               Dimens.d80.h.spaceHeight,
-                              CommonElevatedButton(
+                              CommonElevatedButton(height: Dimens.d46,
                                 title: "register".tr,
                                 onTap: () async {
                                   registerController.genderFocus.unfocus();
@@ -323,7 +328,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   registerController.dobFocus.unfocus();
 
                                   if (_formKey.currentState!.validate()) {
-                                      registerController.onTapRegister(context,registerController.imageFile.value?.path??"");
+                                      registerController.onTapRegister(context,registerController.imageFile);
                                     }
 
                                 },
@@ -382,14 +387,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
   Widget widgetCalendar() {
     return Container(
-      height: 480,
-      margin: const EdgeInsets.symmetric(horizontal: 16.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: ColorConstant.white,
-      ),
-      child: GetBuilder<RegisterController>(
-        builder: (controller) {
+        margin: const EdgeInsets.symmetric(horizontal: 16.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: themeController.isDarkMode.isTrue
+              ? ColorConstant.textfieldFillColor
+              : ColorConstant.white,
+        ),
+        child: GetBuilder<RegisterController>(builder: (controller) {
           return CalendarCarousel<Event>(
             onDayPressed: (DateTime date, List<Event> events) {
               if (date.isBefore(DateTime.now())) {
@@ -402,7 +407,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
               }
 
             },
-            weekendTextStyle: Style.montserratRegular(fontSize: 15,color: ColorConstant.black),
+
+            weekendTextStyle: Style.montserratRegular(
+                fontSize: 15,
+                color: themeController.isDarkMode.isTrue
+                    ? ColorConstant.white
+                    : ColorConstant.black),
             // Customize your text style
             thisMonthDayBorderColor: Colors.transparent,
             customDayBuilder: (
@@ -416,8 +426,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 bool isThisMonthDay,
                 DateTime day,
                 ) {
-              if (isSelectedDay) {
-                return Container(margin: const EdgeInsets.symmetric(horizontal: 5),
+              if (day.isAfter(DateTime.now())) {
+                return Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 5),
+                  height: Dimens.d32,
+                  width: Dimens.d32,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Center(
+                    child: Text(
+                      day.day.toString(),
+                      style: Style.montserratRegular(fontSize: 15, color: Colors.grey), // Customize your future day text style
+                    ),
+                  ),
+                );
+              } else if (isSelectedDay) {
+                return Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 5),
                   height: Dimens.d32,
                   width: Dimens.d32,
                   decoration: BoxDecoration(
@@ -428,7 +454,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: Center(
                     child: Text(
                       day.day.toString(),
-                      style: Style.montserratRegular(fontSize: 15,color: ColorConstant.white), // Customize your selected day text style
+                      style: Style.montserratRegular(
+                          fontSize: 15,
+                          color: ColorConstant
+                              .white), // Customize your selected day text style
                     ),
                   ),
                 );
@@ -437,33 +466,52 @@ class _RegisterScreenState extends State<RegisterScreen> {
               }
             },
             weekFormat: false,
-            daysTextStyle: Style.montserratRegular(fontSize: 15,color: ColorConstant.black),
+            daysTextStyle: Style.montserratRegular(
+                fontSize: 15,
+                color: themeController.isDarkMode.isTrue
+                    ? ColorConstant.white
+                    : ColorConstant.black),
             height: 300.0,
             markedDateIconBorderColor: Colors.transparent,
             childAspectRatio: 1.5,
             dayPadding: 0.0,
             prevDaysTextStyle: Style.montserratRegular(fontSize: 15),
             selectedDateTime: controller.currentDate,
-            headerTextStyle:
-            Style.montserratRegular(color: ColorConstant.black,fontWeight: FontWeight.bold),
-            dayButtonColor: Colors.white,
-            weekDayBackgroundColor: Colors.white,
-            markedDateMoreCustomDecoration:
-            const BoxDecoration(color: Colors.white),
+            headerTextStyle: Style.montserratRegular(
+                color: themeController.isDarkMode.isTrue
+                    ? ColorConstant.white
+                    : ColorConstant.black,
+                fontWeight: FontWeight.bold),
+            dayButtonColor: themeController.isDarkMode.isTrue
+                ? ColorConstant.textfieldFillColor
+                : Colors.white,
+            weekDayBackgroundColor: themeController.isDarkMode.isTrue
+                ? ColorConstant.textfieldFillColor
+                : Colors.white,
+            markedDateMoreCustomDecoration: BoxDecoration(
+                color: themeController.isDarkMode.isTrue
+                    ? ColorConstant.black
+                    : Colors.white),
             shouldShowTransform: false,
             staticSixWeekFormat: false,
-            weekdayTextStyle:Style.montserratRegular(fontSize: 11,color: ColorConstant.color797B86,fontWeight: FontWeight.bold),
+            weekdayTextStyle: Style.montserratRegular(
+                fontSize: 11,
+                color: themeController.isDarkMode.isTrue
+                    ? ColorConstant.white
+                    : ColorConstant.color797B86,
+                fontWeight: FontWeight.bold),
             todayButtonColor: Colors.transparent,
             selectedDayBorderColor: Colors.transparent,
             todayBorderColor: Colors.transparent,
             selectedDayButtonColor: Colors.transparent,
             daysHaveCircularBorder: false,
-            todayTextStyle: Style.montserratRegular(fontSize: 15,color: ColorConstant.black),
+            todayTextStyle: Style.montserratRegular(
+                fontSize: 15,
+                color: themeController.isDarkMode.isTrue
+                    ? ColorConstant.white
+                    : ColorConstant.black),
           );
         },
-      ),
-    );
+        ));
   }
-
-
 }
