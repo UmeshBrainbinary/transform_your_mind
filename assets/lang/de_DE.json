@@ -260,6 +260,7 @@
   "AffirmationAlarmsList" : "Liste der Bestätigungsalarme",
   "motivationalReminder" : "Motivierende Erinnerung",
   "affirmationReminder" : "Bestätigungserinnerung",
+  "apply": "Anwenden",
 
   "alarmSet": "Alarm erfolgreich erstellt!",
   "alarmAlreadySet": "Alarm für diese Bestätigung ist bereits eingestellt.",

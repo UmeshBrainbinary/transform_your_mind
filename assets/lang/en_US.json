@@ -370,6 +370,7 @@
        "monthly": "Monthly",
        "weekly": "Weekly",
        "annually": "Annually",
+       "apply": "Apply",
        "Category": "Category",
        "enterCategory": "Enter category",
        "enterSeCategory": "Enter or select category",

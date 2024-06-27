@@ -212,6 +212,7 @@ class ImageConstant {
   static String breathPause = "$iconPath/breath_pause.svg";
   static String breathPlay = "$iconPath/breath_play.svg";
   static String search = "$iconPath/serach_icon.svg";
+  static String popupCheck = "$iconPath/popup_check.svg";
   static String sos = "$iconPath/sos.svg";
   static String noInternet = "$iconPath/noInternet.png";
   static String searchNotFound = "$imagePath/serach_not_found.png";

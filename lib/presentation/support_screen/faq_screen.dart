@@ -32,7 +32,7 @@ class _FaqScreenState extends State<FaqScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: themeController.isDarkMode.isTrue
-          ? ColorConstant.black
+          ? ColorConstant.darkBackground
           : ColorConstant.backGround,
       appBar: const CustomAppBar(title: "FAQ"),
       body: Stack(

@@ -141,7 +141,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
         body: Stack(
       children: [
         SafeArea(

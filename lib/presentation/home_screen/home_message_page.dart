@@ -50,7 +50,7 @@ class _HomeMessagePageState extends State<HomeMessagePage> {
       },
       child: Scaffold(
         backgroundColor: themeController.isDarkMode.isTrue
-            ? ColorConstant.black
+            ? ColorConstant.darkBackground
             : ColorConstant.backGround,
         body: Stack(
           children: [

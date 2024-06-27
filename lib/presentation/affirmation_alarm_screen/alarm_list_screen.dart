@@ -58,7 +58,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: themeController.isDarkMode.value
-          ? ColorConstant.black
+          ? ColorConstant.darkBackground
           : ColorConstant.backGround,
       appBar: CustomAppBar(
         title: "Alarm".tr,

@@ -69,7 +69,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
+      child: Scaffold(backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
         appBar: CustomAppBar(
           title: "positiveMoments".tr,
           showBack: true,

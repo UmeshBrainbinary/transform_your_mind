@@ -20,7 +20,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: themeController.isDarkMode.isTrue
-            ? ColorConstant.black
+            ? ColorConstant.darkBackground
             : ColorConstant.backGround,
         appBar: CustomAppBar(title: "privacyPolicy".tr),
         body: SingleChildScrollView(

@@ -196,14 +196,14 @@ class AppRoutes {
       ],
     ),
 
-    GetPage(
+  /*  GetPage(
       transition: Transition.rightToLeft,
       name: newPasswordScreen,
       page: () => NewPasswordScreen(),
       bindings: [
         ForgotBinding(),
       ],
-    ),
+    ),*/
     GetPage(
       transition: Transition.rightToLeft,
       name: dashBoardScreen,

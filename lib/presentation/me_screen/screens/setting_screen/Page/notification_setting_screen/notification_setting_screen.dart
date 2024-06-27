@@ -77,7 +77,7 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
     ));
     return Scaffold(
         backgroundColor: themeController.isDarkMode.value
-            ? ColorConstant.black
+            ? ColorConstant.darkBackground
             : ColorConstant.backGround,
         appBar: CustomAppBar(
           title: "setYourReminders".tr,

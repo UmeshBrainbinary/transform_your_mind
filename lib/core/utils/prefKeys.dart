@@ -21,4 +21,5 @@ class PrefKey{
   static const String firstTimeUserGratitude = "firstTimeUserGratitude";
   static const String podsSave = "podsSave";
   static const String subscribed = "subscribed";
+  static const String introSkip = "introSkip";
 }

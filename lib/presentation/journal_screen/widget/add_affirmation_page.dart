@@ -168,7 +168,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: themeController.isDarkMode.value
-          ? ColorConstant.black
+          ? ColorConstant.darkBackground
           : ColorConstant.backGround,
       appBar: CustomAppBar(
         title: widget.isEdit! ? "editAffirmation".tr : "addAffirmation".tr,
@@ -269,7 +269,9 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                                           ? "update".tr
                                           : "save".tr,
                                       onTap: () {
-                                        titleFocus.unfocus();
+                                        showSnackBarSuccess(context, "affirmationSuccessfully".tr);
+
+                                       /* titleFocus.unfocus();
                                         descFocus.unfocus();
                                         if (_formKey.currentState!
                                             .validate()) {
@@ -281,7 +283,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                                             addAffirmation();
 
                                           }
-                                        }
+                                        }*/
                                       },
                                     ),
                                   ),

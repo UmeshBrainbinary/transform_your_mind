@@ -23,7 +23,7 @@ class SupportScreen extends StatelessWidget {
     SupportController supportController =Get.put(SupportController());
     return Scaffold(
       backgroundColor: themeController.isDarkMode.isTrue
-          ? ColorConstant.black
+          ? ColorConstant.darkBackground
           : ColorConstant.backGround,
       appBar: const CustomAppBar(title: "Support"),
       body: SingleChildScrollView(

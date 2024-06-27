@@ -57,7 +57,8 @@ class _BreathScreenState extends State<BreathScreen> with TickerProviderStateMix
         title: "breathTraining".tr,
         action: widget.skip!?GestureDetector(
             onTap: () async {
-              Get.toNamed(AppRoutes.noticeHowYouFeel);
+               Get.toNamed(AppRoutes.selectYourFocusPage);
+              //Get.toNamed(AppRoutes.noticeHowYouFeel);
             },
             child: Padding(
               padding: const EdgeInsets.only(right: 20),
@@ -97,7 +98,7 @@ class _BreathScreenState extends State<BreathScreen> with TickerProviderStateMix
                 if (isPlaying) {
                   _lottieController.forward();
                 } else {
-                  _lottieController.stop();
+                  //_lottieController.stop();
                 }
               });
             },child: SvgPicture.asset(isPlaying?ImageConstant.breathPause:ImageConstant.breathPlay)),

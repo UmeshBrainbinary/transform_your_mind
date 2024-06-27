@@ -43,7 +43,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     ));
     return Scaffold(
       backgroundColor: themeController.isDarkMode.value
-          ? ColorConstant.black
+          ? ColorConstant.darkBackground
           : ColorConstant.backGround,
       appBar: CustomAppBar(
         title: "subscription".tr,

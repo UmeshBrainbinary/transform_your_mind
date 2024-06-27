@@ -87,7 +87,7 @@ class _JournalScreenState extends State<JournalScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
         appBar: CustomAppBar(
           title: "selfDevelopment".tr,
         ),

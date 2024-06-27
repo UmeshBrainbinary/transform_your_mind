@@ -24,7 +24,7 @@ class ContactSupportScreen extends StatelessWidget {
     SupportController supportController = Get.put(SupportController());
     return Scaffold(
       backgroundColor: themeController.isDarkMode.isTrue
-          ? ColorConstant.black
+          ? ColorConstant.darkBackground
           : ColorConstant.backGround,
       appBar: CustomAppBar(title: "contactSupport".tr),
       body: Stack(

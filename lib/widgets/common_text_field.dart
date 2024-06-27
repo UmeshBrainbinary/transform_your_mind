@@ -51,7 +51,7 @@ class CommonTextField extends StatefulWidget {
 
 
   const CommonTextField(
-      {Key? key,
+      {super.key,
       required this.hintText,
       required this.controller,
       required this.focusNode,
@@ -91,8 +91,7 @@ class CommonTextField extends StatefulWidget {
       this.validator,
     this.borderRadius = Dimens.d26,
     this.autovalidateMode,
-  })
-      : super(key: key);
+  });
 
   @override
   State<CommonTextField> createState() => _CommonTextFieldState();
@@ -161,7 +160,8 @@ class _CommonTextFieldState extends State<CommonTextField>
       validator: widget.validator,
       enabled: widget.enabled,
       style: widget.textStyle ??
-          Style.montserratMedium(fontSize: Dimens.d14, color: themeController.isDarkMode.value ? ColorConstant.white : ColorConstant.black),
+          Style.montserratMedium(fontSize: Dimens.d14, color: themeController.isDarkMode.value ?
+          ColorConstant.white : ColorConstant.black),
 
       decoration: InputDecoration(
           alignLabelWithHint: true,

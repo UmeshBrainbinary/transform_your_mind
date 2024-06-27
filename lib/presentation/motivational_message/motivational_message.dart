@@ -24,7 +24,7 @@ class MotivationalMessageScreen extends StatelessWidget {
           showBack: true,
         ),
         backgroundColor: themeController.isDarkMode.value
-            ? ColorConstant.black
+            ? ColorConstant.darkBackground
             : ColorConstant.backGround,
         body: SingleChildScrollView(
           // motivational

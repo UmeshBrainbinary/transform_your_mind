@@ -28,7 +28,7 @@ import 'package:transform_your_mind/widgets/custom_appbar.dart';
 import 'package:transform_your_mind/widgets/image_picker_action_sheet.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  EditProfileScreen({super.key});
+  const EditProfileScreen({super.key});
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
@@ -54,6 +54,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    themeController.isDarkMode.isTrue?
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.darkBackground, // Status bar background color
+      statusBarIconBrightness: Brightness.light, // Status bar icon/text color
+    )):
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: ColorConstant.backGround, // Status bar background color
       statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
@@ -61,7 +66,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: themeController.isDarkMode.value
-            ? ColorConstant.black
+            ? ColorConstant.darkBackground
             : ColorConstant.backGround,
         appBar: CustomAppBar(
           title: "personalInformation".tr,

@@ -86,7 +86,7 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
+      child: Scaffold(backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
           appBar: CustomAppBar(
             title: "transformPods".tr,
             showBack: true,
@@ -269,7 +269,7 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
                               })
                               : Padding(
                             padding: const EdgeInsets.only(bottom: Dimens.d130),
-                            child: Image.asset(themeController.isDarkMode.isTrue?ImageConstant.searchDark:ImageConstant.searchNotFound,height: 245,width: 288,),
+                            child: Center(child: Image.asset(themeController.isDarkMode.isTrue?ImageConstant.searchDark:ImageConstant.searchNotFound,height: 245,width: 288,)),
                           ),
                         );
                       },

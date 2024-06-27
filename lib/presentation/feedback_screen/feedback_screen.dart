@@ -185,7 +185,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: themeController.isDarkMode.isTrue
-          ? ColorConstant.black
+          ? ColorConstant.darkBackground
           : ColorConstant.backGround,
       appBar: CustomAppBar(title: "feedback".tr),
       body: Stack(

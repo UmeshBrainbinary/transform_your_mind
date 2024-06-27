@@ -116,6 +116,11 @@ setState(() {
   }
 
   getStatusBar() {
+    themeController.isDarkMode.isTrue?
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.darkBackground, // Status bar background color
+      statusBarIconBrightness: Brightness.light, // Status bar icon/text color
+    )):
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: ColorConstant.backGround, // Status bar background color
       statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
@@ -166,7 +171,7 @@ setState(() {
           },
         ),
         backgroundColor: themeController.isDarkMode.isTrue
-            ? ColorConstant.black
+            ? ColorConstant.darkBackground
             : ColorConstant.themeColor.withOpacity(0.1),
         body: GetBuilder<HomeController>(
           id: "home",
@@ -565,17 +570,19 @@ setState(() {
       alignment: Alignment.bottomCenter,
       children: [
         Stack(
-          alignment: Alignment.topRight,
+          alignment: Alignment.topCenter,
           children: [
             Container(
               height: Dimens.d300,
               color: themeController.isDarkMode.isTrue
-                  ? ColorConstant.black
+                  ? ColorConstant.darkBackground
                   : ColorConstant.backGround,
             ),
             Padding(
-              padding: const EdgeInsets.only(right: 20.0, top: 40.0),
-              child: GestureDetector(
+              padding: const EdgeInsets.only( top: 40.0),
+              child:    Text("TransformYourMind",style: Style.montserratRegular(
+                fontSize: 18,
+              ),),/*GestureDetector(
                 onTap: () async {
                   Navigator.push(context, MaterialPageRoute(
                     builder: (context) {
@@ -593,7 +600,7 @@ setState(() {
                   height: Dimens.d25,
                   ImageConstant.notification,
                 ),
-              ),
+              ),*/
             ),
           ],
         ),

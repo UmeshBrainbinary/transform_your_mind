@@ -171,7 +171,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
       },
       child: Scaffold(
           backgroundColor: themeController.isDarkMode.value
-              ? ColorConstant.black
+              ? ColorConstant.darkBackground
               : ColorConstant.backGround,
           resizeToAvoidBottomInset: false,
           appBar: CustomAppBar(

@@ -20,6 +20,11 @@ class AccountScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    themeController.isDarkMode.isTrue?
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.darkBackground, // Status bar background color
+      statusBarIconBrightness: Brightness.light, // Status bar icon/text color
+    )):
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: ColorConstant.backGround, // Status bar background color
       statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
@@ -27,7 +32,7 @@ class AccountScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: themeController.isDarkMode.value
-            ? ColorConstant.black
+            ? ColorConstant.darkBackground
             : ColorConstant.backGround,
         appBar: CustomAppBar(title: "account".tr),
         body: Stack(

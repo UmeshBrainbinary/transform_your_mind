@@ -500,7 +500,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: themeController.isDarkMode.value
-          ? ColorConstant.black
+          ? ColorConstant.darkBackground
           : ColorConstant.backGround,
       appBar: CustomAppBar(
         showBack: true,

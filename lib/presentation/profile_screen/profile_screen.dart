@@ -69,7 +69,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     width: Get.width,
                     decoration: BoxDecoration(
                         color: themeController.isDarkMode.value
-                            ? ColorConstant.black
+                            ? ColorConstant.darkBackground
                             : ColorConstant.backGround,
                         borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(20),
@@ -303,7 +303,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               spreadRadius: 2.0,
                                             ),
                                           ],
-                                          color: themeController.isDarkMode.isTrue?ColorConstant.themeColor: const Color(0xffF3FDFD),
+                                          color: themeController.isDarkMode.isTrue?ColorConstant.darkBackground: const Color(0xffF3FDFD),
                                           borderRadius:
                                               BorderRadius.circular(10)),
                                       child: ListView.builder(

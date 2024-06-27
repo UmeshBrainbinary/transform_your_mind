@@ -19,7 +19,9 @@ class _SplashScreenState extends State<SplashScreen> {
       () {
         PrefService.getBool(PrefKey.isLoginOrRegister) == true
             ? Get.offAllNamed(AppRoutes.dashBoardScreen)
-            :Get.offAllNamed(AppRoutes.introScreen);
+            : PrefService.getBool(PrefKey.introSkip) == true
+                ? Get.offAllNamed(AppRoutes.loginScreen)
+                : Get.offAllNamed(AppRoutes.introScreen);
       } ,
     );
     super.initState();

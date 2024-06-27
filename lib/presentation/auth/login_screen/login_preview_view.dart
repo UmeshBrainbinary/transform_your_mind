@@ -4,10 +4,12 @@ import 'package:styled_text/tags/styled_text_tag.dart';
 import 'package:styled_text/widgets/styled_text.dart';
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
+import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
@@ -136,6 +138,7 @@ class _LoginPreviewViewState extends State<LoginPreviewView> {
                 title: "login".tr,
                 onTap: () {
                   if(_isChecked){
+                    PrefService.setValue(PrefKey.introSkip, true);
                     Get.toNamed(AppRoutes.loginScreen);
                   }else{
                     showSnackBarError(context, "pleaseAcceptTerms".tr);

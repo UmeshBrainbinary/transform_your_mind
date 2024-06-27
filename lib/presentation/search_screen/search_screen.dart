@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:transform_your_mind/core/app_export.dart';
-import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
-import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/model_class/get_pods_model.dart';
@@ -37,8 +35,14 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     audioContentController.getPodsData();
-
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    themeController.isDarkMode.isTrue
+        ? SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+            statusBarColor: ColorConstant.darkBackground,
+            // Status bar background color
+            statusBarIconBrightness:
+                Brightness.light, // Status bar icon/text color
+          ))
+        : SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: ColorConstant.white, // Status bar background color
       statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
     ));
@@ -57,7 +61,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
+      child: Scaffold(backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
         appBar: CustomAppBar(
           title: "search".tr,
           showBack: true,

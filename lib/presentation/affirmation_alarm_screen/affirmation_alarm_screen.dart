@@ -63,7 +63,7 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: themeController.isDarkMode.value
-            ? ColorConstant.black
+            ? ColorConstant.darkBackground
             : ColorConstant.backGround,
         appBar: CustomAppBar(
           title: "affirmationAlarms".tr,

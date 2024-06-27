@@ -19,7 +19,7 @@ class TroubleGuideScreen extends StatelessWidget {
     final profileController = Get.find<ProfileController>();
     return Scaffold(
       backgroundColor: themeController.isDarkMode.isTrue
-          ? ColorConstant.black
+          ? ColorConstant.darkBackground
           : ColorConstant.backGround,
       appBar: CustomAppBar(title: "troubleshootingGuides".tr),
       body: Stack(

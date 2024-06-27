@@ -43,7 +43,7 @@ class WelcomeScreen extends StatelessWidget {
           ),
           Dimens.d56.spaceHeight,
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Dimens.d18),
+            padding: const EdgeInsets.symmetric(horizontal: Dimens.d34),
             child: Text(
               "powerfulExercise".tr,
               textAlign: TextAlign.center,

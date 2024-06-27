@@ -34,6 +34,11 @@ class _PersonalizationScreenScreenState
 
   @override
   void initState() {
+    themeController.isDarkMode.isTrue?
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.darkBackground, // Status bar background color
+      statusBarIconBrightness: Brightness.light, // Status bar icon/text color
+    )):
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: ColorConstant.backGround, // Status bar background color
       statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
@@ -45,7 +50,7 @@ class _PersonalizationScreenScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: themeController.isDarkMode.value
-          ? ColorConstant.black
+          ? ColorConstant.darkBackground
           : ColorConstant.backGround,
       appBar: CustomAppBar(
         title: "chooseLanguage".tr,

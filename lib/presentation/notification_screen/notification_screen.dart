@@ -6,6 +6,7 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/notification_screen/notification_controller.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 class NotificationScreen extends StatelessWidget {
@@ -13,10 +14,11 @@ class NotificationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ThemeController themeController = Get.find<ThemeController>();
     NotificationController notificationController =
         Get.put(NotificationController());
     return SafeArea(
-      child: Scaffold(
+      child: Scaffold(backgroundColor:themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
         appBar: CustomAppBar(title: "notifications".tr),
         body: Column(
           children: [

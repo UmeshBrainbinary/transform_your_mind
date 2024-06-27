@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:transform_your_mind/core/app_export.dart';
@@ -27,148 +28,147 @@ class NewPasswordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: themeController.isDarkMode.value ?  ColorConstant.black : ColorConstant.backGround,
+      backgroundColor: themeController.isDarkMode.value ?  ColorConstant.darkBackground : ColorConstant.backGround,
       appBar: CustomAppBar(
         title: "newPassword".tr,
       ),
-      body: SafeArea(
-          child: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
-            child: LayoutBuilder(
-              builder: (context, constraint) {
-                return Stack(
-                  children: [
-                    SingleChildScrollView(
-                      child: Form(
-                        key: _formKey,
-                        child: ConstrainedBox(
-                          constraints:
-                          BoxConstraints(minHeight: constraint.maxHeight),
-                          child: IntrinsicHeight(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Dimens.d25.spaceHeight,
-                                Text(
-                                    textAlign: TextAlign.center,
-                                    "enterNewPassword".tr,
-                                    style: Style.montserratRegular(
-                                        fontSize: Dimens.d14,
-                                        fontWeight: FontWeight.w400,
-                                        color: ColorConstant.color716B6B)),
-                                Dimens.d50.spaceHeight,
+      body: Stack(
+              children: [
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
+        child: LayoutBuilder(
+          builder: (context, constraint) {
+            return Stack(
+              children: [
+                SingleChildScrollView(
+                  child: Form(
+                    key: _formKey,
+                    child: ConstrainedBox(
+                      constraints:
+                      BoxConstraints(minHeight: constraint.maxHeight),
+                      child: IntrinsicHeight(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Dimens.d25.spaceHeight,
+                            Text(
+                                textAlign: TextAlign.center,
+                                "enterNewPassword".tr,
+                                style: Style.montserratRegular(
+                                    fontSize: Dimens.d14,
+                                    fontWeight: FontWeight.w400,
+                                    color: ColorConstant.color716B6B)),
+                            Dimens.d50.spaceHeight,
 
-                                ValueListenableBuilder(
-                                  valueListenable: forgotController.securePass,
-                                  builder: (context, value, child) {
-                                    return CommonTextField(
-                                      labelText: "newPassword".tr,
-                                      hintText: "enterNewPasswordHint".tr,
-                                      controller: forgotController.newPController,
-                                      validator: (value) {
-                                        if (value == "") {
-                                          return "theNewPasswordFieldIsRequired".tr;
-                                        } else if(!isValidPassword(value, isRequired: true)){
-                                          return "pleaseEnterValidPassword".tr;
-                                        }
-                                        return null;
-                                      },
-                                      focusNode: FocusNode(),
-                                      prefixIcon: Image.asset(ImageConstant.lock, scale: Dimens.d4),
-                                      suffixIcon: GestureDetector(
-                                          onTap: (){
-                                            forgotController.securePass.value = !forgotController.securePass.value;
-                                          },
-                                          child: Transform.scale(
-                                            scale: 0.38,
-                                            child: Image.asset(
-                                              forgotController.securePass.value
-                                                  ? ImageConstant.eyeClose
-                                                  : ImageConstant.eyeOpen,
-                                              fit: BoxFit.contain,
-                                              height: 5,
-                                              width: 5,
-                                            ),
-                                          )
-                                      ),
-                                      isSecure: value,
-                                      textInputAction: TextInputAction.done,
-                                    );
-                                  },
-                                ),
-                                Dimens.d23.spaceHeight,
-                                ValueListenableBuilder(
-                                  valueListenable: forgotController.securePass2,
-                                  builder: (context, value, child) {
-                                    return CommonTextField(
-                                      labelText: "confirmPassword".tr,
-                                      hintText: "enterConfirmPasswordHint".tr,
-                                      controller: forgotController.confirmPController,
-                                      validator: (value) {
-                                        if (value == "") {
-                                          return "theConfirmPasswordFieldIsRequired".tr;
-                                        } else if(value != forgotController.newPController.text){
-                                           return "passwordsDoNotMatch".tr;
-                                        } else if(!isValidPassword(value, isRequired: true)){
-                                          return "pleaseEnterValidPassword".tr;
-                                        }
-                                        return null;
-                                      },
-                                      focusNode: FocusNode(),
-                                      prefixIcon: Image.asset(ImageConstant.lock, scale: Dimens.d4),
-                                      suffixIcon: GestureDetector(
-                                          onTap: (){
-                                            forgotController.securePass2.value = !forgotController.securePass2.value;
-                                          },
-                                          child: Transform.scale(
-                                            scale: 0.38,
-                                            child: Image.asset(
-                                              forgotController.securePass2.value
-                                                  ? ImageConstant.eyeClose
-                                                  : ImageConstant.eyeOpen,
-                                              fit: BoxFit.contain,
-                                              height: 5,
-                                              width: 5,
-                                            ),
-                                          )
-                                      ),
-                                      isSecure: value,
-                                      textInputAction: TextInputAction.done,
-                                    );
-                                  },
-                                ),
-                                Dimens.d120.spaceHeight,
-                                CommonElevatedButton(
-                                  title: "submit".tr,
-                                  onTap: () {
-
-
-                                    FocusScope.of(context).unfocus();
-
-                                    if (_formKey.currentState!.validate()) {
-                                     _showAlertDialog(context);
+                            ValueListenableBuilder(
+                              valueListenable: forgotController.securePass,
+                              builder: (context, value, child) {
+                                return CommonTextField(
+                                  labelText: "newPassword".tr,
+                                  hintText: "enterNewPasswordHint".tr,
+                                  controller: forgotController.newPController,
+                                  validator: (value) {
+                                    if (value == "") {
+                                      return "theNewPasswordFieldIsRequired".tr;
+                                    } else if(!isValidPassword(value, isRequired: true)){
+                                      return "pleaseEnterValidPassword".tr;
                                     }
-
-
+                                    return null;
                                   },
-                                )
-                              ],
+                                  focusNode: FocusNode(),
+                                  prefixIcon: Image.asset(ImageConstant.lock, scale: Dimens.d4),
+                                  suffixIcon: GestureDetector(
+                                      onTap: (){
+                                        forgotController.securePass.value = !forgotController.securePass.value;
+                                      },
+                                      child: Transform.scale(
+                                        scale: 0.38,
+                                        child: Image.asset(
+                                          forgotController.securePass.value
+                                              ? ImageConstant.eyeClose
+                                              : ImageConstant.eyeOpen,
+                                          fit: BoxFit.contain,
+                                          height: 5,
+                                          width: 5,
+                                        ),
+                                      )
+                                  ),
+                                  isSecure: value,
+                                  textInputAction: TextInputAction.done,
+                                );
+                              },
                             ),
-                          ),
+                            Dimens.d23.spaceHeight,
+                            ValueListenableBuilder(
+                              valueListenable: forgotController.securePass2,
+                              builder: (context, value, child) {
+                                return CommonTextField(
+                                  labelText: "confirmPassword".tr,
+                                  hintText: "enterConfirmPasswordHint".tr,
+                                  controller: forgotController.confirmPController,
+                                  validator: (value) {
+                                    if (value == "") {
+                                      return "theConfirmPasswordFieldIsRequired".tr;
+                                    } else if(value != forgotController.newPController.text){
+                                       return "passwordsDoNotMatch".tr;
+                                    } else if(!isValidPassword(value, isRequired: true)){
+                                      return "pleaseEnterValidPassword".tr;
+                                    }
+                                    return null;
+                                  },
+                                  focusNode: FocusNode(),
+                                  prefixIcon: Image.asset(ImageConstant.lock, scale: Dimens.d4),
+                                  suffixIcon: GestureDetector(
+                                      onTap: (){
+                                        forgotController.securePass2.value = !forgotController.securePass2.value;
+                                      },
+                                      child: Transform.scale(
+                                        scale: 0.38,
+                                        child: Image.asset(
+                                          forgotController.securePass2.value
+                                              ? ImageConstant.eyeClose
+                                              : ImageConstant.eyeOpen,
+                                          fit: BoxFit.contain,
+                                          height: 5,
+                                          width: 5,
+                                        ),
+                                      )
+                                  ),
+                                  isSecure: value,
+                                  textInputAction: TextInputAction.done,
+                                );
+                              },
+                            ),
+                            Dimens.d120.spaceHeight,
+                            CommonElevatedButton(
+                              title: "submit".tr,
+                              onTap: () {
+
+
+                                FocusScope.of(context).unfocus();
+
+                                if (_formKey.currentState!.validate()) {
+                                 _showAlertDialog(context);
+                                }
+
+
+                              },
+                            )
+                          ],
                         ),
                       ),
                     ),
-                    //commonGradiantContainer(color: AppColors.backgroundWhite, h: 20)
-                  ],
-                );
-              },
+                  ),
+                ),
+                //commonGradiantContainer(color: AppColors.backgroundWhite, h: 20)
+              ],
+            );
+          },
+        ),
+      ),
+      Obx(() => forgotController.loader.isTrue?commonLoader():const SizedBox(),)
+              ],
             ),
-          ),
-          Obx(() => forgotController.loader.isTrue?commonLoader():const SizedBox(),)
-        ],
-      )),
     );
   }
 
@@ -217,3 +217,4 @@ class NewPasswordScreen extends StatelessWidget {
     );
   }
 }
+*/

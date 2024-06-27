@@ -178,7 +178,7 @@ class _AddPositivePageState extends State<AddPositivePage>
     return SafeArea(
       child: Scaffold(
         backgroundColor: themeController.isDarkMode.value
-            ? ColorConstant.black
+            ? ColorConstant.darkBackground
             : ColorConstant.backGround,
         appBar: CustomAppBar(
           title: widget.isEdit!

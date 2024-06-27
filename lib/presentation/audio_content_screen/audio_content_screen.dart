@@ -56,6 +56,11 @@ class _AudioContentScreenState extends State<AudioContentScreen>
         showScrollTop.value = false;
       }
     });
+    themeController.isDarkMode.isTrue?
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.darkBackground, // Status bar background color
+      statusBarIconBrightness: Brightness.light, // Status bar icon/text color
+    )):
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: ColorConstant.white, // Status bar background color
       statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
@@ -77,7 +82,9 @@ class _AudioContentScreenState extends State<AudioContentScreen>
     return SafeArea(
       child: Stack(
         children: [
-          Scaffold(
+          Scaffold(backgroundColor:
+          themeController.isDarkMode.isTrue?
+          ColorConstant.darkBackground:ColorConstant.white,
             floatingActionButton: ValueListenableBuilder(
               valueListenable: showScrollTop,
               builder: (context, value, child) {

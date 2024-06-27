@@ -11,6 +11,7 @@ import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/model_class/get_pods_model.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/audio_content_controller.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_screen.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
@@ -25,7 +26,7 @@ class _DownloadedPodsScreenState extends State<DownloadedPodsScreen> {
   late ScrollController scrollController = ScrollController();
   AudioContentController audioContentController =
       Get.put(AudioContentController());
-
+ThemeController themeController = Get.find<ThemeController>();
   @override
   void initState() {
     audioContentController.getDownloadedList();
@@ -38,9 +39,9 @@ class _DownloadedPodsScreenState extends State<DownloadedPodsScreen> {
       statusBarColor: ColorConstant.white,
       statusBarIconBrightness: Brightness.dark,
     ));
-    return Scaffold(
+    return Scaffold(backgroundColor:themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
         appBar: CustomAppBar(
-          title: "downloadedPods".tr,
+          title: "Downloads".tr,
           showBack: true,
         ),
         body: Padding(

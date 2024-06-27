@@ -55,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Scaffold(
       backgroundColor: themeController.isDarkMode.value
-          ? ColorConstant.black
+          ? ColorConstant.darkBackground
           : ColorConstant.backGround,
       appBar: CustomAppBar(
         showBack: false,
