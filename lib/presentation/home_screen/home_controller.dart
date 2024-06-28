@@ -294,7 +294,7 @@ class HomeController extends GetxController {
     };
     var request =
         http.Request('POST', Uri.parse('${EndPoints.baseUrl}$url?id=$id'));
-    request.body = json.encode({"isCompleted": true});
+    request.body = json.encode({"isCompleted": true,"created_by":PrefService.getString(PrefKey.userId)});
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();

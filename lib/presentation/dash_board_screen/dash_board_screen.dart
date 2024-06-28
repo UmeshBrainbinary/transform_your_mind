@@ -90,7 +90,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
-            color:themeController.isDarkMode.value ? ColorConstant.black :ColorConstant.white ,
+            color:themeController.isDarkMode.value ? ColorConstant.textfieldFillColor :ColorConstant.white ,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
             boxShadow: [
               BoxShadow(

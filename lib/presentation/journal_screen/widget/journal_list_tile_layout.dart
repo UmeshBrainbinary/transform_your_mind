@@ -70,7 +70,7 @@ class JournalListTileLayout extends StatelessWidget {
               GestureDetector(
                 onTap: () => onEditTapCallback?.call(),
                 child: SvgPicture.asset(
-                    ImageConstant.editTools,
+                    ImageConstant.editTools,height: 20,width: 20,
                     color: themeController.isDarkMode.value
                         ? ColorConstant.white
                         : ColorConstant.black),
@@ -80,7 +80,7 @@ class JournalListTileLayout extends StatelessWidget {
               GestureDetector(
                 onTap: () => onDeleteTapCallback?.call(),
                 child: SvgPicture.asset(
-                  ImageConstant.delete,
+                  ImageConstant.delete,height: 20,width: 20,
                   color: themeController.isDarkMode.value
                       ? ColorConstant.white
                       : ColorConstant.black,

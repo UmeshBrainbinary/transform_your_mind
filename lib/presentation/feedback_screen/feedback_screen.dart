@@ -250,14 +250,9 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                             prefixLottieIcon: ImageConstant.lottieDescription,
                             maxLines: 15,
                             maxLength: maxLengthDesc,
-                            inputFormatters: [
-                              LengthLimitingTextInputFormatter(maxLengthDesc),
-                            ],
                             onChanged: (value) {
                               currentLength.value = descController.text.length;
                             },
-                            keyboardType: TextInputType.multiline,
-                            textInputAction: TextInputAction.newline,
                             validator: (value) {
                               if (value == "") {
                                 return "theCommentFiledIsRequired".tr;

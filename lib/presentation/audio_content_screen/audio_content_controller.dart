@@ -96,50 +96,7 @@ class AudioContentController extends GetxController {
     }
     update(['update']);
   }
-  /*  getPodApi() async {
-    try {
-      var headers = {
-        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
-      };
-      var request = http.Request(
-          'GET',
-          Uri.parse(
-              '${EndPoints.getPod}?userId=${PrefService.getString(PrefKey.userId)}'));
-      request.headers.addAll(headers);
-      http.StreamedResponse response = await request.send();
 
-      if (response.statusCode == 200) {
-        final responseBody = await response.stream.bytesToString();
-
-        getPodsModel = getPodsModelFromJson(responseBody);
-        audioData.value = getPodsModel.data ?? [];
-        update(['update']);
-        if (box.read(PrefKey.podsSave) != null) {
-          List<AudioData> audioDataSave = [];
-          audioDataSave =box.read(PrefKey.podsSave);
-
-          if (audioDataSave.isNotEmpty) {
-            for (int i = 0; i < audioDataSave.length; i++) {
-              audioData.firstWhere((element) => element.id == audioDataSave[i].id).download  =true;
-            }
-          }
-        }
-
-        update(['update']);
-        loader.value = false;
-
-        debugPrint("save pods read method$audioData");
-        debugPrint("filter Data $audioData");
-      } else {
-        debugPrint(response.reasonPhrase);
-        update(['update']);
-      }
-    } catch (e) {
-      loader.value = false;
-      debugPrint(e.toString());
-    }
-    update(['update']);
-  }*/
 
 
   Future<void> getDownloadedList() async {
@@ -156,16 +113,7 @@ class AudioContentController extends GetxController {
     }
   }
 
-/*
-  getDownloadedList() async {
-    List<AudioData> audioDataSave = [];
-    audioDataSave = box.read(PrefKey.podsSave);
 
-    if (audioDataSave.isNotEmpty) {
-      audioDataDownloaded.value = audioDataSave;
-
-    }
-  }*/
   Future<void> removeData(int index) async {
     audioDataDownloaded.removeAt(index);
 
@@ -174,14 +122,7 @@ class AudioContentController extends GetxController {
 
     getDownloadedList();
   }
- /* removeData(int index) async {
-  audioDataDownloaded
-        .removeAt(index);
-    if (box.read(PrefKey.podsSave) != null) {
-      await box.write(PrefKey.podsSave, audioDataDownloaded.value);
-    }
-    getDownloadedList();
-  }*/
+
   Future<void> setDownloadView({
     required BuildContext? context,
     required String? url,
@@ -213,29 +154,7 @@ class AudioContentController extends GetxController {
     update(["update"]);
   }
 
- /* setDownloadView(
-      {BuildContext? context,
-      String? url,
-      int? index,
-      String? fileName}) async {
-    String? downloadPath = "";
-    loaderD.value = true;
-    downloadPath = await downloadFile(url: url!, fileName: fileName!);
-    audioData[index!].downloadedPath = downloadPath;
-    audioData[index].download = true;
-    loaderD.value = false;
 
-    List<AudioData> audioDataSave = [];
-    if (box.read(PrefKey.podsSave) != null) {
-      audioDataSave = box.read(PrefKey.podsSave);
-    }
-
-    audioDataSave.add(audioData[index]);
-    await box.write(PrefKey.podsSave, audioDataSave);
-
-    showSnackBarSuccess(context!, "podsDownloaded".tr);
-    update(["update"]);
-  }*/
 
     Future<String> downloadFile({
       required String url,

@@ -205,7 +205,7 @@ class _VerificationsScreenState extends State<VerificationsScreen> {
                                   ),
                                 ),
                                 Dimens.d30.spaceHeight,
-                                Text('${"timeLeft".tr}: ${formatTime(_start)}',
+                                _start == 0?const SizedBox(): Text('${"timeLeft".tr}: ${formatTime(_start)}',
                                     textAlign: TextAlign.center,
                                     style: Style.montserratRegular(
                                         fontSize: 14,

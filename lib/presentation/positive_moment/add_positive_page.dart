@@ -272,10 +272,7 @@ class _AddPositivePageState extends State<AddPositivePage>
                                           ImageConstant.lottieDescription,
                                       maxLines: 15,
                                       maxLength: maxLengthDesc,
-                                      inputFormatters: [
-                                        LengthLimitingTextInputFormatter(
-                                            maxLengthDesc),
-                                      ],
+
                                       validator: (value) {
                                         if (value == "") {
                                           return "pleaseEnterDescription".tr;
@@ -284,8 +281,7 @@ class _AddPositivePageState extends State<AddPositivePage>
                                       },
                                       onChanged: (value) => currentLength
                                           .value = descController.text.length,
-                                      keyboardType: TextInputType.multiline,
-                                      textInputAction: TextInputAction.newline,
+
                                     ),
                                   ],
                                 ),

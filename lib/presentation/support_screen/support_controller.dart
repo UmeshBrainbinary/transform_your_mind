@@ -21,7 +21,9 @@ class SupportController extends GetxController {
   FocusNode nameFocus = FocusNode();
   FocusNode emailFocus = FocusNode();
   FocusNode commentFocus = FocusNode();
-  RxList<FaqData>? faqList = <FaqData>[].obs;
+  List<FaqData>? faqData = [];
+  FaqModel faqModel = FaqModel();
+
   RxBool loader = false.obs;
   @override
   void onInit() {
@@ -35,15 +37,49 @@ class SupportController extends GetxController {
 
   List<bool> faq = [];
 
-  getFaqList() {
-    final profileController = Get.find<ProfileController>();
-    faqList!.value = profileController.faqData!;
+  getFaqList() async {
+
+    await getFaq();
     List.generate(
-      faqList!.length,
+      faqData!.length,
       (index) => faq.add(false),
     );
-    update();
+    update(["update"]);
   }
+
+  getFaq() async {
+    loader.value = true;
+    try {
+      var headers = {
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+      };
+      var request = http.Request(
+        'GET',
+        Uri.parse(
+          EndPoints.getFaqApi,
+        ),
+      );
+
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        loader.value = false;
+
+        final responseBody = await response.stream.bytesToString();
+
+        faqModel = faqModelFromJson(responseBody);
+        faqData = faqModel.data;
+      } else {
+        loader.value = false;
+
+        debugPrint(response.reasonPhrase);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
 
   addSupport({BuildContext? context}) async {
     loader.value = true;

@@ -6,6 +6,7 @@ import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -33,7 +34,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   RegisterController registerController = Get.put(RegisterController());
+  var birthDate = DateFormat("yyyy-MM-dd").format(DateTime.now());
 
+  DateTime? picked;
   ThemeController themeController = Get.find<ThemeController>();
 
   @override
@@ -79,6 +82,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                               value;
                                         }
                                       });
+
                                     },
                                     onDeleteTap: () async {
                                       registerController.imageFile =
@@ -189,18 +193,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           width: Dimens.d5)),
                                   readOnly: true,
                                   onTap: () async {
-
-                                    showDialog(context: context, builder: (context) {
+                                    datePicker(context);
+                                    /*showDialog(context: context, builder: (context) {
                                       return Column(
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
+
                                           SizedBox(
                                               height: Dimens.d350,
                                               child: widgetCalendar()),
                                         ],
                                       );
-                                    },);
+                                    },);*/
                                   },
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -266,6 +271,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                               child: Container(
                                                 height: Dimens.d45,
                                                 width: Get.width,
+
                                                 padding: const EdgeInsets.only(
                                                     left: Dimens.d10,
                                                     top: Dimens.d12),
@@ -276,7 +282,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                           registerController
                                                               .genderList[index]
                                                       ? ColorConstant.themeColor
-                                                      : ColorConstant.white,
+                                                      : themeController.isDarkMode.isTrue?ColorConstant.textfieldFillColor:ColorConstant.white,
                                                   borderRadius: index == 0
                                                       ? const BorderRadius.only(
                                                           topLeft:
@@ -310,7 +316,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                                       .genderList[
                                                                   index]
                                                           ? ColorConstant.white
-                                                          : ColorConstant
+                                                          : themeController.isDarkMode.isTrue?ColorConstant.white:ColorConstant
                                                               .black),
                                                 ),
                                               )),
@@ -385,133 +391,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
   }
-  Widget widgetCalendar() {
-    return Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          color: themeController.isDarkMode.isTrue
-              ? ColorConstant.textfieldFillColor
-              : ColorConstant.white,
-        ),
-        child: GetBuilder<RegisterController>(builder: (controller) {
-          return CalendarCarousel<Event>(
-            onDayPressed: (DateTime date, List<Event> events) {
-              if (date.isBefore(DateTime.now())) {
-                setState(() {
-                  controller.currentDate = date;
-                  controller.dobController.text = DateFormat('dd/MM/yyyy').format(date);
-                  controller.select = false;
-                });
-                debugPrint('Selected Date: ${controller.currentDate}');
-              }
 
-            },
 
-            weekendTextStyle: Style.montserratRegular(
-                fontSize: 15,
-                color: themeController.isDarkMode.isTrue
-                    ? ColorConstant.white
-                    : ColorConstant.black),
-            // Customize your text style
-            thisMonthDayBorderColor: Colors.transparent,
-            customDayBuilder: (
-                bool isSelectable,
-                int index,
-                bool isSelectedDay,
-                bool isToday,
-                bool isPrevMonthDay,
-                TextStyle textStyle,
-                bool isNextMonthDay,
-                bool isThisMonthDay,
-                DateTime day,
-                ) {
-              if (day.isAfter(DateTime.now())) {
-                return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 5),
-                  height: Dimens.d32,
-                  width: Dimens.d32,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Center(
-                    child: Text(
-                      day.day.toString(),
-                      style: Style.montserratRegular(fontSize: 15, color: Colors.grey), // Customize your future day text style
-                    ),
-                  ),
-                );
-              } else if (isSelectedDay) {
-                return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 5),
-                  height: Dimens.d32,
-                  width: Dimens.d32,
-                  decoration: BoxDecoration(
-                    color: ColorConstant.themeColor,
-                    // Customize your selected day color
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Center(
-                    child: Text(
-                      day.day.toString(),
-                      style: Style.montserratRegular(
-                          fontSize: 15,
-                          color: ColorConstant
-                              .white), // Customize your selected day text style
-                    ),
-                  ),
-                );
-              } else {
-                return null;
-              }
-            },
-            weekFormat: false,
-            daysTextStyle: Style.montserratRegular(
-                fontSize: 15,
-                color: themeController.isDarkMode.isTrue
-                    ? ColorConstant.white
-                    : ColorConstant.black),
-            height: 300.0,
-            markedDateIconBorderColor: Colors.transparent,
-            childAspectRatio: 1.5,
-            dayPadding: 0.0,
-            prevDaysTextStyle: Style.montserratRegular(fontSize: 15),
-            selectedDateTime: controller.currentDate,
-            headerTextStyle: Style.montserratRegular(
-                color: themeController.isDarkMode.isTrue
-                    ? ColorConstant.white
-                    : ColorConstant.black,
-                fontWeight: FontWeight.bold),
-            dayButtonColor: themeController.isDarkMode.isTrue
-                ? ColorConstant.textfieldFillColor
-                : Colors.white,
-            weekDayBackgroundColor: themeController.isDarkMode.isTrue
-                ? ColorConstant.textfieldFillColor
-                : Colors.white,
-            markedDateMoreCustomDecoration: BoxDecoration(
-                color: themeController.isDarkMode.isTrue
-                    ? ColorConstant.black
-                    : Colors.white),
-            shouldShowTransform: false,
-            staticSixWeekFormat: false,
-            weekdayTextStyle: Style.montserratRegular(
-                fontSize: 11,
-                color: themeController.isDarkMode.isTrue
-                    ? ColorConstant.white
-                    : ColorConstant.color797B86,
-                fontWeight: FontWeight.bold),
-            todayButtonColor: Colors.transparent,
-            selectedDayBorderColor: Colors.transparent,
-            todayBorderColor: Colors.transparent,
-            selectedDayButtonColor: Colors.transparent,
-            daysHaveCircularBorder: false,
-            todayTextStyle: Style.montserratRegular(
-                fontSize: 15,
-                color: themeController.isDarkMode.isTrue
-                    ? ColorConstant.white
-                    : ColorConstant.black),
-          );
-        },
-        ));
+  datePicker(context) async {
+    FocusScope.of(context).unfocus();
+    picked = await showDatePicker(
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData.light().copyWith(scaffoldBackgroundColor: ColorConstant.themeColor,
+            primaryColor:ColorConstant.themeColor,
+            colorScheme: const ColorScheme.light(primary: ColorConstant.themeColor),
+            buttonTheme: const ButtonThemeData(textTheme: ButtonTextTheme.primary),
+          ),
+          child: child!,
+        );
+      },
+      context: context,
+      firstDate: DateTime(1970),
+      // the earliest allowable
+      lastDate: DateTime.now(),
+      // the latest allowable
+      currentDate: DateTime.now(),
+      initialDate: DateTime.now(),
+    );
+
+    if (picked != null) {
+      birthDate = DateFormat('dd/MM/yyyy').format(picked!);
+     // birthDate = DateFormat("yyyy-MM-dd").format(picked!);
+      registerController.dobController.text = birthDate;
+    }
   }
+
 }

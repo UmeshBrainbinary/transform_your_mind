@@ -39,7 +39,7 @@ ThemeController themeController = Get.find<ThemeController>();
       statusBarColor: ColorConstant.white,
       statusBarIconBrightness: Brightness.dark,
     ));
-    return Scaffold(backgroundColor:themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
+    return Scaffold(backgroundColor:themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.backGround,
         appBar: CustomAppBar(
           title: "Downloads".tr,
           showBack: true,
@@ -189,19 +189,23 @@ ThemeController themeController = Get.find<ThemeController>();
                               );
                             })
                         : Center(
-                      child: SizedBox(
-                        height: Get.height,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SvgPicture.asset(ImageConstant.noData),
-                            Dimens.d20.spaceHeight,
-                            Text(
-                              "dataNotFound".tr,
-                              style: Style.montserratBold(fontSize: 24),
-                            )
-                          ],
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: Dimens.d120),
+                        child: SizedBox(
+                          height: Get.height,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                themeController.isDarkMode.isTrue?ImageConstant.darkData:ImageConstant
+                                    .noData,height: 158,width: 200,),
+                              Text(
+                                "dataNotFound".tr,
+                                style: Style.montserratBold(fontSize: 24),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),

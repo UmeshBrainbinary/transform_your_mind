@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,6 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:numberpicker/numberpicker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
@@ -138,6 +141,8 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   List<AffirmationData>? data;
   DateTime todayDate = DateTime.now();
   AlarmModel alarmModel = AlarmModel();
+  PlayerController controller = PlayerController();                   // Initialise
+  File  i = File("");
 
   getAffirmationAlarm() async {
     alarmModel = AlarmModel();
@@ -664,8 +669,9 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SvgPicture.asset(ImageConstant.noData),
-                      Dimens.d20.spaceHeight,
+                      SvgPicture.asset(
+                        themeController.isDarkMode.isTrue?ImageConstant.darkData:ImageConstant
+                            .noData,height: 158,width: 200,),
                       Text(
                         "dataNotFound".tr,
                         style: Style.montserratBold(fontSize: 24),
@@ -760,8 +766,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                     },
                                     child: SvgPicture.asset(
                                       ImageConstant.editTools,
-                                      height: Dimens.d18,
-                                      width: Dimens.d18,
+                                      height: 20,width: 20,
                                       color: themeController.isDarkMode.isTrue
                                           ? ColorConstant.white
                                           : ColorConstant.black,
@@ -778,8 +783,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                     },
                                     child: SvgPicture.asset(
                                       ImageConstant.delete,
-                                      height: Dimens.d18,
-                                      width: Dimens.d18,
+                                      height: 20,width: 20,
                                       color: themeController.isDarkMode.isTrue
                                           ? ColorConstant.white
                                           : ColorConstant.black,
@@ -812,8 +816,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                       like[index]
                                           ? ImageConstant.likeRedTools
                                           : ImageConstant.likeTools,
-                                      height: Dimens.d18,
-                                      width: Dimens.d18,
+                                      height: 20,width: 20,
                                       color: like[index]
                                           ? ColorConstant.deleteRed
                                           : themeController.isDarkMode.isTrue
@@ -959,8 +962,8 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                       },
                                       child: SvgPicture.asset(
                                           ImageConstant.addAffirmation,
-                                          height: 18,
-                                          width: 18,
+                                          height: 20,
+                                          width: 20,
                                           color:
                                               themeController.isDarkMode.isTrue
                                                   ? ColorConstant.white
@@ -968,7 +971,35 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                     ),
                                     Dimens.d10.spaceWidth,
                                     GestureDetector(
-                                      onTap: () {
+                                      onTap: () async {
+                                        var request = await http.get(Uri.parse("https://transformyourmind.s3.eu-north-1.amazonaws.com/1718799097841-1682952330-9588.mp3"));
+                                        if (request.statusCode == 200) {
+                                          String dir = (await getTemporaryDirectory()).path;
+                                        File file = File('$dir/${DateTime.now().microsecondsSinceEpoch}.mp3');
+                                        await file.writeAsBytes(request.bodyBytes);
+
+                                        print(file.path);
+                                        i = file;
+                                        } else {
+
+                                        }
+                                        await controller.preparePlayer(
+                                        path: i.path,
+                                        shouldExtractWaveform: true,
+                                        noOfSamples: 100,
+                                        volume: 1.0,
+                                        );
+                                        await controller.startPlayer(finishMode: FinishMode.stop);          // Start audio player
+                                        // Stop audio player
+                                        await controller.setVolume(1.0);                                    // Set volume level
+                                        await controller.seekTo(5000);                                 // Get duration of audio player
+                                        controller.updateFrequency = UpdateFrequency.low;                   // Update reporting rate of current duration.
+                                        controller.onPlayerStateChanged.listen((state) {});                 // Listening to player state changes
+                                        controller.onCurrentDurationChanged.listen((duration) {});          // Listening to current duration changes
+                                        controller.onCurrentExtractedWaveformData.listen((data) {});        // Listening to latest extraction data
+                                        controller.onExtractionProgress.listen((progress) {});              // Listening to extraction progress
+                                        controller.onCompletion.listen((_){});                              // Listening to audio completion
+
                                         _showAlertDialogPlayPause(context,
                                             mp3: _filteredBookmarks?[index]
                                                 .audioFile,
@@ -979,8 +1010,8 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                       },
                                       child: SvgPicture.asset(
                                         ImageConstant.playAffirmation,
-                                        height: 18,
-                                        width: 18,
+                                        height: 20,
+                                        width: 20,
                                         color: themeController.isDarkMode.isTrue
                                             ? ColorConstant.white
                                             : ColorConstant.black,
@@ -999,7 +1030,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                               _filteredBookmarks?[index].id);
                                         },
                                         child: SvgPicture.asset(
-                                          ImageConstant.alarm,
+                                          ImageConstant.alarm,height: 20,width: 20,
                                           color:
                                               themeController.isDarkMode.isTrue
                                                   ? ColorConstant.white
@@ -1031,8 +1062,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                         likeAffirmation[index]
                                             ? ImageConstant.likeRedTools
                                             : ImageConstant.likeTools,
-                                        height: Dimens.d18,
-                                        width: Dimens.d18,
+                                        height: 20,width: 20,
                                         color: likeAffirmation[index]
                                             ? ColorConstant.deleteRed
                                             : themeController.isDarkMode.isTrue
@@ -1068,8 +1098,9 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SvgPicture.asset(ImageConstant.noData),
-                            Dimens.d20.spaceHeight,
+                            SvgPicture.asset(
+                              themeController.isDarkMode.isTrue?ImageConstant.darkData:ImageConstant
+                                  .noData,height: 158,width: 200,),
                             Text(
                               "dataNotFound".tr,
                               style: Style.montserratBold(fontSize: 24),
@@ -1119,6 +1150,9 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                               setState.call(() {
                                 am = true;
                                 pm = false;
+                                selectedSeconds =0;
+                                selectedMinute =0;
+                                selectedHour =0;
                               });
                             },
                             child: Container(
@@ -1142,6 +1176,9 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                           GestureDetector(
                             onTap: () {
                               setState.call(() {
+                                selectedHour = 0;
+                                selectedMinute = 0;
+                                selectedSeconds = 0;
                                 am = false;
                                 pm = true;
                               });
@@ -1199,7 +1236,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                           fontSize: 14, color: ColorConstant.colorCACACA),
                       selectedTextStyle: Style.montserratBold(
                           fontSize: 22, color: ColorConstant.themeColor),
-                      maxValue: 24,
+                      maxValue: am==true ? 11 : 23,
                       itemHeight: 50,
                       itemWidth: 50,
                       onChanged: (value) =>
@@ -1218,7 +1255,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                           fontSize: 14, color: ColorConstant.colorCACACA),
                       selectedTextStyle: Style.montserratBold(
                           fontSize: 22, color: ColorConstant.themeColor),
-                      maxValue: 60,
+                      maxValue: 59,
                       onChanged: (value) =>
                           setState(() => selectedMinute = value),
                     ),
@@ -1235,7 +1272,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                           fontSize: 14, color: ColorConstant.colorCACACA),
                       selectedTextStyle: Style.montserratBold(
                           fontSize: 22, color: ColorConstant.themeColor),
-                      maxValue: 60,
+                      maxValue: 59,
                       onChanged: (value) =>
                           setState(() => selectedSeconds = value),
                     ),
@@ -1460,12 +1497,23 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                             child: Center(
                               child: GestureDetector(
                                 onTap: () {
-                                  setState.call(() {
-                                    playPause = !playPause;
+                                  if(controller.playerState.isPlaying)
+                                  {
+
+                                    controller.pausePlayer();
+                                  }
+                                  else
+                                  {
+                                    controller.startPlayer();
+
+                                  }
+                                  setState(() {
+
                                   });
+
                                 },
                                 child: SvgPicture.asset(
-                                  playPause
+                                  controller.playerState.isPlaying
                                       ? ImageConstant.pauseAudio
                                       : ImageConstant.play,
                                   height: 10,
@@ -1478,7 +1526,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                           /*  Dimens.d10.spaceWidth,
                           Text("0:32",style: Style.montserratRegular(fontSize: 11),),
                           Dimens.d10.spaceWidth,*/
-                          VoiceMessageView(
+                          /*VoiceMessageView(
                             size: 0.0,
                             controller: VoiceController(
                               audioSrc: mp3!,
@@ -1500,7 +1548,27 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                             circlesColor: Colors.transparent,
                             circlesTextStyle: const TextStyle(fontSize: 0.0),
                             counterTextStyle: const TextStyle(fontSize: 0.0),
-                          ),
+                          ),*/
+                          Container(
+                          height: 100,
+                          width: 200,
+                          color: Colors.red,
+                          child:   AudioFileWaveforms(
+
+                          size: Size(MediaQuery.of(context).size.width, 100.0),
+                  playerController: controller,
+                  enableSeekGesture: true,
+                  waveformType: WaveformType.long,
+                  waveformData: [],
+                  playerWaveStyle: const PlayerWaveStyle(
+                    fixedWaveColor: Colors.white54,
+                    liveWaveColor: Colors.blueAccent,
+                    spacing: 6,
+
+                  ),
+
+                ),
+              ),
                           GestureDetector(
                               onTap: () {
                                 setState.call(() {
@@ -1625,16 +1693,8 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
     );
   }
 
-  void _refreshCleanseList(bool isSaved) {
-    pageNumber = 1;
-    affirmationList.clear();
 
-    pageNumberDrafts = 1;
-  }
 
-  void _fetchInitialRecords() {
-    pageNumber = 1;
-  }
 
   void addUserAffirmation({bool isSave = true}) {
     if (_userAffirmationController.text.trim().isEmpty) {
@@ -1646,67 +1706,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
     _userAffirmationFocus.unfocus();
   }
 
-  void onEditAffirmation(
-    BuildContext context, {
-    bool isFromDraft = false,
-  }) {
-    showDialog(
-      context: context,
-      builder: (_) {
-        return Dialog(
-          backgroundColor: Colors.transparent,
-          alignment: Alignment.center,
-          insetPadding: Dimens.d20.paddingAll,
-          child: Container(
-            padding: Dimens.d20.paddingAll,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: Dimens.d16.radiusAll,
-            ),
-            child: EditAffirmationDialogWidget(
-              onDraftTap: (newRitualText) {
-                Navigator.of(context).pop();
-                _updateUserAffirmation(
-                  newRitualText.trim(),
-                  "wfd",
-                  isSaved: false,
-                );
-              },
-              onSaveTap: (newRitualText) {
-                Navigator.of(context).pop();
-                _updateUserAffirmation(
-                  newRitualText.trim(),
-                  "",
-                  isSaved: true,
-                );
-              },
-              onDeleteTap: () {
-                Navigator.of(context).pop();
-                showAppConfirmationDialog(
-                  context: context,
-                  message: "yourSelectedAffirmationHasBeenDelete".tr,
-                  primaryBtnTitle: "no".tr,
-                  secondaryBtnTitle: "yes".tr,
-                  secondaryBtnAction: () {
-                    Navigator.of(context).pop();
-                  },
-                );
-              },
-            ),
-          ),
-        );
-      },
-    );
-  }
 
-  void _updateUserAffirmation(
-    String affirmationTitle,
-    String affirmationId, {
-    bool isSaved = false,
-  }) {
-    if (affirmationTitle.trim().isEmpty) {
-      showSnackBarError(context, "pleaseEnterYourOwnAffirmation".tr);
-      return;
-    }
-  }
+
+
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -8,9 +10,10 @@ import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/presentation/breath_screen/notice_how_you_feel_screen.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
-import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BreathScreen extends StatefulWidget {
@@ -25,6 +28,9 @@ class _BreathScreenState extends State<BreathScreen> with TickerProviderStateMix
 
   late final AnimationController  _lottieController;
   bool isPlaying = false;
+  int playCount = 0;
+  Timer? _timer;
+
   @override
   void initState() {
     _lottieController = AnimationController(
@@ -36,11 +42,38 @@ class _BreathScreenState extends State<BreathScreen> with TickerProviderStateMix
   @override
   void dispose() {
     _lottieController.dispose();
+    _timer?.cancel();
     super.dispose();
   }
+  void _startAnimationSequence() {
+    setState(() {
+      isPlaying = true;
+    });
+    _lottieController.forward();
 
+    _timer = Timer(const Duration(seconds: 19), () {
+      setState(() {
+        isPlaying = false;
+        playCount++;
+      });
+      if (playCount < 3) {
+        _startAnimationSequence();
+      } else {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return NoticeHowYouFeelScreen(notice:widget.skip,);
+        },)).then((value) {
+        setState(() {
+         playCount = 0;
+         _timer;
+         isPlaying = false;
+         _lottieController.reset();
+         _lottieController.stop();
+       });
+        },);
+      }
+    });
+  }
   void _triggerSOS(BuildContext context) async {
-    // Replace "emergencyNumber" with your local emergency number
     final url = Uri.parse('tel:+911234567899');
     if (await canLaunchUrl(url)) {
       await launchUrl(url);
@@ -48,14 +81,15 @@ class _BreathScreenState extends State<BreathScreen> with TickerProviderStateMix
      showSnackBarError(context, "CouldLaunch".tr);
     }
   }
-
+ ThemeController themeController  = Get.find<ThemeController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorConstant.backGround,
+      backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.backGround,
       appBar: CustomAppBar(
         title: "breathTraining".tr,
-        action: widget.skip!?GestureDetector(
+        action: widget.skip!?
+        GestureDetector(
             onTap: () async {
                Get.toNamed(AppRoutes.selectYourFocusPage);
               //Get.toNamed(AppRoutes.noticeHowYouFeel);
@@ -65,7 +99,7 @@ class _BreathScreenState extends State<BreathScreen> with TickerProviderStateMix
               child: Text(
                 "skip".tr,
                 style: Style.montserratRegular(
-                    fontSize: Dimens.d15, color: ColorConstant.black),
+                    fontSize: Dimens.d15, color: themeController.isDarkMode.isTrue?ColorConstant.white:ColorConstant.black),
               ),
             )):const SizedBox(),
       ),
@@ -93,14 +127,10 @@ class _BreathScreenState extends State<BreathScreen> with TickerProviderStateMix
               },
             ),            Dimens.d30.spaceHeight,
             GestureDetector(onTap: () {
-              setState(() {
-                isPlaying = !isPlaying;
-                if (isPlaying) {
-                  _lottieController.forward();
-                } else {
-                  //_lottieController.stop();
-                }
-              });
+              if (!isPlaying) {
+                _startAnimationSequence();
+              }
+           
             },child: SvgPicture.asset(isPlaying?ImageConstant.breathPause:ImageConstant.breathPlay)),
             Dimens.d20.spaceHeight,
             Padding(
@@ -128,7 +158,7 @@ class _BreathScreenState extends State<BreathScreen> with TickerProviderStateMix
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
               margin: const EdgeInsets.symmetric(horizontal: 40),
               decoration: BoxDecoration(
-                color: ColorConstant.white,
+                color:  themeController.isDarkMode.isTrue?ColorConstant.textfieldFillColor:ColorConstant.white,
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: Column(

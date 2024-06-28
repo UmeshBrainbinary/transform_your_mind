@@ -310,7 +310,7 @@
   "AlarmSuccessfully": "Alarm erfolgreich aktualisiert",
   "alarm": "Alarm",
   "noPodsRecommendation": "Keine Schoten in der Empfehlung",
-  "dataNotFound": "Daten nicht gefunden",
+  "dataNotFound": "Nicht gefunden",
   "trailEnds": "Wenn Sie nicht vor Ablauf der Testversion kündigen. Die Kosten werden Ihnen automatisch basierend auf dem ausgewählten Plan in Rechnung gestellt, bis Sie kündigen.",
   "restorePurchase": "Kauf wiederherstellen",
   "discountsSub": "Wir gewähren Rabatte basierend auf dem vom Benutzer ausgewählten Plan. 3 Tage kostenlose Testversion für jeden Plan verfügbar. Sie können Ihr Abonnement jederzeit kündigen.",
@@ -367,7 +367,11 @@
   "monthly": "Monatlich",
   "annually": "Jährlich",
   "weekly": "Wöchentlich",
+  "enterCurrentPasswordHint": "Aktuelles Passwort eingeben",
 
+  "theConfirmPasswordFieldIsRequired": "Das Feld „Passwort bestätigen“ ist erforderlich",
+  "theNewPasswordFieldIsRequired": "Das Feld „Neues Passwort“ ist erforderlich",
+  "theCurrentPasswordFieldIsRequired": "Das aktuelle Passwortfeld ist erforderlich",
   "podsDownloaded": "Pods heruntergeladen",
   "wT": "Hallo, willkommen bei TransformYourMind",
   "awaken": "Erwecken Sie Ihr wahres Potenzial und leben Sie Ihr bestes Leben!",
@@ -377,6 +381,7 @@
   "enterCategory": "Kategorie eingeben",
   "Category": "Kategorie",
   "Update": "Aktualisieren",
+  "otpSend": "Das OTP wurde an Ihre registrierte E-Mail-Adresse gesendet. Wenn es nicht gefunden wird, überprüfen Sie bitte Ihren Junk-Ordner.\n",
 
   "iAgreeThe": "Ich stimme dem zu ",
   "theTitleFieldIsRequired": "Das Titelfeld ist erforderlich",

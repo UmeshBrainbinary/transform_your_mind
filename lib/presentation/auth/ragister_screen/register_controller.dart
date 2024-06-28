@@ -97,7 +97,9 @@ class RegisterController extends GetxController {
     if (response.statusCode == 200 || response.statusCode == 201) {
       loader.value = false;
       PrefService.setValue(PrefKey.email, emailController.text);
-      showSnackBarSuccess(context, "otpSendEmail".tr);
+      showSnackBarSuccessForgot(context, "otpSend".tr);
+
+      //showSnackBarSuccess(context, "otpSendEmail".tr);
       final responseBody = await response.stream.bytesToString();
 
       // Parse the string into JSON and then into CommonModel

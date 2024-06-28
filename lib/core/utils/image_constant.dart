@@ -208,11 +208,13 @@ class ImageConstant {
   static String downArrowSetting = "$iconPath/down_arrow_setting.svg";
   static String filterPositive = "$iconPath/filter_positive_moment.svg";
   static String subscriptionCheck = "$iconPath/subscription_check.svg";
-  static String noData = "$iconPath/no_data.svg";
+  static String noData = "$iconPath/noSearchResult.svg";
+  static String darkData = "$iconPath/darkSeachResult.svg";
   static String breathPause = "$iconPath/breath_pause.svg";
   static String breathPlay = "$iconPath/breath_play.svg";
   static String search = "$iconPath/serach_icon.svg";
   static String popupCheck = "$iconPath/popup_check.svg";
+  static String logOutCheck = "$iconPath/logout_icon.svg";
   static String sos = "$iconPath/sos.svg";
   static String noInternet = "$iconPath/noInternet.png";
   static String searchNotFound = "$imagePath/serach_not_found.png";
@@ -220,6 +222,7 @@ class ImageConstant {
   static String descriptionImage = "$iconPath/description_image.png";
   static String welcomeBackImage = "$imagePath/welcome_back_image.png";
   static String noticeImage = "$imagePath/notice_image.png";
+  static String chooseLanguages = "$imagePath/choose_langauge.png";
   static String breathInhale = "$lottie/breath_inhale.json";
   static String shapeAffirmationShare =
       "$imagePath/shape_affirmation_share.svg";

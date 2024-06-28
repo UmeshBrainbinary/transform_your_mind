@@ -56,17 +56,17 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: themeController.isDarkMode.value
-          ? ColorConstant.darkBackground
-          : ColorConstant.backGround,
-      appBar: CustomAppBar(
-        title: "Alarm".tr,
-        showBack: true,
-      ),
-        body: Stack(
-          children: [
-            GetBuilder<NotificationSettingController>(
+    return Stack(
+      children: [
+        Scaffold(
+          backgroundColor: themeController.isDarkMode.value
+              ? ColorConstant.darkBackground
+              : ColorConstant.backGround,
+          appBar: CustomAppBar(
+            title: "Alarm".tr,
+            showBack: true,
+          ),
+            body: GetBuilder<NotificationSettingController>(
               id: "update",
               builder: (controller) {
                 return  (controller.alarmModel.data??[]).isNotEmpty
@@ -214,8 +214,9 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SvgPicture.asset(ImageConstant.noData),
-                              Dimens.d20.spaceHeight,
+                              SvgPicture.asset(
+                                themeController.isDarkMode.isTrue?ImageConstant.darkData:ImageConstant
+                                    .noData,height: 158,width: 200,),
                               Text(
                                 "dataNotFound".tr,
                                 style: Style.montserratBold(fontSize: 24),
@@ -225,16 +226,16 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                         ),
                       );
               },
-            ),
-          GetBuilder<NotificationSettingController>(
-            id: "update",
-            builder: (controller) {
+            )),
+        GetBuilder<NotificationSettingController>(
+          id: "update",
+          builder: (controller) {
             return controller.loader.isTrue
                 ? commonLoader()
                 : const SizedBox();
           },)
-          ],
-        ));
+      ],
+    );
   }
 
   void _showAlertDialogDelete(

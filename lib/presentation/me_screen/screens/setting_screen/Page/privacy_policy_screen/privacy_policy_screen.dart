@@ -17,70 +17,68 @@ class PrivacyPolicyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeController themeController = Get.find<ThemeController>();
     ProfileController profileController = Get.find<ProfileController>();
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: themeController.isDarkMode.isTrue
-            ? ColorConstant.darkBackground
-            : ColorConstant.backGround,
-        appBar: CustomAppBar(title: "privacyPolicy".tr),
-        body: SingleChildScrollView(
-          child: Stack(
-            children: [
-              Align(
-                  alignment: Alignment.topRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: Dimens.d100),
-                    child: SvgPicture.asset(ImageConstant.profile1),
-                  )),
-              Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: Dimens.d400),
-                    child: SvgPicture.asset(ImageConstant.profile2),
-                  )),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Dimens.d30.spaceHeight,
-                    Text(
-                      "privacyPolicy".tr,
-                      style: TextStyle(
+    return Scaffold(
+      backgroundColor: themeController.isDarkMode.isTrue
+          ? ColorConstant.darkBackground
+          : ColorConstant.backGround,
+      appBar: CustomAppBar(title: "privacyPolicy".tr),
+      body: SingleChildScrollView(
+        child: Stack(
+          children: [
+            Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: Dimens.d100),
+                  child: SvgPicture.asset(ImageConstant.profile1),
+                )),
+            Align(
+                alignment: Alignment.bottomLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: Dimens.d400),
+                  child: SvgPicture.asset(ImageConstant.profile2),
+                )),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Dimens.d30.spaceHeight,
+                  Text(
+                    "privacyPolicy".tr,
+                    style: TextStyle(
+                        fontFamily: 'Montserrat-Medium',
+                        fontSize: 18,
+                        fontWeight: FontWeight.w400,
+                        color: themeController.isDarkMode.isTrue
+                            ? ColorConstant.white
+                            : ColorConstant.black),
+                  ),
+                  Dimens.d10.spaceHeight,
+                  Html(
+                    style: {
+                      "p": Style(
                           fontFamily: 'Montserrat-Medium',
-                          fontSize: 18,
+                          fontSize: FontSize(14.0),
                           fontWeight: FontWeight.w400,
                           color: themeController.isDarkMode.isTrue
                               ? ColorConstant.white
                               : ColorConstant.black),
-                    ),
-                    Dimens.d10.spaceHeight,
-                    Html(
-                      style: {
-                        "p": Style(
-                            fontFamily: 'Montserrat-Medium',
-                            fontSize: FontSize(14.0),
-                            fontWeight: FontWeight.w400,
-                            color: themeController.isDarkMode.isTrue
-                                ? ColorConstant.white
-                                : ColorConstant.black),
-                        "strong": Style(
-                            fontFamily: 'Montserrat-Bold',
-                            fontSize: FontSize(14.0),
-                            fontWeight: FontWeight.bold,
-                            color: themeController.isDarkMode.isTrue
-                                ? ColorConstant.white
-                                : ColorConstant.black),
-                      },
-                      data: """
-              ${profileController.privacyModel.data?.description ?? ""}
-            """,
-                    ),
-                  ],
-                ),
+                      "strong": Style(
+                          fontFamily: 'Montserrat-Bold',
+                          fontSize: FontSize(14.0),
+                          fontWeight: FontWeight.bold,
+                          color: themeController.isDarkMode.isTrue
+                              ? ColorConstant.white
+                              : ColorConstant.black),
+                    },
+                    data: """
+            ${profileController.privacyModel.data?.description ?? ""}
+          """,
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

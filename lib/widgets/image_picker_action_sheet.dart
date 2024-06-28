@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -23,7 +24,17 @@ Future<XFile?>? showImagePickerActionSheet(BuildContext context) async {
           color: themeController.isDarkMode.value? ColorConstant.textfieldFillColor : ColorConstant.white,
           child: CupertinoActionSheetAction(
             onPressed: () async {
-              Navigator.pop(context, ImageSource.camera);
+              final cameraStatus = await Permission.camera.status;
+              if(cameraStatus==PermissionStatus.granted){
+                Navigator.pop(context, ImageSource.camera);
+
+              }else if(cameraStatus == PermissionStatus.denied){
+                await Permission.camera.request();
+
+              }else if(cameraStatus ==PermissionStatus.permanentlyDenied ){
+                await handlePermanentlyDenied();
+
+              }
             },
             child: Text("takePhoto".tr, style: Style.montserratRegular(color: themeController.isDarkMode.value? ColorConstant.white : ColorConstant.black,)),
           ),
@@ -32,12 +43,8 @@ Future<XFile?>? showImagePickerActionSheet(BuildContext context) async {
           color: themeController.isDarkMode.value? ColorConstant.textfieldFillColor : ColorConstant.white,
           child: CupertinoActionSheetAction(
             onPressed: () async {
-
-
-           Navigator.pop(context, ImageSource.gallery);
-
-
-            },
+              Navigator.pop(context, ImageSource.gallery);
+           },
             child: Text("chooseFromLibrary".tr, style: Style.montserratRegular(color:  themeController.isDarkMode.value? ColorConstant.white : ColorConstant.black,)),
           ),
         ),
@@ -80,4 +87,9 @@ Future<XFile?>? showImagePickerActionSheet(BuildContext context) async {
     }
   });
   return image;
+}
+
+
+Future<void> handlePermanentlyDenied() async {
+  await openAppSettings();
 }

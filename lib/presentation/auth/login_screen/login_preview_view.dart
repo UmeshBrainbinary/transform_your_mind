@@ -12,6 +12,7 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 
 class LoginPreviewView extends StatefulWidget {
@@ -29,14 +30,24 @@ class _LoginPreviewViewState extends State<LoginPreviewView> {
       _isChecked = value ?? false;
     });
   }
+  ThemeController themeController = Get.find<ThemeController>();
+@override
+  void initState() {
+  themeController.isDarkMode.isTrue?  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: ColorConstant.darkBackground,
+    statusBarIconBrightness: Brightness.light,
+  ))  :
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: ColorConstant.white,
+    statusBarIconBrightness: Brightness.dark,
+  ));
 
+  super.initState();
+  }
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.white,
-      statusBarIconBrightness: Brightness.dark,
-    ));
-    return Scaffold(
+
+    return Scaffold(backgroundColor: ColorConstant.white,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

@@ -21,7 +21,7 @@ class NowPlayingController extends GetxController {
   final Rx<Duration?> _duration = Duration.zero.obs;
   final RxBool _isPlaying = false.obs;
   final RxBool _isVisible = false.obs;
-  String? _currentUrl;
+  String? currentUrl;
   String? currentName;
   String? currentDescription;
   String? currentExpertName;
@@ -44,12 +44,19 @@ class NowPlayingController extends GetxController {
   List ratedList = [];
   RxBool bookmark = false.obs;
   RxBool rated = false.obs;
+    AnimationController? lottieBgController, lottieController;
 
   getPodsData() async {
     loader.value = true;
     await getPodApi();
     loader.value = false;
     update(['update']);
+  }
+  @override
+  void dispose() {
+    lottieController!.dispose();
+    lottieBgController!.dispose();
+    super.dispose();
   }
 
   @override
@@ -63,9 +70,21 @@ class NowPlayingController extends GetxController {
     _audioPlayer.playerStateStream.listen((state) {
       _isPlaying.value = state.playing;
     });
+    _audioPlayer.processingStateStream.listen((state) {
+      if (state == ProcessingState.completed) {
+        _onAudioFinished();
+      }
+    });
     super.onInit();
   }
-
+  void _onAudioFinished() async {
+    await _audioPlayer.seek(Duration.zero);
+    await pause();
+    lottieController!.stop();
+    lottieBgController!.stop();
+    isPlaying.value = false;
+    update();
+  }
   Future<void> setUrl(String url,
       {String? name,
       String? expertName,
@@ -75,9 +94,15 @@ class NowPlayingController extends GetxController {
     currentExpertName = expertName;
     currentDescription = description;
     currentImage = img;
+
     update();
-    if (_currentUrl == url) return;
-    _currentUrl = url;
+    if (_isPlaying.value) {
+      // Option 1: Do nothing if the same URL is playing
+      if (currentUrl == url) return;
+      await _audioPlayer.stop();
+    }
+    if (currentUrl == url) return;
+    currentUrl = url;
     await _audioPlayer.setUrl(url);
     setPlaybackSpeed(1.0);
   }
@@ -92,8 +117,8 @@ class NowPlayingController extends GetxController {
     currentDescription = description;
     currentImage = img;
     update();
-    if (_currentUrl == url) return;
-    _currentUrl = url;
+    if (currentUrl == url) return;
+    currentUrl = url;
     await _audioPlayer.setFilePath(url);
     setPlaybackSpeed(1.0);
   }
@@ -134,7 +159,7 @@ class NowPlayingController extends GetxController {
   }
 
   Future<void> reset() async {
-    _currentUrl = null;
+    currentUrl = null;
     await _audioPlayer.stop();
     _isVisible.value = false;
   }
@@ -257,19 +282,7 @@ class NowPlayingController extends GetxController {
             ratedList.add(getUserModel.data!.ratedPods![i]);
           }
         }
-        update();
-        /*  for (int i = 0; i < ratedList.length; i++) {
-          if (ratedList[i].podId == id) {
-            rated.value = true;
-          } else {
-            rated.value = false;
-          }
-        }
-        if (bookmarkedList.contains(id)) {
-          bookmark.value = true;
-        } else {
-          bookmark.value = false;
-        }*/
+
         update();
         debugPrint("Bookmark List $bookmarkedList");
         debugPrint("rated List $ratedList");

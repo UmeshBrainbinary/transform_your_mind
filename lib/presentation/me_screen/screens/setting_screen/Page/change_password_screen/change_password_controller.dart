@@ -23,9 +23,11 @@ import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 class ChangePasswordController extends GetxController {
 
 
+  TextEditingController currentPController = TextEditingController();
   TextEditingController newPController = TextEditingController();
   TextEditingController confirmPController = TextEditingController();
 
+  ValueNotifier<bool> current = ValueNotifier(true);
   ValueNotifier<bool> securePass = ValueNotifier(true);
   ValueNotifier<bool> securePass2 = ValueNotifier(true);
   ValueNotifier<bool> securePass3 = ValueNotifier(true);
@@ -94,6 +96,41 @@ class ChangePasswordController extends GetxController {
       request.body = json.encode({
         "email": PrefService.getString(PrefKey.email).toString(),
         "newPassword": newPController.text.trim(),
+      });
+
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        loader.value = false;
+        final responseBody = await response.stream.bytesToString();
+        resetPassword = resetPasswordFromJson(responseBody);
+        update();
+        _showAlertDialog(context);
+        //showSnackBarSuccess(context, resetPassword.message ?? "");
+      } else {
+        loader.value = false;
+        // print(response.reasonPhrase);
+        showSnackBarError(context, "Incorrect password");
+      }
+    } catch (e) {
+      loader.value = false;
+      debugPrint(e.toString());
+    }
+  }
+  changePasswordApi(BuildContext context) async {
+    loader.value = true;
+    try {
+      var headers = {'Content-Type': 'application/json'};
+      var request = http.Request(
+          'POST', Uri.parse('${EndPoints.baseUrl}${EndPoints.resetPassword}'));
+      request.body = json.encode({
+        "email": PrefService.getString(PrefKey.email).toString(),
+        "newPassword": newPController.text.trim(),
+        "currentPassword": currentPController.text.trim(),
+        "isChangePassword": true
+
       });
 
       request.headers.addAll(headers);

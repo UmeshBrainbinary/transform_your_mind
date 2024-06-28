@@ -297,10 +297,6 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                                       ImageConstant.lottieDescription,
                                   maxLines: 15,
                                   maxLength: maxLengthDesc,
-                                  inputFormatters: [
-                                    LengthLimitingTextInputFormatter(
-                                        maxLengthDesc),
-                                  ],
                                   onChanged: (value) {
                                     currentLength.value =
                                         descController.text.length;
@@ -311,8 +307,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                                     }
                                     return null;
                                   },
-                                  keyboardType: TextInputType.multiline,
-                                  textInputAction: TextInputAction.newline,
+
                                 ),
                                 Dimens.d30.spaceHeight,
                                 Row(

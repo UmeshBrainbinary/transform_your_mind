@@ -10,7 +10,7 @@ import 'package:transform_your_mind/model_class/motivational_model.dart';
 
 class MotivationalController extends GetxController {
   List motivationalList = [];
-
+ RxBool loader = false.obs;
   @override
   void onInit() {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -24,6 +24,7 @@ class MotivationalController extends GetxController {
   MotivationalModel motivationalModel = MotivationalModel();
 
   getMotivational() async {
+    loader.value = true;
     var headers = {
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
@@ -35,6 +36,8 @@ class MotivationalController extends GetxController {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
+      loader.value = false;
+
       final responseBody = await response.stream.bytesToString();
       motivationalModel = motivationalModelFromJson(responseBody);
       for (int i = 0; i < motivationalModel.data!.length; i++) {
@@ -45,7 +48,11 @@ class MotivationalController extends GetxController {
       }
       update(["motivational"]);
     } else {
+      loader.value = false;
+
       debugPrint(response.reasonPhrase);
     }
+    loader.value = false;
+
   }
 }

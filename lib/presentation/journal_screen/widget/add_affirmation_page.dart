@@ -227,10 +227,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                                         ImageConstant.lottieDescription,
                                     maxLines: 15,
                                     maxLength: maxLengthDesc,
-                                    inputFormatters: [
-                                      LengthLimitingTextInputFormatter(
-                                          maxLengthDesc),
-                                    ],
+
                                     validator: (value) {
                                       if (value == "") {
                                         return "pleaseEnterDescription".tr;
@@ -239,8 +236,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                                     },
                                     onChanged: (value) => currentLength
                                         .value = descController.text.length,
-                                    keyboardType: TextInputType.multiline,
-                                    textInputAction: TextInputAction.newline,
+
                                   ),
                                 ],
                               ),
@@ -269,9 +265,8 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                                           ? "update".tr
                                           : "save".tr,
                                       onTap: () {
-                                        showSnackBarSuccess(context, "affirmationSuccessfully".tr);
 
-                                       /* titleFocus.unfocus();
+                                        titleFocus.unfocus();
                                         descFocus.unfocus();
                                         if (_formKey.currentState!
                                             .validate()) {
@@ -283,7 +278,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                                             addAffirmation();
 
                                           }
-                                        }*/
+                                        }
                                       },
                                     ),
                                   ),

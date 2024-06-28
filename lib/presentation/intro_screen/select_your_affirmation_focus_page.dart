@@ -137,12 +137,20 @@ class _SelectYourAffirmationFocusPageState
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    themeController.isDarkMode.isTrue
+        ? SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.darkBackground,
+      // Status bar background color
+      statusBarIconBrightness:
+      Brightness.light, // Status bar icon/text color
+    ))
+        : SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: ColorConstant.white, // Status bar background color
-      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+      statusBarIconBrightness:
+      Brightness.dark, // Status bar icon/text color
     ));
     return SafeArea(
-      child: Scaffold(
+      child: Scaffold(backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
         appBar: CustomAppBar(
           title: "selectYourAffirmationFocus".tr,
         ),

@@ -32,10 +32,6 @@ Future<void> main() async {
   tz.setLocalLocation(detroit);
   ConnectivityService().initialize();
 
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: ColorConstant.backGround,
-    statusBarIconBrightness: Brightness.dark,
-  ));
 
 
   await PrefService.init();
@@ -76,6 +72,14 @@ class _MyAppState extends State<MyApp> {
     print("isDarkTheme:- ${PrefService.getBool(PrefKey.isDarkTheme)}");
     themeController.isDarkMode.value = PrefService.getBool(PrefKey.isDarkTheme);
     setAlarm();
+    themeController.isDarkMode.isTrue?  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.darkBackground,
+      statusBarIconBrightness: Brightness.light,
+    ))  :
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.white,
+      statusBarIconBrightness: Brightness.dark,
+    ));
 
     getLanguages();
   }
@@ -132,8 +136,6 @@ class _MyAppState extends State<MyApp> {
     Get.put(NetworkController());
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      // theme: ThemeData.light(),
-      // darkTheme: ThemeData.dark(),
 
       theme: themeController.isDarkMode.value
           ? AppTheme.darkTheme

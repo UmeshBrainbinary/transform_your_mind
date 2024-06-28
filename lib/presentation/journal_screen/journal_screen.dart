@@ -69,10 +69,7 @@ class _JournalScreenState extends State<JournalScreen>
   }
 
   getStatusBar() {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.white, // Status bar background color
-      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
-    ));
+
   }
   bool ratingView = false;
   ThemeController themeController = Get.find<ThemeController>();
@@ -87,7 +84,20 @@ class _JournalScreenState extends State<JournalScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
+    themeController.isDarkMode.isTrue?
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.darkBackground,
+      statusBarIconBrightness: Brightness.light,
+    )) :    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.white,
+      statusBarIconBrightness: Brightness.dark,
+
+    ));
+    return Scaffold(
+        backgroundColor:
+        themeController.isDarkMode.isTrue?
+        ColorConstant.darkBackground:
+        ColorConstant.white,
         appBar: CustomAppBar(
           title: "selfDevelopment".tr,
         ),

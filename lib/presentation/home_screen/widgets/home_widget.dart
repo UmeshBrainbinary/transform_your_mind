@@ -109,12 +109,12 @@ class BookmarkListTile extends StatelessWidget {
               ),
             ],
           ),
-          Container(
+          !dataList!.isPaid!?Container(
             margin: const EdgeInsets.all(7.0),
             height: 14,width: 14,
             decoration: const BoxDecoration(color: Colors.black,shape: BoxShape.circle),
             child: Center(child: Image.asset(ImageConstant.lockHome,height: 7,width: 7,)),
-          )
+          ):const SizedBox()
         ],
       ),
     );
@@ -220,12 +220,12 @@ class RecentlyPlayed extends StatelessWidget {
               ),
             ],
           ),
-          Container(
+          !dataList!.isPaid!?Container(
             margin: const EdgeInsets.all(7.0),
             height: 14,width: 14,
             decoration: const BoxDecoration(color: Colors.black,shape: BoxShape.circle),
             child: Center(child: Image.asset(ImageConstant.lockHome,height: 7,width: 7,)),
-          )
+          ):const SizedBox()
         ],
       ),
     );

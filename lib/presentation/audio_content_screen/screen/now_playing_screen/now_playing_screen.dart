@@ -1,14 +1,11 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:lottie/lottie.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/utils/audio_manager/audio_player_manager.dart';
 import 'package:transform_your_mind/core/utils/audio_manager/seek_bar.dart';
@@ -56,7 +53,6 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
   late int randomNumberForSelectingLottie;
   double _opacityOfSpeedText = 1.0;
 
-  late final AnimationController _lottieBgController, _lottieController;
 
   ThemeController themeController = Get.find<ThemeController>();
   double _volumeListenerValue = 0;
@@ -66,13 +62,14 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
   @override
   void initState() {
     super.initState();
-    nowPlayingController.rated.value = widget.audioData?.isRated ?? false;
+  /*  nowPlayingController.rated.value = widget.audioData?.isRated ?? false;
     nowPlayingController.bookmark.value =
         widget.audioData?.isBookmarked ?? false;
     nowPlayingController.update();
-    _lottieController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 500));
-    _lottieBgController = AnimationController(vsync: this);
+    nowPlayingController.lottieController = AnimationController(
+        vsync: this, duration: const Duration(seconds: 4));
+    nowPlayingController.lottieBgController =
+        AnimationController(vsync: this);
 
     _setInitValues();
     if (widget.d == true) {
@@ -97,34 +94,71 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
 
     VolumeController().getVolume().then((volume) => _setVolumeValue = volume);
     getUserDetails();
-    /*  downloadFile(url:  widget.audioData?.audioFile??"", fileName: "", );*/
-    setState(() {});
+    setState(() {});*/
+    setUrlPlaying();
   }
+  bool checkUrlSameOrNot = false;
+  setUrlPlaying() {
+        if(nowPlayingController.currentUrl==widget.audioData?.audioFile){
+         setState(() {
+           checkUrlSameOrNot = true;
+         });
+        }else{
+      setState(() {
+        checkUrlSameOrNot = false;
+      });
+        }
 
-  Future<String> downloadFile({
-    required String url,
-    required String fileName,
-  }) async {
-    try {
-      final Directory directory = await getApplicationDocumentsDirectory();
-      String directoryPath = '';
+    if (nowPlayingController.isPlaying.isTrue) {
 
-      final String filePath = '$directoryPath/$fileName';
+    } else {
+      nowPlayingController.rated.value = widget.audioData?.isRated ?? false;
+      nowPlayingController.bookmark.value =
+          widget.audioData?.isBookmarked ?? false;
+      nowPlayingController.update();
+      nowPlayingController.lottieController = AnimationController(
+          vsync: this, duration: const Duration(seconds: 4));
+      nowPlayingController.lottieBgController =
+          AnimationController(vsync: this);
 
-      if (!(await Directory(directoryPath).exists())) {
-        await Directory(directoryPath).create(recursive: true);
+      _setInitValues();
+      if (widget.d == true) {
+        nowPlayingController.setUrlFile(
+            img: widget.audioData?.image ?? "",
+            description: widget.audioData?.description ?? "",
+            expertName: widget.audioData?.expertName ?? "",
+            name: widget.audioData?.name ?? "",
+            widget.audioData?.downloadedPath ?? "");
+      } else {
+        nowPlayingController.setUrl(
+            img: widget.audioData?.image ?? "",
+            description: widget.audioData?.description ?? "",
+            expertName: widget.audioData?.expertName ?? "",
+            name: widget.audioData?.name ?? "",
+            widget.audioData?.audioFile ?? "");
       }
-      final File file = File(filePath);
-      final http.Response response = await http.get(Uri.parse(url));
-      await file.writeAsBytes(response.bodyBytes);
 
-      return filePath;
-    } catch (e) {
-      rethrow;
+      VolumeController().listener((volume) {
+        setState(() => _volumeListenerValue = volume);
+      });
+
+      VolumeController().getVolume().then((volume) => _setVolumeValue = volume);
+      getUserDetails();
+      setState(() {});
     }
   }
 
   getUserDetails() async {
+    if(nowPlayingController.isPlaying.isTrue){
+      nowPlayingController.lottieController!.reset();
+      nowPlayingController.lottieController!.repeat();
+
+    }else{
+      nowPlayingController.lottieController!.stop();
+    }
+    setState(() {
+
+    });
     await nowPlayingController.getUser(widget.audioData!.id);
   }
 
@@ -132,10 +166,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
       Get.put(AudioContentController());
   @override
   void dispose() {
-    _lottieController.dispose();
-    _lottieBgController.dispose();
-    VolumeController().removeListener();
 
+    VolumeController().removeListener();
     super.dispose();
   }
 
@@ -154,14 +186,13 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                   clipper: BgSemiCircleClipPath(),
                   child: CommonLoadImage(
                     url: widget.audioData?.image ?? '',
-                    height: Get.height * 0.78,
-                    borderRadius: Dimens.d16,
-                    width: Get.width,
+                        height: Get.height - 150,
+                        width: Get.width,
+                      ),
+                    ),
                   ),
-                ),
-              ),
 
-              /// description, subtitle
+                  /// description, subtitle
                   Padding(
                     padding: const EdgeInsets.only(top: Dimens.d300),
                     child: Column(
@@ -216,19 +247,19 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                     leading: GestureDetector(
                         onTap: () async {
                           await audioContentController.getPodsData();
-                          setState(() {});
                           Get.back();
-                        },
-                        child: Icon(
-                          Icons.close,
-                          color: themeController.isDarkMode.isTrue
-                              ? ColorConstant.white
-                              : ColorConstant.black,
-                        )),
-                    action: Row(
-                      children: [
-                        Obx(
-                          () => GestureDetector(
+                              setState(() {});
+                            },
+                            child: Icon(
+                              Icons.close,
+                              color: themeController.isDarkMode.isTrue
+                                  ? ColorConstant.white
+                                  : ColorConstant.black,
+                            )),
+                        action: Row(
+                          children: [
+                            Obx(
+                              () => GestureDetector(
                             onTap: () {
                               if (nowPlayingController.rated.isTrue) {
                               } else {
@@ -296,14 +327,15 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                     left: Dimens.d110,
                     child: Lottie.asset(
                       ImageConstant.lottieStarOcean,
-                      controller: _lottieBgController,
+                      controller: nowPlayingController.lottieBgController,
                       //height: MediaQuery.of(context).size.height / 3,
                       height: 160,
                       width: 160,
                       onLoaded: (composition) {
-                        _lottieBgController
-                          ..duration = composition.duration
-                          ..repeat();
+
+                            nowPlayingController.lottieBgController!
+                              ..duration = composition.duration
+                              ..repeat();
                       },
                     ),
                   ),
@@ -342,7 +374,6 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                   ),
                   Dimens.d20.h.spaceHeight,
 
-                  ///player buttons
                       ValueListenableBuilder(
                           valueListenable: nowPlayingController.isAudioLoading,
                           builder: (BuildContext context, value,
@@ -387,49 +418,54 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                                     ),
                                   ),
                                 ),
-                                ValueListenableBuilder(
-                                  builder: (context, value, child) {
-                                    return Flexible(
-                                      fit: FlexFit.loose,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                      audioDataStore = widget.audioData;
+                                GetBuilder<NowPlayingController>(
+                                  builder: (controller) {
+                                    return ValueListenableBuilder(
+                                      builder: (context, value, child) {
+                                        return Flexible(
+                                          fit: FlexFit.loose,
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              audioDataStore = widget.audioData;
 
-                                      if (nowPlayingController
-                                          .isPlaying.value) {
-                                        _lottieController.stop();
-                                        nowPlayingController.pause();
-                                            nowPlayingController.update();
-                                          } else {
-
-                                            nowPlayingController.play();
-                                            _lottieController.repeat();
-                                            nowPlayingController
-                                                .addRecently(widget.audioData!.id);
-                                            nowPlayingController.update();
-                                          }
-                                          setState(() {
-                                            nowPlayingController.isPlaying
-                                                .value =
-                                            !nowPlayingController.isPlaying
-                                                .value;
-                                            nowPlayingController.update();
-                                          });
+                                              if (nowPlayingController
+                                                  .isPlaying.value) {
+                                                nowPlayingController
+                                                    .lottieController!
+                                                    .stop();
+                                                nowPlayingController.pause();
+                                                nowPlayingController.update();
+                                              } else {
+                                                nowPlayingController.play();
+                                                nowPlayingController
+                                                    .lottieController!
+                                                    .repeat();
+                                                nowPlayingController
+                                                    .addRecently(
+                                                        widget.audioData!.id);
+                                                nowPlayingController.update();
+                                              }
+                                              setState(() {
+                                                nowPlayingController
+                                                        .isPlaying.value =
+                                                    !nowPlayingController
+                                                        .isPlaying.value;
+                                                nowPlayingController.update();
+                                              });
                                           nowPlayingController.update();
-
-                                    },
-                                    child: Container(
-                                          height: Dimens.d64.h,
-                                          width: Dimens.d64.h,
-                                          decoration: const BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: ColorConstant.themeColor),
-                                          child: Padding(
-                                            padding: EdgeInsets.all(
-                                                Dimens.d17.h),
-                                            child: AnimatedSwitcher(
-                                              duration:
-                                              const Duration(milliseconds: 500),
+                                            },
+                                            child: Container(
+                                              height: Dimens.d64.h,
+                                              width: Dimens.d64.h,
+                                              decoration: const BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color:
+                                                      ColorConstant.themeColor),
+                                              child: Padding(
+                                                padding: EdgeInsets.all(
+                                                    Dimens.d17.h),
+                                                child: AnimatedSwitcher(
+                                                  duration: const Duration(milliseconds: 500),
                                               transitionBuilder: (child,
                                                   animation) =>
                                                   RotationTransition(
@@ -466,6 +502,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                                     );
                                   },
                                   valueListenable: isActivityApiCalled,
+                                    );
+                                  },
                                 ),
                                 Expanded(
                                   child: GestureDetector(
@@ -605,15 +643,13 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                                 /// music animation
                                     Lottie.asset(
                                       ImageConstant.lottieAudio,
-                                      controller: _lottieController,
+                                      controller:
+                                          nowPlayingController.lottieController,
                                       height: Dimens.d40,
                                       width: Dimens.d40,
                                       fit: BoxFit.fill,
                                       repeat: true,
-                                      onLoaded: (composition) {
-                                        _lottieController.duration =
-                                            composition.duration;
-                                      },
+
                                     ),
                                     SizedBox(
                                       height: Dimens.d35,
@@ -734,7 +770,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
 
   void _volumeTapHandler() {
     _isVolShowing.value = true;
-    volTimer = Timer(const Duration(milliseconds: 1500), () {
+    volTimer = Timer(const Duration(seconds: 2), () {
       _isVolShowing.value = false;
     });
   }
@@ -845,21 +881,6 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
   Future<void> _setInitValues() async {
     randomNumberForSelectingLottie = Dimens.d1.toInt() +
         randomNumberGenerator.nextInt(Dimens.d7.toInt() - Dimens.d1.toInt());
-  }
-
-  Duration parseAudioDuration(String audioDurationInString) {
-    int hours = 0;
-    int minutes = 0;
-    int micros;
-    List<String> parts = audioDurationInString.split(':');
-    if (parts.length > 2) {
-      hours = int.parse(parts[parts.length - 3]);
-    }
-    if (parts.length > 1) {
-      minutes = int.parse(parts[parts.length - 2]);
-    }
-    micros = (double.parse(parts[parts.length - 1]) * 1000000).round();
-    return Duration(hours: hours, minutes: minutes, microseconds: micros);
   }
 }
 

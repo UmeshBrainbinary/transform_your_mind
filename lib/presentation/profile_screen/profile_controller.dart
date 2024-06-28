@@ -24,10 +24,8 @@ class ProfileController extends GetxController {
   }
 
   GetUserModel getUserModel = GetUserModel();
-  FaqModel faqModel = FaqModel();
   GuideModel guideModel = GuideModel();
   PrivacyModel privacyModel = PrivacyModel();
-  List<FaqData>? faqData = [];
   ProgressModel progressModel = ProgressModel();
 
   getUserDetail() {
@@ -58,34 +56,6 @@ class ProfileController extends GetxController {
         await PrefService.setValue(PrefKey.name, getUserModel.data?.name ?? "");
         await PrefService.setValue(
             PrefKey.userImage, getUserModel.data?.userProfile ?? "");
-      } else {
-        debugPrint(response.reasonPhrase);
-      }
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-  }
-
-  getFaq() async {
-    try {
-      var headers = {
-        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
-      };
-      var request = http.Request(
-        'GET',
-        Uri.parse(
-          EndPoints.getFaqApi,
-        ),
-      );
-
-      request.headers.addAll(headers);
-      http.StreamedResponse response = await request.send();
-
-      if (response.statusCode == 200) {
-        final responseBody = await response.stream.bytesToString();
-
-        faqModel = faqModelFromJson(responseBody);
-        faqData = faqModel.data;
       } else {
         debugPrint(response.reasonPhrase);
       }

@@ -16,6 +16,7 @@ import 'package:transform_your_mind/presentation/audio_content_screen/audio_cont
 import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_controller.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_screen.dart';
 import 'package:transform_your_mind/presentation/notification_screen/notification_screen.dart';
+import 'package:transform_your_mind/presentation/subscription_screen/subscription_screen.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
@@ -37,7 +38,6 @@ class _AudioContentScreenState extends State<AudioContentScreen>
   ValueNotifier<bool> showScrollTop = ValueNotifier(false);
   TextEditingController ratingController = TextEditingController();
   FocusNode ratingFocusNode = FocusNode();
-  int? _currentRating = 0;
 
   ThemeController themeController = Get.find<ThemeController>();
   final nowPlayController = Get.put(NowPlayingController());
@@ -255,150 +255,170 @@ class _AudioContentScreenState extends State<AudioContentScreen>
                                                   audioContentController
                                                       .searchFocusNode
                                                       .unfocus();
+                                                   if(controller.audioData[index].isPaid!){
+                                                     _onTileClick(
+                                                         audioContent: controller
+                                                             .audioData[index],
+                                                         context);
+                                                   }else{
+                                                     Navigator.push(context, MaterialPageRoute(
+                                                       builder: (context) {
+                                                         return SubscriptionScreen(
+                                                           skip: false,
+                                                         );
+                                                       },
+                                                     ));
+                                                   }
 
-                                                  _onTileClick(
-                                                      audioContent: controller
-                                                          .audioData[index],
-                                                      context);
                                                 },
-                                                child: Column(
+                                                child: Stack(alignment: Alignment.topRight,
                                                   children: [
-                                                    Stack(
-                                                      alignment: Alignment.topRight,
+                                                    Column(
                                                       children: [
-                                                        CommonLoadImage(
-                                                          borderRadius: 10,
-                                                          url: controller
-                                                                  .audioData[index]
-                                                                  .image ??
-                                                              "",
-                                                          width: Dimens.d156,
-                                                          height: Dimens.d113,
-                                                        ),
-                                                        Align(
-                                                          alignment:
-                                                              Alignment.topRight,
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                                    right: 10,
-                                                                    top: 10),
-                                                            child: SvgPicture.asset(
-                                                                ImageConstant.play),
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                    Dimens.d10.spaceHeight,
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        SizedBox(
-                                                          width: 90,
-                                                          child: Text(
-                                                            controller
-                                                                .audioData[index]
-                                                                .name
-                                                                .toString(),
-                                                            // "Motivational",
-                                                            style: Style
-                                                                .montserratMedium(
-                                                              fontSize: Dimens.d12,
-                                                            ),
-                                                            overflow: TextOverflow
-                                                                .ellipsis,
-                                                            maxLines: 1,
-                                                          ),
-                                                        ),
-                                                        const CircleAvatar(
-                                                          radius: 2,
-                                                          backgroundColor:
-                                                              ColorConstant
-                                                                  .colorD9D9D9,
-                                                        ),
-                                                        Row(
+                                                        Stack(
+                                                          alignment: Alignment.topRight,
                                                           children: [
-                                                            SvgPicture.asset(
-                                                              ImageConstant.rating,
-                                                              color: ColorConstant
-                                                                  .colorFFC700,
-                                                              height: 10,
-                                                              width: 10,
+                                                            CommonLoadImage(
+                                                              borderRadius: 10,
+                                                              url: controller
+                                                                      .audioData[index]
+                                                                      .image ??
+                                                                  "",
+                                                              width: Dimens.d156,
+                                                              height: Dimens.d113,
                                                             ),
-                                                            Text(
-                                                              "${controller.audioData[index].rating.toString()}.0" ??
-                                                                  '',
-                                                              style: Style
-                                                                  .montserratMedium(
-                                                                fontSize:
-                                                                    Dimens.d12,
+                                                            Align(
+                                                              alignment:
+                                                                  Alignment.topRight,
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .only(
+                                                                        right: 10,
+                                                                        top: 10),
+                                                                child: SvgPicture.asset(
+                                                                    ImageConstant.play),
                                                               ),
-                                                            ),
+                                                            )
                                                           ],
                                                         ),
-                                                        controller.audioData[index]
-                                                                    .download ==
-                                                                false
-                                                            ? GestureDetector(
-                                                                onTap: () async {
-
-                                                                  controller.setDownloadView(
-                                                                    fileName: controller
-                                                                        .audioData[
-                                                                    index].name,
-                                                                    index: index,
-                                                                      context:
-                                                                          context,
-                                                                      url: controller
-                                                                          .audioData[
-                                                                              index]
-                                                                          .audioFile);
-                                                                  setState(() {
-
-                                                                  });
-                                                                },
-                                                                child: SvgPicture.asset(
-                                                                    ImageConstant
-                                                                        .downloadCircle,
-                                                                    height:
-                                                                        Dimens.d25,
-                                                                    width:
-                                                                        Dimens.d25),
-                                                              )
-                                                            : Container(
-                                                                height: 22,
-                                                                width: 22,
-                                                                decoration: BoxDecoration(
-                                                                    shape: BoxShape
-                                                                        .circle,
-                                                                    border: Border.all(
-                                                                        color: Colors
-                                                                            .green,
-                                                                        width:
-                                                                            1.5)),
-                                                                child: const Icon(
-                                                                  Icons.check,
-                                                                  color:
-                                                                      Colors.green,
-                                                                  size: 18,
+                                                        Dimens.d10.spaceHeight,
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            SizedBox(
+                                                              width: 90,
+                                                              child: Text(
+                                                                controller
+                                                                    .audioData[index]
+                                                                    .name
+                                                                    .toString(),
+                                                                // "Motivational",
+                                                                style: Style
+                                                                    .montserratMedium(
+                                                                  fontSize: Dimens.d12,
                                                                 ),
-                                                              )
+                                                                overflow: TextOverflow
+                                                                    .ellipsis,
+                                                                maxLines: 1,
+                                                              ),
+                                                            ),
+                                                            const CircleAvatar(
+                                                              radius: 2,
+                                                              backgroundColor:
+                                                                  ColorConstant
+                                                                      .colorD9D9D9,
+                                                            ),
+                                                            Row(
+                                                              children: [
+                                                                SvgPicture.asset(
+                                                                  ImageConstant.rating,
+                                                                  color: ColorConstant
+                                                                      .colorFFC700,
+                                                                  height: 10,
+                                                                  width: 10,
+                                                                ),
+                                                                Text(
+                                                                  "${controller.audioData[index].rating.toString()}.0" ??
+                                                                      '',
+                                                                  style: Style
+                                                                      .montserratMedium(
+                                                                    fontSize:
+                                                                        Dimens.d12,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            controller.audioData[index]
+                                                                        .download ==
+                                                                    false
+                                                                ? GestureDetector(
+                                                                    onTap: () async {
+
+                                                                      controller.setDownloadView(
+                                                                        fileName: controller
+                                                                            .audioData[
+                                                                        index].name,
+                                                                        index: index,
+                                                                          context:
+                                                                              context,
+                                                                          url: controller
+                                                                              .audioData[
+                                                                                  index]
+                                                                              .audioFile);
+                                                                      setState(() {
+
+                                                                      });
+                                                                    },
+                                                                    child: SvgPicture.asset(
+                                                                        ImageConstant
+                                                                            .downloadCircle,
+                                                                        height:
+                                                                            Dimens.d25,
+                                                                        width:
+                                                                            Dimens.d25),
+                                                                  )
+                                                                : Container(
+                                                                    height: 22,
+                                                                    width: 22,
+                                                                    decoration: BoxDecoration(
+                                                                        shape: BoxShape
+                                                                            .circle,
+                                                                        border: Border.all(
+                                                                            color: Colors
+                                                                                .green,
+                                                                            width:
+                                                                                1.5)),
+                                                                    child: const Icon(
+                                                                      Icons.check,
+                                                                      color:
+                                                                          Colors.green,
+                                                                      size: 18,
+                                                                    ),
+                                                                  )
+                                                          ],
+                                                        ),
+                                                        Dimens.d7.spaceHeight,
+                                                        Text(
+                                                          controller.audioData[index]
+                                                              .description
+                                                              .toString(),
+                                                          maxLines: Dimens.d2.toInt(),
+                                                          style: Style.montserratMedium(
+                                                              fontSize: Dimens.d14),
+                                                          overflow:
+                                                              TextOverflow.ellipsis,
+                                                        ),
                                                       ],
                                                     ),
-                                                    Dimens.d7.spaceHeight,
-                                                    Text(
-                                                      controller.audioData[index]
-                                                          .description
-                                                          .toString(),
-                                                      maxLines: Dimens.d2.toInt(),
-                                                      style: Style.montserratMedium(
-                                                          fontSize: Dimens.d14),
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                    ),
+                                                    !controller.audioData[index].isPaid!?Container(
+                                                      margin: const EdgeInsets.all(7.0),
+                                                      height: 14,width: 14,
+                                                      decoration: const BoxDecoration(color: Colors.black,shape: BoxShape.circle),
+                                                      child: Center(child: Image.asset(ImageConstant.lockHome,height: 7,width: 7,)),
+                                                    ):const SizedBox()
                                                   ],
                                                 ),
                                               );
@@ -421,7 +441,6 @@ class _AudioContentScreenState extends State<AudioContentScreen>
                   if (!audioPlayerController.isVisible.value) {
                     return const SizedBox.shrink();
                   }
-
                   final currentPosition =
                       audioPlayerController.positionStream.value ?? Duration.zero;
                   final duration =
@@ -430,15 +449,25 @@ class _AudioContentScreenState extends State<AudioContentScreen>
 
                   return GestureDetector(
                     onTap: () {
-                      Get.to(() => NowPlayingScreen(
-                                audioData: audioDataStore!,
-                              ))!
-                          .then(
-                        (value) async {
-                          await audioContentController.getPodsData();
-                          setState(() {});
+
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(
+                              Dimens.d24,
+                            ),
+                          ),
+                        ),
+                        builder: (BuildContext context) {
+                          return NowPlayingScreen(
+                            audioData: audioDataStore!,
+                          );
                         },
-                      );
+                      ).then((value) {
+
+                      },);
                     },
                     child: Align(
                       alignment: Alignment.bottomCenter,
@@ -464,13 +493,10 @@ class _AudioContentScreenState extends State<AudioContentScreen>
                           children: [
                             Row(
                               children: [
-                                SvgPicture.asset(ImageConstant.userProfile,
-                                    width: 47, height: 47),
-
-                                /*   CommonLoadImage(
-                                    url: audioPlayerController.currentImage!,
-                                    width: 52,
-                                    height: 52),*/
+                                CommonLoadImage(borderRadius: 6.0,
+                                    url:audioDataStore!.image!,
+                                    width: 47,
+                                       height: 47),
                                 Dimens.d12.spaceWidth,
                                 GestureDetector(
                                     onTap: () async {
@@ -490,7 +516,7 @@ class _AudioContentScreenState extends State<AudioContentScreen>
                                 Dimens.d10.spaceWidth,
                                 Expanded(
                                   child: Text(
-                                    audioPlayerController.currentName!,
+                                    audioDataStore!.name!,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: Style.montserratRegular(
@@ -574,152 +600,6 @@ class _AudioContentScreenState extends State<AudioContentScreen>
     );
   }
 
-  void _showAlertDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              //backgroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(11.0), // Set border radius
-              ),
-              actions: <Widget>[
-                Dimens.d10.spaceHeight,
-                GestureDetector(
-                    onTap: () {
-                      Get.back();
-                    },
-                    child: SvgPicture.asset(ImageConstant.close,
-                        color: themeController.isDarkMode.value
-                            ? ColorConstant.white
-                            : ColorConstant.black)),
-                Dimens.d3.spaceHeight,
-                Center(
-                  child: Text("rateYourExperience".tr,
-                      textAlign: TextAlign.center,
-                      style: Style.cormorantGaramondBold(
-                        fontSize: Dimens.d22,
-                        fontWeight: FontWeight.w700,
-                      )),
-                ),
-                Dimens.d28.spaceHeight,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: List.generate(5, (index) {
-                    return GestureDetector(
-                        onTap: () {
-                          setState.call(() {
-                            _currentRating = index + 1;
-                          });
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(3.0),
-                          child: SvgPicture.asset(
-                            index < _currentRating!
-                                ? ImageConstant.rating
-                                : ImageConstant.rating,
-                            color: index < _currentRating!
-                                ? ColorConstant.colorFFC700
-                                : ColorConstant.grey,
-                            height: Dimens.d26,
-                            width: Dimens.d26,
-                          ),
-                        ));
-                  }),
-                ),
-                Dimens.d22.spaceHeight,
-                CommonTextField(
-                    borderRadius: Dimens.d10,
-                    filledColor: ColorConstant.colorECECEC,
-                    hintText: "writeYourNote".tr,
-                    maxLines: 5,
-                    controller: ratingController,
-                    focusNode: ratingFocusNode),
-                Dimens.d18.spaceHeight,
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: Dimens.d70.h),
-                  child: CommonElevatedButton(
-                    height: Dimens.d33,
-                    textStyle: Style.montserratRegular(
-                      fontSize: Dimens.d18,
-                      color: ColorConstant.white,
-                    ),
-                    title: "submit".tr,
-                    onTap: () {
-                      ratingController.clear();
-                      Get.back();
-                    },
-                  ),
-                )
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
+
 }
 
-class TransFormRitualsButton extends StatelessWidget {
-  const TransFormRitualsButton({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return IntrinsicHeight(
-      child: Container(
-        height: Dimens.d56,
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          color: ColorConstant.color545454,
-          borderRadius: BorderRadius.all(Radius.circular(Dimens.d16)),
-        ),
-        child: Stack(
-          alignment: Alignment.centerRight,
-          children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(Dimens.d16),
-                  bottomRight: Radius.circular(Dimens.d16)),
-              child: SvgPicture.asset(
-                ImageConstant.ellipseRituals,
-                fit: BoxFit.cover,
-                // height: 80.h,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Row(
-                children: [
-                  SvgPicture.asset(
-                    ImageConstant.ritualsRight,
-                  ),
-                  Dimens.d12.spaceWidth,
-                  Text(
-                    "rituals".tr,
-                    style: Style.montserratMedium(
-                        fontSize: Dimens.d20, color: ColorConstant.white),
-                  ),
-                  const Spacer(),
-                  CommonElevatedButton(
-                      title: "startNow".tr,
-                      textStyle: Style.montserratMedium(
-                          color: ColorConstant.themeColor),
-                      buttonColor: ColorConstant.white,
-                      height: 30,
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
-                      onTap: () {})
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}

@@ -38,7 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     profileController.getUserDetail();
-    profileController.getFaq();
+
     profileController.getGuide();
     profileController.getPrivacy();
     profileController.getProgress("isLastMonth");
@@ -435,7 +435,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     width: Dimens.d170,
                     decoration: BoxDecoration(
                         color: ColorConstant.themeColor,
-                        borderRadius: BorderRadius.circular(85)),
+                        borderRadius: BorderRadius.circular(10)),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -468,16 +468,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             return GestureDetector(
               onTap: () {
-                Get.to(() =>  NowPlayingScreen());
-              },
-              child: Align(alignment: Alignment.bottomCenter,
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(
+                        Dimens.d24,
+                      ),
+                    ),
+                  ),
+                  builder: (BuildContext context) {
+                    return NowPlayingScreen(
+                      audioData: audioDataStore!,
+                    );
+                  },
+                );              },
+              child: Align(
+                alignment: Alignment.bottomCenter,
                 child: Container(
                   height: 87,
-                  width: Get.width,padding: const EdgeInsets.only(top: 8.0,left: 8,right: 8),
-                  margin: const EdgeInsets.symmetric(horizontal: 10,vertical: 50),
+                  width: Get.width,
+                  padding: const EdgeInsets.only(top: 8.0, left: 8, right: 8),
+                  margin: const EdgeInsets.symmetric(
+                      horizontal: 10, vertical: 50),
                   decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [ColorConstant.colorB9CCD0,
+                        colors: [
+                          ColorConstant.colorB9CCD0,
                           ColorConstant.color86A6AE,
                           ColorConstant.color86A6AE,
                         ], // Your gradient colors
@@ -490,13 +508,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       Row(
                         children: [
-                          SvgPicture.asset(ImageConstant.userProfile,width: 47,
+                          CommonLoadImage(borderRadius: 6.0,
+                              url:audioDataStore!.image!,
+                              width: 47,
                               height: 47),
-
-                          /*   CommonLoadImage(
-                                url: audioPlayerController.currentImage!,
-                                width: 52,
-                                height: 52),*/
                           Dimens.d12.spaceWidth,
                           GestureDetector(
                               onTap: () async {
@@ -506,13 +521,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   await audioPlayerController.play();
                                 }
                               },
-                              child: SvgPicture.asset(isPlaying
-                                  ? ImageConstant.pause
-                                  : ImageConstant.play,height: 17,width: 17,)),
+                              child: SvgPicture.asset(
+                                isPlaying
+                                    ? ImageConstant.pause
+                                    : ImageConstant.play,
+                                height: 17,
+                                width: 17,
+                              )),
                           Dimens.d10.spaceWidth,
                           Expanded(
                             child: Text(
-                              audioPlayerController.currentName!,
+                              audioDataStore!.name!,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: Style.montserratRegular(
@@ -526,30 +545,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               },
                               child: SvgPicture.asset(
                                 ImageConstant.closePlayer,
-                                color: ColorConstant.white,height: 24,width: 24,
+                                color: ColorConstant.white,
+                                height: 24,
+                                width: 24,
                               )),
                           Dimens.d10.spaceWidth,
                         ],
                       ),
                       SliderTheme(
                         data: SliderTheme.of(context).copyWith(
-
                           activeTrackColor:
                           ColorConstant.white.withOpacity(0.2),
                           inactiveTrackColor: ColorConstant.color6E949D,
                           trackHeight: 1.5,
                           thumbColor: ColorConstant.transparent,
                           // Color of the thumb
-                          thumbShape:SliderComponentShape.noThumb,
+                          thumbShape: SliderComponentShape.noThumb,
                           // Customize the thumb shape and size
-                          overlayColor: ColorConstant.backGround.withAlpha(32),
+                          overlayColor:
+                          ColorConstant.backGround.withAlpha(32),
                           // Color when thumb is pressed
                           overlayShape: const RoundSliderOverlayShape(
                               overlayRadius:
                               16.0), // Customize the overlay shape and size
                         ),
-                        child: Slider(thumbColor: Colors.transparent,
-
+                        child: Slider(
+                          thumbColor: Colors.transparent,
                           activeColor: ColorConstant.backGround,
                           value: currentPosition.inMilliseconds.toDouble(),
                           max: duration.inMilliseconds.toDouble(),

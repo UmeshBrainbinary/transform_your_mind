@@ -80,6 +80,7 @@ dependencies:
   dots_indicator: ^3.0.0
   url_launcher: ^6.3.0
   styled_text: ^8.1.0
+  audio_waveforms: ^1.0.5
 
 dev_dependencies:
   flutter_test:

@@ -136,14 +136,25 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.white, // Status bar background color
-      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
-    ));
+    themeController.isDarkMode.isTrue
+        ? SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+            statusBarColor: ColorConstant.darkBackground,
+            // Status bar background color
+            statusBarIconBrightness:
+                Brightness.light, // Status bar icon/text color
+          ))
+        : SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+            statusBarColor: ColorConstant.white, // Status bar background color
+            statusBarIconBrightness:
+                Brightness.dark, // Status bar icon/text color
+          ));
     return SafeArea(
       child: Stack(
         children: [
           Scaffold(
+            backgroundColor: themeController.isDarkMode.isTrue
+                ? ColorConstant.darkBackground
+                : ColorConstant.white,
             appBar:  CustomAppBar(showBack: false,
               title: "selectYourFocus".tr,
             ),

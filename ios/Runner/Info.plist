@@ -35,6 +35,12 @@
 	<string>Need permission to access the camera</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Need permission to access the microphone</string>
+	<key>UIBackgroundModes</key>
+    <array>
+        <string>fetch</string>
+        <string>processing</string>
+    </array>
+
 	<key>NSAppTransportSecurity</key>
     <dict>
         <key>NSAllowsArbitraryLoads</key>
@@ -44,7 +50,8 @@
     <string>We need access to your location to show your current position.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>We need access to your location to show your current position.</string>
-
+    <key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Need permission to access photo library</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

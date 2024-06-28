@@ -7,15 +7,18 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/breath_screen/breath_controller.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 
 class NoticeHowYouFeelScreen extends StatelessWidget {
-  const NoticeHowYouFeelScreen({super.key});
+  bool? notice;
+   NoticeHowYouFeelScreen({super.key,this.notice});
 
   @override
   Widget build(BuildContext context) {
     BreathController breathController = Get.put(BreathController());
-    return Scaffold(
+    ThemeController themeController = Get.find<ThemeController>();
+    return Scaffold(backgroundColor:  themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -81,7 +84,12 @@ class NoticeHowYouFeelScreen extends StatelessWidget {
               child: CommonElevatedButton(
                 title: "explorer".tr,
                 onTap: () {
-                  Get.offAllNamed(AppRoutes.selectYourFocusPage);
+                  if(!notice!){
+                    Get.back();
+                  }else{
+                    Get.offAllNamed(AppRoutes.selectYourFocusPage);
+
+                  }
                 },
               ),
             )

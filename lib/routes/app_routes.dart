@@ -8,7 +8,6 @@ import 'package:transform_your_mind/presentation/audio_content_screen/screen/now
 import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_screen.dart';
 import 'package:transform_your_mind/presentation/auth/forgot_password_screen/binding/forgot_binding.dart';
 import 'package:transform_your_mind/presentation/auth/forgot_password_screen/forgot_password_screen.dart';
-import 'package:transform_your_mind/presentation/auth/forgot_password_screen/new_password_screen.dart';
 import 'package:transform_your_mind/presentation/auth/forgot_password_screen/verification_screen.dart';
 import 'package:transform_your_mind/presentation/auth/login_screen/binding/login_binding.dart';
 import 'package:transform_your_mind/presentation/auth/login_screen/login_preview_view.dart';
@@ -24,7 +23,6 @@ import 'package:transform_your_mind/presentation/feedback_screen/binding/feedbac
 import 'package:transform_your_mind/presentation/feedback_screen/feedback_screen.dart';
 import 'package:transform_your_mind/presentation/home_screen/binding/home_binding.dart';
 import 'package:transform_your_mind/presentation/home_screen/home_screen.dart';
-import 'package:transform_your_mind/presentation/intro_screen/about_page.dart';
 import 'package:transform_your_mind/presentation/intro_screen/select_your_focus_page.dart';
 import 'package:transform_your_mind/presentation/intro_screen/welcome_screen.dart';
 import 'package:transform_your_mind/presentation/journal_screen/binding/journal_binding.dart';
@@ -74,7 +72,6 @@ class AppRoutes {
   static const String appNavigationScreen = '/app_navigation_screen';
   static const String forgotScreen = '/forgotScreen';
   static const String verificationsScreen = '/verificationsScreen';
-  static const String newPasswordScreen = '/newPasswordScreen';
   static const String dashBoardScreen = '/dashBoardScreen';
   static const String meScreen = '/meScreen';
   static const String homeScreen = '/homeScreen';
@@ -92,7 +89,6 @@ class AppRoutes {
   static const String myAffirmationPage = '/myAffirmationPage';
   static const String editProfileScreen = '/edit_profile_screen';
   static const String fullScreenImage = '/fullScreenImage';
-  static const String aboutPage = '/aboutPage';
   static const String selectYourFocusPage = '/selectYourFocusPage';
   static const String myNotesPage = '/myNotesPage';
   static const String changePassword = '/change_password_screen';
@@ -196,14 +192,6 @@ class AppRoutes {
       ],
     ),
 
-  /*  GetPage(
-      transition: Transition.rightToLeft,
-      name: newPasswordScreen,
-      page: () => NewPasswordScreen(),
-      bindings: [
-        ForgotBinding(),
-      ],
-    ),*/
     GetPage(
       transition: Transition.rightToLeft,
       name: dashBoardScreen,
@@ -262,7 +250,7 @@ class AppRoutes {
     GetPage(
       transition: Transition.rightToLeft,
       name: editProfileScreen,
-      page: () =>  EditProfileScreen(),
+      page: () =>  const EditProfileScreen(),
       bindings: [
         EditProfileBinding(),
       ],
@@ -338,15 +326,6 @@ class AppRoutes {
 
     GetPage(
       transition: Transition.rightToLeft,
-      name: aboutPage,
-      page: () =>  const AboutPage(),
-      bindings: [
-       DashBoardBinding()
-      ],
-    ),
-
-    GetPage(
-      transition: Transition.rightToLeft,
       name: selectYourFocusPage,
       page: () =>  const SelectYourFocusPage(isFromMe: false),
       bindings: [
@@ -416,7 +395,7 @@ class AppRoutes {
   GetPage(
       transition: Transition.rightToLeft,
       name: noticeHowYouFeel,
-      page: () =>   const NoticeHowYouFeelScreen(),
+      page: () =>    NoticeHowYouFeelScreen(),
       bindings: [BreathBinding()],
     ),
 

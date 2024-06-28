@@ -10,21 +10,27 @@ String recentlyModelToJson(RecentlyModel data) => json.encode(data.toJson());
 
 class RecentlyModel {
   List<RecentlyData>? data;
+  int? total;
 
   RecentlyModel({
     this.data,
+    this.total,
   });
 
   factory RecentlyModel.fromJson(Map<String, dynamic> json) => RecentlyModel(
     data: json["data"] == null ? [] : List<RecentlyData>.from(json["data"]!.map((x) => RecentlyData.fromJson(x))),
+    total: json["total"],
   );
 
   Map<String, dynamic> toJson() => {
     "data": data == null ? [] : List<dynamic>.from(data!.map((x) => x.toJson())),
+    "total": total,
   };
 }
 
 class RecentlyData {
+  bool? isBookmarked;
+  bool? isRated;
   String? id;
   String? name;
   String? description;
@@ -40,8 +46,11 @@ class RecentlyData {
   DateTime? updatedAt;
   int? v;
   int? rating;
+  bool? isPaid;
 
   RecentlyData({
+    this.isBookmarked,
+    this.isRated,
     this.id,
     this.name,
     this.description,
@@ -57,9 +66,12 @@ class RecentlyData {
     this.updatedAt,
     this.v,
     this.rating,
+    this.isPaid,
   });
 
   factory RecentlyData.fromJson(Map<String, dynamic> json) => RecentlyData(
+    isBookmarked: json["isBookmarked"],
+    isRated: json["isRated"],
     id: json["_id"],
     name: json["name"],
     description: json["description"],
@@ -75,15 +87,18 @@ class RecentlyData {
     updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
     v: json["__v"],
     rating: json["rating"],
+    isPaid: json["isPaid"],
   );
 
   Map<String, dynamic> toJson() => {
+    "isBookmarked": isBookmarked,
+    "isRated": isRated,
     "_id": id,
     "name": name,
     "description": description,
     "category": category,
     "status": status,
-    "created_by": createdBy,
+    "created_by":createdBy,
     "pods_by": podsBy,
     "audioFile": audioFile,
     "expertName": expertName,
@@ -93,5 +108,7 @@ class RecentlyData {
     "updatedAt": updatedAt?.toIso8601String(),
     "__v": v,
     "rating": rating,
+    "isPaid": isPaid,
   };
 }
+

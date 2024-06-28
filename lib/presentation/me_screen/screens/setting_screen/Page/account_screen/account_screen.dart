@@ -8,14 +8,21 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/account_screen/account_controller.dart';
+import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/change_password_screen/change_password_screen.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
-class AccountScreen extends StatelessWidget {
+class AccountScreen extends StatefulWidget {
   AccountScreen({super.key});
 
+  @override
+  State<AccountScreen> createState() => _AccountScreenState();
+}
+
+class _AccountScreenState extends State<AccountScreen> {
   AccountController accountController = Get.put(AccountController());
+
   ThemeController themeController = Get.find<ThemeController>();
 
   @override
@@ -29,61 +36,62 @@ class AccountScreen extends StatelessWidget {
       statusBarColor: ColorConstant.backGround, // Status bar background color
       statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
     ));
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: themeController.isDarkMode.value
-            ? ColorConstant.darkBackground
-            : ColorConstant.backGround,
-        appBar: CustomAppBar(title: "account".tr),
-        body: Stack(
-          children: [
-            Align(
-                alignment: Alignment.topRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: Dimens.d100),
-                  child: SvgPicture.asset(ImageConstant.profile1),
-                )),
-            Align(
-                alignment: Alignment.bottomLeft,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: Dimens.d120),
-                  child: SvgPicture.asset(ImageConstant.profile2),
-                )),
-            Padding(
-              padding: Dimens.d20.paddingAll,
-              child: ListView.separated(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                clipBehavior: Clip.none,
-                padding: EdgeInsets.zero,
-                itemBuilder: (context, index) {
-                  var data = accountController.accountData[index];
-                  return AccountListItem(
-                    isSettings: false,
-                    prefixIcon: data.prefixIcon,
-                    title: data.title,
-                    //suffixIcon: data.suffixIcon,
-                    onTap: () {
-                      if (index == 0) {
-                        Get.toNamed(AppRoutes.editProfileScreen);
-                      } else if (index == 1) {
-                        Get.toNamed(AppRoutes.changePassword);
-                      } else if (index == 2) {
-                        Get.toNamed(AppRoutes.privacyPolicy);
-                      }
-                    },
-                  );
-                },
-                separatorBuilder: (context, index) {
-                  return const SizedBox(
-                    height: 15,
-                  );
-                },
-                itemCount: accountController.accountData.length,
-              ),
-            )
-          ],
-        ),
+    return Scaffold(
+      backgroundColor: themeController.isDarkMode.value
+          ? ColorConstant.darkBackground
+          : ColorConstant.backGround,
+      appBar: CustomAppBar(title: "account".tr),
+      body: Stack(
+        children: [
+          Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.only(top: Dimens.d100),
+                child: SvgPicture.asset(ImageConstant.profile1),
+              )),
+          Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: Dimens.d120),
+                child: SvgPicture.asset(ImageConstant.profile2),
+              )),
+          Padding(
+            padding: Dimens.d20.paddingAll,
+            child: ListView.separated(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              clipBehavior: Clip.none,
+              padding: EdgeInsets.zero,
+              itemBuilder: (context, index) {
+                var data = accountController.accountData[index];
+                return AccountListItem(
+                  isSettings: false,
+                  prefixIcon: data.prefixIcon,
+                  title: data.title,
+                  //suffixIcon: data.suffixIcon,
+                  onTap: () {
+                    if (index == 0) {
+                      Get.toNamed(AppRoutes.editProfileScreen);
+                    } else if (index == 1) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) {
+                         return ChangePasswordScreen(title: "change",);
+                      },));
+                     // Get.toNamed(AppRoutes.changePassword);
+                    } else if (index == 2) {
+                      Get.toNamed(AppRoutes.privacyPolicy);
+                    }
+                  },
+                );
+              },
+              separatorBuilder: (context, index) {
+                return const SizedBox(
+                  height: 15,
+                );
+              },
+              itemCount: accountController.accountData.length,
+            ),
+          )
+        ],
       ),
     );
   }

@@ -102,6 +102,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                 } else if (index == 2) {
                                   Get.toNamed(AppRoutes.accountScreen);
                                 } else if (index == 3) {
+
                                 } else if (index == 4) {
                                   Get.toNamed(AppRoutes.personalizationScreen);
                                 } else if (index == 5) {

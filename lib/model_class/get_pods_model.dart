@@ -48,6 +48,7 @@ class AudioData {
   DateTime? updatedAt;
   int? v;
   int? rating;
+  bool? isPaid;
 
   AudioData({
     this.isBookmarked,
@@ -69,6 +70,7 @@ class AudioData {
     this.updatedAt,
     this.v,
     this.rating,
+    this.isPaid
   });
 
   factory AudioData.fromJson(Map<String, dynamic> json) => AudioData(
@@ -91,6 +93,7 @@ class AudioData {
     updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
     v: json["__v"],
     rating: json["rating"],
+    isPaid: json["isPaid"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -113,6 +116,7 @@ class AudioData {
     "updatedAt": updatedAt?.toIso8601String(),
     "__v": v,
     "rating": rating,
+    "isPaid": isPaid,
   };
 }
 

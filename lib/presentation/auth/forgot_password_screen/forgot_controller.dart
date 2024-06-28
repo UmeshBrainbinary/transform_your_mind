@@ -113,7 +113,7 @@ ResendModel resendModel = ResendModel();
             );
           },
         ));
-        showSnackBarSuccess(context, "otpSent".tr ?? "");
+        showSnackBarSuccessForgot(context, "otpSend".tr);
       } else {
         loader.value = false;
         // print(response.reasonPhrase);

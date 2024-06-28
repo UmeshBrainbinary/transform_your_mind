@@ -14,6 +14,7 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/model_class/get_pods_model.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_controller.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_screen.dart';
 import 'package:transform_your_mind/presentation/breath_screen/breath_screen.dart';
@@ -46,21 +47,6 @@ class _HomeScreenState extends State<HomeScreen>
 
   HomeController g = Get.put(HomeController());
   ThemeController themeController = Get.find<ThemeController>();
-
-  bool _refreshButtonColorChanged = false;
-  int _startIndex = 0;
-  int currentDataIndex = 0;
-
-  void refreshList() {
-    setState(() {
-      _refreshButtonColorChanged = true;
-      _startIndex += 5;
-      if (_startIndex >= g.audioData.length) {
-        _startIndex = 0;
-      }
-    });
-  }
-
   @override
   void initState() {
     _setGreetingBasedOnTime();
@@ -249,32 +235,8 @@ setState(() {
                       ),
                       Dimens.d20.spaceHeight,
                       recommendationsView(controller),
-                  /*    Dimens.d20.spaceHeight,
-                      GestureDetector(
-                        onTap: () async {
-                          refreshList();
-                          //  await controller.getPodApi();
-                        },
-                        child: Container(
-                          height: 40,
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: Dimens.d20),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: ColorConstant.themeColor,
-                          ),
-                          child: Center(
-                            child: Text(
-                              "refreshDailyRecommendations".tr,
-                              style: Style.montserratRegular(
-                                  fontSize: 12, color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),*/
 
                       Dimens.d20.spaceHeight,
-
                       controller.bookmarkedModel.data == null
                           ? const SizedBox()
                           : controller.bookmarkedModel.data!.isNotEmpty
@@ -305,7 +267,6 @@ setState(() {
                         ),
                       ),
                       Dimens.d30.spaceHeight,
-
                       Padding(
                         padding:
                             const EdgeInsets.symmetric(horizontal: Dimens.d20),
@@ -441,15 +402,29 @@ setState(() {
 
                   return GestureDetector(
                     onTap: () {
-                      Get.to(() => NowPlayingScreen());
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(
+                              Dimens.d24,
+                            ),
+                          ),
+                        ),
+                        builder: (BuildContext context) {
+                          return NowPlayingScreen(
+                            audioData: audioDataStore!,
+                          );
+                        },
+                      );
                     },
                     child: Align(
                       alignment: Alignment.bottomCenter,
                       child: Container(
                         height: 87,
                         width: Get.width,
-                        padding:
-                            const EdgeInsets.only(top: 8.0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 8.0, left: 8, right: 8),
                         margin: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 50),
                         decoration: BoxDecoration(
@@ -458,7 +433,7 @@ setState(() {
                                 ColorConstant.colorB9CCD0,
                                 ColorConstant.color86A6AE,
                                 ColorConstant.color86A6AE,
-                              ],
+                              ], // Your gradient colors
                               begin: Alignment.bottomLeft,
                               end: Alignment.bottomRight,
                             ),
@@ -468,9 +443,8 @@ setState(() {
                           children: [
                             Row(
                               children: [
-                                CommonLoadImage(
-                                    borderRadius: 6,
-                                    url: audioPlayerController.currentImage!,
+                                CommonLoadImage(borderRadius: 6.0,
+                                    url:audioDataStore!.image!,
                                     width: 47,
                                     height: 47),
                                 Dimens.d12.spaceWidth,
@@ -492,12 +466,11 @@ setState(() {
                                 Dimens.d10.spaceWidth,
                                 Expanded(
                                   child: Text(
-                                    audioPlayerController.currentName!,
+                                    audioDataStore!.name!,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: Style.montserratRegular(
-                                        fontSize: 12,
-                                        color: ColorConstant.white),
+                                        fontSize: 12, color: ColorConstant.white),
                                   ),
                                 ),
                                 Dimens.d10.spaceWidth,
@@ -517,7 +490,7 @@ setState(() {
                             SliderTheme(
                               data: SliderTheme.of(context).copyWith(
                                 activeTrackColor:
-                                    ColorConstant.white.withOpacity(0.2),
+                                ColorConstant.white.withOpacity(0.2),
                                 inactiveTrackColor: ColorConstant.color6E949D,
                                 trackHeight: 1.5,
                                 thumbColor: ColorConstant.transparent,
@@ -525,22 +498,21 @@ setState(() {
                                 thumbShape: SliderComponentShape.noThumb,
                                 // Customize the thumb shape and size
                                 overlayColor:
-                                    ColorConstant.backGround.withAlpha(32),
+                                ColorConstant.backGround.withAlpha(32),
                                 // Color when thumb is pressed
                                 overlayShape: const RoundSliderOverlayShape(
                                     overlayRadius:
-                                        16.0), // Customize the overlay shape and size
+                                    16.0), // Customize the overlay shape and size
                               ),
                               child: Slider(
                                 thumbColor: Colors.transparent,
                                 activeColor: ColorConstant.backGround,
-                                value:
-                                    currentPosition.inMilliseconds.toDouble(),
+                                value: currentPosition.inMilliseconds.toDouble(),
                                 max: duration.inMilliseconds.toDouble(),
                                 onChanged: (value) {
                                   audioPlayerController.seekForMeditationAudio(
-                                      position: Duration(
-                                          milliseconds: value.toInt()));
+                                      position:
+                                      Duration(milliseconds: value.toInt()));
                                 },
                               ),
                             ),
@@ -646,13 +618,53 @@ setState(() {
                 (index) {
               return GestureDetector(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(
-                      builder: (context) {
-                        return SubscriptionScreen(
-                          skip: false,
-                        );
-                      },
-                    ));
+                    if(controller.recentlyModel.data![index].isPaid!){
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(
+                              Dimens.d24,
+                            ),
+                          ),
+                        ),
+                        builder: (BuildContext context) {
+                          return NowPlayingScreen(
+                            audioData: AudioData(
+                              id: controller.recentlyModel.data![index].id,
+                              isPaid: controller.recentlyModel.data![index].isPaid,
+                              image: controller.recentlyModel.data![index].image,
+                              rating: controller.recentlyModel.data![index].rating,
+                              description: controller.recentlyModel.data![index].description,
+                              name: controller.recentlyModel.data![index].name,
+                              isBookmarked: controller.recentlyModel.data![index].isBookmarked,
+                              isRated: controller.recentlyModel.data![index].isRated,
+                              category:controller.recentlyModel.data![index].category,
+                              createdAt: controller.recentlyModel.data![index].createdAt,
+                              podsBy: controller.recentlyModel.data![index].podsBy,
+                              expertName: controller.recentlyModel.data![index].expertName,
+                              audioFile: controller.recentlyModel.data![index].audioFile,
+                              isRecommended: controller.recentlyModel.data![index].isRecommended,
+                              status: controller.recentlyModel.data![index].status,
+                              createdBy: controller.recentlyModel.data![index].createdBy,
+                              updatedAt: controller.recentlyModel.data![index].updatedAt,
+                              v: controller.recentlyModel.data![index].v,
+                              download: false,
+                            ),
+                          );
+                        },
+                      );
+                    }else{
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) {
+                          return SubscriptionScreen(
+                            skip: false,
+                          );
+                        },
+                      ));
+                    }
+
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(right: 20.0),
@@ -681,13 +693,52 @@ setState(() {
                 controller.bookmarkedModel.data?.length ?? 0, (index) {
               return GestureDetector(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(
-                      builder: (context) {
-                        return SubscriptionScreen(
-                          skip: false,
-                        );
-                      },
-                    ));
+                    if(controller.bookmarkedModel.data![index].isPaid!){
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(
+                              Dimens.d24,
+                            ),
+                          ),
+                        ),
+                        builder: (BuildContext context) {
+                          return NowPlayingScreen(
+                            audioData: AudioData(
+                              id: controller.bookmarkedModel.data![index].id,
+                              isPaid: controller.bookmarkedModel.data![index].isPaid,
+                              image: controller.bookmarkedModel.data![index].image,
+                              rating: controller.bookmarkedModel.data![index].rating,
+                              description: controller.bookmarkedModel.data![index].description,
+                              name: controller.bookmarkedModel.data![index].name,
+                              isBookmarked: controller.bookmarkedModel.data![index].isBookmarked,
+                              isRated: controller.bookmarkedModel.data![index].isRated,
+                              category:controller.bookmarkedModel.data![index].category,
+                              createdAt: controller.bookmarkedModel.data![index].createdAt,
+                              podsBy: controller.bookmarkedModel.data![index].podsBy,
+                              expertName: controller.bookmarkedModel.data![index].expertName,
+                              audioFile: controller.bookmarkedModel.data![index].audioFile,
+                              isRecommended: controller.bookmarkedModel.data![index].isRecommended,
+                              status: controller.bookmarkedModel.data![index].status,
+                              createdBy: controller.bookmarkedModel.data![index].createdBy,
+                              updatedAt: controller.bookmarkedModel.data![index].updatedAt,
+                              v: controller.bookmarkedModel.data![index].v,
+                              download: false,
+                            ),
+                          );
+                        },
+                      );
+                    }else{
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) {
+                          return SubscriptionScreen(
+                            skip: false,
+                          );
+                        },
+                      ));
+                    }
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(right: 20.0),
@@ -717,14 +768,33 @@ setState(() {
               shrinkWrap: true,
               padding: EdgeInsets.zero,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount:  controller.audioData.length ,
+              itemCount:  controller.audioData.length,
               itemBuilder: (context, index) {
                 return InkWell(
                   onTap: () {
-                    Get.toNamed(AppRoutes.subscriptionScreen);
-                    /*  Get.to(() => NowPlayingScreen(
-                    audioData: controller.audioData[index],
-                  ));*/
+                    if(controller.audioData[index].isPaid!){
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(
+                              Dimens.d24,
+                            ),
+                          ),
+                        ),
+                        builder: (BuildContext context) {
+                          return NowPlayingScreen(
+                            audioData:controller.audioData[index],
+                          );
+                        },
+                      );
+
+                    }else{
+                      Get.toNamed(AppRoutes.subscriptionScreen);
+                    }
+
+
                   },
                   child: Container(
                     height: Dimens.d70,
@@ -779,7 +849,7 @@ setState(() {
                         borderRadius: 8.0,
                       ),
                     ),
-                    Container(
+                    controller.audioData[index].isPaid!?const SizedBox():Container(
                       margin: const EdgeInsets.all(6.0),
                       height: 10,
                       width: 10,

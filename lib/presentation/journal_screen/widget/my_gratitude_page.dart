@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_calendar_carousel/classes/event.dart';
-import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -161,6 +159,9 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
     setState(() {});
   }
 
+  DateTime? picked;
+  var birthDate = DateFormat("yyyy-MM-dd").format(DateTime.now());
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -230,7 +231,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                 child: GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      select = !select;
+                                      datePicker(context);
                                     });
                                   },
                                   child: CommonTextField(
@@ -240,7 +241,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                         child: GestureDetector(
                                           onTap: () {
                                             setState(() {
-                                              select = !select;
+                                              datePicker(context);
                                             });
                                           },
                                           child: SvgPicture.asset(
@@ -386,9 +387,9 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                                               .center,
                                                       children: [
                                                         SvgPicture.asset(
-                                                            ImageConstant
-                                                                .noData),
-                                                        Dimens.d20.spaceHeight,
+                                                          themeController.isDarkMode.isTrue?ImageConstant.darkData: ImageConstant
+                                                                .noData,height: 158,width: 200,),
+
                                                         Text(
                                                           "dataNotFound".tr,
                                                           style: Style
@@ -408,11 +409,11 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                   )
                 ],
               ),
-              if (select == true)
+              /*  if (select == true)
                 Padding(
                   padding: const EdgeInsets.only(top: Dimens.d100),
                   child: widgetCalendar(),
-                ),
+                ),*/
             ],
           )),
     );
@@ -536,141 +537,42 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
 
   }
 
+  datePicker(context) async {
+    FocusScope.of(context).unfocus();
+    picked = await showDatePicker(
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+              scaffoldBackgroundColor: ColorConstant.themeColor,
+              primaryColor: ColorConstant.themeColor,
+              colorScheme: const ColorScheme.light(
+                primary: ColorConstant.themeColor,
+              ),
+              buttonTheme: const ButtonThemeData(
+                textTheme: ButtonTextTheme.primary,
+              ),
+              textTheme: TextTheme(
+                bodyLarge: Style.montserratRegular(fontSize: 15),
+                bodyMedium: Style.montserratRegular(fontSize: 15),
+                bodySmall: Style.montserratRegular(fontSize: 15),
+              )),
+          child: child!,
+        );
+      },
+      context: context,
+      firstDate: DateTime(1970),
+      // the earliest allowable
+      lastDate: DateTime.now(),
+      // the latest allowable
+      currentDate: DateTime.now(),
+      initialDate: DateTime.now(),
+    );
 
-
-  Widget widgetCalendar() {
-    return Container(
-        height: 350,
-        margin: const EdgeInsets.symmetric(horizontal: 16.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          color: themeController.isDarkMode.isTrue
-              ? ColorConstant.textfieldFillColor
-              : ColorConstant.white,
-        ),
-        child: CalendarCarousel<Event>(
-          onDayPressed: (DateTime date, List<Event> events) async {
-            if (date.isBefore(DateTime.now())) {
-              setState.call(() => _currentDate = date);
-
-              debugPrint("==========$_currentDate");
-              setState.call(() {
-                dateController.text = DateFormat('dd/MM/yyyy').format(date);
-                select = false;
-              });
-              await getGratitude();
-
-              setState((){});
-            }
-
-          },
-
-          weekendTextStyle: Style.montserratRegular(
-              fontSize: 15,
-              color: themeController.isDarkMode.isTrue
-                  ? ColorConstant.white
-                  : ColorConstant.black),
-          // Customize your text style
-          thisMonthDayBorderColor: Colors.transparent,
-          customDayBuilder: (
-              bool isSelectable,
-              int index,
-              bool isSelectedDay,
-              bool isToday,
-              bool isPrevMonthDay,
-              TextStyle textStyle,
-              bool isNextMonthDay,
-              bool isThisMonthDay,
-              DateTime day,
-              ) {
-            if (day.isAfter(DateTime.now())) {
-              return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 5),
-                height: Dimens.d32,
-                width: Dimens.d32,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Center(
-                  child: Text(
-                    day.day.toString(),
-                    style: Style.montserratRegular(
-                        fontSize: 15,
-                        color: Colors
-                            .grey), // Customize your future day text style
-                  ),
-                ),
-              );
-            } else if (isSelectedDay) {
-              return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 5),
-                height: Dimens.d32,
-                width: Dimens.d32,
-                decoration: BoxDecoration(
-                  color: ColorConstant.themeColor,
-                  // Customize your selected day color
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Center(
-                  child: Text(
-                    day.day.toString(),
-                    style: Style.montserratRegular(
-                        fontSize: 15,
-                        color: ColorConstant
-                            .white), // Customize your selected day text style
-                  ),
-                ),
-              );
-            } else {
-              return null;
-            }
-          },
-          weekFormat: false,
-          daysTextStyle: Style.montserratRegular(
-              fontSize: 15,
-              color: themeController.isDarkMode.isTrue
-                  ? ColorConstant.white
-                  : ColorConstant.black),
-          height: 300.0,
-          markedDateIconBorderColor: Colors.transparent,
-          childAspectRatio: 1.5,
-          dayPadding: 0.0,
-          prevDaysTextStyle: Style.montserratRegular(fontSize: 15),
-          selectedDateTime: _currentDate,
-          headerTextStyle: Style.montserratRegular(
-              color: themeController.isDarkMode.isTrue
-                  ? ColorConstant.white
-                  : ColorConstant.black,
-              fontWeight: FontWeight.bold),
-          dayButtonColor: themeController.isDarkMode.isTrue
-              ? ColorConstant.textfieldFillColor
-              : Colors.white,
-          weekDayBackgroundColor: themeController.isDarkMode.isTrue
-              ? ColorConstant.textfieldFillColor
-              : Colors.white,
-          markedDateMoreCustomDecoration: BoxDecoration(
-              color: themeController.isDarkMode.isTrue
-                  ? ColorConstant.black
-                  : Colors.white),
-          shouldShowTransform: false,
-          staticSixWeekFormat: false,
-          weekdayTextStyle: Style.montserratRegular(
-              fontSize: 11,
-              color: themeController.isDarkMode.isTrue
-                  ? ColorConstant.white
-                  : ColorConstant.color797B86,
-              fontWeight: FontWeight.bold),
-          todayButtonColor: Colors.transparent,
-          selectedDayBorderColor: Colors.transparent,
-          todayBorderColor: Colors.transparent,
-          selectedDayButtonColor: Colors.transparent,
-          daysHaveCircularBorder: false,
-          todayTextStyle: Style.montserratRegular(
-              fontSize: 15,
-              color: themeController.isDarkMode.isTrue
-                  ? ColorConstant.white
-                  : ColorConstant.black),
-        ));
+    if (picked != null) {
+      birthDate = DateFormat('dd/MM/yyyy').format(picked!);
+      // birthDate = DateFormat("yyyy-MM-dd").format(picked!);
+      dateController.text = birthDate;
+    }
   }
 
   Widget _buildCategoryDropDown(BuildContext context) {

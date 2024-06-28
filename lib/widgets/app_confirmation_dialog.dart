@@ -1,10 +1,12 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
+import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 
@@ -19,6 +21,77 @@ Future<void> showAppConfirmationDialog({
 }) {
   return showDialog(
     context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        //backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(11.0), // Set border radius
+        ),
+        actions: <Widget> [
+          Dimens.d10.spaceHeight,
+
+          Align(
+              alignment: Alignment.topRight,
+              child: GestureDetector(
+                  onTap: () {
+                    Get.back();
+                  },
+                  child: SvgPicture.asset(ImageConstant.close))),
+          Dimens.d44.spaceHeight,
+          Center(child: SvgPicture.asset(ImageConstant.logOutCheck)),
+          Dimens.d30.spaceHeight,
+
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30.0),
+            child: Text(
+              message,textAlign: TextAlign.center,
+              style: Style.montserratRegular(
+                height: Dimens.d1_8,
+              ),
+            ),
+          ),
+          Dimens.d24.spaceHeight,
+          Row(children: [
+            const Spacer(),
+            CommonElevatedButton( height: 33,
+              title: secondaryBtnTitle!,
+
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: Dimens.d32,
+              ),
+              onTap:
+              secondaryBtnAction ?? () => Navigator.pop(context),
+            ),
+            const Spacer(),
+           GestureDetector(onTap: () {
+             Get.back();
+           },
+             child: Container(height: 33,
+               padding: const EdgeInsets.symmetric(horizontal: 36),
+               decoration: BoxDecoration(color: ColorConstant.white,
+               border: Border.all(color: ColorConstant.black,width: 0.5),
+               borderRadius: BorderRadius.circular(60)),
+               child: Center(child:
+               Text(
+                 "no".tr,
+                 textAlign: TextAlign.center,
+                 style:
+                     Style.montserratRegular(
+                         fontSize: Dimens.d15, color: ColorConstant.black),
+               ),),
+             ),
+           ),
+
+            const Spacer(),
+
+          ],)
+
+        ],
+      );
+    },
+  );
+  return showDialog(
+    context: context,
     builder: (context) {
       return Dialog(
         //backgroundColor: ColorConstant.transparent,
@@ -28,16 +101,30 @@ Future<void> showAppConfirmationDialog({
           padding: Dimens.d20.paddingAll,
           decoration: BoxDecoration(
             //color: ColorConstant.white,
-            borderRadius: Dimens.d16.radiusAll,
+            borderRadius: Dimens.d5.radiusAll,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                message,
-                style: Style.montserratRegular(
-                  height: Dimens.d1_8,
+              Align(
+                  alignment: Alignment.topRight,
+                  child: GestureDetector(
+                      onTap: () {
+                        Get.back();
+                      },
+                      child: SvgPicture.asset(ImageConstant.close))),
+              Dimens.d44.spaceHeight,
+              Center(child: SvgPicture.asset(ImageConstant.logOutCheck)),
+              Dimens.d30.spaceHeight,
+
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                child: Text(
+                  message,
+                  style: Style.montserratRegular(
+                    height: Dimens.d1_8,
+                  ),
                 ),
               ),
               Dimens.d24.spaceHeight,

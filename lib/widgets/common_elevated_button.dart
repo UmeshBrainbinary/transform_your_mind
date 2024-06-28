@@ -20,7 +20,7 @@ class CommonElevatedButton extends StatefulWidget {
   final EdgeInsets? contentPadding;
 
   const CommonElevatedButton(
-      {Key? key,
+      {super.key,
       required this.title,
       required this.onTap,
       this.textStyle,
@@ -30,8 +30,7 @@ class CommonElevatedButton extends StatefulWidget {
       this.borderColor,
       this.prefixIcon,
       this.contentPadding,
-      this.buttonColor})
-      : super(key: key);
+      this.buttonColor});
 
   @override
   State<CommonElevatedButton> createState() => _CommonElevatedButtonState();

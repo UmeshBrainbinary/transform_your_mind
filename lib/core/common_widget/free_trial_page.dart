@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:transform_your_mind/core/common_widget/bg_semi_circle_texture_painter.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
@@ -10,6 +11,7 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/subscription_screen/subscription_screen.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
@@ -40,15 +42,23 @@ class _FreeTrialPageState extends State<FreeTrialPage>
     _lottieFWController.dispose();
     super.dispose();
   }
-
+ ThemeController themeController = Get.find<ThemeController>();
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    themeController.isDarkMode.isTrue
+        ? SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: ColorConstant.darkBackground,
+      // Status bar background color
+      statusBarIconBrightness:
+      Brightness.light, // Status bar icon/text color
+    ))
+        : SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: ColorConstant.white, // Status bar background color
-      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
+      statusBarIconBrightness:
+      Brightness.dark, // Status bar icon/text color
     ));
     return SafeArea(
-      child: Scaffold(
+      child: Scaffold(backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
         body: Stack(
           children: [
             const BgSemiCircleTexture(),

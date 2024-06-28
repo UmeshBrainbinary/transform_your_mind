@@ -61,126 +61,118 @@ class _PersonalizationScreenScreenState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Dimens.d101.spaceHeight,
-            Container(
-              width: Get.width,
-              decoration: BoxDecoration(
-                  color: themeController.isDarkMode.value
-                      ? ColorConstant.textfieldFillColor
-                      : ColorConstant.white,
-                  borderRadius: BorderRadius.circular(18)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Dimens.d10.spaceHeight,
-                  Text(
-                    "chooseYourLanguage".tr,
-                    style: Style.montserratRegular(
-                        fontSize: Dimens.d20, fontWeight: FontWeight.w500),
+            Dimens.d44.spaceHeight,
+
+            Center(child: Image.asset(ImageConstant.chooseLanguages,height: 195,width: 258,)),
+            Dimens.d10.spaceHeight,
+
+            Center(
+              child: Text(
+                "chooseYourLanguage".tr,
+                style: Style.gothamMedium(
+                    fontSize: Dimens.d22, fontWeight: FontWeight.w700),
+              ),
+            ),
+            Dimens.d14.spaceHeight,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 47),
+              child: Text(
+                "selectYourPreferred".tr,
+                textAlign: TextAlign.center,
+                style: Style.montserratRegular(fontSize: Dimens.d13),
+              ),
+            ),
+            Dimens.d50.spaceHeight,
+            Obx(
+                  () => GestureDetector(
+                onTap: () async {
+                  personalizationController.english.value = true;
+                  personalizationController.german.value = false;
+
+                  Locale newLocale;
+
+                  newLocale = const Locale('en', 'US');
+                  Get.updateLocale(newLocale);
+
+                  await PrefService.setValue(
+                      PrefKey.language, newLocale.toLanguageTag());
+                },
+                child: Container(
+                  height: 46,
+                  margin: const EdgeInsets.symmetric(
+                      horizontal: 17),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 22),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(80),
+                      color: ColorConstant.white),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment
+                        .spaceBetween,
+                    children: [
+                      Text(
+                        "English",
+                        style: Style.montserratRegular(
+                            fontSize: Dimens.d14,
+                            fontWeight: FontWeight.w500),
+                      ),
+                      SvgPicture.asset(
+                        personalizationController.english.isTrue
+                            ? ImageConstant.select
+                            : ImageConstant.unSelect,
+                        height: 16,
+                        width: 16,
+                      )
+                    ],
                   ),
-                  Dimens.d14.spaceHeight,
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 47),
-                    child: Text(
-                      "selectYourPreferred".tr,
-                      textAlign: TextAlign.center,
-                      style: Style.montserratRegular(fontSize: Dimens.d13),
-                    ),
-                  ),
-                  Dimens.d40.spaceHeight,
-                  Obx(
-                    () => GestureDetector(
-                      onTap: () async {
-                        personalizationController.english.value = true;
-                        personalizationController.german.value = false;
+                ),
+              ),
+            ),
+            Dimens.d14.spaceHeight,
+            Obx(
+                  () =>
+                  GestureDetector(
+                    onTap: () async {
+                      personalizationController.german.value = true;
+                      personalizationController.english.value = false;
 
-                        Locale newLocale;
+                      Locale newLocale;
 
-                        newLocale = const Locale('en', 'US');
-                        Get.updateLocale(newLocale);
+                      newLocale = const Locale('de', 'DE');
+                      Get.updateLocale(newLocale);
 
-                        await PrefService.setValue(
-                                PrefKey.language, newLocale.toLanguageTag());
-                          },
-                          child: Container(
-                            height: 46,
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 17),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 22),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(80),
-                                color: ColorConstant.black.withOpacity(0.1)),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment
-                                  .spaceBetween,
-                              children: [
-                                Text(
-                                  "English",
-                                  style: Style.montserratRegular(
-                                      fontSize: Dimens.d14,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                                SvgPicture.asset(
-                                  personalizationController.english.isTrue
-                                      ? ImageConstant.select
-                                      : ImageConstant.unSelect,
-                                  height: 16,
-                                  width: 16,
-                                )
-                              ],
-                            ),
+                      await PrefService.setValue(
+                          PrefKey.language, newLocale.toLanguageTag());
+                    },
+                    child: Container(
+                      height: 46,
+                      margin: const EdgeInsets.symmetric(horizontal: 17),
+                      padding: const EdgeInsets.symmetric(horizontal: 22),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(80),
+                          color: ColorConstant.white),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "German",
+                            style: Style.montserratRegular(
+                                fontSize: Dimens.d14,
+                                fontWeight: FontWeight.w500),
                           ),
-                        ),
-                  ),
-                  Dimens.d14.spaceHeight,
-                  Obx(
-                        () =>
-                        GestureDetector(
-                          onTap: () async {
-                            personalizationController.german.value = true;
-                            personalizationController.english.value = false;
-
-                        Locale newLocale;
-
-                        newLocale = const Locale('de', 'DE');
-                            Get.updateLocale(newLocale);
-
-                        await PrefService.setValue(
-                            PrefKey.language, newLocale.toLanguageTag());
-                      },
-                      child: Container(
-                        height: 46,
-                        margin: const EdgeInsets.symmetric(horizontal: 17),
-                        padding: const EdgeInsets.symmetric(horizontal: 22),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(80),
-                            color: ColorConstant.black.withOpacity(0.1)),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "German",
-                              style: Style.montserratRegular(
-                                  fontSize: Dimens.d14,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            SvgPicture.asset(
-                              personalizationController.german.isTrue
-                                  ? ImageConstant.select
-                                  : ImageConstant.unSelect,
-                              height: 16,
-                              width: 16,
-                            )
-                          ],
-                        ),
+                          SvgPicture.asset(
+                            personalizationController.german.isTrue
+                                ? ImageConstant.select
+                                : ImageConstant.unSelect,
+                            height: 16,
+                            width: 16,
+                          )
+                        ],
                       ),
                     ),
                   ),
-                  Dimens.d20.spaceHeight,
-                ],
-              ),
             ),
+            Dimens.d20.spaceHeight,
             Dimens.d70.spaceHeight,
             widget.intro!?CommonElevatedButton(
               title: "continue".tr,
