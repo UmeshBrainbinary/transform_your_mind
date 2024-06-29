@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:numberpicker/numberpicker.dart';
+import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -56,177 +57,181 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    statusBarSet(themeController);
+
     return Stack(
       children: [
-        Scaffold(
-          backgroundColor: themeController.isDarkMode.value
-              ? ColorConstant.darkBackground
-              : ColorConstant.backGround,
-          appBar: CustomAppBar(
-            title: "Alarm".tr,
-            showBack: true,
-          ),
-            body: GetBuilder<NotificationSettingController>(
-              id: "update",
-              builder: (controller) {
-                return  (controller.alarmModel.data??[]).isNotEmpty
-                    ? SingleChildScrollView(
-                        child: ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: controller.alarmModel.data?.length ?? 0,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 20.0, vertical: 10),
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                  color: ColorConstant.white,
-                                  borderRadius: BorderRadius.circular(15)),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        "${controller.alarmModel.data?[index].hours}:${controller.alarmModel.data?[index].minutes} ",
-                                        style: Style.montserratRegular(
-                                          fontSize: 30,
+        SafeArea(bottom: false,
+          child: Scaffold(
+            backgroundColor: themeController.isDarkMode.value
+                ? ColorConstant.darkBackground
+                : ColorConstant.backGround,
+            appBar: CustomAppBar(
+              title: "Alarm".tr,
+              showBack: true,
+            ),
+              body: GetBuilder<NotificationSettingController>(
+                id: "update",
+                builder: (controller) {
+                  return  (controller.alarmModel.data??[]).isNotEmpty
+                      ? SingleChildScrollView(
+                          child: ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: controller.alarmModel.data?.length ?? 0,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 20.0, vertical: 10),
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                    color: ColorConstant.white,
+                                    borderRadius: BorderRadius.circular(15)),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "${controller.alarmModel.data?[index].hours}:${controller.alarmModel.data?[index].minutes} ",
+                                          style: Style.montserratRegular(
+                                            fontSize: 30,
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        controller
-                                                .alarmModel.data?[index].time ??
-                                            "",
-                                        style: Style.montserratRegular(
-                                          fontSize: 22,
+                                        Text(
+                                          controller
+                                                  .alarmModel.data?[index].time ??
+                                              "",
+                                          style: Style.montserratRegular(
+                                            fontSize: 22,
+                                          ),
                                         ),
-                                      ),
-                                      const Spacer(),
-                                      GestureDetector(
-                                        onTap: () {
-                                          _showAlertDialogPlayPause(context,
-                                              mp3: controller.alarmModel
-                                                      .data?[index].audioFile ??
-                                                  "",
-                                              title: controller.alarmModel
-                                                      .data?[index].name ??
-                                                  "",
-                                              des: controller
+                                        const Spacer(),
+                                        GestureDetector(
+                                          onTap: () {
+                                            _showAlertDialogPlayPause(context,
+                                                mp3: controller.alarmModel
+                                                        .data?[index].audioFile ??
+                                                    "",
+                                                title: controller.alarmModel
+                                                        .data?[index].name ??
+                                                    "",
+                                                des: controller
+                                                        .alarmModel
+                                                        .data?[index]
+                                                        .description ??
+                                                    "");
+                                          },
+                                          child: SvgPicture.asset(
+                                            ImageConstant.playAffirmation,
+                                            height: 18,
+                                            width: 18,
+                                          ),
+                                        ),
+                                        Dimens.d10.spaceWidth,
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              selectedHour = controller.alarmModel
+                                                      .data![index].hours ??
+                                                  0;
+                                              selectedMinute = controller
                                                       .alarmModel
-                                                      .data?[index]
-                                                      .description ??
-                                                  "");
-                                        },
-                                        child: SvgPicture.asset(
-                                          ImageConstant.playAffirmation,
-                                          height: 18,
-                                          width: 18,
-                                        ),
-                                      ),
-                                      Dimens.d10.spaceWidth,
-                                      GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            selectedHour = controller.alarmModel
-                                                    .data![index].hours ??
-                                                0;
-                                            selectedMinute = controller
-                                                    .alarmModel
-                                                    .data![index]
-                                                    .minutes ??
-                                                0;
-                                            selectedSeconds = controller
-                                                    .alarmModel
-                                                    .data![index]
-                                                    .seconds ??
-                                                0;
-                                            if (controller.alarmModel
-                                                    .data![index].time ==
-                                                "AM") {
-                                              am = true;
-                                            } else {
-                                              pm = true;
-                                            }
-                                          });
+                                                      .data![index]
+                                                      .minutes ??
+                                                  0;
+                                              selectedSeconds = controller
+                                                      .alarmModel
+                                                      .data![index]
+                                                      .seconds ??
+                                                  0;
+                                              if (controller.alarmModel
+                                                      .data![index].time ==
+                                                  "AM") {
+                                                am = true;
+                                              } else {
+                                                pm = true;
+                                              }
+                                            });
 
-                                          _showAlertDialog(context, controller
-                                              .alarmModel.data![index].id
-                                            /*
-                                              title: "",
+                                            _showAlertDialog(context, controller
+                                                .alarmModel.data![index].id
+                                              /*
+                                                title: "",
 
-                                              id: controller
-                                                  .alarmModel.data![index].id,
-                                              second: selectedSeconds*/);
-                                        },
-                                        child: SvgPicture.asset(
-                                          ImageConstant.editTools,
-                                          height: 18,
-                                          width: 18,
-                                          color: ColorConstant.black,
+                                                id: controller
+                                                    .alarmModel.data![index].id,
+                                                second: selectedSeconds*/);
+                                          },
+                                          child: SvgPicture.asset(
+                                            ImageConstant.editTools,
+                                            height: 18,
+                                            width: 18,
+                                            color: ColorConstant.black,
+                                          ),
                                         ),
-                                      ),
-                                      Dimens.d10.spaceWidth,
-                                      GestureDetector(
-                                        onTap: () {
-                                          _showAlertDialogDelete(
-                                              context,
-                                              index,
-                                              true,
-                                              controller
-                                                  .alarmModel.data?[index].id);
-                                        },
-                                        child: SvgPicture.asset(
-                                          ImageConstant.delete,
-                                          height: 18,
-                                          width: 18,
-                                          color: ColorConstant.black,
+                                        Dimens.d10.spaceWidth,
+                                        GestureDetector(
+                                          onTap: () {
+                                            _showAlertDialogDelete(
+                                                context,
+                                                index,
+                                                true,
+                                                controller
+                                                    .alarmModel.data?[index].id);
+                                          },
+                                          child: SvgPicture.asset(
+                                            ImageConstant.delete,
+                                            height: 18,
+                                            width: 18,
+                                            color: ColorConstant.black,
+                                          ),
                                         ),
-                                      ),
-                                      Dimens.d10.spaceWidth,
-                                    ],
-                                  ),
-                                  Text(
-                                    controller.alarmModel.data?[index].name ??
-                                        "",
-                                    style: Style.montserratRegular(
-                                      fontSize: 18,
+                                        Dimens.d10.spaceWidth,
+                                      ],
                                     ),
-                                  ),
-                                  Dimens.d10.spaceHeight,
-                                  Text(
-                                    controller.alarmModel.data?[index]
-                                            .description ??
-                                        "",
-                                    style:
-                                        Style.montserratRegular(fontSize: 11),
-                                  )
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      )
-                    : Center(
-                        child: SizedBox(
-                          height: Get.height - 400,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                themeController.isDarkMode.isTrue?ImageConstant.darkData:ImageConstant
-                                    .noData,height: 158,width: 200,),
-                              Text(
-                                "dataNotFound".tr,
-                                style: Style.montserratBold(fontSize: 24),
-                              )
-                            ],
+                                    Text(
+                                      controller.alarmModel.data?[index].name ??
+                                          "",
+                                      style: Style.montserratRegular(
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                    Dimens.d10.spaceHeight,
+                                    Text(
+                                      controller.alarmModel.data?[index]
+                                              .description ??
+                                          "",
+                                      style:
+                                          Style.montserratRegular(fontSize: 11),
+                                    )
+                                  ],
+                                ),
+                              );
+                            },
                           ),
-                        ),
-                      );
-              },
-            )),
+                        )
+                      : Center(
+                          child: SizedBox(
+                            height: Get.height - 400,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  themeController.isDarkMode.isTrue?ImageConstant.darkData:ImageConstant
+                                      .noData,height: 158,width: 200,),
+                                Text(
+                                  "dataNotFound".tr,
+                                  style: Style.montserratBold(fontSize: 24),
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                },
+              )),
+        ),
         GetBuilder<NotificationSettingController>(
           id: "update",
           builder: (controller) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -34,15 +35,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
 
   @override
   void initState() {
-    themeController.isDarkMode.isTrue?
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.darkBackground, // Status bar background color
-      statusBarIconBrightness: Brightness.light, // Status bar icon/text color
-    )):
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.white, // Status bar background color
-      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
-    ));
+
     scrollController.addListener(() {
       double showOffset = 10.0;
 
@@ -73,345 +66,343 @@ class _PositiveScreenState extends State<PositiveScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: themeController.isDarkMode.isTrue?
-    ColorConstant.darkBackground:ColorConstant.backGround,
-      appBar: CustomAppBar(
-        title: "positiveMoments".tr,
-        showBack: true,
-        action: Padding(
-          padding: const EdgeInsets.only(right: Dimens.d20),
-          child: GestureDetector(
-            onTap: () {
-              _onAddClick(context);
-            },
-            child: SvgPicture.asset(
-              ImageConstant.addTools,
-              height: Dimens.d22,
-              width: Dimens.d22,
+    statusBarSet(themeController);
+    return SafeArea(bottom: false,
+      child: Scaffold(backgroundColor: themeController.isDarkMode.isTrue?
+      ColorConstant.darkBackground:ColorConstant.backGround,
+        appBar: CustomAppBar(
+          title: "positiveMoments".tr,
+          showBack: true,
+          action: Padding(
+            padding: const EdgeInsets.only(right: Dimens.d20),
+            child: GestureDetector(
+              onTap: () {
+                _onAddClick(context);
+              },
+              child: SvgPicture.asset(
+                ImageConstant.addTools,
+                height: Dimens.d22,
+                width: Dimens.d22,
+              ),
             ),
           ),
         ),
-      ),
-      body: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Column(
-              children: [
-                Dimens.d15.h.spaceHeight,
-                Row(
-                  children: [
-                    Container(
-                      width: Get.width - 100,
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: ColorConstant.themeColor.withOpacity(0.1),
-                            blurRadius: Dimens.d8,
-                          )
-                        ],
+        body: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                children: [
+                  Dimens.d15.h.spaceHeight,
+                  Row(
+                    children: [
+                      Container(
+                        width: Get.width - 100,
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: ColorConstant.themeColor.withOpacity(0.1),
+                              blurRadius: Dimens.d8,
+                            )
+                          ],
+                        ),
+                        child:  CommonTextField(
+                            onChanged: (value) {
+                              setState(() {
+                                positiveController.filteredBookmarks =
+                                    searchBookmarks(value,
+                                        positiveController.positiveMomentList);
+                              });
+                            },
+                            prefixIcon: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: SvgPicture.asset(ImageConstant.search),
+                            ),
+                            suffixIcon: searchController.text.isEmpty?const SizedBox(): Padding(
+                              padding: const EdgeInsets.all(14.0),
+                              child: GestureDetector(
+                                  onTap: () {
+                                    searchController.clear();
+                                    setState(() {
+                                      positiveController.filteredBookmarks = positiveController.positiveMomentList;
+                                    });
+                                  },child: SvgPicture.asset(ImageConstant.close)),
+                            ),
+                            hintText: "search".tr,
+                            textStyle:
+                            Style.montserratRegular(fontSize: 12),
+                            controller: searchController,
+                            focusNode: searchFocusNode),
+      
                       ),
-                      child:  CommonTextField(
-                          onChanged: (value) {
-                            setState(() {
-                              positiveController.filteredBookmarks =
-                                  searchBookmarks(value,
-                                      positiveController.positiveMomentList);
-                            });
+                      Dimens.d10.spaceWidth,
+                      GestureDetector(
+                          onTap: () {
+                            _showAlertDialogFilter(context, themeController);
                           },
-                          prefixIcon: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: SvgPicture.asset(ImageConstant.search),
-                          ),
-                          suffixIcon: searchController.text.isEmpty?const SizedBox(): Padding(
-                            padding: const EdgeInsets.all(14.0),
-                            child: GestureDetector(
-                                onTap: () {
-                                  searchController.clear();
-                                  setState(() {
-                                    positiveController.filteredBookmarks = positiveController.positiveMomentList;
-                                  });
-                                },child: SvgPicture.asset(ImageConstant.close)),
-                          ),
-                          hintText: "search".tr,
-                          textStyle:
-                          Style.montserratRegular(fontSize: 12),
-                          controller: searchController,
-                          focusNode: searchFocusNode),
-
-                    ),
-                    Dimens.d10.spaceWidth,
-                    GestureDetector(
-                        onTap: () {
-                          _showAlertDialogFilter(context, themeController);
-                        },
-                        child: SvgPicture.asset(ImageConstant.filterPositive))
-                  ],
-                ),
-                Dimens.d30.h.spaceHeight,
-                GetBuilder<PositiveController>(
-                  id: "update",
-                  builder: (controller) {
-                    return Expanded(
-                      child: (controller.filteredBookmarks??[]).isNotEmpty
-                          ? GridView.builder(
-                              controller: scrollController,
-                              padding:
-                                  const EdgeInsets.only(bottom: Dimens.d20),
-                              physics: const BouncingScrollPhysics(),
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                childAspectRatio: 1,
-                                crossAxisCount: 2,
-                                // Number of columns
-                                crossAxisSpacing: 20,
-                                // Spacing between columns
-                                mainAxisSpacing: 20, // Spacing between rows
-                              ),
-                              itemCount:
-                                  controller.filteredBookmarks?.length ?? 0,
-                              itemBuilder: (context, index) {
-                                return Container(
-                                  height: 156,
-                                  width: 156,
-                                  padding: const EdgeInsets.only(
-                                      left: 10, right: 10, top: 10),
-                                  decoration: BoxDecoration(
-                                      color: themeController.isDarkMode.isTrue
-                                          ? ColorConstant.textfieldFillColor
-                                          : ColorConstant.colorDCE9EE,
-                                      borderRadius:
-                                          BorderRadius.circular(18)),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          searchFocusNode.unfocus();
-                                          _showAlertDialog(context,
-                                              title: controller
-                                                      .filteredBookmarks?[
-                                                  index]["title"],
-                                              image: controller
-                                                      .filteredBookmarks?[
-                                                  index]["img"],
-                                              desc: controller
-                                                      .filteredBookmarks?[
-                                                  index]["des"]);
-                                        },
-                                        child: CommonLoadImage(
-                                            borderRadius: 10.0,
-                                            url:
-                                                controller.filteredBookmarks?[
-                                                        index]["img"] ??
-                                                    "",
-                                            width: Dimens.d139,
-                                            height: Dimens.d101),
-                                      ),
-                                      Dimens.d15.spaceHeight,
-                                      Row(
-                                        children: [
-                                          const Spacer(),
-                                          PopupMenuButton(
-                                            shape:
-                                                const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(10.0),
+                          child: SvgPicture.asset(ImageConstant.filterPositive))
+                    ],
+                  ),
+                  Dimens.d30.h.spaceHeight,
+                  GetBuilder<PositiveController>(
+                    id: "update",
+                    builder: (controller) {
+                      return Expanded(
+                        child: (controller.filteredBookmarks??[]).isNotEmpty
+                            ? GridView.builder(
+                                controller: scrollController,
+                                padding:
+                                    const EdgeInsets.only(bottom: Dimens.d20),
+                                physics: const BouncingScrollPhysics(),
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  childAspectRatio: 1,
+                                  crossAxisCount: 2,
+                                  // Number of columns
+                                  crossAxisSpacing: 20,
+                                  // Spacing between columns
+                                  mainAxisSpacing: 20, // Spacing between rows
+                                ),
+                                itemCount:
+                                    controller.filteredBookmarks?.length ?? 0,
+                                itemBuilder: (context, index) {
+                                  return Container(
+                                    height: 156,
+                                    width: 156,
+                                    padding: const EdgeInsets.only(
+                                        left: 10, right: 10, top: 10),
+                                    decoration: BoxDecoration(
+                                        color: themeController.isDarkMode.isTrue
+                                            ? ColorConstant.textfieldFillColor
+                                            : ColorConstant.colorDCE9EE,
+                                        borderRadius:
+                                            BorderRadius.circular(18)),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            searchFocusNode.unfocus();
+                                            _showAlertDialog(context,
+                                                title: controller
+                                                        .filteredBookmarks?[
+                                                    index]["title"],
+                                                image: controller
+                                                        .filteredBookmarks?[
+                                                    index]["img"],
+                                                desc: controller
+                                                        .filteredBookmarks?[
+                                                    index]["des"]);
+                                          },
+                                          child: CommonLoadImage(
+                                              borderRadius: 10.0,
+                                              url:
+                                                  controller.filteredBookmarks?[
+                                                          index]["img"] ??
+                                                      "",
+                                              width: Dimens.d139,
+                                              height: Dimens.d101),
+                                        ),
+                                        Dimens.d15.spaceHeight,
+                                        Row(
+                                          children: [
+                                            const Spacer(),
+                                            PopupMenuButton(
+                                              shape:
+                                                  const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(10.0),
+                                                ),
                                               ),
-                                            ),
-                                            color: themeController
-                                                    .isDarkMode.isTrue
-                                                ? ColorConstant
-                                                    .textfieldFillColor
-                                                : ColorConstant.white,
-                                            child: SvgPicture.asset(
-                                              ImageConstant.moreVert,
-                                              height: 5,
-                                            ),
-                                            itemBuilder: (context) {
-                                              return List.generate(
-                                                1,
-                                                (indexPop) {
-                                                  return PopupMenuItem(
-                                                      child: Column(
-                                                    children: [
-                                                    InkWell(
-                                                      onTap: () {
-                                                        Get.back();
-                                                          _onAddClick1(
-                                                              image: controller
-                                                                          .filteredBookmarks?[
-                                                                      index]
-                                                                  ["img"],
-                                                              title: controller
-                                                                          .filteredBookmarks?[
-                                                                      index]
-                                                                  ["title"],
-                                                              description:
-                                                                  controller
-                                                                          .filteredBookmarks?[index]
-                                                                      ["des"],
-                                                              context,
-                                                              controller.filteredBookmarks?[
-                                                                          index]
-                                                                      [
-                                                                      "id"] ??
-                                                                  "");
-                                                      },
-                                                      child: Container(
-                                                        height: 28,
-                                                        width: 86,
-                                                        decoration: BoxDecoration(
-                                                            borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5),
-                                                              color: ColorConstant
-                                                                .color5B93FF
-                                                                .withOpacity(
-                                                                      0.05)),
-                                                          child: Row(
-                                                            children: [
-                                                              Dimens.d5.spaceWidth,
-
-                                                              SvgPicture.asset(
-                                                              ImageConstant
-                                                                  .editTools,
-                                                              color: ColorConstant
-                                                                  .color5B93FF,
-                                                            ),
-                                                              Dimens.d5.spaceWidth,
-
-
-                                                              Text(
-                                                              'edit'.tr,
-                                                              style: Style
-                                                                  .montserratRegular(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color: ColorConstant
+                                              color: themeController
+                                                      .isDarkMode.isTrue
+                                                  ? ColorConstant
+                                                      .textfieldFillColor
+                                                  : ColorConstant.white,
+                                              child: SvgPicture.asset(
+                                                ImageConstant.moreVert,
+                                                height: 5,
+                                              ),
+                                              itemBuilder: (context) {
+                                                return List.generate(
+                                                  1,
+                                                  (indexPop) {
+                                                    return PopupMenuItem(
+                                                        child: Column(
+                                                      children: [
+                                                      InkWell(
+                                                        onTap: () {
+                                                          Get.back();
+                                                            _onAddClick1(
+                                                                image: controller
+                                                                            .filteredBookmarks?[
+                                                                        index]
+                                                                    ["img"],
+                                                                title: controller
+                                                                            .filteredBookmarks?[
+                                                                        index]
+                                                                    ["title"],
+                                                                description:
+                                                                    controller
+                                                                            .filteredBookmarks?[index]
+                                                                        ["des"],
+                                                                context,
+                                                                controller.filteredBookmarks?[
+                                                                            index]
+                                                                        [
+                                                                        "id"] ??
+                                                                    "");
+                                                        },
+                                                        child: Container(
+                                                          height: 28,
+                                                          width: 86,
+                                                          decoration: BoxDecoration(
+                                                              borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            5),
+                                                                color: ColorConstant
+                                                                  .color5B93FF
+                                                                  .withOpacity(
+                                                                        0.05)),
+                                                            child: Row(
+                                                              children: [
+                                                                Dimens.d5.spaceWidth,
+      
+                                                                SvgPicture.asset(
+                                                                ImageConstant
+                                                                    .editTools,
+                                                                color: ColorConstant
                                                                     .color5B93FF,
                                                               ),
-                                                            ),
-                                                              Spacer(),
-
-                                                          ],
+                                                                Dimens.d5.spaceWidth,
+      
+      
+                                                                Text(
+                                                                'edit'.tr,
+                                                                style: Style
+                                                                    .montserratRegular(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    color: ColorConstant
+                                                                      .color5B93FF,
+                                                                ),
+                                                              ),
+                                                                const Spacer(),
+      
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                    Dimens.d15.spaceHeight,
-                                                    InkWell(
-                                                      onTap: () {
-                                                        Get.back();
-
-                                                        _showAlertDialogDelete(
-                                                            context,
-                                                            index,
-                                                              controller.filteredBookmarks?[
-                                                                      index]
-                                                                  ["id"]);
-                                                        },
-                                                      child: Container(
-                                                        height: 28,
-                                                        width: 86,
-                                                        decoration: BoxDecoration(
-                                                            borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5),
-                                                              color: ColorConstant
-                                                                .colorE71D36
-                                                                .withOpacity(
-                                                                      0.05)),
-                                                          child: Row(
-                                                            children: [
-                                                             Dimens.d5.spaceWidth,
-
-                                                            SvgPicture.asset(
-                                                              ImageConstant
-                                                                  .delete,
-                                                              color: ColorConstant
-                                                                  .colorE71D36,
-                                                            ),
-                                                              Dimens.d5.spaceWidth,
-
-
-                                                              Text(
-                                                              'delete'.tr,
-                                                              style: Style
-                                                                  .montserratRegular(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color: ColorConstant
+                                                      Dimens.d15.spaceHeight,
+                                                      InkWell(
+                                                        onTap: () {
+                                                          Get.back();
+      
+                                                          _showAlertDialogDelete(
+                                                              context,
+                                                              index,
+                                                                controller.filteredBookmarks?[
+                                                                        index]
+                                                                    ["id"]);
+                                                          },
+                                                        child: Container(
+                                                          height: 28,
+                                                          width: 86,
+                                                          decoration: BoxDecoration(
+                                                              borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            5),
+                                                                color: ColorConstant
+                                                                  .colorE71D36
+                                                                  .withOpacity(
+                                                                        0.05)),
+                                                            child: Row(
+                                                              children: [
+                                                               Dimens.d5.spaceWidth,
+      
+                                                              SvgPicture.asset(
+                                                                ImageConstant
+                                                                    .delete,
+                                                                color: ColorConstant
                                                                     .colorE71D36,
                                                               ),
-                                                            ),
-                                                              Spacer(),
-
-                                                          ],
+                                                                Dimens.d5.spaceWidth,
+      
+      
+                                                                Text(
+                                                                'delete'.tr,
+                                                                style: Style
+                                                                    .montserratRegular(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    color: ColorConstant
+                                                                      .colorE71D36,
+                                                                ),
+                                                              ),
+                                                                const Spacer(),
+      
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                  ],
-                                                ));
-                                                },
-                                              );
-                                            },
-                                          )
-                                        ],
-                                      ),
-                                      Text(
-                                        positiveController
-                                                    .filteredBookmarks?[index]
-                                                ['title'] ??
-                                            "",
-                                        maxLines: 1,
-                                        style: Style.montserratMedium(
-                                            fontSize: Dimens.d14),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              })
-                          : Center(
-                              child: SizedBox(
-                                height: Get.height - 400,
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SvgPicture.asset(
-                                      themeController.isDarkMode.isTrue?ImageConstant.darkData:ImageConstant
-                                          .noData,height: 158,width: 200,),
-                                    Text(
-                                      "dataNotFound".tr,
-                                      style:
-                                          Style.montserratBold(fontSize: 24),
-                                    )
-                                  ],
-                                ),
+                                                    ],
+                                                  ));
+                                                  },
+                                                );
+                                              },
+                                            )
+                                          ],
+                                        ),
+                                        Text(
+                                          positiveController
+                                                      .filteredBookmarks?[index]
+                                                  ['title'] ??
+                                              "",
+                                          maxLines: 1,
+                                          style: Style.montserratMedium(
+                                              fontSize: Dimens.d14),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                })
+                            : Padding(
+                              padding: const EdgeInsets.only(bottom: 130),
+                              child: Column(
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+
+                                  SvgPicture.asset(ImageConstant.noSearch,),
+                                  Text("dataNotFound".tr,style: Style.gothamMedium(
+                                      fontSize: 24,fontWeight: FontWeight.w700),),
+
+                                ],
                               ),
                             ),
-
-                    );
-                  },
-                )
-              ],
+      
+                      );
+                    },
+                  )
+                ],
+              ),
             ),
-          ),
-          Obx(
-            () => positiveController.loader.isTrue
-                ? commonLoader()
-                : const SizedBox(),
-          )
-        ],
+            Obx(
+              () => positiveController.loader.isTrue
+                  ? commonLoader()
+                  : const SizedBox(),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -509,51 +500,71 @@ class _PositiveScreenState extends State<PositiveScreen> {
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
-            return AlertDialog(
-              //backgroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(11.0), // Set border radius
-              ),
-              actions: <Widget>[
-                Dimens.d21.spaceHeight,
-                GestureDetector(
-                    onTap: () {
-                      Get.back();
-                    },
-                    child: SvgPicture.asset(
-                      ImageConstant.closePositive,
-                      height: 28,
-                      width: 28,
-                    )),
-                Dimens.d10.spaceHeight,
-                CommonLoadImage(borderRadius: 10,
-                    url: image!, width: Get.width, height: Dimens.d125),
-                Dimens.d15.spaceHeight,
-                Center(
-                  child: Text(
-                    title ?? "",
-                    style: Style.cormorantGaramondBold(fontSize: 22),
-                  ),
-                ),
-                Dimens.d20.spaceHeight,
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 11),
-                  child: Center(
-                    child: Text(
-                      desc ?? "",
-                      textAlign: TextAlign.center,maxLines: 7,
-                      style: Style.montserratRegular(fontSize: 12)
-                          .copyWith(height: 2),
+            return SimpleDialog(backgroundColor: Colors.transparent,
+              children: [Stack(clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 17),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                borderRadius: BorderRadius.circular(11)),
+                    child: Column(
+                      children: [
+                        Dimens.d21.spaceHeight,
+                        CommonLoadImage(
+                          borderRadius: 10,
+                          url: image!,
+                          width: Get.width,
+                          height: Dimens.d125,
+                        ),
+                        Dimens.d15.spaceHeight,
+                        Center(
+                          child: Text(
+                            title ?? "",
+                            style: Style.gothamLight(fontSize: 22),
+                          ),
+                        ),
+                        Dimens.d20.spaceHeight,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 11),
+                          child: Center(
+                            child: Text(
+                              desc ?? "",
+                              textAlign: TextAlign.center,
+                              maxLines: 7,
+                              style: Style.montserratRegular(fontSize: 12).copyWith(height: 2),
+                            ),
+                          ),
+                        ),
+                        Dimens.d22.spaceHeight,
+                      ],
                     ),
                   ),
-                ),
-                Dimens.d22.spaceHeight,
-              ],
+                  Positioned(top: -20,right: -20,
+                    child: GestureDetector(
+                        onTap: () {
+                          Get.back();
+                        },
+                        child: Container(height: 100,width: 100,
+                          padding: const EdgeInsets.only(bottom: 50,left: 50),
+                          child: Center(
+                            child: SvgPicture.asset(
+                              ImageConstant.closePositive,
+                              height: 28,
+                              width: 28,
+                            ),
+                          ),
+                        )),
+                  ),
+
+                ],
+              ),],
             );
           },
         );
       },
     );
+
   }
 
   void _showAlertDialogFilter(
@@ -645,7 +656,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
                             Text(
                               "Weekly".tr,
                               style: Style.montserratMedium(
-                                  fontSize: 18, fontWeight: FontWeight.w500),
+                                  fontSize: Dimens.d18, fontWeight: FontWeight.w500),
                             )
                           ],
                         ),
@@ -889,7 +900,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
     } else {
       Navigator.push(context, MaterialPageRoute(
         builder: (context) {
-          return AddPositivePage(
+          return const AddPositivePage(
             isFromMyAffirmation: true,
             isEdit: false,
           );

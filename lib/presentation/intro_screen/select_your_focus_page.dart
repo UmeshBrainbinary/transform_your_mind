@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/custom_chip.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/select_focus_button.dart';
@@ -18,6 +19,7 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/model_class/focus_model.dart';
+import 'package:transform_your_mind/model_class/get_user_model.dart';
 import 'package:transform_your_mind/presentation/intro_screen/select_your_affirmation_focus_page.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
@@ -29,13 +31,12 @@ class Tag {
 }
 
 class SelectYourFocusPage extends StatefulWidget {
-  const SelectYourFocusPage({
-    Key? key,
-    required this.isFromMe,
-  }) : super(key: key);
+  SelectYourFocusPage({Key? key, required this.isFromMe, this.setting})
+      : super(key: key);
   static const selectFocus = '/selectFocus';
 
   final bool isFromMe;
+  bool? setting;
 
   @override
   State<SelectYourFocusPage> createState() => _SelectYourFocusPageState();
@@ -43,6 +44,7 @@ class SelectYourFocusPage extends StatefulWidget {
 
 class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
   List<Tag> listOfTags = [];
+  List<String> tempData = [];
   bool loader = false;
 
   List<String> selectedTagNames = [];
@@ -75,7 +77,7 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
     }
   }
 
-  setFocuses() async {
+  setFocuses(setting) async {
     setState(() {
       loader = true;
     });
@@ -96,11 +98,18 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
         setState(() {
           loader = false;
         });
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context) {
-            return const SelectYourAffirmationFocusPage(isFromMe: false);
-          },
-        ));
+        if (setting == true) {
+          Get.back();
+        } else {
+          Navigator.push(context, MaterialPageRoute(
+            builder: (context) {
+              return SelectYourAffirmationFocusPage(
+                isFromMe: false,
+                setting: false,
+              );
+            },
+          ));
+        }
       } else {
         setState(() {
           loader = false;
@@ -115,12 +124,50 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
     }
   }
 
+  GetUserModel getUserModel = GetUserModel();
+
+  getUSer() async {
+    try {
+      var headers = {
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+      };
+      var request = http.Request(
+        'GET',
+        Uri.parse(
+          "${EndPoints.getUser}${PrefService.getString(PrefKey.userId)}",
+        ),
+      );
+
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        final responseBody = await response.stream.bytesToString();
+
+        getUserModel = getUserModelFromJson(responseBody);
+        for (int i = 0; i < getUserModel.data!.focuses!.length; i++) {
+          tempData.add(getUserModel.data!.focuses![i].toString());
+        }
+      } else {
+        debugPrint(response.reasonPhrase);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    setState(() {});
+  }
+
   @override
   void initState() {
+    getData();
 
-    getFocuses();
-    setState(() {});
     super.initState();
+  }
+
+  getData() async {
+    await getUSer();
+    await getFocuses();
+    setState(() {});
   }
 
   void _onTagTap(Tag tag) {
@@ -136,26 +183,15 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
 
   @override
   Widget build(BuildContext context) {
-    themeController.isDarkMode.isTrue
-        ? SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-            statusBarColor: ColorConstant.darkBackground,
-            // Status bar background color
-            statusBarIconBrightness:
-                Brightness.light, // Status bar icon/text color
-          ))
-        : SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-            statusBarColor: ColorConstant.white, // Status bar background color
-            statusBarIconBrightness:
-                Brightness.dark, // Status bar icon/text color
-          ));
-    return SafeArea(
+   statusBarSet(themeController);
+    return SafeArea(bottom: false,
       child: Stack(
         children: [
           Scaffold(
             backgroundColor: themeController.isDarkMode.isTrue
                 ? ColorConstant.darkBackground
                 : ColorConstant.white,
-            appBar:  CustomAppBar(showBack: false,
+            appBar:  CustomAppBar(showBack: widget.setting,
               title: "selectYourFocus".tr,
             ),
             body: Stack(
@@ -165,13 +201,17 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
                     alignment: Alignment.topRight,
                     child: Padding(
                       padding: const EdgeInsets.only(top: Dimens.d100),
-                      child: SvgPicture.asset(ImageConstant.profile1),
+                      child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                          ? ImageConstant.profile1Dark
+                          : ImageConstant.profile1),
                     )),
                 Align(
                     alignment: Alignment.bottomLeft,
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: Dimens.d120),
-                      child: SvgPicture.asset(ImageConstant.profile2),
+                      child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                          ? ImageConstant.profile2Dark
+                          : ImageConstant.profile2),
                     )),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
@@ -216,8 +256,8 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
                         isLoading: false,
                         primaryBtnCallBack: () {
                          // getFocuses();
-                          if (selectedTagNames.length >= 5) {
-                            setFocuses();
+                          if (selectedTagNames.isNotEmpty) {
+                            setFocuses(widget.setting);
                           } else {
                             showSnackBarError(
                                 context, 'Please5Focuses'.tr);

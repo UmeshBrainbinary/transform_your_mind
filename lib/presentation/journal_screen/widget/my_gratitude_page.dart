@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:transform_your_mind/core/app_export.dart';
+import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
@@ -68,13 +69,12 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
   FocusNode searchFocus = FocusNode();
   TextEditingController searchController = TextEditingController();
   List? _filteredBookmarks;
-
+  GratitudeModel gratitudeModel = GratitudeModel();
+  CommonModel commonModel = CommonModel();
+  bool loader = false;
   @override
   void initState() {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.backGround, // Status bar background color
-      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
-    ));
+  
     getGratitude();
     super.initState();
   }
@@ -86,9 +86,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
         .toList();
   }
 
-  GratitudeModel gratitudeModel = GratitudeModel();
-  CommonModel commonModel = CommonModel();
-  bool loader = false;
+
   getGratitude() async {
     setState(() {
       loader = true;
@@ -164,258 +162,259 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
 
   @override
   Widget build(BuildContext context) {
+    statusBarSet(themeController);
+
     return GestureDetector(
       onTap: () {
         setState(() {
           select = false;
         });
       },
-      child: Scaffold(
-          backgroundColor: themeController.isDarkMode.value
-              ? ColorConstant.darkBackground
-              : ColorConstant.backGround,
-          resizeToAvoidBottomInset: false,
-          appBar: CustomAppBar(
-            title: "myGratitude".tr,
-            showBack: true,
-            action: Padding(
-              padding: const EdgeInsets.only(right: Dimens.d20),
-              child: GestureDetector(
-                onTap: () {
-                  selectedCategory = ValueNotifier(null);
-                  _onAddClick(context);
-                },
-                child: SvgPicture.asset(
-                  ImageConstant.addTools,
-                  height: Dimens.d22,
-                  width: Dimens.d22,
+      child: SafeArea(bottom: false,
+        child: Scaffold(
+            backgroundColor: themeController.isDarkMode.value
+                ? ColorConstant.darkBackground
+                : ColorConstant.backGround,
+            resizeToAvoidBottomInset: false,
+            appBar: CustomAppBar(
+              title: "myGratitude".tr,
+              showBack: true,
+              action: Padding(
+                padding: const EdgeInsets.only(right: Dimens.d20),
+                child: GestureDetector(
+                  onTap: () {
+                    selectedCategory = ValueNotifier(null);
+                    _onAddClick(context);
+                  },
+                  child: SvgPicture.asset(
+                    ImageConstant.addTools,
+                    height: Dimens.d22,
+                    width: Dimens.d22,
+                  ),
                 ),
               ),
+              onTap: () {
+                if (widget.fromNotification) {
+                  Get.toNamed(AppRoutes.dashBoardScreen);
+                } else {
+                  Navigator.pop(context);
+                }
+              },
             ),
-            onTap: () {
-              if (widget.fromNotification) {
-                Get.toNamed(AppRoutes.dashBoardScreen);
-              } else {
-                Navigator.pop(context);
-              }
-            },
-          ),
-          body: Stack(
-            children: [
-              Align(
-                  alignment: Alignment.topRight,
-                  child: Padding(
+            body: Stack(
+              children: [
+                Align(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: Dimens.d100),
+                      child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                          ? ImageConstant.profile1Dark
+                          : ImageConstant.profile1),
+                    )),
+                Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: Dimens.d120),
+                      child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                          ? ImageConstant.profile2Dark
+                          : ImageConstant.profile2),
+                    )),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Dimens.d30.spaceHeight,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: Dimens.d30),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        datePicker(context);
+                                      });
+                                    },
+                                    child: CommonTextField(
+                                        enabled: false,
+                                        suffixIcon: Padding(
+                                          padding: const EdgeInsets.all(13.0),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                datePicker(context);
+                                              });
+                                            },
+                                            child: SvgPicture.asset(
+                                                ImageConstant.calendar),
+                                          ),
+                                        ),
+                                        hintText: "DD/MM/YYYY",
+                                        controller: dateController,
+                                        focusNode: dateFocus),
+                                  ),
+                                ),
+                                Dimens.d20.spaceHeight,
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20.0),
+                                  child: Row(
+                                    children: [
+                                      _buildCategoryDropDown(context),
+                                      Dimens.d10.spaceWidth,
+                                      Expanded(
+                                        child: Container(
+                                          height: 38,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(25),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: ColorConstant.colorBFD0D4
+                                                    .withOpacity(0.5),
+                                                blurRadius: 8.0,
+                                                spreadRadius:
+                                                    0.5, // Spread the shadow slightly
+                                              ),
+                                            ],
+                                          ),
+                                          child: CommonTextField(
+                                            hintText: "search".tr,
+                                            controller: searchController,
+                                            focusNode: searchFocus,
+                                            prefixLottieIcon:
+                                                ImageConstant.lottieSearch,
+                                            textInputAction: TextInputAction.done,
+                                            onChanged: (value) async {
+                                              if (value.isEmpty) {
+                                                await getGratitude();
+                                              } else {
+                                                gratitudeList = searchBookmarks(
+                                                    value, gratitudeList);
+                                              }
+                                              setState(()  {
+        
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+        
+                                /// saved list
+                                Expanded(
+                                  child: (_isLoading &&
+                                          (pageNumber == 1) &&
+                                          !_isSearching)
+                                      ? const JournalListShimmer()
+                                      : (gratitudeList.isNotEmpty)
+                                          ? LayoutContainer(
+                                              child: ListView.builder(
+                                                itemCount: gratitudeList.length,
+                                                physics:
+                                                    const BouncingScrollPhysics(),
+                                                itemBuilder: (context, index) {
+                                                  var data = gratitudeList[index];
+                                                  return JournalListTileLayout(
+                                                    description: data.description,
+                                                    onDeleteTapCallback: () {
+                                                      _showAlertDialogDelete(
+                                                          context,
+                                                          index,
+                                                          data.id);
+                                                      setState(() {});
+                                                    },
+                                                    onEditTapCallback: () {
+                                                      Navigator.push(context,
+                                                          MaterialPageRoute(
+                                                        builder: (context) {
+                                                          return AddGratitudePage(
+                                                            categoryList:
+                                                                categoryList,
+                                                            id: data.id,
+                                                            description:
+                                                                data.description,
+                                                            title: data.name,
+                                                            date:
+                                                                data.createdAt ??
+                                                                    '',
+                                                            edit: true,
+                                                            isFromMyGratitude:
+                                                                true,
+                                                            registerUser: false,
+                                                            isSaved: true,
+                                                          );
+                                                        },
+                                                      )).then(
+                                                        (value) async {
+                                                          if (value != null &&
+                                                              value is bool) {
+                                                            _refreshGratitudeList(
+                                                                value);
+                                                          }
+                                                          await getGratitude();
+                                                          setState(() {});
+                                                        },
+                                                      );
+                                                    },
+                                                    margin: EdgeInsets.only(
+                                                        bottom: Dimens.d20.h),
+                                                    title: data.name ?? '',
+                                                    //image: data["image"] ?? '',
+                                                    image:
+                                                        "https://picsum.photos/250?image=9" ??
+                                                            '',
+                                                    createdDate: data.date ?? '',
+                                                  );
+                                                },
+                                              ),
+                                            )
+                                          : _isLoadingDraft
+                                              ? const SizedBox.shrink()
+                                              : gratitudeList.isEmpty
+                                                  ? Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              bottom:
+                                                                  Dimens.d150),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          SvgPicture.asset(ImageConstant.noSearch,),
+                                                          Text("dataNotFound".tr,style: Style.gothamMedium(
+                                                              fontSize: 24,fontWeight: FontWeight.w700),),
+                                                        ],
+                                                      ),
+                                                    )
+                                                  : const SizedBox(),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                /*  if (select == true)
+                  Padding(
                     padding: const EdgeInsets.only(top: Dimens.d100),
-                    child: SvgPicture.asset(ImageConstant.profile1),
-                  )),
-              Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: Dimens.d120),
-                    child: SvgPicture.asset(ImageConstant.profile2),
-                  )),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Dimens.d30.spaceHeight,
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: Dimens.d30),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      datePicker(context);
-                                    });
-                                  },
-                                  child: CommonTextField(
-                                      enabled: false,
-                                      suffixIcon: Padding(
-                                        padding: const EdgeInsets.all(13.0),
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              datePicker(context);
-                                            });
-                                          },
-                                          child: SvgPicture.asset(
-                                              ImageConstant.calendar),
-                                        ),
-                                      ),
-                                      hintText: "DD/MM/YYYY",
-                                      controller: dateController,
-                                      focusNode: dateFocus),
-                                ),
-                              ),
-                              Dimens.d20.spaceHeight,
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20.0),
-                                child: Row(
-                                  children: [
-                                    _buildCategoryDropDown(context),
-                                    Dimens.d10.spaceWidth,
-                                    Expanded(
-                                      child: Container(
-                                        height: 38,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(25),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: ColorConstant.colorBFD0D4
-                                                  .withOpacity(0.5),
-                                              blurRadius: 8.0,
-                                              spreadRadius:
-                                                  0.5, // Spread the shadow slightly
-                                            ),
-                                          ],
-                                        ),
-                                        child: CommonTextField(
-                                          hintText: "search".tr,
-                                          controller: searchController,
-                                          focusNode: searchFocus,
-                                          prefixLottieIcon:
-                                              ImageConstant.lottieSearch,
-                                          textInputAction: TextInputAction.done,
-                                          onChanged: (value) async {
-                                            if (value.isEmpty) {
-                                              await getGratitude();
-                                            } else {
-                                              gratitudeList = searchBookmarks(
-                                                  value, gratitudeList);
-                                            }
-                                            setState(()  {
-
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              /// saved list
-                              Expanded(
-                                child: (_isLoading &&
-                                        (pageNumber == 1) &&
-                                        !_isSearching)
-                                    ? const JournalListShimmer()
-                                    : (gratitudeList.isNotEmpty)
-                                        ? LayoutContainer(
-                                            child: ListView.builder(
-                                              itemCount: gratitudeList.length,
-                                              physics:
-                                                  const BouncingScrollPhysics(),
-                                              itemBuilder: (context, index) {
-                                                var data = gratitudeList[index];
-                                                return JournalListTileLayout(
-                                                  description: data.description,
-                                                  onDeleteTapCallback: () {
-                                                    _showAlertDialogDelete(
-                                                        context,
-                                                        index,
-                                                        data.id);
-                                                    setState(() {});
-                                                  },
-                                                  onEditTapCallback: () {
-                                                    Navigator.push(context,
-                                                        MaterialPageRoute(
-                                                      builder: (context) {
-                                                        return AddGratitudePage(
-                                                          categoryList:
-                                                              categoryList,
-                                                          id: data.id,
-                                                          description:
-                                                              data.description,
-                                                          title: data.name,
-                                                          date:
-                                                              data.createdAt ??
-                                                                  '',
-                                                          edit: true,
-                                                          isFromMyGratitude:
-                                                              true,
-                                                          registerUser: false,
-                                                          isSaved: true,
-                                                        );
-                                                      },
-                                                    )).then(
-                                                      (value) async {
-                                                        if (value != null &&
-                                                            value is bool) {
-                                                          _refreshGratitudeList(
-                                                              value);
-                                                        }
-                                                        await getGratitude();
-                                                        setState(() {});
-                                                      },
-                                                    );
-                                                  },
-                                                  margin: EdgeInsets.only(
-                                                      bottom: Dimens.d20.h),
-                                                  title: data.name ?? '',
-                                                  //image: data["image"] ?? '',
-                                                  image:
-                                                      "https://picsum.photos/250?image=9" ??
-                                                          '',
-                                                  createdDate: data.date ?? '',
-                                                );
-                                              },
-                                            ),
-                                          )
-                                        : _isLoadingDraft
-                                            ? const SizedBox.shrink()
-                                            : gratitudeList.isEmpty
-                                                ? Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            bottom:
-                                                                Dimens.d150),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        SvgPicture.asset(
-                                                          themeController.isDarkMode.isTrue?ImageConstant.darkData: ImageConstant
-                                                                .noData,height: 158,width: 200,),
-
-                                                        Text(
-                                                          "dataNotFound".tr,
-                                                          style: Style
-                                                              .montserratBold(
-                                                                  fontSize: 24),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  )
-                                                : const SizedBox(),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              /*  if (select == true)
-                Padding(
-                  padding: const EdgeInsets.only(top: Dimens.d100),
-                  child: widgetCalendar(),
-                ),*/
-            ],
-          )),
+                    child: widgetCalendar(),
+                  ),*/
+              ],
+            )),
+      ),
     );
   }
 
@@ -537,12 +536,15 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
 
   }
 
-  datePicker(context) async {
+
+  datePicker(context,) async {
     FocusScope.of(context).unfocus();
     picked = await showDatePicker(
       builder: (context, child) {
+        TextStyle customTextStyle = Style.montserratRegular(fontSize: 14);
+
         return Theme(
-          data: ThemeData.light().copyWith(
+          data: ThemeData.light().copyWith(focusColor: ColorConstant.themeColor,
               scaffoldBackgroundColor: ColorConstant.themeColor,
               primaryColor: ColorConstant.themeColor,
               colorScheme: const ColorScheme.light(
@@ -552,18 +554,29 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                 textTheme: ButtonTextTheme.primary,
               ),
               textTheme: TextTheme(
-                bodyLarge: Style.montserratRegular(fontSize: 15),
-                bodyMedium: Style.montserratRegular(fontSize: 15),
-                bodySmall: Style.montserratRegular(fontSize: 15),
+                bodyLarge:customTextStyle,
+                bodyMedium: customTextStyle,
+                bodySmall: customTextStyle,
+                displayLarge: customTextStyle,
+                displayMedium: customTextStyle,
+                headlineLarge: customTextStyle,
+                titleLarge: customTextStyle,
+                titleSmall: customTextStyle,
+                displaySmall: customTextStyle,
+                headlineMedium: customTextStyle,
+                headlineSmall: customTextStyle,
+                labelLarge: customTextStyle,
+                labelMedium: customTextStyle,
+                labelSmall: customTextStyle,
+                titleMedium: customTextStyle,
               )),
           child: child!,
         );
       },
+
       context: context,
       firstDate: DateTime(1970),
-      // the earliest allowable
       lastDate: DateTime.now(),
-      // the latest allowable
       currentDate: DateTime.now(),
       initialDate: DateTime.now(),
     );

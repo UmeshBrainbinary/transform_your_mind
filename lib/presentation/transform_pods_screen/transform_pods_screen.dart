@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -39,22 +40,13 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
   ValueNotifier selectedCategory = ValueNotifier(null);
   ValueNotifier<bool> showScrollTop = ValueNotifier(false);
   ThemeController themeController = Get.find<ThemeController>();
-/*  List categoryList = [
-    {"title": "Self-Esteem"},
-    {"title": "Health"},
-    {"title": "Sleep"},
-    {"title": "Self Love"},
-    {"title": "Hobbies"},
-  ];*/
+
 
   @override
   void initState() {
    searchController.clear();
    audioContentController.getPodsData();
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.white, // Status bar background color
-      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
-    ));
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
@@ -85,7 +77,8 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    statusBarSet(themeController);
+    return SafeArea(bottom: false,
       child: Scaffold(backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
           appBar: CustomAppBar(
             title: "transformPods".tr,

@@ -97,38 +97,15 @@ class _AddImageWidgetState extends State<AddImageWidget> {
                   ),
                 ),
 
-                /// image delete function
-
-                // if ((widget.image != null || widget.imageURL != null) &&
-                //     !widget.hideDelete)
-                //   Align(
-                //     alignment: Alignment.bottomRight,
-                //     child: GestureDetector(
-                //       onTap: widget.onDeleteTap,
-                //       child: Container(
-                //         padding: const EdgeInsets.all(Dimens.d5),
-                //         decoration: BoxDecoration(
-                //           borderRadius: BorderRadius.circular(24),
-                //           color: Colors.white,
-                //         ),
-                //         child: SvgPicture.asset(
-                //           ImageConstant.userPlaceHolder,
-                //           fit: BoxFit.cover,
-                //           height: Dimens.d20,
-                //           width: Dimens.d20,
-                //         ),
-                //       ),
-                //     ),
-                //   ),
               ],
             ),
           ),
           Dimens.d10.spaceHeight,
-          CommonElevatedButton(height: Dimens.d46,
+          CommonElevatedButton(height: Dimens.d26,
             title: widget.title??'addProfileImage'.tr,
             onTap: widget.onTap,
-            width: Dimens.d200,
-            textStyle: Style.montserratMedium(color: ColorConstant.white, fontSize: Dimens.d14),
+            width: Dimens.d180,
+            textStyle: Style.montserratMedium(color: ColorConstant.white, fontSize: Dimens.d12),
           ),
         ],
       ),

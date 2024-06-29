@@ -95,31 +95,38 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
     VolumeController().getVolume().then((volume) => _setVolumeValue = volume);
     getUserDetails();
     setState(() {});*/
+
     setUrlPlaying();
   }
   bool checkUrlSameOrNot = false;
+
   setUrlPlaying() {
+    nowPlayingController.rated.value = widget.audioData?.isRated ?? false;
+    nowPlayingController.bookmark.value =
+        widget.audioData?.isBookmarked ?? false;
+    nowPlayingController.update();
+    nowPlayingController.lottieController = AnimationController(
+        vsync: this, duration: const Duration(seconds: 4));
+    nowPlayingController.lottieBgController =
+        AnimationController(vsync: this);
+    if(nowPlayingController.isPlaying.isTrue){
+      if(nowPlayingController.currentUrl==widget.audioData?.audioFile){
+        nowPlayingController.lottieController!.reset();
+        nowPlayingController.lottieController!.repeat();
+      }
+
+
+    }else{
+      nowPlayingController.lottieController?.stop();
+    }
         if(nowPlayingController.currentUrl==widget.audioData?.audioFile){
          setState(() {
            checkUrlSameOrNot = true;
          });
-        }else{
-      setState(() {
-        checkUrlSameOrNot = false;
-      });
-        }
-
-    if (nowPlayingController.isPlaying.isTrue) {
-
-    } else {
       nowPlayingController.rated.value = widget.audioData?.isRated ?? false;
       nowPlayingController.bookmark.value =
           widget.audioData?.isBookmarked ?? false;
       nowPlayingController.update();
-      nowPlayingController.lottieController = AnimationController(
-          vsync: this, duration: const Duration(seconds: 4));
-      nowPlayingController.lottieBgController =
-          AnimationController(vsync: this);
 
       _setInitValues();
       if (widget.d == true) {
@@ -145,17 +152,53 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
       VolumeController().getVolume().then((volume) => _setVolumeValue = volume);
       getUserDetails();
       setState(() {});
+    }else{
+      setState(() {
+        checkUrlSameOrNot = false;
+      });
     }
+
+
+  }
+
+  whenMusicPlying() {
+    nowPlayingController.rated.value = widget.audioData?.isRated ?? false;
+    nowPlayingController.bookmark.value =
+        widget.audioData?.isBookmarked ?? false;
+    nowPlayingController.update();
+    nowPlayingController.lottieController =
+        AnimationController(vsync: this, duration: const Duration(seconds: 4));
+    nowPlayingController.lottieBgController = AnimationController(vsync: this);
+
+    _setInitValues();
+    if (widget.d == true) {
+      nowPlayingController.setUrlFile(
+          img: widget.audioData?.image ?? "",
+          description: widget.audioData?.description ?? "",
+          expertName: widget.audioData?.expertName ?? "",
+          name: widget.audioData?.name ?? "",
+          widget.audioData?.downloadedPath ?? "");
+    } else {
+      nowPlayingController.afterPlayingMusic(
+          img: widget.audioData?.image ?? "",
+          description: widget.audioData?.description ?? "",
+          expertName: widget.audioData?.expertName ?? "",
+          name: widget.audioData?.name ?? "",
+          widget.audioData?.audioFile ?? "");
+    }
+
+    VolumeController().listener((volume) {
+      setState(() => _volumeListenerValue = volume);
+    });
+
+    VolumeController().getVolume().then((volume) => _setVolumeValue = volume);
+    getUserDetails();
+    setState(() {});
+    nowPlayingController.update();
   }
 
   getUserDetails() async {
-    if(nowPlayingController.isPlaying.isTrue){
-      nowPlayingController.lottieController!.reset();
-      nowPlayingController.lottieController!.repeat();
 
-    }else{
-      nowPlayingController.lottieController!.stop();
-    }
     setState(() {
 
     });
@@ -166,7 +209,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
       Get.put(AudioContentController());
   @override
   void dispose() {
-
+    nowPlayingController.lottieController!.dispose();
+    nowPlayingController.lottieBgController!.dispose();
     VolumeController().removeListener();
     super.dispose();
   }
@@ -176,588 +220,693 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
     return Scaffold(backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
         body: Stack(
       children: [
-        SafeArea(
-          child: Stack(
-            children: [
-              /// background image
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: ClipPath(
-                  clipper: BgSemiCircleClipPath(),
-                  child: CommonLoadImage(
-                    url: widget.audioData?.image ?? '',
-                        height: Get.height - 150,
-                        width: Get.width,
-                      ),
+            Stack(
+              children: [
+                /// background image
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: ClipPath(
+                    clipper: BgSemiCircleClipPath(),
+                    child: CommonLoadImage(
+                      url: widget.audioData?.image ?? '',
+                      height: Get.height - 150,
+                      width: Get.width,
                     ),
                   ),
+                ),
 
-                  /// description, subtitle
-                  Padding(
-                    padding: const EdgeInsets.only(top: Dimens.d300),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 35),
-                          child: Text(
-                            nowPlayingController.currentDescription ??
-                                widget.audioData?.description ??
-                                "",
-                            textAlign: TextAlign.center,
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                            style: Style.montserratRegular(
-                                fontSize: 16, color: ColorConstant.white),
-                          ),
-                        ),
-                        Dimens.d20.spaceHeight,
-                        Text(
-                          nowPlayingController.currentExpertName ??
-                              widget.audioData?.expertName ??
-                              "",
-                          textAlign: TextAlign.center,
-                          style: Style.montserratRegular(
-                              fontSize: 15, color: ColorConstant.white),
-                        ),
-                        Dimens.d20.spaceHeight,
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 35),
-                          child: Text(
-                            nowPlayingController.currentName ??
-                                widget.audioData?.name ??
-                                "",
-                            textAlign: TextAlign.center,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: Style.montserratRegular(
-                                fontSize: 15, color: ColorConstant.white),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-              /// app bar
-              Column(
+                /// description, subtitle
+            Padding(
+              padding: const EdgeInsets.only(top: Dimens.d300),
+              child: Column(
                 children: [
-                  Dimens.d30.h.spaceHeight,
-                  CustomAppBar(
-                    showBack: true,
-                    title: "nowPlaying".tr,
-                    leading: GestureDetector(
-                        onTap: () async {
-                          await audioContentController.getPodsData();
-                          Get.back();
-                              setState(() {});
-                            },
-                            child: Icon(
-                              Icons.close,
-                              color: themeController.isDarkMode.isTrue
-                                  ? ColorConstant.white
-                                  : ColorConstant.black,
-                            )),
-                        action: Row(
-                          children: [
-                            Obx(
-                              () => GestureDetector(
-                            onTap: () {
-                              if (nowPlayingController.rated.isTrue) {
-                              } else {
-                                _showAlertDialog(
-                                    context: context,
-                                    id: widget.audioData?.id ?? "",
-                                    star: nowPlayingController.currentRating);
-                              }
-                            },
-                            child: SvgPicture.asset(
-                              nowPlayingController.rated.isTrue
-                                  ? ImageConstant.rating
-                                  : ImageConstant.ratingIcon,
-                            ),
-                          ),
-                        ),
-                        Dimens.d10.h.spaceWidth,
-                        GestureDetector(
-                          onTap: () async {},
-                          child: SvgPicture.asset(
-                            height: Dimens.d25,
-                            ImageConstant.share,
-                          ),
-                        ),
-                        Dimens.d10.h.spaceWidth,
-                        Obx(
-                          () => GestureDetector(
-                            onTap: () async {
-                              if (nowPlayingController.bookmark.isTrue) {
-                                nowPlayingController.bookmark.value = false;
-                              } else {
-                                nowPlayingController.bookmark.value = true;
-                              }
-                              nowPlayingController.update();
-                              await nowPlayingController.addBookmark(
-                                  widget.audioData!.id,
-                                  context,
-                                  nowPlayingController.bookmark.value);
-                              await nowPlayingController
-                                  .getUser(widget.audioData!.id);
-                              setState(() {});
-                            },
-                            child: nowPlayingController.bookmark.isFalse
-                                ? SvgPicture.asset(
-                                    height: Dimens.d25,
-                                    ImageConstant.bookmark,
-                                  )
-                                : const Icon(
-                                    Icons.bookmark,
-                                    color: ColorConstant.deleteRed,
-                                    size: Dimens.d25,
-                                  ),
-                          ),
-                        ),
-                        Dimens.d20.h.spaceWidth,
-                      ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 35),
+                    child: Text(
+
+                      widget.audioData?.description ??
+                          "",
+                      textAlign: TextAlign.center,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: Style.montserratRegular(
+                          fontSize: 16, color: ColorConstant.white),
+                    ),
+                  ),
+                  Dimens.d20.spaceHeight,
+                  Text(
+
+                    widget.audioData?.expertName ??
+                        "",
+                    textAlign: TextAlign.center,
+                    style: Style.montserratRegular(
+                        fontSize: 15, color: ColorConstant.white),
+                  ),
+                  Dimens.d20.spaceHeight,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 35),
+                    child: Text(
+                      widget.audioData?.name ??
+                          "",
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Style.montserratRegular(
+                          fontSize: 15, color: ColorConstant.white),
                     ),
                   ),
                 ],
               ),
+            ),
 
-              /// center widget
-                  Positioned(
-                    top: Dimens.d90,
-                    left: Dimens.d110,
-                    child: Lottie.asset(
-                      ImageConstant.lottieStarOcean,
-                      controller: nowPlayingController.lottieBgController,
-                      //height: MediaQuery.of(context).size.height / 3,
-                      height: 160,
-                      width: 160,
-                      onLoaded: (composition) {
+                /// app bar
+                Column(
+                  children: [
+                    Dimens.d30.h.spaceHeight,
+                    CustomAppBar(
+                      showBack: true,
+                      title: "nowPlaying".tr,
+                      leading: GestureDetector(
+                          onTap: () async {
+                            await audioContentController.getPodsData();
+                            Get.back();
+                            setState(() {});
+                          },
+                          child: Icon(
+                            Icons.close,
+                            color: themeController.isDarkMode.isTrue
+                                ? ColorConstant.white
+                                : ColorConstant.black,
+                          )),
+                      action: Row(
+                        children: [
+                          Obx(
+                            () => GestureDetector(
+                              onTap: () {
+                                if (nowPlayingController.rated.isTrue) {
+                                } else {
+                                  _showAlertDialog(
+                                      context: context,
+                                      id: widget.audioData?.id ?? "",
+                                      star: nowPlayingController.currentRating);
+                                }
+                              },
+                              child: SvgPicture.asset(
+                                nowPlayingController.rated.isTrue
+                                    ? ImageConstant.rating
+                                    : ImageConstant.ratingIcon,
+                              ),
+                            ),
+                          ),
+                          Dimens.d10.h.spaceWidth,
+                          GestureDetector(
+                            onTap: () async {},
+                            child: SvgPicture.asset(
+                              height: Dimens.d25,
+                              ImageConstant.share,
+                            ),
+                          ),
+                          Dimens.d10.h.spaceWidth,
+                          Obx(
+                            () => GestureDetector(
+                              onTap: () async {
+                                if (nowPlayingController.bookmark.isTrue) {
+                                  nowPlayingController.bookmark.value = false;
+                                } else {
+                                  nowPlayingController.bookmark.value = true;
+                                }
+                                nowPlayingController.update();
 
-                            nowPlayingController.lottieBgController!
-                              ..duration = composition.duration
-                              ..repeat();
-                      },
+                                await nowPlayingController.addBookmark(
+                                    widget.audioData!.id,
+                                    context,
+                                    nowPlayingController.bookmark.value);
+                                await nowPlayingController
+                                    .getUser(widget.audioData!.id);
+                                setState(() {});
+                              },
+                              child: nowPlayingController.bookmark.isFalse
+                                  ? SvgPicture.asset(
+                                      height: Dimens.d25,
+                                      ImageConstant.bookmark,
+                                    )
+                                  : const Icon(
+                                      Icons.bookmark,
+                                      color: ColorConstant.deleteRed,
+                                      size: Dimens.d25,
+                                    ),
+                            ),
+                          ),
+                          Dimens.d20.h.spaceWidth,
+                        ],
+                      ),
                     ),
-                  ),
+                  ],
+                ),
 
-              ///seekbar
-              Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  StreamBuilder<Duration?>(
-                    stream: nowPlayingController.audioPlayer.positionStream,
-                    builder: (context, snapshot) {
-                      final position = snapshot.data ?? Duration.zero;
-                      return StreamBuilder<Duration?>(
-                        stream: nowPlayingController.audioPlayer.durationStream,
-                        builder: (context, snapshot) {
-                          final duration = snapshot.data ?? Duration.zero;
-                          return SeekBar(
-                            duration: duration,
-                            position: position,
-                            onChanged: (newPosition) {
-                              if (newPosition != null) {
-                                nowPlayingController.seekForMeditationAudio(
-                                    position: newPosition);
-                              }
-                            },
-                            onChangeEnd: (newPosition) {
-                              if (newPosition != null) {
-                                nowPlayingController.seekForMeditationAudio(
-                                    position: newPosition);
-                              }
-                            },
-                          );
-                        },
-                      );
+                /// center widget
+            Positioned(
+              top: Dimens.d90,
+              left: Dimens.d110,
+              child: Lottie.asset(
+                ImageConstant.lottieStarOcean,
+                controller: nowPlayingController.lottieBgController,
+                height: 160,
+                width: 160,
+                onLoaded: (composition) {
+                      nowPlayingController.lottieBgController!
+                        ..duration = composition.duration
+                        ..repeat();
                     },
                   ),
-                  Dimens.d20.h.spaceHeight,
+                ),
 
-                      ValueListenableBuilder(
-                          valueListenable: nowPlayingController.isAudioLoading,
-                          builder: (BuildContext context, value,
-                              Widget? child) {
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      if (!nowPlayingController.isAudioLoading
-                                          .value) {
-                                        _volumeTapHandler();
-                                        nowPlayingController.update();
-                                      }
-                                    },
-                                    child: SvgPicture.asset(
-                                        ImageConstant.loudSpeaker,
-                                        color: nowPlayingController
-                                            .isAudioLoading.value
-                                            ? ColorConstant.grey
-                                            : ColorConstant.white),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      if (!nowPlayingController.isAudioLoading
-                                          .value) {
-                                        nowPlayingController.skipBackward();
-                                        nowPlayingController.update();
-                                      }
-                                    },
-                                    child: Image.asset(
-                                      ImageConstant.audio15second,
-                                      color: nowPlayingController.isAudioLoading
-                                          .value
+                ///seekbar
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                StreamBuilder<Duration?>(
+                  stream: nowPlayingController.audioPlayer.positionStream,
+                  builder: (context, snapshot) {
+                    final position = snapshot.data ?? Duration.zero;
+                    return StreamBuilder<Duration?>(
+                      stream: nowPlayingController.audioPlayer.durationStream,
+                      builder: (context, snapshot) {
+                        final duration = snapshot.data ?? Duration.zero;
+                        return checkUrlSameOrNot == false ? SeekBar(
+                          duration: const Duration(seconds: 0),
+                          position: const Duration(seconds: 0),
+                          onChanged: (newPosition) {
+                            if (newPosition != null) {
+                              nowPlayingController.seekForMeditationAudio(
+                                  position: newPosition);
+                            }
+                          },
+                          onChangeEnd: (newPosition) {
+                            if (newPosition != null) {
+                              nowPlayingController.seekForMeditationAudio(
+                                  position: newPosition);
+                            }
+                          },
+                        ) : SeekBar(
+                          duration: duration,
+                          position: position,
+                          onChanged: (newPosition) {
+                            if (newPosition != null) {
+                              nowPlayingController.seekForMeditationAudio(
+                                  position: newPosition);
+                            }
+                          },
+                          onChangeEnd: (newPosition) {
+                            if (newPosition != null) {
+                              nowPlayingController.seekForMeditationAudio(
+                                  position: newPosition);
+                            }
+                          },
+                        );
+                      },
+                    );
+                  },
+                ),
+                Dimens.d20.h.spaceHeight,
+                ValueListenableBuilder(
+                        valueListenable: nowPlayingController.isAudioLoading,
+                        builder: (BuildContext context, value, Widget? child) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (!nowPlayingController
+                                        .isAudioLoading.value) {
+                                      _volumeTapHandler();
+                                      nowPlayingController.update();
+                                    }
+                                  },
+                                  child: SvgPicture.asset(
+                                      ImageConstant.loudSpeaker,
+                                      color: nowPlayingController
+                                              .isAudioLoading.value
                                           ? ColorConstant.grey
-                                          : ColorConstant.white,
-                                      width: Dimens.d24,
-                                      height: Dimens.d24,
-                                    ),
+                                          : ColorConstant.white),
+                                ),
+                              ),
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (!nowPlayingController
+                                        .isAudioLoading.value) {
+                                      nowPlayingController.skipBackward();
+                                      nowPlayingController.update();
+                                    }
+                                  },
+                                  child: Image.asset(
+                                    ImageConstant.audio15second,
+                                    color: nowPlayingController
+                                            .isAudioLoading.value
+                                        ? ColorConstant.grey
+                                        : ColorConstant.white,
+                                    width: Dimens.d24,
+                                    height: Dimens.d24,
                                   ),
                                 ),
-                                GetBuilder<NowPlayingController>(
-                                  builder: (controller) {
-                                    return ValueListenableBuilder(
-                                      builder: (context, value, child) {
-                                        return Flexible(
-                                          fit: FlexFit.loose,
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              audioDataStore = widget.audioData;
+                              ),
+                              GetBuilder<NowPlayingController>(
+                                builder: (controller) {
+                                  return ValueListenableBuilder(
+                                    builder: (context, value, child) {
+                                      return Flexible(
+                                        fit: FlexFit.loose,
+                                        child: checkUrlSameOrNot == false
+                                            ? GestureDetector(
+                                                onTap: () async {
+                                                  await whenMusicPlying();
+                                                  audioDataStore =
+                                                      widget.audioData;
 
-                                              if (nowPlayingController
-                                                  .isPlaying.value) {
-                                                nowPlayingController
-                                                    .lottieController!
-                                                    .stop();
-                                                nowPlayingController.pause();
-                                                nowPlayingController.update();
-                                              } else {
-                                                nowPlayingController.play();
-                                                nowPlayingController
-                                                    .lottieController!
-                                                    .repeat();
-                                                nowPlayingController
-                                                    .addRecently(
-                                                        widget.audioData!.id);
-                                                nowPlayingController.update();
-                                              }
-                                              setState(() {
-                                                nowPlayingController
-                                                        .isPlaying.value =
-                                                    !nowPlayingController
-                                                        .isPlaying.value;
-                                                nowPlayingController.update();
-                                              });
-                                          nowPlayingController.update();
-                                            },
-                                            child: Container(
-                                              height: Dimens.d64.h,
-                                              width: Dimens.d64.h,
-                                              decoration: const BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color:
-                                                      ColorConstant.themeColor),
-                                              child: Padding(
-                                                padding: EdgeInsets.all(
-                                                    Dimens.d17.h),
-                                                child: AnimatedSwitcher(
-                                                  duration: const Duration(milliseconds: 500),
-                                              transitionBuilder: (child,
-                                                  animation) =>
-                                                  RotationTransition(
-                                                    turns: child.key ==
-                                                        const ValueKey(
-                                                            'ic_pause')
-                                                        ? Tween<double>(
-                                                        begin: Dimens.d1,
-                                                        end: Dimens.d0_5)
-                                                        .animate(animation)
-                                                        : Tween<double>(
-                                                        begin: Dimens.d0_75,
-                                                        end: Dimens.d1)
-                                                        .animate(animation),
-                                                    child: ScaleTransition(
-                                                        scale: animation,
-                                                        child: child),
+                                                  if (nowPlayingController
+                                                      .isPlaying.value) {
+                                                    nowPlayingController
+                                                        .lottieController!
+                                                        .stop();
+                                                    nowPlayingController
+                                                        .pause();
+                                                    nowPlayingController
+                                                        .update();
+                                                  } else {
+                                                    nowPlayingController.play();
+                                                    nowPlayingController
+                                                        .lottieController!
+                                                        .repeat();
+                                                    nowPlayingController
+                                                        .addRecently(widget
+                                                            .audioData!.id);
+                                                    nowPlayingController
+                                                        .update();
+                                                  }
+                                                  setState(() {
+                                                    nowPlayingController
+                                                            .isPlaying.value =
+                                                        !nowPlayingController
+                                                            .isPlaying.value;
+                                                    nowPlayingController
+                                                        .update();
+                                                  });
+                                                  checkUrlSameOrNot = true;
+                                                  nowPlayingController.update();
+                                                  setState(() {});
+                                                },
+                                                child: Container(
+                                                  height: Dimens.d64.h,
+                                                  width: Dimens.d64.h,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                          shape:
+                                                              BoxShape.circle,
+                                                          color: ColorConstant
+                                                              .themeColor),
+                                                  child: Padding(
+                                                    padding: EdgeInsets.all(
+                                                        Dimens.d17.h),
+                                                    child: AnimatedSwitcher(
+                                                      duration: const Duration(
+                                                          milliseconds: 500),
+                                                      transitionBuilder: (child,
+                                                              animation) =>
+                                                          RotationTransition(
+                                                        turns: child.key ==
+                                                                const ValueKey(
+                                                                    'ic_pause')
+                                                            ? Tween<double>(
+                                                                    begin:
+                                                                        Dimens
+                                                                            .d1,
+                                                                    end: Dimens
+                                                                        .d0_5)
+                                                                .animate(
+                                                                    animation)
+                                                            : Tween<double>(
+                                                                    begin: Dimens
+                                                                        .d0_75,
+                                                                    end: Dimens
+                                                                        .d1)
+                                                                .animate(
+                                                                    animation),
+                                                        child: ScaleTransition(
+                                                            scale: animation,
+                                                            child: child),
+                                                      ),
+                                                      child: SvgPicture.asset(
+                                                        ImageConstant.play,
+                                                        // key: const ValueKey(
+                                                        //     'ic_play'),
+                                                      ),
+                                                    ),
                                                   ),
-                                              child: nowPlayingController
-                                                  .isPlaying.value
-                                                  ? SvgPicture.asset(
-                                                  ImageConstant.pause,
-                                                  key: const ValueKey(
-                                                      'ic_pause'))
-                                                  : SvgPicture.asset(
-                                                ImageConstant.play,
-                                                // key: const ValueKey(
-                                                //     'ic_play'),
-                                              ),
+                                                ),
+                                              )
+                                            : GestureDetector(
+                                                onTap: () {
+                                                  audioDataStore =
+                                                      widget.audioData;
+
+                                                  if (nowPlayingController
+                                            .isPlaying.value) {
+                                          nowPlayingController
+                                              .lottieController!
+                                              .stop();
+                                          nowPlayingController.pause();
+                                          nowPlayingController.update();
+                                        } else {
+                                          nowPlayingController.play();
+                                          nowPlayingController
+                                              .lottieController!
+                                              .repeat();
+                                          nowPlayingController
+                                              .addRecently(
+                                              widget.audioData!.id);
+                                          nowPlayingController.update();
+                                        }
+                                        setState(() {
+                                          nowPlayingController
+                                              .isPlaying.value =
+                                          !nowPlayingController
+                                              .isPlaying.value;
+                                          nowPlayingController.update();
+                                        });
+                                        nowPlayingController.update();
+                                      },
+                                      child:
+                                      Container(
+                                        height: Dimens.d64.h,
+                                        width: Dimens.d64.h,
+                                        decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color:
+                                            ColorConstant.themeColor),
+                                        child: Padding(
+                                          padding: EdgeInsets.all(
+                                              Dimens.d17.h),
+                                          child: AnimatedSwitcher(
+                                            duration: const Duration(
+                                                milliseconds: 500),
+                                            transitionBuilder: (child,
+                                                animation) =>
+                                                RotationTransition(
+                                                  turns: child.key ==
+                                                      const ValueKey(
+                                                          'ic_pause')
+                                                      ? Tween<double>(
+                                                      begin: Dimens.d1,
+                                                      end: Dimens.d0_5)
+                                                      .animate(animation)
+                                                      : Tween<double>(
+                                                      begin: Dimens.d0_75,
+                                                      end: Dimens.d1)
+                                                      .animate(animation),
+                                                  child: ScaleTransition(
+                                                      scale: animation,
+                                                      child: child),
+                                                ),
+                                            child: nowPlayingController
+                                                .isPlaying.value
+                                                ? SvgPicture.asset(
+                                                ImageConstant.pause,
+                                                key: const ValueKey(
+                                                    'ic_pause'))
+                                                : SvgPicture.asset(
+                                              ImageConstant.play,
+                                              // key: const ValueKey(
+                                              //     'ic_play'),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    );
-                                  },
-                                  valueListenable: isActivityApiCalled,
-                                    );
-                                  },
-                                ),
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      if (!nowPlayingController.isAudioLoading
-                                          .value) {
-                                        nowPlayingController.skipForward();
-                                      }
-                                      nowPlayingController.update();
-                                    },
-                                    child: Image.asset(
-                                      ImageConstant.audio15second2,
-                                      color: nowPlayingController.isAudioLoading
-                                          .value
-                                          ? ColorConstant.grey
-                                          : ColorConstant.white,
-                                      width: Dimens.d24,
-                                      height: Dimens.d24,
                                     ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Center(
-                                    child: StatefulBuilder(
-                                      builder: (context, setState) {
-                                        return Stack(
-                                          clipBehavior: Clip.none,
-                                          children: [
-                                            GestureDetector(
-                                              behavior: HitTestBehavior.opaque,
-                                              child: SizedBox(
-                                                width: Dimens.d24,
-                                                height: Dimens.d24,
-                                                child: SvgPicture.asset(
-                                                  ImageConstant.playbackSpeed,
-                                                  width: Dimens.d20,
-                                                  height: Dimens.d20,
-                                                  color: nowPlayingController
-                                                      .isAudioLoading.value
-                                                      ? ColorConstant.grey
-                                                      : ColorConstant.white,
-                                                ),
-                                              ),
-                                              onTap: () {
-                                            setState(() {
-                                              if (_opacityOfSpeedText == 1.0) {
-                                                _opacityOfSpeedText = 1.5;
-                                              } else if (_opacityOfSpeedText ==
-                                                  1.5) {
-                                                _opacityOfSpeedText = 2.0;
-                                              } else if (_opacityOfSpeedText ==
-                                                  2.0) {
-                                                _opacityOfSpeedText = 1.0;
-                                              }
-                                            });
-                                            nowPlayingController
-                                                .setPlaybackSpeed(
-                                                    _opacityOfSpeedText);
-                                          },
+                                  );
+                                },
+                                valueListenable: isActivityApiCalled,
+                              );
+                            },
+                          ),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                if (!nowPlayingController.isAudioLoading
+                                    .value) {
+                                  nowPlayingController.skipForward();
+                                }
+                                nowPlayingController.update();
+                              },
+                              child: Image.asset(
+                                ImageConstant.audio15second2,
+                                color: nowPlayingController.isAudioLoading
+                                    .value
+                                    ? ColorConstant.grey
+                                    : ColorConstant.white,
+                                width: Dimens.d24,
+                                height: Dimens.d24,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Center(
+                              child: StatefulBuilder(
+                                builder: (context, setState) {
+                                  return Stack(
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      GestureDetector(
+                                        behavior: HitTestBehavior.opaque,
+                                        child: SizedBox(
+                                          width: Dimens.d24,
+                                          height: Dimens.d24,
+                                          child: SvgPicture.asset(
+                                            ImageConstant.playbackSpeed,
+                                            width: Dimens.d20,
+                                            height: Dimens.d20,
+                                            color: nowPlayingController
+                                                .isAudioLoading.value
+                                                ? ColorConstant.grey
+                                                : ColorConstant.white,
+                                          ),
                                         ),
-                                        _opacityOfSpeedText == 1.0
-                                            ? const SizedBox()
-                                            : Positioned(
-                                                top: -20,
-                                                left: 1,
-                                                child: Text(
-                                                  "${_opacityOfSpeedText.toDouble()}x",
-                                                  style:
-                                                      Style.montserratRegular(
-                                                          fontSize: 12,
-                                                          color: ColorConstant
-                                                              .white),
-                                                ),
-                                              ),
-                                      ],
-                                    );
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          }),
-
-                  /// end image time duration
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      height: Dimens.d140,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(ImageConstant.curveBottomImg),
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: Dimens.d20),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                SizedBox(
-                                  height: Dimens.d35,
-                                  width: Dimens.d55,
-                                  child: Center(
-                                    child: ValueListenableBuilder(
-                                      valueListenable: nowPlayingController
-                                          .updatedRealtimeAudioDuration,
-                                      builder: (BuildContext context, value,
-                                          Widget? child) {
-                                        return StreamBuilder<Duration?>(
-                                          stream: nowPlayingController
-                                              .audioPlayer.positionStream,
-                                          builder: (context, snapshot) {
-                                            final currentDuration =
-                                                snapshot.data ?? Duration.zero;
-                                            return Text(
-                                              currentDuration
-                                                  .toString()
-                                                  .split('.')
-                                                  .first,
-                                              style: Style.montserratMedium(
-                                                  fontSize: Dimens.d14,
-                                                  color: ColorConstant.white),
-                                            );
-                                          },
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
-
-                                /// music animation
-                                    Lottie.asset(
-                                      ImageConstant.lottieAudio,
-                                      controller:
-                                          nowPlayingController.lottieController,
-                                      height: Dimens.d40,
-                                      width: Dimens.d40,
-                                      fit: BoxFit.fill,
-                                      repeat: true,
-
-                                    ),
-                                    SizedBox(
-                                      height: Dimens.d35,
-                                      width: Dimens.d55,
-                                      child: Center(
-                                        child: ValueListenableBuilder(
-                                          valueListenable: nowPlayingController
-                                              .updatedRealtimeAudioDuration,
-                                          builder: (BuildContext context, value,
-                                              Widget? child) {
-                                            return StreamBuilder<Duration?>(
-                                              stream: nowPlayingController
-                                                  .audioPlayer.durationStream,
-                                              builder: (context, snapshot) {
-                                                final totalDuration =
-                                                    snapshot.data ??
-                                                        Duration.zero;
-                                                return Text(
-                                                  totalDuration
-                                                      .toString()
-                                                      .split('.')
-                                                      .first,
-                                                  style: Style.montserratMedium(
-                                                      fontSize: Dimens.d14,
-                                                      color: ColorConstant
-                                                          .white),
-                                                );
-                                              },
-                                            );
-                                          },
+                                        onTap: () {
+                                          setState(() {
+                                            if (_opacityOfSpeedText == 1.0) {
+                                              _opacityOfSpeedText = 1.5;
+                                            } else if (_opacityOfSpeedText ==
+                                                1.5) {
+                                              _opacityOfSpeedText = 2.0;
+                                            } else if (_opacityOfSpeedText ==
+                                                2.0) {
+                                              _opacityOfSpeedText = 1.0;
+                                            }
+                                          });
+                                          nowPlayingController
+                                              .setPlaybackSpeed(
+                                              _opacityOfSpeedText);
+                                        },
+                                      ),
+                                      _opacityOfSpeedText == 1.0
+                                          ? const SizedBox()
+                                          : Positioned(
+                                        top: -20,
+                                        left: 1,
+                                        child: Text(
+                                          "${_opacityOfSpeedText.toDouble()}x",
+                                          style:
+                                          Style.montserratRegular(
+                                              fontSize: 12,
+                                              color: ColorConstant
+                                                  .white),
                                         ),
                                       ),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    }),
+
+                    /// end image time duration
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        height: Dimens.d140,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(ImageConstant.curveBottomImg),
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: Dimens.d20),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    height: Dimens.d35,
+                                    width: Dimens.d55,
+                                    child: Center(
+                                      child: ValueListenableBuilder(
+                                        valueListenable: nowPlayingController
+                                            .updatedRealtimeAudioDuration,
+                                        builder: (BuildContext context, value,
+                                            Widget? child) {
+                                          return StreamBuilder<Duration?>(
+                                            stream: nowPlayingController
+                                                .audioPlayer.positionStream,
+                                            builder: (context, snapshot) {
+                                              final currentDuration =
+                                                  snapshot.data ??
+                                                      Duration.zero;
+                                              return checkUrlSameOrNot == false ?Text(
+                                               "00:00",
+                                                style: Style.montserratMedium(
+                                                    fontSize: Dimens.d14,
+                                                    color: ColorConstant.white),
+                                              ):Text(
+                                                currentDuration
+                                                    .toString()
+                                                    .split('.')
+                                                    .first,
+                                                style: Style.montserratMedium(
+                                                    fontSize: Dimens.d14,
+                                                    color: ColorConstant.white),
+                                              );
+                                            },
+                                          );
+                                        },
+                                      ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+
+                                  /// music animation
+                              Lottie.asset(
+                                ImageConstant.lottieAudio,
+                                controller:
+                                nowPlayingController.lottieController,
+                                height: Dimens.d40,
+                                width: Dimens.d40,
+                                fit: BoxFit.fill,
+                                repeat: true,
+                                  ),
+                                  SizedBox(
+                                    height: Dimens.d35,
+                                    width: Dimens.d55,
+                                    child: Center(
+                                      child: ValueListenableBuilder(
+                                        valueListenable: nowPlayingController
+                                            .updatedRealtimeAudioDuration,
+                                        builder: (BuildContext context, value,
+                                            Widget? child) {
+                                          return StreamBuilder<Duration?>(
+                                            stream: nowPlayingController
+                                                .audioPlayer.durationStream,
+                                            builder: (context, snapshot) {
+                                              final totalDuration =
+                                                  snapshot.data ??
+                                                      Duration.zero;
+                                              return Text(
+                                                totalDuration
+                                                    .toString()
+                                                    .split('.')
+                                                    .first,
+                                                style: Style.montserratMedium(
+                                                    fontSize: Dimens.d14,
+                                                    color: ColorConstant.white),
+                                              );
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                ValueListenableBuilder(
+              valueListenable: _isVolShowing,
+              builder: (context, value, child) {
+                if (value) {
+                  return Container(
+                    color: ColorConstant.transparent,
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(
+                        sigmaX: 1.5,
+                        sigmaY: 1.5,
+                      ),
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(
+                              vertical: Dimens.d200, horizontal: Dimens.d16),
+                          padding: const EdgeInsets.all(Dimens.d10),
+                          height: Dimens.d60,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: ColorConstant.color3d5157,
+                            borderRadius: Dimens.d40.radiusAll,
+                          ),
+                          child: Row(
+                            children: [
+                              Dimens.d10.spaceWidth,
+                              SvgPicture.asset(
+                                ImageConstant.loudSpeaker,
+                                color: ColorConstant.white,
+                              ),
+                              Dimens.d10.spaceWidth,
+                              ValueListenableBuilder(
+                                valueListenable:
+                                nowPlayingController.slideValue,
+                                builder: (context, value, child) {
+                                  return Expanded(
+                                    child: Slider(
+                                      min: 0,
+                                      max: 1,
+                                      activeColor: ColorConstant.themeColor,
+                                      onChanged: (double value) {
+                                        setState(() {
+                                          _setVolumeValue = value;
+                                          VolumeController()
+                                              .setVolume(_setVolumeValue);
+                                        });
+                                      },
+                                      value: _setVolumeValue,
+                                    ),
+                                  );
+                                },
                               ),
                             ],
                           ),
                         ),
                       ),
-                    ],
-                  ),
-
-              ValueListenableBuilder(
-                valueListenable: _isVolShowing,
-                builder: (context, value, child) {
-                  if (value) {
-                    return Container(
-                      color: ColorConstant.transparent,
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(
-                          sigmaX: 1.5,
-                          sigmaY: 1.5,
-                        ),
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(
-                                vertical: Dimens.d200, horizontal: Dimens.d16),
-                            padding: const EdgeInsets.all(Dimens.d10),
-                            height: Dimens.d60,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: ColorConstant.color3d5157,
-                              borderRadius: Dimens.d40.radiusAll,
-                            ),
-                            child: Row(
-                              children: [
-                                Dimens.d10.spaceWidth,
-                                SvgPicture.asset(
-                                  ImageConstant.loudSpeaker,
-                                  color: ColorConstant.white,
-                                ),
-                                Dimens.d10.spaceWidth,
-                                ValueListenableBuilder(
-                                  valueListenable:
-                                      nowPlayingController.slideValue,
-                                  builder: (context, value, child) {
-                                    return Expanded(
-                                      child: Slider(
-                                        min: 0,
-                                        max: 1,
-                                        activeColor: ColorConstant.themeColor,
-                                        onChanged: (double value) {
-                                          setState(() {
-                                            _setVolumeValue = value;
-                                            VolumeController()
-                                                .setVolume(_setVolumeValue);
-                                          });
-                                        },
-                                        value: _setVolumeValue,
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  } else {
-                    return const Offstage();
-                  }
-                },
-              ),
-            ],
-          ),
+                    ),
+                  );
+                } else {
+                  return const Offstage();
+                }
+              },
+            ),
+          ],
         ),
         Obx(
           () => nowPlayingController.loader.isTrue

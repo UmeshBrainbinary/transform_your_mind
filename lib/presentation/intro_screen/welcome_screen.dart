@@ -23,17 +23,17 @@ class WelcomeScreen extends StatelessWidget {
         child: Column(children: [
           Dimens.d120.spaceHeight,
           Center(child: Image.asset(ImageConstant.welcomeBackImage,height: 186,width: 325,)),
-          Dimens.d75.spaceHeight,
+          Dimens.d65.spaceHeight,
         
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: Dimens.d36),
             child: Text(
-             "${ "welcome".tr}, “ ${PrefService.getString(PrefKey.name)} ”!",
+             "${"welcome".tr}, “ ${PrefService.getString(PrefKey.name)} ”!",
               textAlign: TextAlign.center,
-              style: Style.gothamMedium(fontSize: 24),
+              style: Style.gothamLight(fontSize: 24,fontWeight: FontWeight.w600),
             ),
           ),
-          Dimens.d18.spaceHeight,
+          Dimens.d14.spaceHeight,
         
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: Dimens.d36),
@@ -44,13 +44,13 @@ class WelcomeScreen extends StatelessWidget {
                   fontSize: 16, fontWeight: FontWeight.w400),
             ),
           ),
-          Dimens.d56.spaceHeight,
+          Dimens.d45.spaceHeight,
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Dimens.d34),
+            padding: const EdgeInsets.symmetric(horizontal: Dimens.d45),
             child: Text(
               "powerfulExercise".tr,
               textAlign: TextAlign.center,
-              style: Style.gothamMedium(fontSize: 24),
+              style: Style.gothamLight(fontSize: 24,fontWeight: FontWeight.w600),
             ),
           ),
           Dimens.d40.spaceHeight,

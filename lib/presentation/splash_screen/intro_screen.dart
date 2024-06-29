@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:transform_your_mind/core/app_export.dart';
+import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
@@ -26,6 +27,9 @@ class _IntroScreenState extends State<IntroScreen> {
   ];
 
   void _onNext() {
+
+
+
     if (_currentPage < _images.length - 1) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
@@ -39,6 +43,8 @@ class _IntroScreenState extends State<IntroScreen> {
   }
 
   void _onSkip() {
+
+
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
       return const PersonalizationScreenScreen(intro: true,);
     },));

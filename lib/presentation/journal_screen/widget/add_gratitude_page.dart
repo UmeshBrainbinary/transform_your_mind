@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http ;
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:transform_your_mind/core/app_export.dart';
+import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
@@ -82,11 +83,6 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
   @override
   void initState() {
     if ((widget.categoryList ?? []).isNotEmpty) {}
-
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.backGround, // Status bar background color
-      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
-    ));
     if (widget.edit == true) {
       setState(() {
         titleController.text = widget.title!;
@@ -190,233 +186,237 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Scaffold(
-          backgroundColor: themeController.isDarkMode.value
-              ? ColorConstant.darkBackground
-              : ColorConstant.backGround,
-          resizeToAvoidBottomInset: true,
-          appBar: CustomAppBar(
-            showBack: widget.registerUser! ? false : true,
-            title: widget.edit == true ? "editGratitude".tr : "addGratitude".tr,
-            action: !(widget.isFromMyGratitude!)
-                ? Row(children: [
-                    GestureDetector(
-                        onTap: () {},
-                        child: Text(
-                          "skip".tr,
-                          style: Style.montserratRegular(
-                              color: themeController.isDarkMode.value
-                                  ? ColorConstant.white
-                                  : ColorConstant.black),
-                        )),
-                    Dimens.d20.spaceWidth,
-                  ])
-                : widget.registerUser!
-                    ? GestureDetector(
-                        onTap: () async {
-                          await PrefService.setValue(
-                              PrefKey.firstTimeRegister, true);
-                          await PrefService.setValue(
-                              PrefKey.addGratitude, true);
+    statusBarSet(themeController);
+    return SafeArea(
+      child: Stack(
+        children: [
+          Scaffold(
+            backgroundColor: themeController.isDarkMode.value
+                ? ColorConstant.darkBackground
+                : ColorConstant.backGround,
+            resizeToAvoidBottomInset: true,
+            appBar: CustomAppBar(
+              showBack: widget.registerUser! ? false : true,
+              title: widget.edit == true ? "editGratitude".tr : "addGratitude".tr,
+              action: !(widget.isFromMyGratitude!)
+                  ? Row(children: [
+                      GestureDetector(
+                          onTap: () {},
+                          child: Text(
+                            "skip".tr,
+                            style: Style.montserratRegular(
+                                color: themeController.isDarkMode.value
+                                    ? ColorConstant.white
+                                    : ColorConstant.black),
+                          )),
+                      Dimens.d20.spaceWidth,
+                    ])
+                  : widget.registerUser!
+                      ? GestureDetector(
+                          onTap: () async {
+                            await PrefService.setValue(
+                                PrefKey.firstTimeRegister, true);
+                            await PrefService.setValue(
+                                PrefKey.addGratitude, true);
 
-                          Navigator.pushNamedAndRemoveUntil(context,
-                      AppRoutes.dashBoardScreen, (route) => false);
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 20),
-                  child: Text(
-                    "skip".tr,
-                    style: Style.montserratRegular(
-                        fontSize: Dimens.d15,
-                        color: themeController.isDarkMode.value
-                            ? ColorConstant.white
-                            : ColorConstant.black),
-                  ),
-                ))
-                : const SizedBox.shrink(),
-          ),
-          body: Stack(
-            children: [
-              LayoutBuilder(builder: (context, constraints) {
-                return Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: LayoutContainer(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CommonTextField(
-                                  hintText: widget.registerUser!
-                                      ? "enterCategory".tr
-                                      : (widget.categoryList ?? []).isNotEmpty
-                                          ? "enterSeCategory".tr
-                                          : "enterCategory".tr,
-                                  labelText: "Category".tr,
-                                  controller: titleController,
-                                  focusNode: titleFocus,
-                                  nextFocusNode: descFocus,
-                                  suffixIcon: Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            drop = !drop;
-                                          });
-                                        },
-                                        child: SvgPicture.asset(
-                                          ImageConstant.downArrow,
-                                          color: (widget.categoryList ?? [])
-                                                  .isNotEmpty
-                                              ? ColorConstant.black
-                                              : Colors.transparent,
-                                        )),
+                            Navigator.pushNamedAndRemoveUntil(context,
+                        AppRoutes.dashBoardScreen, (route) => false);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 20),
+                    child: Text(
+                      "skip".tr,
+                      style: Style.montserratRegular(
+                          fontSize: Dimens.d15,
+                          color: themeController.isDarkMode.value
+                              ? ColorConstant.white
+                              : ColorConstant.black),
+                    ),
+                  ))
+                  : const SizedBox.shrink(),
+            ),
+            body: Stack(
+              children: [
+                LayoutBuilder(builder: (context, constraints) {
+                  return Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: LayoutContainer(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CommonTextField(
+                                    hintText: widget.registerUser!
+                                        ? "enterCategory".tr
+                                        : (widget.categoryList ?? []).isNotEmpty
+                                            ? "enterSeCategory".tr
+                                            : "enterCategory".tr,
+                                    labelText: "Category".tr,
+                                    controller: titleController,
+                                    focusNode: titleFocus,
+                                    nextFocusNode: descFocus,
+                                    suffixIcon: Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              drop = !drop;
+                                            });
+                                          },
+                                          child: SvgPicture.asset(
+                                            ImageConstant.downArrow,
+                                            color: (widget.categoryList ?? [])
+                                                    .isNotEmpty
+                                                ? ColorConstant.black
+                                                : Colors.transparent,
+                                          )),
+                                    ),
+                                    validator: (value) {
+                                      if (value == "") {
+                                        return "pleaseEnterTitle".tr;
+                                      }
+                                      return null;
+                                    },
                                   ),
-                                  validator: (value) {
-                                    if (value == "") {
-                                      return "pleaseEnterTitle".tr;
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                Dimens.d22.spaceHeight,
-                                CommonTextField(
-                                  hintText: "enterDescription".tr,
-                                  labelText: "description".tr,
-                                  controller: descController,
-                                  focusNode: descFocus,
-                                  transform:
-                                      Matrix4.translationValues(0, -108, 0),
-                                  prefixLottieIcon:
-                                      ImageConstant.lottieDescription,
-                                  maxLines: 15,
-                                  maxLength: maxLengthDesc,
-                                  onChanged: (value) {
-                                    currentLength.value =
-                                        descController.text.length;
-                                  },
-                                  validator: (value) {
-                                    if (value == "") {
-                                      return "pleaseEnterDescription".tr;
-                                    }
-                                    return null;
-                                  },
+                                  Dimens.d22.spaceHeight,
+                                  CommonTextField(
+                                    hintText: "enterDescription".tr,
+                                    labelText: "description".tr,
+                                    controller: descController,
+                                    focusNode: descFocus,
+                                    transform:
+                                        Matrix4.translationValues(0, -108, 0),
+                                    prefixLottieIcon:
+                                        ImageConstant.lottieDescription,
+                                    maxLines: 15,
+                                    maxLength: maxLengthDesc,
+                                    onChanged: (value) {
+                                      currentLength.value =
+                                          descController.text.length;
+                                    },
+                                    validator: (value) {
+                                      if (value == "") {
+                                        return "pleaseEnterDescription".tr;
+                                      }
+                                      return null;
+                                    },
 
-                                ),
-                                Dimens.d30.spaceHeight,
-                                Row(
-                                  children: [
-                                    if (widget.edit == true)
+                                  ),
+                                  Dimens.d30.spaceHeight,
+                                  Row(
+                                    children: [
+                                      if (widget.edit == true)
+                                        Expanded(
+                                          child: CommonElevatedButton(
+                                            title: "Cancel".tr,
+                                            outLined: true,
+                                            textStyle: Style.montserratRegular(
+                                                color:
+                                                    ColorConstant.textDarkBlue),
+                                            onTap: () async {
+                                              Get.back();
+                                            },
+                                          ),
+                                        ),
+                                      Dimens.d20.spaceWidth,
                                       Expanded(
                                         child: CommonElevatedButton(
-                                          title: "Cancel".tr,
-                                          outLined: true,
-                                          textStyle: Style.montserratRegular(
-                                              color:
-                                                  ColorConstant.textDarkBlue),
+                                           textStyle: Style.montserratRegular(fontSize: 20,color: ColorConstant.white),
+                                          title: widget.edit == true
+                                              ? "Update".tr
+                                              : "save".tr,
                                           onTap: () async {
-                                            Get.back();
+                                            titleFocus.unfocus();
+                                            descFocus.unfocus();
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              if (widget.edit == true) {
+                                                updateGratitude();
+                                              } else {
+                                                PrefService.setValue(
+                                                    PrefKey
+                                                        .firstTimeUserGratitude,
+                                                    true);
+
+                                                addGratitude(widget.registerUser);
+                                              }
+                                            }
                                           },
                                         ),
                                       ),
-                                    Dimens.d20.spaceWidth,
-                                    Expanded(
-                                      child: CommonElevatedButton(
-                                        title: widget.edit == true
-                                            ? "Update".tr
-                                            : "save".tr,
-                                        onTap: () async {
-                                          titleFocus.unfocus();
-                                          descFocus.unfocus();
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            if (widget.edit == true) {
-                                              updateGratitude();
-                                            } else {
-                                              PrefService.setValue(
-                                                  PrefKey
-                                                      .firstTimeUserGratitude,
-                                                  true);
-
-                                              addGratitude(widget.registerUser);
-                                            }
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
 
-                      ///buttons
+                        ///buttons
 
-                      Dimens.d10.spaceHeight,
-                    ],
-                  ),
-                );
-              }),
-              if (drop)
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Container(
-                    width: 160,
-                    margin: const EdgeInsets.only(top: Dimens.d110, right: 20),
-                    decoration: BoxDecoration(
-                      color: themeController.isDarkMode.isTrue
-                          ? ColorConstant.textfieldFillColor
-                          : ColorConstant.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2), // Shadow color
-                          spreadRadius: 2, // How much the shadow spreads
-                          blurRadius: 5, // The blur radius of the shadow
-                          offset: const Offset(
-                              0, 3), // Changes the position of the shadow
-                        ),
+                        Dimens.d10.spaceHeight,
                       ],
                     ),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.all(8.0),
-                      itemCount: widget.categoryList?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
-                          child: GestureDetector(
-                              onTap: () {
-                                titleController.text =
-                                    widget.categoryList?[index] ?? "";
-                                drop = false;
-                                setState(() {});
-                              },
-                              child: Text(
-                                widget.categoryList?[index] ?? "",
-                                style: Style.gothamLight(fontSize: 14),
-                              )),
-                        );
-                      },
+                  );
+                }),
+                if (drop)
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Container(
+                      width: 160,
+                      margin: const EdgeInsets.only(top: Dimens.d110, right: 20),
+                      decoration: BoxDecoration(
+                        color: themeController.isDarkMode.isTrue
+                            ? ColorConstant.textfieldFillColor
+                            : ColorConstant.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2), // Shadow color
+                            spreadRadius: 2, // How much the shadow spreads
+                            blurRadius: 5, // The blur radius of the shadow
+                            offset: const Offset(
+                                0, 3), // Changes the position of the shadow
+                          ),
+                        ],
+                      ),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.all(8.0),
+                        itemCount: widget.categoryList?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 10),
+                            child: GestureDetector(
+                                onTap: () {
+                                  titleController.text =
+                                      widget.categoryList?[index] ?? "";
+                                  drop = false;
+                                  setState(() {});
+                                },
+                                child: Text(
+                                  widget.categoryList?[index] ?? "",
+                                  style: Style.gothamLight(fontSize: 14),
+                                )),
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                )
-              else
-                const SizedBox()
-            ],
+                  )
+                else
+                  const SizedBox()
+              ],
+            ),
           ),
-        ),
-        loader == true ? commonLoader() : const SizedBox()
-      ],
+          loader == true ? commonLoader() : const SizedBox()
+        ],
+      ),
     );
   }
 

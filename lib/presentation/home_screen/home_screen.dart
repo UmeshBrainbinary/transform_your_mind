@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
-import 'package:transform_your_mind/core/service/notification_service.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -22,7 +22,6 @@ import 'package:transform_your_mind/presentation/home_screen/home_controller.dar
 import 'package:transform_your_mind/presentation/home_screen/home_message_page.dart';
 import 'package:transform_your_mind/presentation/home_screen/widgets/home_widget.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/my_affirmation_page.dart';
-import 'package:transform_your_mind/presentation/notification_screen/notification_screen.dart';
 import 'package:transform_your_mind/presentation/positive_moment/positive_screen.dart';
 import 'package:transform_your_mind/presentation/subscription_screen/subscription_screen.dart';
 import 'package:transform_your_mind/presentation/transform_pods_screen/transform_pods_screen.dart';
@@ -71,9 +70,7 @@ class _HomeScreenState extends State<HomeScreen>
     g.getTodayGratitude();
     g.getTodayAffirmation();
     g.getRecentlyList();
-setState(() {
-
-});
+    setState(() {});
     super.initState();
   }
 
@@ -170,10 +167,26 @@ setState(() {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Dimens.d17.spaceHeight,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 40.0),
+                        child: Center(
+                          child: Text(
+                            "TransformYourMind",
+                            style: Style.montserratRegular(
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Dimens.d50.spaceHeight,
+
                       //__________________________ top view ____________________
-                      topView(controller.getUserModel.data?.motivationalMessage?? "Believe in yourself, even when doubt creeps in. Today's progress is a step towards your dreams."),
+                      topView(controller
+                              .getUserModel.data?.motivationalMessage ??
+                          "Believe in yourself, even when doubt creeps in. Today's progress is a step towards your dreams."),
                       Dimens.d36.spaceHeight,
-                      //___________________________ add share view  ______________
+                      /*  //___________________________ add share view  ______________
                       Center(
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -182,12 +195,7 @@ setState(() {
 
                             GestureDetector(
                               onTap: () {
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) {
-                                    return  HomeMessagePage(
-                                        motivationalMessage: controller.getUserModel.data?.motivationalMessage??"Believe in yourself, even when doubt creeps in. Today's progress is a step towards your dreams.");
-                                  },
-                                ));
+
                               },
                               child: CircleAvatar(
                                 backgroundColor: ColorConstant.themeColor,
@@ -199,7 +207,7 @@ setState(() {
                             ),
                           ],
                         ),
-                      ),
+                      ),*/
                       Dimens.d16.spaceHeight,
                       Padding(
                         padding:
@@ -218,7 +226,7 @@ setState(() {
                       Dimens.d20.spaceHeight,
 
                       yourGratitude(),
-                      Dimens.d20.spaceHeight,
+                      Dimens.d40.spaceHeight,
                       yourAffirmation(),
                       Dimens.d30.spaceHeight,
 
@@ -291,6 +299,7 @@ setState(() {
                               onTap: () {
                                 if (g.quickAccessList[index]["title"] ==
                                     "motivational") {
+                                  menuBarSet(themeController);
                                   Navigator.pushNamed(context,
                                           AppRoutes.motivationalMessageScreen)
                                       .then((value) {
@@ -298,6 +307,8 @@ setState(() {
                                   });
                                 } else if (g.quickAccessList[index]["title"] ==
                                     "transformPods") {
+                                  menuBarSet(themeController);
+
                                   Navigator.push(context, MaterialPageRoute(
                                     builder: (context) {
                                       return const TransformPodsScreen();
@@ -309,6 +320,8 @@ setState(() {
                                   );
                                 } else if (g.quickAccessList[index]["title"] ==
                                     "gratitudeJournal") {
+                                  menuBarSet(themeController);
+
                                   Navigator.pushNamed(
                                           context, AppRoutes.myGratitudePage)
                                       .then((value) {
@@ -327,6 +340,8 @@ setState(() {
                                   );
                                 } else if (g.quickAccessList[index]["title"] ==
                                     "affirmation") {
+                                  menuBarSet(themeController);
+
                                   Navigator.push(context, MaterialPageRoute(
                                     builder: (context) {
                                       return const MyAffirmationPage();
@@ -337,6 +352,8 @@ setState(() {
                                     },
                                   );
                                 } else {
+                                  menuBarSet(themeController);
+
                                   Navigator.push(context, MaterialPageRoute(
                                     builder: (context) {
                                       return  BreathScreen(skip: false,);
@@ -538,71 +555,102 @@ setState(() {
   }
 
   Widget topView(String? motivationalMessage) {
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        Stack(
-          alignment: Alignment.topCenter,
-          children: [
-            Container(
-              height: Dimens.d300,
-              color: themeController.isDarkMode.isTrue
-                  ? ColorConstant.darkBackground
-                  : ColorConstant.backGround,
-            ),
-            Padding(
-              padding: const EdgeInsets.only( top: 40.0),
-              child:    Text("TransformYourMind",style: Style.montserratRegular(
-                fontSize: 18,
-              ),),/*GestureDetector(
-                onTap: () async {
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context) {
-                      return const NotificationScreen();
-                    },
-                  )).then(
-                    (value) {
-                      setState(() {
-                        getStatusBar();
-                      });
-                    },
-                  );
-                },
-                child: SvgPicture.asset(
-                  height: Dimens.d25,
-                  ImageConstant.notification,
-                ),
-              ),*/
-            ),
-          ],
-        ),
-        Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            Image.asset(
-              ImageConstant.transformYour,
-              fit: BoxFit.cover,
-            ),
-            Positioned(
-              left: Dimens.d50,
-              right: Dimens.d50,
-              top: Dimens.d45.h,
-              bottom: Dimens.d15,
-              child: Center(
+    return GestureDetector(
+        onTap: () {
+          Navigator.push(context, MaterialPageRoute(
+            builder: (context) {
+              return HomeMessagePage(
+                  motivationalMessage: motivationalMessage ??
+                      "Believe in yourself, even when doubt creeps in. Today's progress is a step towards your dreams.");
+            },
+          ));
+        },
+        child: Container(
+          height: 174,
+          margin: const EdgeInsets.symmetric(horizontal: 20.0),
+          padding: const EdgeInsets.only(left: 20),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: const LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Color(0xFFD4E4E9),
+                  Color(0xFFAFC7CE),
+                ],
+              )),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 160,
                 child: AutoSizeText(
                   "“$motivationalMessage”",
-                  textAlign: TextAlign.center,
                   wrapWords: false,
                   maxLines: 4,
-                  style: Style.montserratRegular(
-                      fontSize: Dimens.d17, color: ColorConstant.black),
+                  style: Style.gothamLight(
+                      height: 1.8,
+                      fontSize: Dimens.d14,
+                      color: ColorConstant.black),
                 ),
               ),
-            ),
-          ],
-        ),
-      ],
-    );
+              Image.asset(
+                ImageConstant.homeBack,
+                height: 134,
+                width: 157,
+              )
+            ],
+          ),
+        )
+
+        /*   Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              Container(
+                height: Dimens.d300,
+                color: themeController.isDarkMode.isTrue
+                    ? ColorConstant.darkBackground
+                    : ColorConstant.backGround,
+              ),
+              Padding(
+                padding: const EdgeInsets.only( top: 40.0),
+                child:    Text("TransformYourMind",style: Style.montserratRegular(
+                  fontSize: 18,
+                ),),
+
+              ),
+            ],
+          ),
+          Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              Image.asset(
+                ImageConstant.transformYour,
+                fit: BoxFit.cover,
+              ),
+              Positioned(
+                left: Dimens.d50,
+                right: Dimens.d50,
+                top: Dimens.d45.h,
+                bottom: Dimens.d15,
+                child: Center(
+                  child: AutoSizeText(
+                    "“$motivationalMessage”",
+                    textAlign: TextAlign.center,
+                    wrapWords: false,
+                    maxLines: 4,
+                    style: Style.montserratRegular(
+                        fontSize: Dimens.d17, color: ColorConstant.black),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),*/
+        );
   }
 
   Widget recentlyView() {
@@ -800,23 +848,13 @@ setState(() {
                     height: Dimens.d70,
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(horizontal: 6),
-                    margin: const EdgeInsets.symmetric(vertical: 10),
+                    margin: const EdgeInsets.symmetric(vertical: 12),
                     decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
                 color: themeController.isDarkMode.value
                     ? ColorConstant.textfieldFillColor
                     : Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    offset: const Offset(0, 0),
-                    // Specify the offset of the shadow
-                    blurRadius: 4,
-                    // Specify the blur radius
-                    spreadRadius: 0, // Specify the spread radius
-                  ),
-                ],
-              ),
+                    ),
               child: Row(children: [
                 Stack(
                   alignment: Alignment.topRight,
@@ -870,12 +908,15 @@ setState(() {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                           const Spacer(),
-                          Text(
-                      controller.audioData[index].name ?? "",
-                            style: Style.cormorantGaramondBold(
-                              fontSize: 20,
+                          SizedBox(
+                            width: Dimens.d200,
+                            child: Text(
+                              controller.audioData[index].name ?? "",
+                              maxLines: 1,
+                              style: Style.gothamLight(
+                                  fontSize: 20, fontWeight: FontWeight.w600),
                             ),
-                    ),
+                          ),
                           const Spacer(),
                           SizedBox(
                       width: Dimens.d200,
@@ -912,7 +953,7 @@ setState(() {
               style: Style.montserratRegular(fontSize: Dimens.d22),
             ),
           ),
-          Dimens.d20.spaceHeight,
+          Dimens.d30.spaceHeight,
           Container(
             margin: const EdgeInsets.symmetric(
               horizontal: 20.0,
@@ -941,6 +982,7 @@ setState(() {
                           g.todayAffirmation.message??"noDataFound".tr,
                           textAlign: TextAlign.center,
                           style: Style.montserratRegular(
+                              fontSize: 14,
                               color: themeController.isDarkMode.isTrue
                                   ? ColorConstant.white
                                   : ColorConstant.black),
@@ -950,6 +992,9 @@ setState(() {
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
                           child: CommonElevatedButton(
                             height: Dimens.d46,
+                            textStyle: Style.montserratRegular(
+                                fontSize: Dimens.d17,
+                                color: ColorConstant.white),
                             title: "addNew".tr,
                             onTap: () {
                               Get.toNamed(AppRoutes.myAffirmationPage)!.then(
@@ -1042,6 +1087,8 @@ setState(() {
                         child: CommonElevatedButton(
                           height: Dimens.d46,
                           title: "addNew".tr,
+                          textStyle: Style.montserratRegular(
+                              fontSize: Dimens.d17, color: ColorConstant.white),
                           onTap: () {
                             Get.toNamed(AppRoutes.myAffirmationPage)!.then(
                               (value) async {
@@ -1076,7 +1123,7 @@ setState(() {
               style: Style.montserratRegular(fontSize: Dimens.d22),
             ),
           ),
-          Dimens.d20.spaceHeight,
+          Dimens.d30.spaceHeight,
           Container(
             margin: const EdgeInsets.symmetric(
               horizontal: 20.0,
@@ -1105,6 +1152,7 @@ setState(() {
                           g.todayGratitude.message??"noDataFound".tr,
                           textAlign: TextAlign.center,
                           style: Style.montserratRegular(
+                              fontSize: 14,
                               color: themeController.isDarkMode.value
                                   ? ColorConstant.white
                                   : ColorConstant.black),
@@ -1115,6 +1163,9 @@ setState(() {
                           child: CommonElevatedButton(
                             height: Dimens.d46,
                             title: "addNew".tr,
+                            textStyle: Style.montserratRegular(
+                                fontSize: Dimens.d17,
+                                color: ColorConstant.white),
                             onTap: () {
                               Get.toNamed(AppRoutes.myGratitudePage)!.then(
                                 (value) async {
@@ -1212,6 +1263,8 @@ setState(() {
                         child: CommonElevatedButton(
                           height: Dimens.d46,
                           title: "addNew".tr,
+                          textStyle: Style.montserratRegular(
+                              fontSize: Dimens.d17, color: ColorConstant.white),
                           onTap: () {
                             Get.toNamed(AppRoutes.myGratitudePage)!.then(
                               (value) async {

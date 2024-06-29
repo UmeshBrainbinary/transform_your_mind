@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/common_gradiant_container.dart';
 import 'package:transform_your_mind/core/common_widget/screen_info_widget.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
@@ -35,11 +36,7 @@ class _JournalScreenState extends State<JournalScreen>
       lottie: ImageConstant.lottieCircle,
       route: AppRoutes.myAffirmationPage,
     ),
-    /*  JournalData(
-      title: "affirmationAlarms".tr,
-      lottie: ImageConstant.lottieStarOcean,
-      route: AppRoutes.affirmationAlarmScreen,
-    ),*/
+ 
     JournalData(
       title: "motivational".tr,
       lottie: ImageConstant.lottieHexagon,
@@ -84,225 +81,220 @@ class _JournalScreenState extends State<JournalScreen>
 
   @override
   Widget build(BuildContext context) {
-    themeController.isDarkMode.isTrue?
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.darkBackground,
-      statusBarIconBrightness: Brightness.light,
-    )) :    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.white,
-      statusBarIconBrightness: Brightness.dark,
-
-    ));
-    return Scaffold(
-        backgroundColor:
-        themeController.isDarkMode.isTrue?
-        ColorConstant.darkBackground:
-        ColorConstant.white,
-        appBar: CustomAppBar(
-          title: "selfDevelopment".tr,
-        ),
-        body: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                children: [
-                  Dimens.d30.spaceHeight,
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: Dimens.d40),
-                    child: Text(
-                      textAlign: TextAlign.center,
-                      "Use our Self Development feature to practice the art of gratitude, clear unwanted feelings from your life, set goals & help you feel more calm & content.",
-                      style: Style.montserratRegular(fontSize: 13),
+    statusBarSet(themeController);
+    return SafeArea(
+      child: Scaffold(
+          backgroundColor:
+          themeController.isDarkMode.isTrue?
+          ColorConstant.darkBackground:
+          ColorConstant.white,
+          appBar: CustomAppBar(
+            title: "selfDevelopment".tr,
+          ),
+          body: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: [
+                    Dimens.d30.spaceHeight,
+                    Padding(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: Dimens.d40),
+                      child: Text(
+                        textAlign: TextAlign.center,
+                        "Use our Self Development feature to practice the art of gratitude, clear unwanted feelings from your life, set goals & help you feel more calm & content.",
+                        style: Style.montserratRegular(fontSize: 13),
+                      ),
                     ),
-                  ),
-                  Dimens.d21.spaceHeight,
-                  NotificationListener<ScrollNotification>(
-                    onNotification: (ScrollNotification scrollInfo) {
-                      if (scrollInfo is UserScrollNotification) {
-                        setState(() {
-                          _isScrollingOrNot = true;
-                          if (scrollController.offset <=
-                                  scrollController.position.minScrollExtent &&
-                              !scrollController.position.outOfRange) {
-                            setState(() {
-                              _isScrollingOrNot = false;
-                            });
-                          }
-                        });
-                      }
+                    Dimens.d21.spaceHeight,
+                    NotificationListener<ScrollNotification>(
+                      onNotification: (ScrollNotification scrollInfo) {
+                        if (scrollInfo is UserScrollNotification) {
+                          setState(() {
+                            _isScrollingOrNot = true;
+                            if (scrollController.offset <=
+                                    scrollController.position.minScrollExtent &&
+                                !scrollController.position.outOfRange) {
+                              setState(() {
+                                _isScrollingOrNot = false;
+                              });
+                            }
+                          });
+                        }
+      
+                        return false;
+                      },
+                      child: Expanded(
+                        child: Stack(
+                          children: [
+                            ValueListenableBuilder(
+                                valueListenable: isTutorialVideoVisible,
+                                builder: (BuildContext context, value,
+                                    Widget? child) {
+                                  return Column(
+                                    children: [
+                                      Expanded(
+                                        child: GridView.builder(
+                                          controller: scrollController,
+                                          itemCount: journalList.length,
+                                          padding: EdgeInsets.only(
+                                            bottom: Dimens.d100,
+                                            top: isTutorialVideoVisible.value
+                                                ? Dimens.d20
+                                                : 0,
+                                            left: Dimens.d5,
+                                            right: Dimens.d5,
+                                          ),
+                                          physics:
+                                              const ClampingScrollPhysics(),
+                                          gridDelegate:
+                                              SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: Dimens.d2.toInt(),
+                                            crossAxisSpacing: Dimens.d20,
+                                            mainAxisSpacing: Dimens.d20,
+                                            mainAxisExtent: 210,
+                                          ),
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return GestureDetector(
+                                              onTap: () {
 
-                      return false;
-                    },
-                    child: Expanded(
-                      child: Stack(
-                        children: [
-                          ValueListenableBuilder(
-                              valueListenable: isTutorialVideoVisible,
-                              builder: (BuildContext context, value,
-                                  Widget? child) {
-                                return Column(
-                                  children: [
-                                    Expanded(
-                                      child: GridView.builder(
-                                        controller: scrollController,
-                                        itemCount: journalList.length,
-                                        padding: EdgeInsets.only(
-                                          bottom: Dimens.d100,
-                                          top: isTutorialVideoVisible.value
-                                              ? Dimens.d20
-                                              : 0,
-                                          left: Dimens.d5,
-                                          right: Dimens.d5,
-                                        ),
-                                        physics:
-                                            const ClampingScrollPhysics(),
-                                        gridDelegate:
-                                            SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: Dimens.d2.toInt(),
-                                          crossAxisSpacing: Dimens.d20,
-                                          mainAxisSpacing: Dimens.d20,
-                                          mainAxisExtent: 210,
-                                        ),
-                                        itemBuilder: (BuildContext context,
-                                            int index) {
-                                          return GestureDetector(
-                                            onTap: () {
-                                              Navigator.pushNamed(
-                                                context,
-                                                journalList[index].route ??
-                                                    "",
-                                              ).then(
-                                                (value) {
-                                                  setState(() {
-                                                    getStatusBar();
-                                                  });
-                                                },
-                                              );
-                                            },
-                                            child: Column(
-                                              children: [
-                                                Expanded(
-                                                  child: Container(
-                                                    padding:
-                                                        Dimens.d12.paddingAll,
-                                                    alignment:
-                                                        Alignment.center,
-                                                    decoration: BoxDecoration(
-                                                      color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.white,
-                                                      borderRadius: Dimens
-                                                          .d19.radiusAll,
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                          color: Colors.black
-                                                              .withOpacity(
-                                                                  0.1),
-                                                          blurRadius:
-                                                              Dimens.d8,
-                                                        )
-                                                      ],
-                                                    ),
-                                                    child: Lottie.asset(
-                                                        journalList[index]
-                                                            .lottie,
-                                                        height: 180,
-                                                        width: 180,
+                                                Navigator.pushNamed(
+                                                  context,
+                                                  journalList[index].route ??
+                                                      "",
+                                                ).then(
+                                                  (value) {
+                                                    setState(() {
+                                                      getStatusBar();
+                                                    });
+                                                  },
+                                                );
+                                              },
+                                              child: Column(
+                                                children: [
+                                                  Expanded(
+                                                    child: Container(
+                                                      padding:
+                                                          Dimens.d12.paddingAll,
+                                                      alignment:
+                                                          Alignment.center,
+                                                      decoration: BoxDecoration(
+                                                        color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.white,
+                                                        borderRadius: Dimens
+                                                            .d19.radiusAll,
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.1),
+                                                            blurRadius:
+                                                                Dimens.d8,
+                                                          )
+                                                        ],
+                                                      ),
+                                                      child: Lottie.asset(
+                                                          journalList[index]
+                                                              .lottie,
+                                                          height: 180,
+                                                          width: 180,
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                                Dimens.d12.spaceHeight,
-                                                Text(
-                                                  journalList[index].title,
-                                                  style: Style
-                                                      .montserratRegular(),
-                                                )
-                                              ],
-                                            ),
-                                          );
-                                        },
+                                                  Dimens.d12.spaceHeight,
+                                                  Text(
+                                                    journalList[index].title,
+                                                    style: Style
+                                                        .montserratRegular(),
+                                                  )
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                );
-                              }),
-                          (_isScrollingOrNot)
-                              ? commonGradiantContainer(
-                                  color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.white,
-                              h: 30)
-                              : const SizedBox()
-                        ],
+                                    ],
+                                  );
+                                }),
+                            (_isScrollingOrNot)
+                                ? commonGradiantContainer(
+                                    color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.white,
+                                h: 30)
+                                : const SizedBox()
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            info.value
-                ? Padding(
-                    padding: EdgeInsets.only(top: Dimens.d10.h),
-                    child: Container(
-                      child: ScreenInfoWidget(
-                        controller: _controller,
-                        info: info,
-                        isTutorialVideoVisible: isTutorialVideoVisible,
-                        screenTitle: "welcomeToJournal".tr,
-                        screenHeading:
-                            "Use this self reflection fetaure to pratice the art of gratitude, clear unwanted fellings from your life, set goals and help you feel more clam and contect." ??
-                                '',
-                        screenDesc:
-                            "Use this self reflection fetaure to pratice the art of gratitude," ??
-                                '',
-                        onVideoViewTap: () {},
-                      ),
-                    ),
-                  )
-                : const SizedBox(),
-            /*  ratingView
-                ? Padding(
-              padding: EdgeInsets.only(top: Dimens.d110),
-              child: AddRatingsView(
-                onRatingChanged: (p0) {
-                  initialRating = p0;
-                  _exploreBloc.add(AddFeatureRatingEvent(
-                      addFeatureRatingRequestModel:
-                      AddFeatureRatingRequestModel(
-                          contentType: 4, rating: p0)));
-                },
-                initialRating: initialRating,
-                screenTitle: "Give your rating!",
-                screenHeading:
-                'We genuinely value your input and strive to continuously improve our services.',
-                screenDesc:
-                'Please take a moment to rate your experience with Shoorah Journal.',
-              ),
-            )
-                : const SizedBox(),
-            (tutorialVideoData?.sId != null)
-                ? ratingView
-                ? const SizedBox()
-                : Padding(
-              padding: EdgeInsets.only(top: Dimens.d110.h),
-              child: SizedBox(
-                child: ScreenInfoWidget(
-                  videoStateKey: videoKeys[0],
-                  controller: _controller,
-                  isTutorialVideoVisible: isTutorialVideoVisible,
-                  tutorialVideoData:
-                  tutorialVideoData ?? TutorialVideoData(),
-                  screenTitle: i10n.welcomeToJournal,
-                  screenHeading: tutorialVideoData?.heading ?? '',
-                  screenDesc: tutorialVideoData?.subHeading ?? '',
-                  onVideoViewTap: () {
-                    SharedPrefUtils.setValue(
-                        SharedPrefUtilsKeys.journalAddedCount, 5);
-                  },
+                  ],
                 ),
               ),
-            )
-                : const SizedBox(),*/
-          ],
-        ));
+              info.value
+                  ? Padding(
+                      padding: EdgeInsets.only(top: Dimens.d10.h),
+                      child: Container(
+                        child: ScreenInfoWidget(
+                          controller: _controller,
+                          info: info,
+                          isTutorialVideoVisible: isTutorialVideoVisible,
+                          screenTitle: "welcomeToJournal".tr,
+                          screenHeading:
+                              "Use this self reflection fetaure to pratice the art of gratitude, clear unwanted fellings from your life, set goals and help you feel more clam and contect." ??
+                                  '',
+                          screenDesc:
+                              "Use this self reflection fetaure to pratice the art of gratitude," ??
+                                  '',
+                          onVideoViewTap: () {},
+                        ),
+                      ),
+                    )
+                  : const SizedBox(),
+              /*  ratingView
+                  ? Padding(
+                padding: EdgeInsets.only(top: Dimens.d110),
+                child: AddRatingsView(
+                  onRatingChanged: (p0) {
+                    initialRating = p0;
+                    _exploreBloc.add(AddFeatureRatingEvent(
+                        addFeatureRatingRequestModel:
+                        AddFeatureRatingRequestModel(
+                            contentType: 4, rating: p0)));
+                  },
+                  initialRating: initialRating,
+                  screenTitle: "Give your rating!",
+                  screenHeading:
+                  'We genuinely value your input and strive to continuously improve our services.',
+                  screenDesc:
+                  'Please take a moment to rate your experience with Shoorah Journal.',
+                ),
+              )
+                  : const SizedBox(),
+              (tutorialVideoData?.sId != null)
+                  ? ratingView
+                  ? const SizedBox()
+                  : Padding(
+                padding: EdgeInsets.only(top: Dimens.d110.h),
+                child: SizedBox(
+                  child: ScreenInfoWidget(
+                    videoStateKey: videoKeys[0],
+                    controller: _controller,
+                    isTutorialVideoVisible: isTutorialVideoVisible,
+                    tutorialVideoData:
+                    tutorialVideoData ?? TutorialVideoData(),
+                    screenTitle: i10n.welcomeToJournal,
+                    screenHeading: tutorialVideoData?.heading ?? '',
+                    screenDesc: tutorialVideoData?.subHeading ?? '',
+                    onVideoViewTap: () {
+                      SharedPrefUtils.setValue(
+                          SharedPrefUtilsKeys.journalAddedCount, 5);
+                    },
+                  ),
+                ),
+              )
+                  : const SizedBox(),*/
+            ],
+          )),
+    );
   }
 }
 

@@ -8,6 +8,7 @@ import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 
 Future<void> showAppConfirmationDialog({
@@ -18,6 +19,7 @@ Future<void> showAppConfirmationDialog({
   String? secondaryBtnTitle,
   VoidCallback? secondaryBtnAction,
   bool showSingleButton = false,
+  ThemeController? themeController
 }) {
   return showDialog(
     context: context,
@@ -53,7 +55,11 @@ Future<void> showAppConfirmationDialog({
           Dimens.d24.spaceHeight,
           Row(children: [
             const Spacer(),
-            CommonElevatedButton( height: 33,
+            CommonElevatedButton(
+              textStyle:
+              Style.montserratRegular(
+                  fontSize: Dimens.d14, color: ColorConstant.white),
+              height: 33,
               title: secondaryBtnTitle!,
 
               contentPadding: const EdgeInsets.symmetric(
@@ -68,8 +74,8 @@ Future<void> showAppConfirmationDialog({
            },
              child: Container(height: 33,
                padding: const EdgeInsets.symmetric(horizontal: 36),
-               decoration: BoxDecoration(color: ColorConstant.white,
-               border: Border.all(color: ColorConstant.black,width: 0.5),
+               decoration: BoxDecoration(color:themeController!.isDarkMode.isTrue?ColorConstant.textfieldFillColor: ColorConstant.white,
+               border: Border.all(color: themeController.isDarkMode.isTrue?ColorConstant.themeColor:ColorConstant.black,width: 0.5),
                borderRadius: BorderRadius.circular(60)),
                child: Center(child:
                Text(
@@ -77,7 +83,7 @@ Future<void> showAppConfirmationDialog({
                  textAlign: TextAlign.center,
                  style:
                      Style.montserratRegular(
-                         fontSize: Dimens.d15, color: ColorConstant.black),
+                         fontSize: Dimens.d14, color: themeController.isDarkMode.isTrue?ColorConstant.white:ColorConstant.black),
                ),),
              ),
            ),

@@ -7,6 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -41,21 +42,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.backGround,
-      statusBarIconBrightness: Brightness.dark,
-    ));
+   statusBarSet(themeController);
     return SafeArea(
-      child: Scaffold(
-        backgroundColor: themeController.isDarkMode.value
-            ? ColorConstant.darkBackground
-            : ColorConstant.backGround,
-        appBar: CustomAppBar(
-          title: "register".tr,
-        ),
-        body: Stack(
-          children: [
-            Padding(
+      child: Stack(
+        children: [
+          Scaffold(
+            backgroundColor: themeController.isDarkMode.value
+                ? ColorConstant.darkBackground
+                : ColorConstant.backGround,
+            appBar: CustomAppBar(titleStyle:   Style.montserratRegular(
+                fontSize: Dimens.d22,
+                color: themeController.isDarkMode.value
+                    ? ColorConstant.white
+                    : ColorConstant.black),
+              title: "register".tr,
+            ),
+            body: Padding(
               padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
               child: LayoutBuilder(
                 builder: (context, constraint) {
@@ -194,18 +196,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   readOnly: true,
                                   onTap: () async {
                                     datePicker(context);
-                                    /*showDialog(context: context, builder: (context) {
-                                      return Column(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
 
-                                          SizedBox(
-                                              height: Dimens.d350,
-                                              child: widgetCalendar()),
-                                        ],
-                                      );
-                                    },);*/
                                   },
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -381,45 +372,68 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 },
               ),
             ),
-            Obx(
-              () => registerController.loader.value == true
-                  ? commonLoader()
-                  : const SizedBox(),
-            ),
-          ],
-        ),
+          ),
+          Obx(
+                () => registerController.loader.value == true
+                ? commonLoader()
+                : const SizedBox(),
+          ),
+
+        ],
       ),
     );
   }
 
 
-  datePicker(context) async {
+  datePicker(context,) async {
     FocusScope.of(context).unfocus();
     picked = await showDatePicker(
       builder: (context, child) {
+        TextStyle customTextStyle = Style.montserratRegular(fontSize: 14);
+
         return Theme(
-          data: ThemeData.light().copyWith(scaffoldBackgroundColor: ColorConstant.themeColor,
-            primaryColor:ColorConstant.themeColor,
-            colorScheme: const ColorScheme.light(primary: ColorConstant.themeColor),
-            buttonTheme: const ButtonThemeData(textTheme: ButtonTextTheme.primary),
-          ),
+          data: ThemeData.light().copyWith(focusColor: ColorConstant.themeColor,
+              scaffoldBackgroundColor: ColorConstant.themeColor,
+              primaryColor: ColorConstant.themeColor,
+              colorScheme: const ColorScheme.light(
+                primary: ColorConstant.themeColor,
+              ),
+              buttonTheme: const ButtonThemeData(
+                textTheme: ButtonTextTheme.primary,
+              ),
+              textTheme: TextTheme(
+                bodyLarge:customTextStyle,
+                bodyMedium: customTextStyle,
+                bodySmall: customTextStyle,
+                displayLarge: customTextStyle,
+                displayMedium: customTextStyle,
+                headlineLarge: customTextStyle,
+                titleLarge: customTextStyle,
+                titleSmall: customTextStyle,
+                displaySmall: customTextStyle,
+                headlineMedium: customTextStyle,
+                headlineSmall: customTextStyle,
+                labelLarge: customTextStyle,
+                labelMedium: customTextStyle,
+                labelSmall: customTextStyle,
+                titleMedium: customTextStyle,
+              )),
           child: child!,
         );
       },
+
       context: context,
       firstDate: DateTime(1970),
-      // the earliest allowable
       lastDate: DateTime.now(),
-      // the latest allowable
       currentDate: DateTime.now(),
       initialDate: DateTime.now(),
     );
 
     if (picked != null) {
       birthDate = DateFormat('dd/MM/yyyy').format(picked!);
-     // birthDate = DateFormat("yyyy-MM-dd").format(picked!);
       registerController.dobController.text = birthDate;
     }
   }
+
 
 }

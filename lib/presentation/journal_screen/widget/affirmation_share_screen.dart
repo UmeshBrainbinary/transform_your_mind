@@ -39,86 +39,84 @@ class _AffirmationShareScreenState extends State<AffirmationShareScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: const CustomAppBar(
-          showBack: true,
-          title: "",
-        ),
-        body: Column(
-          children: [
-            Screenshot(
-              controller: screenshotController,
-              child: Column(
-                children: [
-                  Dimens.d26.spaceHeight,
-                  Stack(
-                    children: [
-                      Container(
-                        width: Get.width,
-                        margin: const EdgeInsets.only(
-                            top: Dimens.d80,
-                            right: Dimens.d20,
-                            left: Dimens.d20),
-                        decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                blurRadius: Dimens.d8,
-                              )
-                            ],
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Column(
-                          children: [
-                            Dimens.d115.spaceHeight,
-                            Text(
-                              widget.title??"",
-                              style: Style.cormorantGaramondBold(
-                                  color: ColorConstant.black,
-                                  fontSize: Dimens.d28),
-                            ),
-                            Dimens.d20.spaceHeight,
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 23),
-                              child: Text(
-                                widget.des??"",
-                                textAlign: TextAlign.center,
-                                style: Style.montserratRegular(
-                                    fontSize: Dimens.d14,
-                                    color: ColorConstant.black),
-                              ),
-                            ),
-                            Dimens.d40.spaceHeight,
+    return Scaffold(
+      appBar: const CustomAppBar(
+        showBack: true,
+        title: "",
+      ),
+      body: Column(
+        children: [
+          Screenshot(
+            controller: screenshotController,
+            child: Column(
+              children: [
+                Dimens.d26.spaceHeight,
+                Stack(
+                  children: [
+                    Container(
+                      width: Get.width,
+                      margin: const EdgeInsets.only(
+                          top: Dimens.d80,
+                          right: Dimens.d20,
+                          left: Dimens.d20),
+                      decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: Dimens.d8,
+                            )
                           ],
-                        ),
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Column(
+                        children: [
+                          Dimens.d115.spaceHeight,
+                          Text(
+                            widget.title??"",
+                            style: Style.cormorantGaramondBold(
+                                color: ColorConstant.black,
+                                fontSize: Dimens.d28),
+                          ),
+                          Dimens.d20.spaceHeight,
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 23),
+                            child: Text(
+                              widget.des??"",
+                              textAlign: TextAlign.center,
+                              style: Style.montserratRegular(
+                                  fontSize: Dimens.d14,
+                                  color: ColorConstant.black),
+                            ),
+                          ),
+                          Dimens.d40.spaceHeight,
+                        ],
                       ),
-                      Center(
-                        child: Image.asset(
-                          ImageConstant.splashLogo,
-                          height: 160,
-                          width: 160,
-                        ),
+                    ),
+                    Center(
+                      child: Image.asset(
+                        ImageConstant.splashLogo,
+                        height: 160,
+                        width: 160,
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            Dimens.d40.spaceHeight,
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 80),
-              child: CommonElevatedButton(
-                title: "share".tr,
-                onTap: () {
-                  shareScreenShot();
-                },
-              ),
+          ),
+          Dimens.d40.spaceHeight,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 80),
+            child: CommonElevatedButton(
+              title: "share".tr,
+              onTap: () {
+                shareScreenShot();
+              },
             ),
-            Dimens.d40.spaceHeight,
-          ],
-        ),
+          ),
+          Dimens.d40.spaceHeight,
+        ],
       ),
     );
   }

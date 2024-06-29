@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:transform_your_mind/core/utils/color_constant.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 
 class BackGroundContainer extends StatelessWidget {
   final String image;
@@ -27,3 +31,40 @@ class BackGroundContainer extends StatelessWidget {
     );
   }
 }
+
+
+statusBarSet(ThemeController themeController){
+  themeController.isDarkMode.isTrue?  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: ColorConstant.darkBackground,
+    statusBarIconBrightness: Brightness.light,
+  ))  :
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: ColorConstant.backGround,
+    statusBarIconBrightness: Brightness.dark,
+  ));
+
+}
+statusBarSetWhite(ThemeController themeController){
+  themeController.isDarkMode.isTrue?  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: ColorConstant.darkBackground,
+    statusBarIconBrightness: Brightness.light,
+  ))  :
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: ColorConstant.white,
+    statusBarIconBrightness: Brightness.dark,
+  ));
+
+}
+
+menuBarSet(ThemeController themeController){
+  themeController.isDarkMode.isTrue?  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: ColorConstant.darkBackground,
+    statusBarIconBrightness: Brightness.light,
+  ))  :
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: ColorConstant.backGround,
+    statusBarIconBrightness: Brightness.dark,
+  ));
+
+}
+

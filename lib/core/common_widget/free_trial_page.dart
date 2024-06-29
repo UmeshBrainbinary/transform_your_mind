@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/bg_semi_circle_texture_painter.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
@@ -45,19 +46,8 @@ class _FreeTrialPageState extends State<FreeTrialPage>
  ThemeController themeController = Get.find<ThemeController>();
   @override
   Widget build(BuildContext context) {
-    themeController.isDarkMode.isTrue
-        ? SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.darkBackground,
-      // Status bar background color
-      statusBarIconBrightness:
-      Brightness.light, // Status bar icon/text color
-    ))
-        : SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.white, // Status bar background color
-      statusBarIconBrightness:
-      Brightness.dark, // Status bar icon/text color
-    ));
-    return SafeArea(
+   statusBarSet(themeController);
+    return SafeArea(bottom: false,
       child: Scaffold(backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
         body: Stack(
           children: [
@@ -80,7 +70,7 @@ class _FreeTrialPageState extends State<FreeTrialPage>
                     // const Spacer(),
                     Dimens.d251.spaceHeight,
                     Text(
-                      "Welcome to Transform.....you\'re all set to get started.\n\nYour Transform Basic package is now live.",
+                      "welcomeTransform".tr,
                       style: Style.montserratRegular(
                         fontSize: Dimens.d15,
                       ),
@@ -89,30 +79,30 @@ class _FreeTrialPageState extends State<FreeTrialPage>
                     Dimens.d25.spaceHeight,
                     Text(
                       //i10n.freeGeneralDesc,
-                      "This means you have access to....",
+                      "accessTo".tr,
                       style: Style.montserratRegular(
                           fontSize: Dimens.d12, fontWeight: FontWeight.w500),
                       textAlign: TextAlign.center,
                     ),
                     Dimens.d30.spaceHeight,
                     const _DescriptionPoints(
-                      title: "x1 journal input for all Journal features",
+                      title: "journalInput",
                     ),
                     const _DescriptionPoints(
-                      title: "x3 meditations, Transform pods or sleep sounds",
+                      title: "transOrSleep",
                     ),
                     const _DescriptionPoints(
-                      title: "Transform mood & emotions tracker",
+                      title: "transformMood",
                     ),
                     const _DescriptionPoints(
-                      title: "Focused affirmations up to x10 per day",
+                      title: "focusedAffirmations",
                     ),
                     // const Spacer(),
                     Dimens.d20.spaceHeight,
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
-                      child: CommonElevatedButton(
-                        title: "Premium Access to all features",
+                      child: CommonElevatedButton(textStyle: Style.montserratRegular(fontSize: 17,color: ColorConstant.white),
+                        title: "premiumAccess".tr,
                         onTap: () async {
                           await PrefService.setValue(PrefKey.premium, true);
 
@@ -162,7 +152,7 @@ class _DescriptionPoints extends StatelessWidget {
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                title,
+                title.tr,
                 style: Style.montserratRegular(
                   fontSize: Dimens.d14,
 

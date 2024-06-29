@@ -75,7 +75,7 @@ class _CommonElevatedButtonState extends State<CommonElevatedButton> {
                 textAlign: TextAlign.center,
                 style: widget.textStyle ??
                     Style.montserratRegular(
-                        fontSize: Dimens.d15, color: ColorConstant.white),
+                        fontSize: Dimens.d20, color: ColorConstant.white),
               ),
             ],
           ),

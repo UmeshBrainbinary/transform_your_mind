@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -9,15 +9,14 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
-import 'package:transform_your_mind/presentation/auth/login_screen/login_controller.dart';
-import 'package:transform_your_mind/presentation/auth/ragister_screen/register_controller.dart';
+import 'package:transform_your_mind/presentation/breath_screen/breath_screen.dart';
 import 'package:transform_your_mind/presentation/downloaded_pods_screen/downloaded_pods_screen.dart';
+import 'package:transform_your_mind/presentation/intro_screen/select_your_affirmation_focus_page.dart';
+import 'package:transform_your_mind/presentation/intro_screen/select_your_focus_page.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/setting_controller.dart';
 import 'package:transform_your_mind/presentation/support_screen/support_screen.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
-import 'package:transform_your_mind/widgets/app_confirmation_dialog.dart';
-import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -39,147 +38,123 @@ class _SettingScreenState extends State<SettingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.backGround, // Status bar background color
-      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
-    ));
-
-    return Scaffold(
-      backgroundColor: themeController.isDarkMode.value
-          ? ColorConstant.darkBackground
-          : ColorConstant.backGround,
-      appBar: CustomAppBar(
-        title: "settings".tr,
-      ),
-      body: Stack(
-        children: [
-          Align(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: const EdgeInsets.only(top: Dimens.d100),
-                child: SvgPicture.asset(ImageConstant.profile1),
-              )),
-          Align(
-              alignment: Alignment.bottomLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: Dimens.d120),
-                child: SvgPicture.asset(ImageConstant.profile2),
-              )),
-          Padding(
-            padding: Dimens.d20.paddingHorizontal,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: ListView(
-                    shrinkWrap: true,
-                    physics: const ClampingScrollPhysics(),
-                    padding: const EdgeInsets.only(bottom: 50, top: 30),
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: ColorConstant.transparent,
-                          borderRadius: BorderRadius.circular(Dimens.d16),
-                        ),
-                        child: ListView.separated(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          clipBehavior: Clip.none,
-                          padding: EdgeInsets.zero,
-                          itemBuilder: (context, index) {
-                            var data = settingController.settingsData[index];
-                            return SettingListItem(
-                              setting: data.settings,
-                              isSettings: true,
-                              prefixIcon: data.prefixIcon,
-                              title: data.title,
-                              suffixIcon: data.suffixIcon,
-                              onTap: () {
-                                if (index == 0) {
-                                  Get.toNamed(AppRoutes.notificationSetting);
-                                } else if (index == 1) {
-                                  Get.toNamed(AppRoutes.subscriptionScreen);
-                                } else if (index == 2) {
-                                  Get.toNamed(AppRoutes.accountScreen);
-                                } else if (index == 3) {
-
-                                } else if (index == 4) {
-                                  Get.toNamed(AppRoutes.personalizationScreen);
-                                } else if (index == 5) {
-                                  Get.toNamed(AppRoutes.feedbackScreen);
-                                } else if (index == 6) {
-                                  Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) {
-                                      return const SupportScreen();
-                                    },
-                                  ));
-                                } else {
-                                  Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) {
-                                      return const DownloadedPodsScreen();
-                                    },
-                                  ));
-                                }
-                              },
-                            );
-                          },
-                          separatorBuilder: (context, index) => Padding(
-                            padding: Dimens.d20.paddingHorizontal,
-                            child: const SizedBox(
-                              height: 15,
-                            ),
+    statusBarSet(themeController);
+    return SafeArea(
+      bottom: false,
+      child: Scaffold(
+        backgroundColor: themeController.isDarkMode.value
+            ? ColorConstant.darkBackground
+            : ColorConstant.backGround,
+        appBar: CustomAppBar(
+          title: "settings".tr,
+        ),
+        body: Stack(
+          children: [
+            Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: Dimens.d100),
+                  child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                      ? ImageConstant.profile1Dark
+                      : ImageConstant.profile1),
+                )),
+            Align(
+                alignment: Alignment.bottomLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: Dimens.d120),
+                  child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                      ? ImageConstant.profile2Dark
+                      : ImageConstant.profile2),
+                )),
+            Padding(
+              padding: Dimens.d20.paddingHorizontal,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: ListView(
+                      shrinkWrap: true,
+                      physics: const ClampingScrollPhysics(),
+                      padding: const EdgeInsets.only(bottom: 50, top: 30),
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: ColorConstant.transparent,
+                            borderRadius: BorderRadius.circular(Dimens.d16),
                           ),
-                          itemCount: settingController.settingsData.length,
+                          child: ListView.separated(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            clipBehavior: Clip.none,
+                            padding: EdgeInsets.zero,
+                            itemBuilder: (context, index) {
+                              var data = settingController.settingsData[index];
+                              return SettingListItem(
+                                setting: data.settings,
+                                isSettings: true,
+                                prefixIcon: data.prefixIcon,
+                                title: data.title,
+                                suffixIcon: data.suffixIcon,
+                                onTap: () {
+                                  if (index == 0) {
+                                    Get.toNamed(AppRoutes.notificationSetting);
+                                  } else if (index == 1) {
+                                    Get.toNamed(AppRoutes.subscriptionScreen);
+                                  } else if (index == 2) {
+                                    Get.toNamed(AppRoutes.accountScreen);
+                                  } else if (index == 3) {
+                                  } else if (index == 4) {
+                                    Get.toNamed(
+                                        AppRoutes.personalizationScreen);
+                                  } else if (index == 5) {
+                                    Get.toNamed(AppRoutes.feedbackScreen);
+                                  } else if (index == 6) {
+                                    Navigator.push(context, MaterialPageRoute(
+                                      builder: (context) {
+                                        return const SupportScreen();
+                                      },
+                                    ));
+                                  } else if (index == 7) {
+                                    Navigator.push(context, MaterialPageRoute(
+                                      builder: (context) {
+                                        return const DownloadedPodsScreen();
+                                      },
+                                    ));
+                                  } else if (index == 8) {
+                                    Get.to(
+                                        BreathScreen(
+                                          skip: false,
+                                          setting: true,
+                                        ),
+                                        transition: Transition.noTransition);
+                                  } else if (index == 9) {
+                                    Get.to( SelectYourFocusPage(setting: true,
+                                        isFromMe: false));
+                                  } else {
+                                    Get.to( SelectYourAffirmationFocusPage(setting: true,
+                                        isFromMe: false));
+                                  }
+                                },
+                              );
+                            },
+                            separatorBuilder: (context, index) => Padding(
+                              padding: Dimens.d20.paddingHorizontal,
+                              child: const SizedBox(
+                                height: 15,
+                              ),
+                            ),
+                            itemCount: settingController.settingsData.length,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                Center(
-                  child: CommonElevatedButton(
-                    title: "logout".tr,
-                    // textStyle: Style.montserratMedium(
-                    //   color: ColorConstant.white,
-                    //   fontSize: Dimens.d14,
-                    // ),
-                    onTap: () {
-                      showAppConfirmationDialog(
-                        context: context,
-                        message: "areYouSureWantToLogout?".tr,
-                        primaryBtnTitle: "no".tr,
-                        secondaryBtnTitle: "yes".tr,
-                        secondaryBtnAction: () {
-                          RegisterController registerController =
-                              Get.put(RegisterController());
-                          registerController.nameController.clear();
-                          registerController.emailController.clear();
-                          registerController.passwordController.clear();
-                          registerController.dobController.clear();
-                          registerController.genderController.clear();
-                          registerController.imageFile.value = null;
-
-                          if (PrefService.getBool(PrefKey.isRemember) ==
-                              false) {
-                            LoginController loginController =
-                                Get.put(LoginController());
-                            loginController.emailController.clear();
-                            loginController.passwordController.clear();
-                            loginController.rememberMe.value = false;
-                          }
-
-                          Get.offAllNamed(AppRoutes.loginScreen);
-                          PrefService.setValue(
-                              PrefKey.isLoginOrRegister, false);
-                        },
-                      );
-                    },
-                  ),
-                ),
-                Dimens.d30.spaceHeight,
-              ],
-            ),
-          )
-        ],
+                  Dimens.d30.spaceHeight,
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

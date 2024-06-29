@@ -20,6 +20,7 @@ class ImageConstant {
 
   /// images
   static String splashLogo = '$imagePath/splashLogo.png';
+  static String loginBack = '$imagePath/login_back.png';
   static String bgStar = '$imagePath/bgStar.png';
   static String userPlaceHolder = '$imagePath/userPlaceHolder.svg';
   static String nonPlaceHolder = '$imagePath/non_profile.svg';
@@ -48,8 +49,21 @@ class ImageConstant {
   static String meSelected = '$iconDashboardPath/me_deselected.svg';
   static String toolsUnSelected = '$iconDashboardPath/tools_deselected.svg';
   static String profileIcon = '$iconDashboardPath/profile_icon.svg';
+
+
+  static String darkExploreDeselected = '$iconDashboardPath/dark_explore_deselected.svg';
+  static String darkExploreSelected = '$iconDashboardPath/dark_explore_selected.svg';
+  static String darkHomeDeselected = '$iconDashboardPath/dark_home_deselected.svg';
+  static String darkHomeSelected = '$iconDashboardPath/dark_home_selected.svg';
+  static String darkMeDeselected = '$iconDashboardPath/dark_me_deselected.svg';
+  static String darkMeSelected = '$iconDashboardPath/dark_profile_selected.svg';
+  static String darkToolDeSelected = '$iconDashboardPath/dark_tools_deselected.svg';
+  static String darkToolSelected = '$iconDashboardPath/dark_tools_selected.svg';
   static String floatting = '$iconDashboardPath/floatting.svg';
   static String sFloatting = '$iconDashboardPath/serach_floatting.svg';
+
+
+
 
   ///Explore
   static String upArrow = '$iconExplorePath/upArrow.svg';
@@ -184,6 +198,10 @@ class ImageConstant {
   static String delete = "$iconPath/delete.svg";
   static String profile1 = "$imagePath/profile1_back.svg";
   static String profile2 = "$imagePath/profile2_back.svg";
+  static String profile1Dark = "$iconPath/profile1Dark.svg";
+  static String profile2Dark = "$iconPath/profile2Dark.svg";
+
+
   static String successTools = "$iconPath/success_tools.svg";
   static String affirmationSuccessTools = "$iconPath/affirmation_success_icon.svg";
   static String success = "$iconPath/Success.svg";
@@ -215,14 +233,17 @@ class ImageConstant {
   static String search = "$iconPath/serach_icon.svg";
   static String popupCheck = "$iconPath/popup_check.svg";
   static String logOutCheck = "$iconPath/logout_icon.svg";
+  static String checkMark = "$iconPath/chek_mark_pods.svg";
   static String sos = "$iconPath/sos.svg";
+  static String noSearch = "$iconPath/no_serach.svg";
   static String noInternet = "$iconPath/noInternet.png";
   static String searchNotFound = "$imagePath/serach_not_found.png";
   static String searchDark = "$imagePath/search_dark.png";
   static String descriptionImage = "$iconPath/description_image.png";
   static String welcomeBackImage = "$imagePath/welcome_back_image.png";
-  static String noticeImage = "$imagePath/notice_image.png";
+  static String noticeImage = "$imagePath/notice_how_you_feel.png";
   static String chooseLanguages = "$imagePath/choose_langauge.png";
+  static String homeBack = "$iconPath/home_back.png";
   static String breathInhale = "$lottie/breath_inhale.json";
   static String shapeAffirmationShare =
       "$imagePath/shape_affirmation_share.svg";

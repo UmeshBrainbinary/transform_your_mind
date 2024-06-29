@@ -13,10 +13,6 @@ class SettingController extends GetxController {
 
   @override
   void onInit() {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.backGround, // Status bar background color
-      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
-    ));
     settingsData.value = _SettingsData.getSettingsData;
     super.onInit();
   }
@@ -98,6 +94,24 @@ class _SettingsData {
           title: "Downloads",
           suffixIcon: ImageConstant.settingArrowRight,
           index: 7,
+        ),
+    _SettingsData(
+          prefixIcon: ImageConstant.settingsLegals,
+          title: "Breath",
+          suffixIcon: ImageConstant.settingArrowRight,
+          index: 8,
+        ),
+    _SettingsData(
+          prefixIcon: ImageConstant.settingsLegals,
+          title: "YourFocus",
+          suffixIcon: ImageConstant.settingArrowRight,
+          index: 9,
+        ),
+    _SettingsData(
+          prefixIcon: ImageConstant.settingsLegals,
+          title: "YourAffirmationFocus",
+          suffixIcon: ImageConstant.settingArrowRight,
+          index: 10,
         ),
       ];
 }

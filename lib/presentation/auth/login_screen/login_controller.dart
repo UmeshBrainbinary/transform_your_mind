@@ -131,7 +131,7 @@ class LoginController extends GetxController {
           Get.offAllNamed(AppRoutes.selectYourFocusPage);
         } else if ((getUserModel.data?.affirmations ?? []).isEmpty) {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-          return const SelectYourAffirmationFocusPage(isFromMe: false);
+          return  SelectYourAffirmationFocusPage(isFromMe: false,setting: false,);
         },));
         } else {
           Get.offAllNamed(AppRoutes.dashBoardScreen);

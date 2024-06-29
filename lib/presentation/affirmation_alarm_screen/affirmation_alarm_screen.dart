@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:transform_your_mind/core/app_export.dart';
+import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
@@ -43,7 +44,7 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
 
   @override
   void initState() {
-    getStatusBar();
+
     List.generate(
       affirmationList.length,
       (index) => like.add(false),
@@ -51,16 +52,12 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
     super.initState();
   }
 
-  getStatusBar() {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.backGround, // Status bar background color
-      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
-    ));
-  }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    statusBarSet(themeController);
+
+    return SafeArea(bottom: false,
       child: Scaffold(
         backgroundColor: themeController.isDarkMode.value
             ? ColorConstant.darkBackground
@@ -145,7 +142,6 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
                           },
                         )).then(
                           (value) {
-                            getStatusBar();
                           },
                         );
                       },

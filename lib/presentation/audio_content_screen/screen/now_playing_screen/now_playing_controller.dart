@@ -46,12 +46,7 @@ class NowPlayingController extends GetxController {
   RxBool rated = false.obs;
     AnimationController? lottieBgController, lottieController;
 
-  getPodsData() async {
-    loader.value = true;
-    await getPodApi();
-    loader.value = false;
-    update(['update']);
-  }
+
   @override
   void dispose() {
     lottieController!.dispose();
@@ -106,6 +101,25 @@ class NowPlayingController extends GetxController {
     await _audioPlayer.setUrl(url);
     setPlaybackSpeed(1.0);
   }
+  Future<void> afterPlayingMusic(String url,
+      {String? name,
+        String? expertName,
+        String? description,
+        String? img}) async {
+    currentName = name;
+    currentExpertName = expertName;
+    currentDescription = description;
+    currentImage = img;
+
+
+    currentUrl = url;
+    await _audioPlayer.setUrl(url);
+    play();
+    setPlaybackSpeed(1.0);
+    update();
+
+  }
+
 
   Future<void> setUrlFile(String url,
       {String? name,
@@ -169,6 +183,7 @@ class NowPlayingController extends GetxController {
   }
 
   addBookmark(id, BuildContext context, bool value) async {
+    loader.value = true;
     try {
       var headers = {
         'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
@@ -183,15 +198,21 @@ class NowPlayingController extends GetxController {
       http.StreamedResponse response = await request.send();
 
       if (response.statusCode == 200) {
-        if (value == true) {
+        loader.value = false;
+
+       /* if (value == true) {
           showSnackBarSuccess(context, "yourSoundsSuccessfullyBookmarked".tr);
         } else {
           showSnackBarSuccess(context, "yourSoundsSuccessfullyUnBookmarked".tr);
-        }
+        }*/
       } else {
+        loader.value = false;
+
         debugPrint(response.reasonPhrase);
       }
     } catch (e) {
+      loader.value = false;
+
       debugPrint(e.toString());
     }
   }
@@ -305,30 +326,7 @@ class NowPlayingController extends GetxController {
   final ValueNotifier<Duration> updatedRealtimeAudioDuration =
       ValueNotifier(const Duration(hours: 0, minutes: 0, seconds: 0));
 
-  getPodApi() async {
-    try {
-      var headers = {
-        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
-      };
-      var request = http.Request('GET', Uri.parse(EndPoints.getPod));
-      request.headers.addAll(headers);
-      http.StreamedResponse response = await request.send();
 
-      if (response.statusCode == 200) {
-        final responseBody = await response.stream.bytesToString();
-
-        getPodsModel = getPodsModelFromJson(responseBody);
-        update(['update']);
-      } else {
-        print(response.reasonPhrase);
-        update(['update']);
-      }
-    } catch (e) {
-      loader.value = false;
-      debugPrint(e.toString());
-    }
-    update(['update']);
-  }
 
   addRecently(id) async {
     var headers = {

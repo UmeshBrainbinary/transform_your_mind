@@ -309,7 +309,7 @@ class _AddPositivePageState extends State<AddPositivePage>
                                     Expanded(
                                       child: CommonElevatedButton(
                                         textStyle: Style.montserratRegular(
-                                            fontSize: Dimens.d14,
+                                            fontSize: Dimens.d20,
                                             color: ColorConstant.white),
                                         title: widget.isEdit!
                                             ? "update".tr

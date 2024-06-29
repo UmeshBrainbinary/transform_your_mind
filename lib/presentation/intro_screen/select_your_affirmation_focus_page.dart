@@ -19,18 +19,22 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/model_class/affirmation_model.dart';
+import 'package:transform_your_mind/model_class/common_model.dart';
+import 'package:transform_your_mind/model_class/get_user_model.dart';
 import 'package:transform_your_mind/presentation/intro_screen/select_your_focus_page.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 import '../me_screen/screens/setting_screen/Page/notification_setting_screen/widget/reminder_time_utils.dart';
 class SelectYourAffirmationFocusPage extends StatefulWidget {
-  const SelectYourAffirmationFocusPage({
+   SelectYourAffirmationFocusPage({
     super.key,
     required this.isFromMe,
+    this.setting
   });
 
   final bool isFromMe;
+   bool? setting;
 
   @override
   State<SelectYourAffirmationFocusPage> createState() =>
@@ -117,13 +121,53 @@ class _SelectYourAffirmationFocusPageState
       debugPrint(e.toString());
     }
   }
+  GetUserModel getUserModel = GetUserModel();
 
+  getUSer() async {
+    try {
+      var headers = {
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+      };
+      var request = http.Request(
+        'GET',
+        Uri.parse(
+          "${EndPoints.getUser}${PrefService.getString(PrefKey.userId)}",
+        ),
+      );
+
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        final responseBody = await response.stream.bytesToString();
+
+        getUserModel = getUserModelFromJson(responseBody);
+        for(int i =0 ;i<getUserModel.data!.affirmations!.length;i++){
+          listOfTags.add(Tag( getUserModel.data!.affirmations![i].toString(), true));
+        }
+        setState(() {
+
+        });
+      } else {
+        debugPrint(response.reasonPhrase);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    setState(() {});
+  }
   @override
   void initState() {
-    getAffirmation();
+    getData();
     super.initState();
   }
+ getData() async {
+   await getUSer();
+   await getAffirmation();
+   setState(() {
 
+   });
+ }
   void _onTagTap(Tag tag) {
     setState(() {
       tag.isSelected = !tag.isSelected;
@@ -161,13 +205,17 @@ class _SelectYourAffirmationFocusPageState
                 alignment: Alignment.topRight,
                 child: Padding(
                   padding: const EdgeInsets.only(top: Dimens.d100),
-                  child: SvgPicture.asset(ImageConstant.profile1),
+                  child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                      ? ImageConstant.profile1Dark
+                      : ImageConstant.profile1),
                 )),
             Align(
                 alignment: Alignment.bottomLeft,
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: Dimens.d120),
-                  child: SvgPicture.asset(ImageConstant.profile2),
+                  child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                      ? ImageConstant.profile2Dark
+                      : ImageConstant.profile2),
                 )),
             Column(
               children: [
@@ -205,54 +253,7 @@ class _SelectYourAffirmationFocusPageState
                     ],
                   ),
                 ),
-                /*     ValueListenableBuilder(
-                    valueListenable: selectedReminderTime,
-                    builder: (context, value, child) {
-                      return GestureDetector(
-                        onTap: () {
-                          showRemindersDialog(context, (value, reminderPeriod) {
-                            affirmationController.text =
-                                value.name + reminderPeriod.desc;
-                            affirmationReminderTime = value;
-                            affirmationReminderPeriod = reminderPeriod;
-                          },
-                              prevSelectedReminder: affirmationReminderTime,
-                              prevSelectedReminderPeriod:
-                                  affirmationReminderPeriod,
-                              isAffirmations: true,
-                              label: "affirmationsReminder".tr);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: Dimens.d24, right: Dimens.d24, top: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Flexible(
-                                flex: 4,
-                                child: Text(
-                                  "setReminders".tr,
-                                  style: Style.montserratRegular(
-                                      fontSize: Dimens.d16,
-                                      color: themeController.isDarkMode.value
-                                          ? ColorConstant.white
-                                          : ColorConstant.black),
-                                ),
-                              ),
-                              const Spacer(),
-                              Dimens.d10.spaceWidth,
-                              */ /*  if (state is! RemindersLoadingState)
-                                Text(selectedReminderTime.value,
-                                    style: Style.montserratRegular(
-                                        fontSize: Dimens.d16,
-                                        color: Colors.black)),*/ /*
-                              SvgPicture.asset(ImageConstant.icDownArrow,
-                                  height: 20),
-                            ],
-                          ),
-                        ),
-                      );
-                    }),*/
+
                 Dimens.d20.spaceHeight,
                 FocusSelectButton(
                   primaryBtnText: widget.isFromMe ? "save".tr : "next".tr,
@@ -260,8 +261,8 @@ class _SelectYourAffirmationFocusPageState
                   isLoading: false,
                   primaryBtnCallBack: () {
                     //getAffirmation();
-                    if (selectedTagNames.length >= 5) {
-                      setFocuses();
+                    if (selectedTagNames.isNotEmpty) {
+                      setFocuses(widget.setting);
 
                     } else {
                       showSnackBarError(
@@ -276,7 +277,8 @@ class _SelectYourAffirmationFocusPageState
       ),
     );
   }
-  setFocuses() async {
+  CommonModel commonModel = CommonModel();
+  setFocuses(bool? setting) async {
     setState(() {
       loader = true;
     });
@@ -284,7 +286,8 @@ class _SelectYourAffirmationFocusPageState
       var headers = {
         'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
       };
-      var request = http.MultipartRequest('POST', Uri.parse('${EndPoints.baseUrl}${EndPoints.updateUser}${PrefService.getString(PrefKey.userId)}'));
+      var request = http.MultipartRequest('POST',
+          Uri.parse('${EndPoints.baseUrl}${EndPoints.updateUser}${PrefService.getString(PrefKey.userId)}'));
       request.fields.addAll({
         'affirmations': jsonEncode(selectedTagNames)
       });
@@ -297,18 +300,26 @@ class _SelectYourAffirmationFocusPageState
         setState(() {
           loader = false;
         });
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context) {
-            return const FreeTrialPage();
-          },
-        ));
+        if(setting==true){
+          Get.back();
+        }else{
+          Navigator.push(context, MaterialPageRoute(
+            builder: (context) {
+              return const FreeTrialPage();
+            },
+          ));
+        }
+
       } else {
+        final responseBody = await response.stream.bytesToString();
+        commonModel = commonModelFromJson(responseBody);
         setState(() {
           loader = false;
         });
         debugPrint(response.reasonPhrase);
       }
     } catch (e) {
+
       setState(() {
         loader = false;
       });

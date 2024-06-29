@@ -17,7 +17,7 @@ class BookmarkListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: Dimens.d140,
+      width: Dimens.d156,
       child: Stack(alignment: Alignment.topRight,
         children: [
           Column(
@@ -128,7 +128,7 @@ class RecentlyPlayed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: Dimens.d140,
+      width: Dimens.d156,
       child: Stack(alignment: Alignment.topRight,
         children: [
           Column(

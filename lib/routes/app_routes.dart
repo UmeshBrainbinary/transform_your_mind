@@ -327,7 +327,7 @@ class AppRoutes {
     GetPage(
       transition: Transition.rightToLeft,
       name: selectYourFocusPage,
-      page: () =>  const SelectYourFocusPage(isFromMe: false),
+      page: () =>   SelectYourFocusPage(isFromMe: false,setting: false,),
       bindings: [
        DashBoardBinding()
       ],
@@ -399,15 +399,6 @@ class AppRoutes {
       bindings: [BreathBinding()],
     ),
 
-    ///
-    // GetPage(
-    //   transition: Transition.rightToLeft,
-    //   name: initialRoute,
-    //   page: () => SplashScreen(),
-    //   bindings: [
-    //     SplashBinding(),
-    //   ],
-    // )
 
   ];
 }

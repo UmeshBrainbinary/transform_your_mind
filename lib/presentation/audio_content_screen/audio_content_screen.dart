@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:transform_your_mind/core/app_export.dart';
+import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
-import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
-import 'package:transform_your_mind/main.dart';
 import 'package:transform_your_mind/model_class/get_pods_model.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/audio_content_controller.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_controller.dart';
@@ -18,7 +17,6 @@ import 'package:transform_your_mind/presentation/audio_content_screen/screen/now
 import 'package:transform_your_mind/presentation/notification_screen/notification_screen.dart';
 import 'package:transform_your_mind/presentation/subscription_screen/subscription_screen.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
-import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 
@@ -56,15 +54,7 @@ class _AudioContentScreenState extends State<AudioContentScreen>
         showScrollTop.value = false;
       }
     });
-    themeController.isDarkMode.isTrue?
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.darkBackground, // Status bar background color
-      statusBarIconBrightness: Brightness.light, // Status bar icon/text color
-    )):
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.white, // Status bar background color
-      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
-    ));
+
     audioContentController.getPodsData();
     super.initState();
   }
@@ -79,10 +69,12 @@ class _AudioContentScreenState extends State<AudioContentScreen>
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    statusBarSet(themeController);
+    return SafeArea(bottom: false,
       child: Stack(
         children: [
-          Scaffold(backgroundColor:
+          Scaffold(resizeToAvoidBottomInset: true,
+            backgroundColor:
           themeController.isDarkMode.isTrue?
           ColorConstant.darkBackground:ColorConstant.white,
             floatingActionButton: ValueListenableBuilder(
@@ -139,7 +131,7 @@ class _AudioContentScreenState extends State<AudioContentScreen>
               children: [
                 Align(
                   alignment: const Alignment(1, 0),
-                  child: SvgPicture.asset(ImageConstant.bgVector,
+                  child: SvgPicture.asset(themeController.isDarkMode.isTrue?ImageConstant.profile1Dark:ImageConstant.profile1,
                       height: Dimens.d230.h),
                 ),
                 Padding(
@@ -380,24 +372,14 @@ class _AudioContentScreenState extends State<AudioContentScreen>
                                                                         width:
                                                                             Dimens.d25),
                                                                   )
-                                                                : Container(
-                                                                    height: 22,
-                                                                    width: 22,
-                                                                    decoration: BoxDecoration(
-                                                                        shape: BoxShape
-                                                                            .circle,
-                                                                        border: Border.all(
-                                                                            color: Colors
-                                                                                .green,
-                                                                            width:
-                                                                                1.5)),
-                                                                    child: const Icon(
-                                                                      Icons.check,
-                                                                      color:
-                                                                          Colors.green,
-                                                                      size: 18,
-                                                                    ),
-                                                                  )
+                                                                : SvgPicture.asset(
+                                                                    ImageConstant
+                                                                        .checkMark,
+                                                                    height:
+                                                                        Dimens
+                                                                            .d25,
+                                                                    width: Dimens
+                                                                        .d25)
                                                           ],
                                                         ),
                                                         Dimens.d7.spaceHeight,
@@ -424,8 +406,22 @@ class _AudioContentScreenState extends State<AudioContentScreen>
                                               );
                                             })
                                         : Padding(
-                                          padding: const EdgeInsets.only(bottom: Dimens.d130),
-                                          child: Image.asset(themeController.isDarkMode.isTrue?ImageConstant.searchDark:ImageConstant.searchNotFound,height: 245,width: 288,),
+                                          padding: const EdgeInsets.only(top: Dimens.d50),
+                                          child: Column(
+                                            children: [
+                                              SvgPicture.asset(ImageConstant.noSearch,),
+                                              Text("dataNotFound".tr,style: Style.gothamMedium(
+                                                  fontSize: 24,fontWeight: FontWeight.w700),),
+                                              Dimens.d11.spaceHeight,
+                                              Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 35),
+                                                child: Text("noSearchAgain".tr,
+                                                  textAlign: TextAlign.center,
+                                                  style: Style.montserratRegular(fontSize: 14,fontWeight: FontWeight.w400),),
+                                              ),
+
+                                            ],
+                                          ),
                                         ),
                                   );
                                 },

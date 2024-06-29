@@ -94,7 +94,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
             boxShadow: [
               BoxShadow(
-                color: ColorConstant.themeColor.withOpacity(0.8),
+                color:themeController.isDarkMode.value ?Colors.transparent: ColorConstant.themeColor.withOpacity(0.8),
                 blurRadius: Dimens.d28,
                 offset: const Offset(1, 1),
                 spreadRadius: 1,
@@ -107,26 +107,26 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             items: [
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
-                  ImageConstant.homeUnSelected,
+                  themeController.isDarkMode.isTrue?ImageConstant.darkHomeDeselected:ImageConstant.homeUnSelected,
                   height: Dimens.d20,
                   width: Dimens.d20,
                 ),
                 label: 'home'.tr,
                 activeIcon: SvgPicture.asset(
-                  ImageConstant.homeSelected,
+                  themeController.isDarkMode.isTrue?ImageConstant.darkHomeSelected: ImageConstant.homeSelected,
                   height: Dimens.d20,
                   width: Dimens.d20,
                 ),
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
-                  ImageConstant.toolsUnSelected,
+                  themeController.isDarkMode.isTrue?ImageConstant.darkToolDeSelected: ImageConstant.toolsUnSelected,
                   height: Dimens.d20,
                   width: Dimens.d20,
                 ),
                 label: 'tools'.tr,
                 activeIcon: SvgPicture.asset(
-                  ImageConstant.toolsSelected,
+                  themeController.isDarkMode.isTrue?ImageConstant.darkToolSelected: ImageConstant.toolsSelected,
                   height: Dimens.d20,
                   width: Dimens.d20,
                 ),
@@ -158,13 +158,13 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
-                  ImageConstant.exploreDeSelected,
+                  themeController.isDarkMode.isTrue?ImageConstant.darkExploreDeselected:ImageConstant.exploreDeSelected,
                   height: Dimens.d20,
                   width: Dimens.d20,
                 ),
                 label: 'audioContent'.tr,
                 activeIcon: SvgPicture.asset(
-                  ImageConstant.exploreSelected,
+                  themeController.isDarkMode.isTrue?ImageConstant.darkExploreSelected: ImageConstant.exploreSelected,
                   height: Dimens.d20,
                   width: Dimens.d20,
                   fit: BoxFit.fill,
@@ -172,13 +172,13 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
-                  ImageConstant.meSelected,
+                  themeController.isDarkMode.isTrue?ImageConstant.darkMeDeselected:ImageConstant.meSelected,
                   height: Dimens.d20,
                   width: Dimens.d20,
                 ),
                 label: 'me'.tr,
                 activeIcon: SvgPicture.asset(
-                  ImageConstant.profileIcon,
+                  themeController.isDarkMode.isTrue?ImageConstant.darkMeSelected: ImageConstant.profileIcon,
                   height: Dimens.d20,
                   width: Dimens.d20,
                   fit: BoxFit.fill,
