@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
+import 'package:transform_your_mind/core/utils/audio_manager/audio_player_manager.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/end_points.dart';
@@ -25,6 +27,7 @@ import 'package:transform_your_mind/model_class/affirmation_data_model.dart';
 import 'package:transform_your_mind/model_class/affirmation_model.dart';
 import 'package:transform_your_mind/model_class/alarm_model.dart';
 import 'package:transform_your_mind/model_class/common_model.dart';
+import 'package:transform_your_mind/presentation/journal_screen/journal_controller.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_affirmation_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/affirmation_share_screen.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/audio_list.dart';
@@ -33,6 +36,7 @@ import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 import 'package:transform_your_mind/widgets/divider.dart';
+import 'package:voice_message_package/voice_message_package.dart';
 
 class MyAffirmationPage extends StatefulWidget {
   const MyAffirmationPage({super.key});
@@ -56,7 +60,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   TextEditingController searchController = TextEditingController();
   ThemeController themeController = Get.find<ThemeController>();
   FocusNode searchFocus = FocusNode();
-
+  JournalController journalController = Get.put(JournalController());
   int _currentTabIndex = 0;
   ValueNotifier<bool> isDraftAdded = ValueNotifier(false);
   List categoryList = [];
@@ -82,8 +86,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   bool playPause = false;
   final String audioFilePath = 'assets/audio/audio.mp3';
   AffirmationModel affirmationModel = AffirmationModel();
-  AffirmationCategoryModel affirmationCategoryModel =
-      AffirmationCategoryModel();
+  AffirmationCategoryModel affirmationCategoryModel = AffirmationCategoryModel();
   AffirmationDataModel affirmationDataModel = AffirmationDataModel();
   bool loader = false;
   List<AffirmationData>? data;
@@ -510,161 +513,160 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
     }
   }
 
+  VoiceController? voiceController;
+
   @override
   Widget build(BuildContext context) {
-    statusBarSet(themeController);
-    return SafeArea(
-      bottom: false,
-      child: Scaffold(
-        backgroundColor: themeController.isDarkMode.value
-            ? ColorConstant.darkBackground
-            : ColorConstant.backGround,
-        appBar: CustomAppBar(
-          showBack: true,
-          title: "myAffirmation".tr,
-          action: (_isLoading)
-              ? const Offstage()
-              : Padding(
-                  padding: const EdgeInsets.only(right: Dimens.d20),
-                  child: GestureDetector(
-                    onTap: () {
-                      _onAddClick(context);
-                    },
-                    child: SvgPicture.asset(
-                      ImageConstant.addTools,
-                      height: Dimens.d22,
-                      width: Dimens.d22,
-                    ),
+    //statusBarSet(themeController);
+    return Scaffold(
+      backgroundColor: themeController.isDarkMode.value
+          ? ColorConstant.darkBackground
+          : ColorConstant.backGround,
+      appBar: CustomAppBar(
+        showBack: true,
+        title: "myAffirmation".tr,
+        action: (_isLoading)
+            ? const Offstage()
+            : Padding(
+                padding: const EdgeInsets.only(right: Dimens.d20),
+                child: GestureDetector(
+                  onTap: () {
+                    _onAddClick(context);
+                  },
+                  child: SvgPicture.asset(
+                    ImageConstant.addTools,
+                    height: Dimens.d22,
+                    width: Dimens.d22,
                   ),
                 ),
-        ),
-        body: Stack(
-          children: [
-            SizedBox(
-              height: Get.height,
-              width: Get.width,
-              child: Stack(
-                children: [
-                  Align(
-                      alignment: Alignment.topRight,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: Dimens.d100),
-                        child: SvgPicture.asset(
-                            themeController.isDarkMode.isTrue
-                                ? ImageConstant.profile1Dark
-                                : ImageConstant.profile1),
-                      )),
-                  Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: Dimens.d120),
-                        child: SvgPicture.asset(
-                            themeController.isDarkMode.isTrue
-                                ? ImageConstant.profile2Dark
-                                : ImageConstant.profile2),
-                      )),
-                  LayoutContainer(
-                    vertical: 0,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Dimens.d13.spaceHeight,
-                        Row(
-                          children: [
-                            const Spacer(),
-                            GestureDetector(
-                              onTap: () {
-                                getAffirmation();
-                                setState(() {
-                                  _currentTabIndex = 0;
-                                });
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: Dimens.d14),
-                                height: Dimens.d38,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: _currentTabIndex == 0
-                                            ? ColorConstant.transparent
-                                            : themeController.isDarkMode.value
-                                                ? ColorConstant.white
-                                                : ColorConstant.black,
-                                        width: 0.5),
-                                    borderRadius: BorderRadius.circular(33),
-                                    color: _currentTabIndex == 0
-                                        ? ColorConstant.themeColor
-                                        : ColorConstant.transparent),
-                                child: Center(
-                                  child: Text(
-                                    "yourAffirmation".tr,
-                                    style: Style.montserratRegular(
-                                        fontSize: Dimens.d14,
-                                        color: _currentTabIndex == 0
-                                            ? ColorConstant.white
-                                            : themeController.isDarkMode.value
-                                                ? ColorConstant.white
-                                                : ColorConstant.black),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const Spacer(),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  selectedCategory = ValueNotifier(null);
-                                  _currentTabIndex = 1;
-                                  getAffirmationData();
-                                });
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: Dimens.d34),
-                                height: Dimens.d38,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(33),
-                                    border: Border.all(
-                                        color: _currentTabIndex == 1
-                                            ? ColorConstant.transparent
-                                            : themeController.isDarkMode.value
-                                                ? ColorConstant.white
-                                                : ColorConstant.black,
-                                        width: 0.5),
-                                    color: _currentTabIndex == 1
-                                        ? ColorConstant.themeColor
-                                        : ColorConstant.transparent),
-                                child: Center(
-                                  child: Text(
-                                    "affirmation".tr,
-                                    style: Style.montserratRegular(
-                                        fontSize: Dimens.d14,
-                                        color: _currentTabIndex == 1
-                                            ? ColorConstant.white
-                                            : themeController.isDarkMode.value
-                                                ? ColorConstant.white
-                                                : ColorConstant.black),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const Spacer(),
-                          ],
-                        ),
-                        Dimens.d16.spaceHeight,
-                        const DividerWidget(),
-                        Dimens.d20.spaceHeight,
-                        _getTabListOfGoals(),
-                      ],
-                    ),
-                  ),
-                ],
               ),
+      ),
+      body: Stack(
+        children: [
+          SizedBox(
+            height: Get.height,
+            width: Get.width,
+            child: Stack(
+              children: [
+                Align(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: Dimens.d100),
+                      child: SvgPicture.asset(
+                          themeController.isDarkMode.isTrue
+                              ? ImageConstant.profile1Dark
+                              : ImageConstant.profile1),
+                    )),
+                Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: Dimens.d120),
+                      child: SvgPicture.asset(
+                          themeController.isDarkMode.isTrue
+                              ? ImageConstant.profile2Dark
+                              : ImageConstant.profile2),
+                    )),
+                LayoutContainer(
+                  vertical: 0,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Dimens.d13.spaceHeight,
+                      Row(
+                        children: [
+                          const Spacer(),
+                          GestureDetector(
+                            onTap: () {
+                              getAffirmation();
+                              setState(() {
+                                _currentTabIndex = 0;
+                              });
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: Dimens.d14),
+                              height: Dimens.d38,
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: _currentTabIndex == 0
+                                          ? ColorConstant.transparent
+                                          : themeController.isDarkMode.value
+                                              ? ColorConstant.white
+                                              : ColorConstant.black,
+                                      width: 0.5),
+                                  borderRadius: BorderRadius.circular(33),
+                                  color: _currentTabIndex == 0
+                                      ? ColorConstant.themeColor
+                                      : ColorConstant.transparent),
+                              child: Center(
+                                child: Text(
+                                  "yourAffirmation".tr,
+                                  style: Style.montserratRegular(
+                                      fontSize: Dimens.d14,
+                                      color: _currentTabIndex == 0
+                                          ? ColorConstant.white
+                                          : themeController.isDarkMode.value
+                                              ? ColorConstant.white
+                                              : ColorConstant.black),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedCategory = ValueNotifier(null);
+                                _currentTabIndex = 1;
+                                getAffirmationData();
+                              });
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: Dimens.d34),
+                              height: Dimens.d38,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(33),
+                                  border: Border.all(
+                                      color: _currentTabIndex == 1
+                                          ? ColorConstant.transparent
+                                          : themeController.isDarkMode.value
+                                              ? ColorConstant.white
+                                              : ColorConstant.black,
+                                      width: 0.5),
+                                  color: _currentTabIndex == 1
+                                      ? ColorConstant.themeColor
+                                      : ColorConstant.transparent),
+                              child: Center(
+                                child: Text(
+                                  "affirmation".tr,
+                                  style: Style.montserratRegular(
+                                      fontSize: Dimens.d14,
+                                      color: _currentTabIndex == 1
+                                          ? ColorConstant.white
+                                          : themeController.isDarkMode.value
+                                              ? ColorConstant.white
+                                              : ColorConstant.black),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                        ],
+                      ),
+                      Dimens.d16.spaceHeight,
+                      const DividerWidget(),
+                      Dimens.d20.spaceHeight,
+                      _getTabListOfGoals(),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            loader == true ? commonLoader() : const SizedBox()
-          ],
-        ),
+          ),
+          loader == true ? commonLoader() : const SizedBox()
+        ],
       ),
     );
   }
@@ -1007,13 +1009,9 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                     Dimens.d10.spaceWidth,
                                     GestureDetector(
                                       onTap: () async {
-                                        setState(() {
-                                          loader = true;
-                                        });
-
-                                        setState(() {
-                                          loader = false;
-                                        });
+                                        await journalController.setUrl(
+                                            _filteredBookmarks?[index]
+                                                .audioFile);
                                         _showAlertDialogPlayPause(context,
                                             mp3: _filteredBookmarks?[index]
                                                 .audioFile,
@@ -1481,6 +1479,11 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                           const Spacer(),
                           GestureDetector(
                               onTap: () {
+                                journalController.pause();
+                                journalController
+                                    .isPlaying.value = false;
+                                journalController.update();
+                                setState.call((){});
                                 Get.back();
                               },
                               child: SvgPicture.asset(ImageConstant.close)),
@@ -1498,38 +1501,83 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                       child: Row(
                         children: [
                           Dimens.d10.spaceWidth,
-                          Container(
+                        GetBuilder<JournalController>(builder: (controller) {
+                          return   Container(
                             height: 28,
                             width: 28,
                             decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: ColorConstant.themeColor),
+                              shape: BoxShape.circle,
+                              color: ColorConstant.themeColor,
+                            ),
                             child: Center(
                               child: GestureDetector(
                                 onTap: () {
-
+                                  if (journalController.isPlaying.isTrue) {
+                                    journalController.pause();
+                                    journalController.update();
+                                  } else {
+                                    journalController.play();
+                                    journalController.update();
+                                  }
                                   setState(() {
-
+                                    journalController
+                                        .isPlaying.value =
+                                    !journalController
+                                        .isPlaying.value;
+                                    journalController.update();
                                   });
-
+                                  journalController.update();
+                                  setState.call((){});
                                 },
                                 child: SvgPicture.asset(
-                                  /* controller.playerState.isPlaying
+                                  journalController.isPlaying.isTrue
                                       ? ImageConstant.pauseAudio
-                                      :*/
-                                  ImageConstant.play,
+                                      : ImageConstant.play,
                                   height: 10,
                                   width: 10,
                                   color: ColorConstant.black,
                                 ),
                               ),
                             ),
+                          );
+                        },),
+                          StreamBuilder<Duration?>(
+                            stream:
+                                journalController.audioPlayer.positionStream,
+                            builder: (context, snapshot) {
+                              final position = snapshot.data ?? Duration.zero;
+                              return StreamBuilder<Duration?>(
+                                stream: journalController
+                                    .audioPlayer.durationStream,
+                                builder: (context, snapshot) {
+                                  final duration =
+                                      snapshot.data ?? Duration.zero;
+                                  return Slider(
+                                    min: 0.0,
+                                    max: duration.inMilliseconds.toDouble(),
+                                    activeColor: ColorConstant.themeColor,
+                                    onChanged: (double value) {
+                                      journalController.seekForMeditationAudio(
+                                          position: Duration(milliseconds: value.round()));
+                                    },
+                                    value: min(position.inMilliseconds.toDouble(),
+                                       duration.inMilliseconds.toDouble()),
+                                  );
+                                },
+                              );
+                            },
                           ),
                           GestureDetector(
-                              onTap: () {
+                              onTap: () async {
                                 setState.call(() {
                                   soundMute = !soundMute;
                                 });
+                                if (soundMute) {
+                                  journalController.audioPlayer.setVolume(0);
+
+                                } else {
+                                  journalController.audioPlayer.setVolume(1);
+                                }
                               },
                               child: SvgPicture.asset(
                                 soundMute

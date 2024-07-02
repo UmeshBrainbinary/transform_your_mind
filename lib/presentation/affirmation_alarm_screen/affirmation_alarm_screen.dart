@@ -55,198 +55,196 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
 
   @override
   Widget build(BuildContext context) {
-    statusBarSet(themeController);
+    //statusBarSet(themeController);
 
-    return SafeArea(bottom: false,
-      child: Scaffold(
-        backgroundColor: themeController.isDarkMode.value
-            ? ColorConstant.darkBackground
-            : ColorConstant.backGround,
-        appBar: CustomAppBar(
-          title: "affirmationAlarms".tr,
-          showBack: true,
-          action: Padding(
-            padding: const EdgeInsets.only(right: Dimens.d20),
-            child: GestureDetector(
-              onTap: () {
-                _onAddClick(context);
-              },
-              child: SvgPicture.asset(
-                ImageConstant.addTools,
-                height: Dimens.d22,
-                width: Dimens.d22,
-              ),
+    return Scaffold(
+      backgroundColor: themeController.isDarkMode.value
+          ? ColorConstant.darkBackground
+          : ColorConstant.backGround,
+      appBar: CustomAppBar(
+        title: "affirmationAlarms".tr,
+        showBack: true,
+        action: Padding(
+          padding: const EdgeInsets.only(right: Dimens.d20),
+          child: GestureDetector(
+            onTap: () {
+              _onAddClick(context);
+            },
+            child: SvgPicture.asset(
+              ImageConstant.addTools,
+              height: Dimens.d22,
+              width: Dimens.d22,
             ),
           ),
         ),
-        body: Column(
-          children: [
-            Dimens.d30.spaceHeight,
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                children: [
-                  _buildCategoryDropDown(context),
-                  Dimens.d20.spaceWidth,
-                  alarmView(),
-                ],
-              ),
+      ),
+      body: Column(
+        children: [
+          Dimens.d30.spaceHeight,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              children: [
+                _buildCategoryDropDown(context),
+                Dimens.d20.spaceWidth,
+                alarmView(),
+              ],
             ),
-            Dimens.d20.spaceHeight,
-            SingleChildScrollView(
-              child: ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: affirmationList.length,
-                itemBuilder: (context, index) {
-                  return Slidable(
-                    closeOnScroll: true,
-                    key: const ValueKey<String>("" ?? ""),
-                    endActionPane: ActionPane(
-                      motion: const ScrollMotion(),
-                      dragDismissible: false,
-                      extentRatio: 0.26,
-                      children: [
-                        Dimens.d20.spaceWidth,
-                        GestureDetector(
-                          onTap: () {
-                            affirmationList.removeAt(index);
-                            setState(() {});
-                          },
-                          child: Container(
-                            width: Dimens.d65,
-                            margin: EdgeInsets.only(
-                                bottom: Dimens.d10.h, top: Dimens.d10.h),
-                            decoration: BoxDecoration(
-                              color: ColorConstant.deleteRed,
-                              borderRadius: Dimens.d16.radiusAll,
-                            ),
-                            alignment: Alignment.center,
-                            child: SvgPicture.asset(
-                              ImageConstant.icDeleteWhite,
-                              width: Dimens.d24,
-                              height: Dimens.d24,
-                            ),
+          ),
+          Dimens.d20.spaceHeight,
+          SingleChildScrollView(
+            child: ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: affirmationList.length,
+              itemBuilder: (context, index) {
+                return Slidable(
+                  closeOnScroll: true,
+                  key: const ValueKey<String>("" ?? ""),
+                  endActionPane: ActionPane(
+                    motion: const ScrollMotion(),
+                    dragDismissible: false,
+                    extentRatio: 0.26,
+                    children: [
+                      Dimens.d20.spaceWidth,
+                      GestureDetector(
+                        onTap: () {
+                          affirmationList.removeAt(index);
+                          setState(() {});
+                        },
+                        child: Container(
+                          width: Dimens.d65,
+                          margin: EdgeInsets.only(
+                              bottom: Dimens.d10.h, top: Dimens.d10.h),
+                          decoration: BoxDecoration(
+                            color: ColorConstant.deleteRed,
+                            borderRadius: Dimens.d16.radiusAll,
+                          ),
+                          alignment: Alignment.center,
+                          child: SvgPicture.asset(
+                            ImageConstant.icDeleteWhite,
+                            width: Dimens.d24,
+                            height: Dimens.d24,
                           ),
                         ),
-                      ],
-                    ),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) {
-                            return AffirmationShareScreen(
-                              des: affirmationList[index]["des"],
-                              title: affirmationList[index]["title"],
-                            );
-                          },
-                        )).then(
-                          (value) {
-                          },
-                        );
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 20.0, vertical: 10),
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                            color: ColorConstant.white,
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    affirmationList[index]["title"],
-                                    style: Style.cormorantGaramondBold(
-                                      fontSize: 18,
-                                    ),
+                      ),
+                    ],
+                  ),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) {
+                          return AffirmationShareScreen(
+                            des: affirmationList[index]["des"],
+                            title: affirmationList[index]["title"],
+                          );
+                        },
+                      )).then(
+                        (value) {
+                        },
+                      );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 10),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                          color: ColorConstant.white,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  affirmationList[index]["title"],
+                                  style: Style.cormorantGaramondBold(
+                                    fontSize: 18,
                                   ),
                                 ),
-                                GestureDetector(
-                                  onTap: () {
-                                    _showAlertDialogPlayPause(context,
-                                        title: affirmationList[index]["title"],
-                                        des: affirmationList[index]["des"]);
-                                  },
-                                  child: SvgPicture.asset(
-                                    ImageConstant.playAffirmation,
-                                    height: 18,
-                                    width: 18,
-                                  ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  _showAlertDialogPlayPause(context,
+                                      title: affirmationList[index]["title"],
+                                      des: affirmationList[index]["des"]);
+                                },
+                                child: SvgPicture.asset(
+                                  ImageConstant.playAffirmation,
+                                  height: 18,
+                                  width: 18,
                                 ),
-                                Dimens.d10.spaceWidth,
-                                GestureDetector(
-                                  onTap: () {
-                                    _showAlertDialog(context);
-                                  },
-                                  child: SvgPicture.asset(
-                                    ImageConstant.alarm,
-                                    height: 18,
-                                    width: 18,
-                                  ),
+                              ),
+                              Dimens.d10.spaceWidth,
+                              GestureDetector(
+                                onTap: () {
+                                  _showAlertDialog(context);
+                                },
+                                child: SvgPicture.asset(
+                                  ImageConstant.alarm,
+                                  height: 18,
+                                  width: 18,
                                 ),
-                                Dimens.d10.spaceWidth,
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(context, MaterialPageRoute(
-                                      builder: (context) {
-                                        return AddAffirmationPage(
-                                          index: index,
-                                          isEdit: true,
-                                          title: affirmationList[index]
-                                              ["title"],
-                                          des: affirmationList[index]["des"],
-                                          isFromMyAffirmation: true,
-                                        );
-                                      },
-                                    ));
-                                  },
-                                  child: SvgPicture.asset(
-                                    ImageConstant.editTools,
-                                    height: 18,
-                                    width: 18,
-                                    color: ColorConstant.black,
-                                  ),
+                              ),
+                              Dimens.d10.spaceWidth,
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) {
+                                      return AddAffirmationPage(
+                                        index: index,
+                                        isEdit: true,
+                                        title: affirmationList[index]
+                                            ["title"],
+                                        des: affirmationList[index]["des"],
+                                        isFromMyAffirmation: true,
+                                      );
+                                    },
+                                  ));
+                                },
+                                child: SvgPicture.asset(
+                                  ImageConstant.editTools,
+                                  height: 18,
+                                  width: 18,
+                                  color: ColorConstant.black,
                                 ),
-                                Dimens.d10.spaceWidth,
-                                GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      like[index] = !like[index];
-                                    });
-                                  },
-                                  child: SvgPicture.asset(
-                                    like[index]
-                                        ? ImageConstant.likeRedTools
-                                        : ImageConstant.likeTools,
-                                    height: 18,
-                                    width: 18,
-                                    color: like[index]
-                                        ? ColorConstant.deleteRed
-                                        : ColorConstant.black,
-                                  ),
+                              ),
+                              Dimens.d10.spaceWidth,
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    like[index] = !like[index];
+                                  });
+                                },
+                                child: SvgPicture.asset(
+                                  like[index]
+                                      ? ImageConstant.likeRedTools
+                                      : ImageConstant.likeTools,
+                                  height: 18,
+                                  width: 18,
+                                  color: like[index]
+                                      ? ColorConstant.deleteRed
+                                      : ColorConstant.black,
                                 ),
-                                Dimens.d10.spaceWidth,
-                              ],
-                            ),
-                            Dimens.d10.spaceHeight,
-                            Text(
-                              affirmationList[index]["des"],
-                              style: Style.montserratRegular(fontSize: 11),
-                            )
-                          ],
-                        ),
+                              ),
+                              Dimens.d10.spaceWidth,
+                            ],
+                          ),
+                          Dimens.d10.spaceHeight,
+                          Text(
+                            affirmationList[index]["des"],
+                            style: Style.montserratRegular(fontSize: 11),
+                          )
+                        ],
                       ),
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

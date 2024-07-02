@@ -28,70 +28,68 @@ class _AccountScreenState extends State<AccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    statusBarSet(themeController);
+    //statusBarSet(themeController);
 
-    return SafeArea(bottom: false,
-      child: Scaffold(
-        backgroundColor: themeController.isDarkMode.value
-            ? ColorConstant.darkBackground
-            : ColorConstant.backGround,
-        appBar: CustomAppBar(title: "account".tr),
-        body: Stack(
-          children: [
-            Align(
-                alignment: Alignment.topRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: Dimens.d100),
-                  child: SvgPicture.asset(themeController.isDarkMode.isTrue
-                      ? ImageConstant.profile1Dark
-                      : ImageConstant.profile1),
-                )),
-            Align(
-                alignment: Alignment.bottomLeft,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: Dimens.d120),
-                  child: SvgPicture.asset(themeController.isDarkMode.isTrue
-                      ? ImageConstant.profile2Dark
-                      : ImageConstant.profile2),
-                )),
-            Padding(
-              padding: Dimens.d20.paddingAll,
-              child: ListView.separated(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                clipBehavior: Clip.none,
-                padding: EdgeInsets.zero,
-                itemBuilder: (context, index) {
-                  var data = accountController.accountData[index];
-                  return AccountListItem(
-                    isSettings: false,
-                    prefixIcon: data.prefixIcon,
-                    title: data.title,
-                    //suffixIcon: data.suffixIcon,
-                    onTap: () {
-                      if (index == 0) {
-                        Get.toNamed(AppRoutes.editProfileScreen);
-                      } else if (index == 1) {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) {
-                           return ChangePasswordScreen(title: "change",);
-                        },));
-                       // Get.toNamed(AppRoutes.changePassword);
-                      } else if (index == 2) {
-                        Get.toNamed(AppRoutes.privacyPolicy);
-                      }
-                    },
-                  );
-                },
-                separatorBuilder: (context, index) {
-                  return const SizedBox(
-                    height: 15,
-                  );
-                },
-                itemCount: accountController.accountData.length,
-              ),
-            )
-          ],
-        ),
+    return Scaffold(
+      backgroundColor: themeController.isDarkMode.value
+          ? ColorConstant.darkBackground
+          : ColorConstant.backGround,
+      appBar: CustomAppBar(title: "account".tr),
+      body: Stack(
+        children: [
+          Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.only(top: Dimens.d100),
+                child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                    ? ImageConstant.profile1Dark
+                    : ImageConstant.profile1),
+              )),
+          Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: Dimens.d120),
+                child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                    ? ImageConstant.profile2Dark
+                    : ImageConstant.profile2),
+              )),
+          Padding(
+            padding: Dimens.d20.paddingAll,
+            child: ListView.separated(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              clipBehavior: Clip.none,
+              padding: EdgeInsets.zero,
+              itemBuilder: (context, index) {
+                var data = accountController.accountData[index];
+                return AccountListItem(
+                  isSettings: false,
+                  prefixIcon: data.prefixIcon,
+                  title: data.title,
+                  //suffixIcon: data.suffixIcon,
+                  onTap: () {
+                    if (index == 0) {
+                      Get.toNamed(AppRoutes.editProfileScreen);
+                    } else if (index == 1) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) {
+                         return ChangePasswordScreen(title: "change",);
+                      },));
+                     // Get.toNamed(AppRoutes.changePassword);
+                    } else if (index == 2) {
+                      Get.toNamed(AppRoutes.privacyPolicy);
+                    }
+                  },
+                );
+              },
+              separatorBuilder: (context, index) {
+                return const SizedBox(
+                  height: 15,
+                );
+              },
+              itemCount: accountController.accountData.length,
+            ),
+          )
+        ],
       ),
     );
   }

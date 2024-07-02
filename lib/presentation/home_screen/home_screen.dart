@@ -2,10 +2,12 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_alarm_clock/flutter_alarm_clock.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
+import 'package:transform_your_mind/core/service/method_channal_alarm.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -49,8 +51,6 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   void initState() {
     _setGreetingBasedOnTime();
-
-    getStatusBar();
     _lottieBgController = AnimationController(vsync: this);
 
     scrollController.addListener(() {
@@ -70,6 +70,18 @@ class _HomeScreenState extends State<HomeScreen>
     g.getTodayGratitude();
     g.getTodayAffirmation();
     g.getRecentlyList();
+
+    if (themeController.isDarkMode.isTrue) {
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        statusBarBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.light,
+      ));
+    } else {
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        statusBarBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.dark,
+      ));
+    }
     setState(() {});
     super.initState();
   }
@@ -98,25 +110,35 @@ class _HomeScreenState extends State<HomeScreen>
     }
   }
 
-  getStatusBar() {
-    themeController.isDarkMode.isTrue?
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.darkBackground, // Status bar background color
-      statusBarIconBrightness: Brightness.light, // Status bar icon/text color
-    )):
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.backGround, // Status bar background color
-      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
-    ));
-  }
+
+  TimeOfDay selectedTime = TimeOfDay.now();
+
   @override
   void dispose() {
     _lottieBgController.dispose();
     super.dispose();
   }
   final audioPlayerController = Get.find<NowPlayingController>();
+
+  Future<void> _selectTime(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: selectedTime,
+    );
+    if (picked != null && picked != selectedTime) {
+      setState(() {
+        selectedTime = picked;
+      });
+    }
+  }
+
+  void _setAlarm() {
+    AlarmService.setAlarm(
+        selectedTime.hour, selectedTime.minute+1, "Flutter Alarm");
+  }
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         floatingActionButton: ValueListenableBuilder(
           valueListenable: showScrollTop,
@@ -186,28 +208,7 @@ class _HomeScreenState extends State<HomeScreen>
                               .getUserModel.data?.motivationalMessage ??
                           "Believe in yourself, even when doubt creeps in. Today's progress is a step towards your dreams."),
                       Dimens.d36.spaceHeight,
-                      /*  //___________________________ add share view  ______________
-                      Center(
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
 
-                            GestureDetector(
-                              onTap: () {
-
-                              },
-                              child: CircleAvatar(
-                                backgroundColor: ColorConstant.themeColor,
-                                radius: Dimens.d23,
-                                child: SvgPicture.asset(
-                                  ImageConstant.icShareWhite,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),*/
                       Dimens.d16.spaceHeight,
                       Padding(
                         padding:
@@ -286,7 +287,7 @@ class _HomeScreenState extends State<HomeScreen>
                               const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 3,
                                   // 3 items per row
-                                  childAspectRatio: 1.5,
+                                  childAspectRatio: 1.2,
                                   crossAxisSpacing: 30,
                                   mainAxisSpacing:
                                       30 // Set the aspect ratio as needed
@@ -299,7 +300,6 @@ class _HomeScreenState extends State<HomeScreen>
                               onTap: () {
                                 if (g.quickAccessList[index]["title"] ==
                                     "motivational") {
-                                  menuBarSet(themeController);
                                   Navigator.pushNamed(context,
                                           AppRoutes.motivationalMessageScreen)
                                       .then((value) {
@@ -307,7 +307,6 @@ class _HomeScreenState extends State<HomeScreen>
                                   });
                                 } else if (g.quickAccessList[index]["title"] ==
                                     "transformPods") {
-                                  menuBarSet(themeController);
 
                                   Navigator.push(context, MaterialPageRoute(
                                     builder: (context) {
@@ -320,7 +319,6 @@ class _HomeScreenState extends State<HomeScreen>
                                   );
                                 } else if (g.quickAccessList[index]["title"] ==
                                     "gratitudeJournal") {
-                                  menuBarSet(themeController);
 
                                   Navigator.pushNamed(
                                           context, AppRoutes.myGratitudePage)
@@ -340,7 +338,6 @@ class _HomeScreenState extends State<HomeScreen>
                                   );
                                 } else if (g.quickAccessList[index]["title"] ==
                                     "affirmation") {
-                                  menuBarSet(themeController);
 
                                   Navigator.push(context, MaterialPageRoute(
                                     builder: (context) {
@@ -352,7 +349,6 @@ class _HomeScreenState extends State<HomeScreen>
                                     },
                                   );
                                 } else {
-                                  menuBarSet(themeController);
 
                                   Navigator.push(context, MaterialPageRoute(
                                     builder: (context) {
@@ -370,24 +366,22 @@ class _HomeScreenState extends State<HomeScreen>
                                     borderRadius: BorderRadius.circular(9),
                                     color: themeController.isDarkMode.value
                                         ? ColorConstant.textfieldFillColor
-                                        : ColorConstant.themeColor
-                                            .withOpacity(0.21)),
+                                        : g.quickAccessList[index]["color"]),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     SvgPicture.asset(
                                       g.quickAccessList[index]["icon"],
-                                      height: 24,
-                                      width: 24,
+                                      height: 30,
+                                      width: 30,
                                       color: ColorConstant.themeColor,
                                     ),
-                                    Dimens.d10.spaceHeight,
+                                    Dimens.d12.spaceHeight,
                                     Text(
                                       "${g.quickAccessList[index]["title"]}".tr,
-                                      // Displaying item index
                                       style:
-                                          Style.montserratSemiBold(fontSize: 8),
+                                          Style.montserratSemiBold(fontSize: 8,color: ColorConstant.themeColor),
                                     ),
                                   ],
                                 ),
@@ -511,12 +505,9 @@ class _HomeScreenState extends State<HomeScreen>
                                 inactiveTrackColor: ColorConstant.color6E949D,
                                 trackHeight: 1.5,
                                 thumbColor: ColorConstant.transparent,
-                                // Color of the thumb
                                 thumbShape: SliderComponentShape.noThumb,
-                                // Customize the thumb shape and size
                                 overlayColor:
                                 ColorConstant.backGround.withAlpha(32),
-                                // Color when thumb is pressed
                                 overlayShape: const RoundSliderOverlayShape(
                                     overlayRadius:
                                     16.0), // Customize the overlay shape and size
@@ -557,99 +548,41 @@ class _HomeScreenState extends State<HomeScreen>
   Widget topView(String? motivationalMessage) {
     return GestureDetector(
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(
+
+          _setAlarm();
+
+          /*Navigator.push(context, MaterialPageRoute(
             builder: (context) {
               return HomeMessagePage(
                   motivationalMessage: motivationalMessage ??
                       "Believe in yourself, even when doubt creeps in. Today's progress is a step towards your dreams.");
-            },
-          ));
+              },
+          ));*/
+
         },
         child: Container(
           height: 174,
           margin: const EdgeInsets.symmetric(horizontal: 20.0),
-          padding: const EdgeInsets.only(left: 20),
+
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              gradient: const LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color(0xFFD4E4E9),
-                  Color(0xFFAFC7CE),
-                ],
-              )),
-          child: Row(
-            children: [
-              SizedBox(
-                width: 160,
-                child: AutoSizeText(
-                  "“$motivationalMessage”",
-                  wrapWords: false,
-                  maxLines: 4,
-                  style: Style.gothamLight(
-                      height: 1.8,
-                      fontSize: Dimens.d14,
-                      color: ColorConstant.black),
-                ),
+             image: DecorationImage(image: AssetImage( ImageConstant.homeBack,))),
+          child:     Center(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 30.0,right: 30.0),
+              child: AutoSizeText(
+                "“$motivationalMessage”",
+                wrapWords: false,
+                maxLines: 4,
+                style: Style.gothamLight(
+                    height: 1.8,
+                    fontSize: Dimens.d18,
+                    color: ColorConstant.black),
               ),
-              Image.asset(
-                ImageConstant.homeBack,
-                height: 134,
-                width: 157,
-              )
-            ],
+            ),
           ),
         )
 
-        /*   Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          Stack(
-            alignment: Alignment.topCenter,
-            children: [
-              Container(
-                height: Dimens.d300,
-                color: themeController.isDarkMode.isTrue
-                    ? ColorConstant.darkBackground
-                    : ColorConstant.backGround,
-              ),
-              Padding(
-                padding: const EdgeInsets.only( top: 40.0),
-                child:    Text("TransformYourMind",style: Style.montserratRegular(
-                  fontSize: 18,
-                ),),
-
-              ),
-            ],
-          ),
-          Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              Image.asset(
-                ImageConstant.transformYour,
-                fit: BoxFit.cover,
-              ),
-              Positioned(
-                left: Dimens.d50,
-                right: Dimens.d50,
-                top: Dimens.d45.h,
-                bottom: Dimens.d15,
-                child: Center(
-                  child: AutoSizeText(
-                    "“$motivationalMessage”",
-                    textAlign: TextAlign.center,
-                    wrapWords: false,
-                    maxLines: 4,
-                    style: Style.montserratRegular(
-                        fontSize: Dimens.d17, color: ColorConstant.black),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),*/
         );
   }
 

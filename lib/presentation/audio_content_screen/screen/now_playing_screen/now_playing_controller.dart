@@ -14,6 +14,11 @@ class NowPlayingController extends GetxController {
   TextEditingController ratingController = TextEditingController();
   FocusNode ratingFocusNode = FocusNode();
   int? currentRating = 0;
+  String? currentUrl;
+  String? currentName;
+  String? currentDescription;
+  String? currentExpertName;
+  String? currentImage;
 
   ///___________________ audio service Common File ________-
   final AudioPlayer _audioPlayer = AudioPlayer();
@@ -21,11 +26,6 @@ class NowPlayingController extends GetxController {
   final Rx<Duration?> _duration = Duration.zero.obs;
   final RxBool _isPlaying = false.obs;
   final RxBool _isVisible = false.obs;
-  String? currentUrl;
-  String? currentName;
-  String? currentDescription;
-  String? currentExpertName;
-  String? currentImage;
 
   AudioPlayer get audioPlayer => _audioPlayer;
 

@@ -391,14 +391,34 @@
   "accessTo": "Dies bedeutet, dass Sie Zugriff auf ... haben.",
   "welcomeTransform": "Willkommen bei Transform.....Sie sind bereit, loszulegen.\nIhr Transform Basic-Paket ist jetzt live.",
   "noSearchAgain": "Wir konnten nicht finden, wonach Sie gesucht haben. Versuchen Sie es erneut",
+  "useSelfDevelopment": "Nutzen Sie unsere Selbstentwicklungsfunktion, um die Kunst der Dankbarkeit zu üben, unerwünschte Gefühle aus Ihrem Leben zu beseitigen, Ziele zu setzen und Ihnen zu helfen, sich ruhiger und zufriedener zu fühlen.",
+
   "YourFocus": "Ihr gesetzter Fokus",
   "YourAffirmationFocus": "Ihr Affirmationsfokus",
-
+  "yourAffirmationHasBeenSelected": "Ihre Bestätigung wurde erfolgreich ausgewählt.",
+  "yourFocusHasBeenSelected": "Ihr Fokus wurde erfolgreich ausgewählt.",
   "iAgreeThe": "Ich stimme dem zu ",
   "theTitleFieldIsRequired": "Das Titelfeld ist erforderlich",
   "Please5Focuses": "Bitte fügen Sie mehr als 1 Schwerpunkte hinzu",
   "Please5Affirmation": "Bitte wählen Sie mehr als 1 Bestätigungen aus",
   "yourSoundsSuccessfullyUnBookmarked": "Ihre Geräusche wurden erfolgreich aus den Lesezeichen entfernt.",
-  "breatheNote": "Atmen Sie tief ein und zählen Sie langsam bis 4 – halten Sie den Atem bis 4 an und atmen Sie bis 4 aus – wiederholen Sie dies dreimal"
+  "breatheNote": "Atmen Sie tief ein und zählen Sie langsam bis 4 – halten Sie den Atem bis 4 an und atmen Sie bis 4 aus – wiederholen Sie dies dreimal",
+  "accessToSelectedMeditations": "Zugang zu ausgewählten Meditationen",
+  "accessToGratitudeJournal": "Zugang zu einem Dankbarkeitstagebuch (begrenzte Einträge pro Monat)",
+  "basicVersionOfAlarmClock": "Basisversion des Weckers mit Standardaffirmationen",
+  "limitedNumberOfMeditations": "Begrenzte Anzahl an Meditationen",
+  "limitedAccessToGratitudeJournal": "Begrenzter Zugang zum Dankbarkeitstagebuch",
+  "unlimitedAccessToMeditations": "Unbegrenzter Zugang zu allen Meditationen für verschiedene Bereiche",
+  "abilityToCreateOwnAffirmations": "Fähigkeit, eigene Affirmationen zu erstellen und auszuwählen",
+  "premiumAlarmClock": "Premium-Wecker mit personalisierten Affirmationen",
+  "accessToEmergencyButton": "Zugang zum Notfallknopf mit einer Atemübung",
+  "unlimitedAccessToGratitudeJournal": "Unbegrenzter Zugang zum Dankbarkeitstagebuch",
+  "fullAccessToMindfulnessTrainer": "Voller Zugang zum Achtsamkeitstrainer zum Festhalten von Momenten schriftlich und visuell",
+  "discountInOnlineShop": "10% Rabatt im Online-Shop für Transformations-Audios",
+  "exclusiveWeeklyNewMeditations": "Exklusive, wöchentliche neue Meditationen und Affirmationen",
+  "advancedGratitudeJournal": "Erweitertes Dankbarkeitstagebuch mit zusätzlichen Funktionen (z.B. Foto-Uploads, tägliche Erinnerungen)",
+  "advancedMindfulnessTrainer": "Erweiterter Achtsamkeitstrainer mit zusätzlichen Werkzeugen (z.B. Audio- und Videoaufnahmen)",
+  "higherDiscountInOnlineShop": "20% Rabatt im Online-Shop für Transformations-Audios",
+  "voucherForOnlineShop": "Einmaliger €50-Gutschein für den Online-Shop für Transformations-Audios bei Abschluss eines Jahresabonnements"
 
 }

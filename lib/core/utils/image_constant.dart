@@ -243,7 +243,7 @@ class ImageConstant {
   static String welcomeBackImage = "$imagePath/welcome_back_image.png";
   static String noticeImage = "$imagePath/notice_how_you_feel.png";
   static String chooseLanguages = "$imagePath/choose_langauge.png";
-  static String homeBack = "$iconPath/home_back.png";
+  static String homeBack = "$imagePath/home_back_motivation.png";
   static String breathInhale = "$lottie/breath_inhale.json";
   static String shapeAffirmationShare =
       "$imagePath/shape_affirmation_share.svg";

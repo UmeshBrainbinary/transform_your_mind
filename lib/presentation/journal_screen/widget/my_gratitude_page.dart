@@ -162,7 +162,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
 
   @override
   Widget build(BuildContext context) {
-    statusBarSet(themeController);
+ /*   statusBarSet(themeController);*/
 
     return GestureDetector(
       onTap: () {
@@ -170,251 +170,249 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
           select = false;
         });
       },
-      child: SafeArea(bottom: false,
-        child: Scaffold(
-            backgroundColor: themeController.isDarkMode.value
-                ? ColorConstant.darkBackground
-                : ColorConstant.backGround,
-            resizeToAvoidBottomInset: false,
-            appBar: CustomAppBar(
-              title: "myGratitude".tr,
-              showBack: true,
-              action: Padding(
-                padding: const EdgeInsets.only(right: Dimens.d20),
-                child: GestureDetector(
-                  onTap: () {
-                    selectedCategory = ValueNotifier(null);
-                    _onAddClick(context);
-                  },
-                  child: SvgPicture.asset(
-                    ImageConstant.addTools,
-                    height: Dimens.d22,
-                    width: Dimens.d22,
-                  ),
+      child: Scaffold(
+          backgroundColor: themeController.isDarkMode.value
+              ? ColorConstant.darkBackground
+              : ColorConstant.backGround,
+          resizeToAvoidBottomInset: false,
+          appBar: CustomAppBar(
+            title: "myGratitude".tr,
+            showBack: true,
+            action: Padding(
+              padding: const EdgeInsets.only(right: Dimens.d20),
+              child: GestureDetector(
+                onTap: () {
+                  selectedCategory = ValueNotifier(null);
+                  _onAddClick(context);
+                },
+                child: SvgPicture.asset(
+                  ImageConstant.addTools,
+                  height: Dimens.d22,
+                  width: Dimens.d22,
                 ),
               ),
-              onTap: () {
-                if (widget.fromNotification) {
-                  Get.toNamed(AppRoutes.dashBoardScreen);
-                } else {
-                  Navigator.pop(context);
-                }
-              },
             ),
-            body: Stack(
-              children: [
-                Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: Dimens.d100),
-                      child: SvgPicture.asset(themeController.isDarkMode.isTrue
-                          ? ImageConstant.profile1Dark
-                          : ImageConstant.profile1),
-                    )),
-                Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: Dimens.d120),
-                      child: SvgPicture.asset(themeController.isDarkMode.isTrue
-                          ? ImageConstant.profile2Dark
-                          : ImageConstant.profile2),
-                    )),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Dimens.d30.spaceHeight,
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: Dimens.d30),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        datePicker(context);
-                                      });
-                                    },
-                                    child: CommonTextField(
-                                        enabled: false,
-                                        suffixIcon: Padding(
-                                          padding: const EdgeInsets.all(13.0),
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                datePicker(context);
-                                              });
-                                            },
-                                            child: SvgPicture.asset(
-                                                ImageConstant.calendar),
-                                          ),
-                                        ),
-                                        hintText: "DD/MM/YYYY",
-                                        controller: dateController,
-                                        focusNode: dateFocus),
-                                  ),
-                                ),
-                                Dimens.d20.spaceHeight,
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20.0),
-                                  child: Row(
-                                    children: [
-                                      _buildCategoryDropDown(context),
-                                      Dimens.d10.spaceWidth,
-                                      Expanded(
-                                        child: Container(
-                                          height: 38,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(25),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: ColorConstant.colorBFD0D4
-                                                    .withOpacity(0.5),
-                                                blurRadius: 8.0,
-                                                spreadRadius:
-                                                    0.5, // Spread the shadow slightly
-                                              ),
-                                            ],
-                                          ),
-                                          child: CommonTextField(
-                                            hintText: "search".tr,
-                                            controller: searchController,
-                                            focusNode: searchFocus,
-                                            prefixLottieIcon:
-                                                ImageConstant.lottieSearch,
-                                            textInputAction: TextInputAction.done,
-                                            onChanged: (value) async {
-                                              if (value.isEmpty) {
-                                                await getGratitude();
-                                              } else {
-                                                gratitudeList = searchBookmarks(
-                                                    value, gratitudeList);
-                                              }
-                                              setState(()  {
-        
-                                              });
-                                            },
-                                          ),
+            onTap: () {
+              if (widget.fromNotification) {
+                Get.toNamed(AppRoutes.dashBoardScreen);
+              } else {
+                Navigator.pop(context);
+              }
+            },
+          ),
+          body: Stack(
+            children: [
+              Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: Dimens.d100),
+                    child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                        ? ImageConstant.profile1Dark
+                        : ImageConstant.profile1),
+                  )),
+              Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: Dimens.d120),
+                    child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                        ? ImageConstant.profile2Dark
+                        : ImageConstant.profile2),
+                  )),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Dimens.d30.spaceHeight,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: Dimens.d30),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      datePicker(context);
+                                    });
+                                  },
+                                  child: CommonTextField(
+                                      enabled: false,
+                                      suffixIcon: Padding(
+                                        padding: const EdgeInsets.all(13.0),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              datePicker(context);
+                                            });
+                                          },
+                                          child: SvgPicture.asset(
+                                              ImageConstant.calendar),
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                      hintText: "DD/MM/YYYY",
+                                      controller: dateController,
+                                      focusNode: dateFocus),
                                 ),
-        
-                                /// saved list
-                                Expanded(
-                                  child: (_isLoading &&
-                                          (pageNumber == 1) &&
-                                          !_isSearching)
-                                      ? const JournalListShimmer()
-                                      : (gratitudeList.isNotEmpty)
-                                          ? LayoutContainer(
-                                              child: ListView.builder(
-                                                itemCount: gratitudeList.length,
-                                                physics:
-                                                    const BouncingScrollPhysics(),
-                                                itemBuilder: (context, index) {
-                                                  var data = gratitudeList[index];
-                                                  return JournalListTileLayout(
-                                                    description: data.description,
-                                                    onDeleteTapCallback: () {
-                                                      _showAlertDialogDelete(
-                                                          context,
-                                                          index,
-                                                          data.id);
-                                                      setState(() {});
-                                                    },
-                                                    onEditTapCallback: () {
-                                                      Navigator.push(context,
-                                                          MaterialPageRoute(
-                                                        builder: (context) {
-                                                          return AddGratitudePage(
-                                                            categoryList:
-                                                                categoryList,
-                                                            id: data.id,
-                                                            description:
-                                                                data.description,
-                                                            title: data.name,
-                                                            date:
-                                                                data.createdAt ??
-                                                                    '',
-                                                            edit: true,
-                                                            isFromMyGratitude:
-                                                                true,
-                                                            registerUser: false,
-                                                            isSaved: true,
-                                                          );
-                                                        },
-                                                      )).then(
-                                                        (value) async {
-                                                          if (value != null &&
-                                                              value is bool) {
-                                                            _refreshGratitudeList(
-                                                                value);
-                                                          }
-                                                          await getGratitude();
-                                                          setState(() {});
-                                                        },
-                                                      );
-                                                    },
-                                                    margin: EdgeInsets.only(
-                                                        bottom: Dimens.d20.h),
-                                                    title: data.name ?? '',
-                                                    //image: data["image"] ?? '',
-                                                    image:
-                                                        "https://picsum.photos/250?image=9" ??
-                                                            '',
-                                                    createdDate: data.date ?? '',
-                                                  );
-                                                },
-                                              ),
-                                            )
-                                          : _isLoadingDraft
-                                              ? const SizedBox.shrink()
-                                              : gratitudeList.isEmpty
-                                                  ? Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              bottom:
-                                                                  Dimens.d150),
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          SvgPicture.asset(ImageConstant.noSearch,),
-                                                          Text("dataNotFound".tr,style: Style.gothamMedium(
-                                                              fontSize: 24,fontWeight: FontWeight.w700),),
-                                                        ],
-                                                      ),
-                                                    )
-                                                  : const SizedBox(),
+                              ),
+                              Dimens.d20.spaceHeight,
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20.0),
+                                child: Row(
+                                  children: [
+                                    _buildCategoryDropDown(context),
+                                    Dimens.d10.spaceWidth,
+                                    Expanded(
+                                      child: Container(
+                                        height: 38,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(25),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: ColorConstant.colorBFD0D4
+                                                  .withOpacity(0.5),
+                                              blurRadius: 8.0,
+                                              spreadRadius:
+                                                  0.5, // Spread the shadow slightly
+                                            ),
+                                          ],
+                                        ),
+                                        child: CommonTextField(
+                                          hintText: "search".tr,
+                                          controller: searchController,
+                                          focusNode: searchFocus,
+                                          prefixLottieIcon:
+                                              ImageConstant.lottieSearch,
+                                          textInputAction: TextInputAction.done,
+                                          onChanged: (value) async {
+                                            if (value.isEmpty) {
+                                              await getGratitude();
+                                            } else {
+                                              gratitudeList = searchBookmarks(
+                                                  value, gratitudeList);
+                                            }
+                                            setState(()  {
+
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                /*  if (select == true)
-                  Padding(
-                    padding: const EdgeInsets.only(top: Dimens.d100),
-                    child: widgetCalendar(),
-                  ),*/
-              ],
-            )),
-      ),
+                              ),
+
+                              /// saved list
+                              Expanded(
+                                child: (_isLoading &&
+                                        (pageNumber == 1) &&
+                                        !_isSearching)
+                                    ? const JournalListShimmer()
+                                    : (gratitudeList.isNotEmpty)
+                                        ? LayoutContainer(
+                                            child: ListView.builder(
+                                              itemCount: gratitudeList.length,
+                                              physics:
+                                                  const BouncingScrollPhysics(),
+                                              itemBuilder: (context, index) {
+                                                var data = gratitudeList[index];
+                                                return JournalListTileLayout(
+                                                  description: data.description,
+                                                  onDeleteTapCallback: () {
+                                                    _showAlertDialogDelete(
+                                                        context,
+                                                        index,
+                                                        data.id);
+                                                    setState(() {});
+                                                  },
+                                                  onEditTapCallback: () {
+                                                    Navigator.push(context,
+                                                        MaterialPageRoute(
+                                                      builder: (context) {
+                                                        return AddGratitudePage(
+                                                          categoryList:
+                                                              categoryList,
+                                                          id: data.id,
+                                                          description:
+                                                              data.description,
+                                                          title: data.name,
+                                                          date:
+                                                              data.createdAt ??
+                                                                  '',
+                                                          edit: true,
+                                                          isFromMyGratitude:
+                                                              true,
+                                                          registerUser: false,
+                                                          isSaved: true,
+                                                        );
+                                                      },
+                                                    )).then(
+                                                      (value) async {
+                                                        if (value != null &&
+                                                            value is bool) {
+                                                          _refreshGratitudeList(
+                                                              value);
+                                                        }
+                                                        await getGratitude();
+                                                        setState(() {});
+                                                      },
+                                                    );
+                                                  },
+                                                  margin: EdgeInsets.only(
+                                                      bottom: Dimens.d20.h),
+                                                  title: data.name ?? '',
+                                                  //image: data["image"] ?? '',
+                                                  image:
+                                                      "https://picsum.photos/250?image=9" ??
+                                                          '',
+                                                  createdDate: data.date ?? '',
+                                                );
+                                              },
+                                            ),
+                                          )
+                                        : _isLoadingDraft
+                                            ? const SizedBox.shrink()
+                                            : gratitudeList.isEmpty
+                                                ? Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            bottom:
+                                                                Dimens.d150),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        SvgPicture.asset(ImageConstant.noSearch,),
+                                                        Text("dataNotFound".tr,style: Style.gothamMedium(
+                                                            fontSize: 24,fontWeight: FontWeight.w700),),
+                                                      ],
+                                                    ),
+                                                  )
+                                                : const SizedBox(),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
+              /*  if (select == true)
+                Padding(
+                  padding: const EdgeInsets.only(top: Dimens.d100),
+                  child: widgetCalendar(),
+                ),*/
+            ],
+          )),
     );
   }
 
@@ -475,19 +473,24 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                     Get.back();
                   },
                 ),
-                Container(
-                  height: 33,
-                  margin: const EdgeInsets.symmetric(horizontal: 5),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 21,
-                  ),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(80),
-                      border: Border.all(color: ColorConstant.themeColor)),
-                  child: Center(
-                    child: Text(
-                      "cancel".tr,
-                      style: Style.montserratRegular(fontSize: 14),
+                GestureDetector(onTap: () {
+                  Get.back();
+
+                },
+                  child: Container(
+                    height: 33,
+                    margin: const EdgeInsets.symmetric(horizontal: 5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 21,
+                    ),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(80),
+                        border: Border.all(color: ColorConstant.themeColor)),
+                    child: Center(
+                      child: Text(
+                        "cancel".tr,
+                        style: Style.montserratRegular(fontSize: 14),
+                      ),
                     ),
                   ),
                 )

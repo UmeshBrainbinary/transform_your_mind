@@ -22,87 +22,85 @@ class SupportScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeController themeController = Get.find<ThemeController>();
     SupportController supportController =Get.put(SupportController());
-    statusBarSet(themeController);
-    return SafeArea(bottom: false,
-      child: Scaffold(
-        backgroundColor: themeController.isDarkMode.isTrue
-            ? ColorConstant.darkBackground
-            : ColorConstant.backGround,
-        appBar: const CustomAppBar(title: "Support"),
-        body: SingleChildScrollView(
-          child: Stack(
-            children: [
-              Align(
-                  alignment: Alignment.topRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: Dimens.d100),
-                    child: SvgPicture.asset(themeController.isDarkMode.isTrue
-                        ? ImageConstant.profile1Dark
-                        : ImageConstant.profile1),
-                  )),
-              Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: Dimens.d120),
-                    child: SvgPicture.asset(themeController.isDarkMode.isTrue
-                        ? ImageConstant.profile2Dark
-                        : ImageConstant.profile2),
-                  )),
-              ListView(
-                shrinkWrap: true,
-                physics: const ClampingScrollPhysics(),
-                padding: const EdgeInsets.only(bottom: 50, top: 30),
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: ColorConstant.transparent,
-                      borderRadius: BorderRadius.circular(Dimens.d16),
-                    ),
-                    child: ListView.separated(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      clipBehavior: Clip.none,
-                      padding: EdgeInsets.zero,
-                      itemBuilder: (context, index) {
-                        var data = supportController.supportData[index];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: SettingListItem(
-                            isSettings: true,
-                            prefixIcon: data.prefixIcon,
-                            title: data.title,
-                            suffixIcon: data.suffixIcon,
-                            onTap: () {
-                              if (index == 0) {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                  return const FaqScreen();
-                                },));
-                              } else if (index == 1) {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                    return const ContactSupportScreen();
-                                  },));
-                              } else  {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                    return const TroubleGuideScreen();
-                                  },));
-                              }
-                            },
-                          ),
-                        );
-                      },
-                      separatorBuilder: (context, index) => Padding(
-                        padding: Dimens.d20.paddingHorizontal,
-                        child: const SizedBox(
-                          height: 15,
-                        ),
-                      ),
-                      itemCount: supportController.supportData.length,
-                    ),
+    //statusBarSet(themeController);
+    return Scaffold(
+      backgroundColor: themeController.isDarkMode.isTrue
+          ? ColorConstant.darkBackground
+          : ColorConstant.backGround,
+      appBar: const CustomAppBar(title: "Support"),
+      body: SingleChildScrollView(
+        child: Stack(
+          children: [
+            Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: Dimens.d100),
+                  child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                      ? ImageConstant.profile1Dark
+                      : ImageConstant.profile1),
+                )),
+            Align(
+                alignment: Alignment.bottomLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: Dimens.d120),
+                  child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                      ? ImageConstant.profile2Dark
+                      : ImageConstant.profile2),
+                )),
+            ListView(
+              shrinkWrap: true,
+              physics: const ClampingScrollPhysics(),
+              padding: const EdgeInsets.only(bottom: 50, top: 30),
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: ColorConstant.transparent,
+                    borderRadius: BorderRadius.circular(Dimens.d16),
                   ),
-                ],
-              ),
-            ],
-          ),
+                  child: ListView.separated(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    clipBehavior: Clip.none,
+                    padding: EdgeInsets.zero,
+                    itemBuilder: (context, index) {
+                      var data = supportController.supportData[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: SettingListItem(
+                          isSettings: true,
+                          prefixIcon: data.prefixIcon,
+                          title: data.title,
+                          suffixIcon: data.suffixIcon,
+                          onTap: () {
+                            if (index == 0) {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                return const FaqScreen();
+                              },));
+                            } else if (index == 1) {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                  return const ContactSupportScreen();
+                                },));
+                            } else  {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                  return const TroubleGuideScreen();
+                                },));
+                            }
+                          },
+                        ),
+                      );
+                    },
+                    separatorBuilder: (context, index) => Padding(
+                      padding: Dimens.d20.paddingHorizontal,
+                      child: const SizedBox(
+                        height: 15,
+                      ),
+                    ),
+                    itemCount: supportController.supportData.length,
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

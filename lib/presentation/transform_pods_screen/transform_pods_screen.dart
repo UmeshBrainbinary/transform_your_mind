@@ -77,201 +77,212 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
 
   @override
   Widget build(BuildContext context) {
-    statusBarSet(themeController);
-    return SafeArea(bottom: false,
-      child: Scaffold(backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
-          appBar: CustomAppBar(
-            title: "transformPods".tr,
-            showBack: true,
-          ),
-          body: Padding(
-            padding: const EdgeInsets.only(right: 20.0, left: 20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Dimens.d30.h.spaceHeight,
-                Container(
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color:
-                        ColorConstant.themeColor.withOpacity(0.1),
-                        blurRadius: Dimens.d8,
-                      )
-                    ],
-                  ),
-                  child: CommonTextField(
-                      onChanged: (value) {
-                        setState(() {
-                          audioContentController.audioData =
-                              audioContentController.filterList(value,
-                                  audioContentController.audioData);
-                        });
-                      },
-                      prefixIcon: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: SvgPicture.asset(ImageConstant.search),
-                      ),
-                      suffixIcon: searchController.text.isEmpty?const SizedBox(): Padding(
-                        padding: const EdgeInsets.all(14.0),
-                        child: GestureDetector(
-                        onTap: () {
-                          searchController.clear();
-                          setState(() {
-                            audioContentController.getPodApi();
-                          });
-                        },child: SvgPicture.asset(ImageConstant.close)),
-                      ),
-                      hintText: "search".tr,
-                      textStyle:
-                      Style.montserratRegular(fontSize: 12),
-                      controller: searchController,
-                      focusNode: searchFocusNode),
+    //statusBarSet(themeController);
+    return Scaffold(backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
+        appBar: CustomAppBar(
+          title: "transformPods".tr,
+          showBack: true,
+        ),
+        body: Padding(
+          padding: const EdgeInsets.only(right: 20.0, left: 20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Dimens.d30.h.spaceHeight,
+              Container(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color:
+                      ColorConstant.themeColor.withOpacity(0.1),
+                      blurRadius: Dimens.d8,
+                    )
+                  ],
                 ),
-                // const TransFormRitualsButton(),
-                Dimens.d20.h.spaceHeight,
-                Expanded(
-                    child: GetBuilder<AudioContentController>(
-                      id: 'update',
-                      builder: (controller) {
-                        return Expanded(
-                          child: controller.audioData.isNotEmpty
-                              ? GridView.builder(
-                              controller: scrollController,
-                              padding: const EdgeInsets.only(
-                                  bottom: Dimens.d20),
-                              physics: const BouncingScrollPhysics(),
-                              gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                childAspectRatio: 0.78,
-                                crossAxisCount: 2,
-                                // Number of columns
-                                crossAxisSpacing: 20,
-                                // Spacing between columns
-                                mainAxisSpacing:
-                                20, // Spacing between rows
-                              ),
-                              itemCount: controller.audioData.length,
-                              itemBuilder: (context, index) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    searchFocusNode.unfocus();
+                child: CommonTextField(
+                    onChanged: (value) {
+                      setState(() {
+                        audioContentController.audioData =
+                            audioContentController.filterList(value,
+                                audioContentController.audioData);
+                      });
+                    },
+                    prefixIcon: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: SvgPicture.asset(ImageConstant.search),
+                    ),
+                    suffixIcon: searchController.text.isEmpty?const SizedBox(): Padding(
+                      padding: const EdgeInsets.all(14.0),
+                      child: GestureDetector(
+                      onTap: () {
+                        searchController.clear();
+                        setState(() {
+                          audioContentController.getPodApi();
+                        });
+                      },child: SvgPicture.asset(ImageConstant.close)),
+                    ),
+                    hintText: "search".tr,
+                    textStyle:
+                    Style.montserratRegular(fontSize: 12),
+                    controller: searchController,
+                    focusNode: searchFocusNode),
+              ),
+              // const TransFormRitualsButton(),
+              Dimens.d20.h.spaceHeight,
+              Expanded(
+                  child: GetBuilder<AudioContentController>(
+                    id: 'update',
+                    builder: (controller) {
+                      return Expanded(
+                        child: controller.audioData.isNotEmpty
+                            ? GridView.builder(
+                            controller: scrollController,
+                            padding: const EdgeInsets.only(
+                                bottom: Dimens.d20),
+                            physics: const BouncingScrollPhysics(),
+                            gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              childAspectRatio: 0.78,
+                              crossAxisCount: 2,
+                              // Number of columns
+                              crossAxisSpacing: 20,
+                              // Spacing between columns
+                              mainAxisSpacing:
+                              20, // Spacing between rows
+                            ),
+                            itemCount: controller.audioData.length,
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  searchFocusNode.unfocus();
+                                  if(!controller.audioData[index].isPaid!){
+                                  }else{
                                     _onTileClick(
                                       context: context,
                                       index: index,
                                       audioContent:
                                       controller.audioData[index],
                                     );
+                                  }
                                   },
-                                  child: Column(
-                                    children: [
-                                      Stack(
-                                        alignment: Alignment.topRight,
-                                        children: [
-                                          CommonLoadImage(
-                                            borderRadius: 10,
-                                            url: controller
-                                                .audioData[index]
-                                                .image ??
-                                                "",
-                                            width: Dimens.d156,
-                                            height: Dimens.d113,
-                                          ),
-                                          Align(
-                                            alignment:
-                                            Alignment.topRight,
-                                            child: Padding(
-                                              padding:
-                                              const EdgeInsets
-                                                  .only(
-                                                  right: 10,
-                                                  top: 10),
-                                              child: SvgPicture.asset(
-                                                  ImageConstant.play),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      Dimens.d10.spaceHeight,
-                                      Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment
-                                            .spaceBetween,
-                                        children: [
-                                          SizedBox(
-                                            width: 90,
-                                            child: Text(
-                                              controller
+                                child: Stack(
+                                  children: [
+                                    Column(
+                                      children: [
+                                        Stack(
+                                          alignment: Alignment.topRight,
+                                          children: [
+                                            CommonLoadImage(
+                                              borderRadius: 10,
+                                              url: controller
                                                   .audioData[index]
-                                                  .name
-                                                  .toString(),
-                                              // "Motivational",
-                                              style: Style
-                                                  .montserratMedium(
-                                                fontSize: Dimens.d12,
-                                              ),
-                                              overflow: TextOverflow
-                                                  .ellipsis,
-                                              maxLines: 1,
+                                                  .image ??
+                                                  "",
+                                              width: Dimens.d156,
+                                              height: Dimens.d113,
                                             ),
-                                          ),
-                                          const CircleAvatar(
-                                            radius: 2,
-                                            backgroundColor:
-                                            ColorConstant
-                                                .colorD9D9D9,
-                                          ),
-                                          Row(
-                                            children: [
-                                              SvgPicture.asset(
-                                                ImageConstant.rating,
-                                                color: ColorConstant
-                                                    .colorFFC700,
-                                                height: 10,
-                                                width: 10,
+                                            Align(
+                                              alignment:
+                                              Alignment.topRight,
+                                              child: Padding(
+                                                padding:
+                                                const EdgeInsets
+                                                    .only(
+                                                    right: 10,
+                                                    top: 10),
+                                                child: SvgPicture.asset(
+                                                    ImageConstant.play),
                                               ),
-                                              Text(
-                                                "${controller
-                                                    .audioData[index].rating
-                                                    .toString()}.0" ?? '',
+                                            )
+                                          ],
+                                        ),
+                                        Dimens.d10.spaceHeight,
+                                        Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment
+                                              .spaceBetween,
+                                          children: [
+                                            SizedBox(
+                                              width: 90,
+                                              child: Text(
+                                                controller
+                                                    .audioData[index]
+                                                    .name
+                                                    .toString(),
+                                                // "Motivational",
                                                 style: Style
                                                     .montserratMedium(
-                                                  fontSize:
-                                                  Dimens.d12,
+                                                  fontSize: Dimens.d12,
                                                 ),
+                                                overflow: TextOverflow
+                                                    .ellipsis,
+                                                maxLines: 1,
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                            const CircleAvatar(
+                                              radius: 2,
+                                              backgroundColor:
+                                              ColorConstant
+                                                  .colorD9D9D9,
+                                            ),
+                                            Row(
+                                              children: [
+                                                SvgPicture.asset(
+                                                  ImageConstant.rating,
+                                                  color: ColorConstant
+                                                      .colorFFC700,
+                                                  height: 10,
+                                                  width: 10,
+                                                ),
+                                                Text(
+                                                  "${controller
+                                                      .audioData[index].rating
+                                                      .toString()}.0" ?? '',
+                                                  style: Style
+                                                      .montserratMedium(
+                                                    fontSize:
+                                                    Dimens.d12,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
 
-                                        ],
-                                      ),
-                                      Dimens.d7.spaceHeight,
-                                      Text(
-                                        controller.audioData[index]
-                                            .description
-                                            .toString(),
-                                        maxLines: Dimens.d2.toInt(),
-                                        style: Style.montserratMedium(
-                                            fontSize: Dimens.d14),
-                                        overflow:
-                                        TextOverflow.ellipsis,
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              })
-                              : Padding(
-                            padding: const EdgeInsets.only(bottom: Dimens.d130),
-                            child: Center(child: Image.asset(themeController.isDarkMode.isTrue?ImageConstant.searchDark:ImageConstant.searchNotFound,height: 245,width: 288,)),
-                          ),
-                        );
-                      },
-                    )),
+                                          ],
+                                        ),
+                                        Dimens.d7.spaceHeight,
+                                        Text(
+                                          controller.audioData[index]
+                                              .description
+                                              .toString(),
+                                          maxLines: Dimens.d2.toInt(),
+                                          style: Style.montserratMedium(
+                                              fontSize: Dimens.d14),
+                                          overflow:
+                                          TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                    !controller.audioData[index].isPaid!?Container(
+                                      margin: const EdgeInsets.all(7.0),
+                                      height: 14,width: 14,
+                                      decoration: const BoxDecoration(color: Colors.black,shape: BoxShape.circle),
+                                      child: Center(child: Image.asset(ImageConstant.lockHome,height: 7,width: 7,)),
+                                    ):const SizedBox()
+                                  ],
+                                ),
+                              );
+                            })
+                            : Padding(
+                          padding: const EdgeInsets.only(bottom: Dimens.d130),
+                          child: Center(child: Image.asset(themeController.isDarkMode.isTrue?ImageConstant.searchDark:ImageConstant.searchNotFound,height: 245,width: 288,)),
+                        ),
+                      );
+                    },
+                  )),
 
-              ],
-            ),
-          )),
-    );
+            ],
+          ),
+        ));
   }
 
   void _onTileClick({int? index, BuildContext? context, required AudioData audioContent}) {

@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:transform_your_mind/core/common_widget/custom_chip.dart';
+import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/free_trial_page.dart';
 import 'package:transform_your_mind/core/common_widget/select_focus_button.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
@@ -45,6 +46,7 @@ class _SelectYourAffirmationFocusPageState
     extends State<SelectYourAffirmationFocusPage> {
   List<Tag> listOfTags = [
   ];
+  List<String> tempData = [];
 
   List<String> selectedTagNames = [];
   ValueNotifier<String> selectedReminderTime = ValueNotifier('');
@@ -58,6 +60,9 @@ class _SelectYourAffirmationFocusPageState
   bool loader = false;
 
   getAffirmation() async {
+    setState(() {
+      loader = true;
+    });
     var headers = {
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
@@ -74,56 +79,38 @@ class _SelectYourAffirmationFocusPageState
 
       affirmationModel = affirmationModelFromJson(responseBody);
       for (int i = 0; i < affirmationModel.data!.length; i++) {
-        listOfTags.add(Tag(affirmationModel.data![i].name.toString(), false));
+        if (tempData.contains(affirmationModel.data![i].name)) {
+          listOfTags.add(Tag(affirmationModel.data![i].name.toString(), true));
+        } else {
+          listOfTags.add(Tag(affirmationModel.data![i].name.toString(), false));
+        }
       }
-      setState(() {});
-    } else {
-      debugPrint(response.reasonPhrase);
-    }
-  }
-
-  setAffirmations() async {
-    setState(() {
-      loader = true;
-    });
-    try {
-      var headers = {'Content-Type': 'application/json'};
-      var request = http.Request(
-          'PUT',
-          Uri.parse(
-              '${EndPoints.baseUrl}${EndPoints.updateFocuses}6666e94525e35910c83f3b12'));
-      request.body = json.encode({"affirmation": selectedTagNames});
-      request.headers.addAll(headers);
-
-      http.StreamedResponse response = await request.send();
-
-      if (response.statusCode == 200) {
-        await PrefService.setValue(PrefKey.affirmation, true);
-
-        setState(() {
-          loader = false;
-        });
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context) {
-            return const FreeTrialPage();
-          },
-        ));
-      } else {
-        setState(() {
-          loader = false;
-        });
-        debugPrint(response.reasonPhrase);
+      for (int y = 0; y < listOfTags.length; y++) {
+        if (listOfTags[y].isSelected == true) {
+          selectedTagNames.add(listOfTags[y].name);
+        }
       }
-    } catch (e) {
       setState(() {
         loader = false;
       });
-      debugPrint(e.toString());
+    } else {
+      setState(() {
+        loader = false;
+      });
+      debugPrint(response.reasonPhrase);
     }
+    setState(() {
+      loader = false;
+    });
   }
+
+
   GetUserModel getUserModel = GetUserModel();
 
   getUSer() async {
+    setState(() {
+      loader = true;
+    });
     try {
       var headers = {
         'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
@@ -142,19 +129,25 @@ class _SelectYourAffirmationFocusPageState
         final responseBody = await response.stream.bytesToString();
 
         getUserModel = getUserModelFromJson(responseBody);
-        for(int i =0 ;i<getUserModel.data!.affirmations!.length;i++){
-          listOfTags.add(Tag( getUserModel.data!.affirmations![i].toString(), true));
+        for (int i = 0; i < getUserModel.data!.affirmations!.length; i++) {
+          tempData.add(getUserModel.data!.affirmations![i].toString());
         }
+        await getAffirmation();
         setState(() {
-
+          loader = false;
         });
       } else {
         debugPrint(response.reasonPhrase);
       }
     } catch (e) {
+      setState(() {
+        loader = false;
+      });
       debugPrint(e.toString());
     }
-    setState(() {});
+    setState(() {
+      loader = false;
+    });
   }
   @override
   void initState() {
@@ -163,9 +156,7 @@ class _SelectYourAffirmationFocusPageState
   }
  getData() async {
    await getUSer();
-   await getAffirmation();
    setState(() {
-
    });
  }
   void _onTagTap(Tag tag) {
@@ -181,99 +172,88 @@ class _SelectYourAffirmationFocusPageState
 
   @override
   Widget build(BuildContext context) {
-    themeController.isDarkMode.isTrue
-        ? SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.darkBackground,
-      // Status bar background color
-      statusBarIconBrightness:
-      Brightness.light, // Status bar icon/text color
-    ))
-        : SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.white, // Status bar background color
-      statusBarIconBrightness:
-      Brightness.dark, // Status bar icon/text color
-    ));
-    return SafeArea(
-      child: Scaffold(backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
-        appBar: CustomAppBar(
-          title: "selectYourAffirmationFocus".tr,
-        ),
-        body: Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            Align(
-                alignment: Alignment.topRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: Dimens.d100),
-                  child: SvgPicture.asset(themeController.isDarkMode.isTrue
-                      ? ImageConstant.profile1Dark
-                      : ImageConstant.profile1),
-                )),
-            Align(
-                alignment: Alignment.bottomLeft,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: Dimens.d120),
-                  child: SvgPicture.asset(themeController.isDarkMode.isTrue
-                      ? ImageConstant.profile2Dark
-                      : ImageConstant.profile2),
-                )),
-            Column(
-              children: [
-                Dimens.d30.spaceHeight,
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: AutoSizeText(
-                    "chooseMinInterest".tr,
-                    textAlign: TextAlign.center,
-                    style: Style.gothamLight(
-                        color: themeController.isDarkMode.value
-                            ? ColorConstant.white
-                            : ColorConstant.black,
-                        fontSize: Dimens.d15,
-                        fontWeight: FontWeight.w500),
-                  ),
-                ),
-                Dimens.d24.spaceHeight,
-                Expanded(
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: [
-                      Wrap(
-                        alignment: WrapAlignment.center,
-                        children: listOfTags.map((tag) {
-                          return GestureDetector(
-                            onTap: () => _onTagTap(tag),
-                            child: CustomChip(
-                              label: tag.name,
-                              isChipSelected: tag.isSelected,
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ],
-                  ),
-                ),
 
-                Dimens.d20.spaceHeight,
-                FocusSelectButton(
-                  primaryBtnText: widget.isFromMe ? "save".tr : "next".tr,
-                  secondaryBtnText: widget.isFromMe ? '' : "skip".tr,
-                  isLoading: false,
-                  primaryBtnCallBack: () {
-                    //getAffirmation();
-                    if (selectedTagNames.isNotEmpty) {
-                      setFocuses(widget.setting);
-
-                    } else {
-                      showSnackBarError(
-                          context, 'Please5Affirmation'.tr);
-                    }
-                  },
-                )
-              ],
-            ),
-          ],
-        ),
+    return Scaffold(backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
+      appBar: CustomAppBar(
+        title: "selectYourAffirmationFocus".tr,
+      ),
+      body: Stack(
+        children: [
+          Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: Dimens.d100),
+                    child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                        ? ImageConstant.profile1Dark
+                        : ImageConstant.profile1),
+                  )),
+              Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: Dimens.d120),
+                    child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                        ? ImageConstant.profile2Dark
+                        : ImageConstant.profile2),
+                  )),
+              Column(
+                children: [
+                  Dimens.d30.spaceHeight,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: AutoSizeText(
+                      "chooseMinInterest".tr,
+                      textAlign: TextAlign.center,
+                      style: Style.gothamLight(
+                          color: themeController.isDarkMode.value
+                              ? ColorConstant.white
+                              : ColorConstant.black,
+                          fontSize: Dimens.d15,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                  Dimens.d24.spaceHeight,
+                  Expanded(
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: [
+                        Wrap(
+                          alignment: WrapAlignment.center,
+                          children: listOfTags.map((tag) {
+                            return GestureDetector(
+                              onTap: () => _onTagTap(tag),
+                              child: CustomChip(
+                                label: tag.name,
+                                isChipSelected: tag.isSelected,
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Dimens.d20.spaceHeight,
+                  FocusSelectButton(
+                    primaryBtnText: widget.isFromMe ? "save".tr : "next".tr,
+                    secondaryBtnText: widget.isFromMe ? '' : "skip".tr,
+                    isLoading: false,
+                    primaryBtnCallBack: () {
+                      //getAffirmation();
+                      if (selectedTagNames.isNotEmpty) {
+                        setFocuses(widget.setting);
+                      } else {
+                        showSnackBarError(context, 'Please5Affirmation'.tr);
+                      }
+                    },
+                  )
+                ],
+              ),
+            ],
+          ),
+          loader == true ? commonLoader() : const SizedBox()
+        ],
       ),
     );
   }
@@ -301,6 +281,7 @@ class _SelectYourAffirmationFocusPageState
           loader = false;
         });
         if(setting==true){
+          showSnackBarSuccess(context, "yourAffirmationHasBeenSelected".tr);
           Get.back();
         }else{
           Navigator.push(context, MaterialPageRoute(

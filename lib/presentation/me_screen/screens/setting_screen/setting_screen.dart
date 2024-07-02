@@ -38,123 +38,120 @@ class _SettingScreenState extends State<SettingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    statusBarSet(themeController);
-    return SafeArea(
-      bottom: false,
-      child: Scaffold(
-        backgroundColor: themeController.isDarkMode.value
-            ? ColorConstant.darkBackground
-            : ColorConstant.backGround,
-        appBar: CustomAppBar(
-          title: "settings".tr,
-        ),
-        body: Stack(
-          children: [
-            Align(
-                alignment: Alignment.topRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: Dimens.d100),
-                  child: SvgPicture.asset(themeController.isDarkMode.isTrue
-                      ? ImageConstant.profile1Dark
-                      : ImageConstant.profile1),
-                )),
-            Align(
-                alignment: Alignment.bottomLeft,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: Dimens.d120),
-                  child: SvgPicture.asset(themeController.isDarkMode.isTrue
-                      ? ImageConstant.profile2Dark
-                      : ImageConstant.profile2),
-                )),
-            Padding(
-              padding: Dimens.d20.paddingHorizontal,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: ListView(
-                      shrinkWrap: true,
-                      physics: const ClampingScrollPhysics(),
-                      padding: const EdgeInsets.only(bottom: 50, top: 30),
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: ColorConstant.transparent,
-                            borderRadius: BorderRadius.circular(Dimens.d16),
-                          ),
-                          child: ListView.separated(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            clipBehavior: Clip.none,
-                            padding: EdgeInsets.zero,
-                            itemBuilder: (context, index) {
-                              var data = settingController.settingsData[index];
-                              return SettingListItem(
-                                setting: data.settings,
-                                isSettings: true,
-                                prefixIcon: data.prefixIcon,
-                                title: data.title,
-                                suffixIcon: data.suffixIcon,
-                                onTap: () {
-                                  if (index == 0) {
-                                    Get.toNamed(AppRoutes.notificationSetting);
-                                  } else if (index == 1) {
-                                    Get.toNamed(AppRoutes.subscriptionScreen);
-                                  } else if (index == 2) {
-                                    Get.toNamed(AppRoutes.accountScreen);
-                                  } else if (index == 3) {
-                                  } else if (index == 4) {
-                                    Get.toNamed(
-                                        AppRoutes.personalizationScreen);
-                                  } else if (index == 5) {
-                                    Get.toNamed(AppRoutes.feedbackScreen);
-                                  } else if (index == 6) {
-                                    Navigator.push(context, MaterialPageRoute(
-                                      builder: (context) {
-                                        return const SupportScreen();
-                                      },
-                                    ));
-                                  } else if (index == 7) {
-                                    Navigator.push(context, MaterialPageRoute(
-                                      builder: (context) {
-                                        return const DownloadedPodsScreen();
-                                      },
-                                    ));
-                                  } else if (index == 8) {
-                                    Get.to(
-                                        BreathScreen(
-                                          skip: false,
-                                          setting: true,
-                                        ),
-                                        transition: Transition.noTransition);
-                                  } else if (index == 9) {
-                                    Get.to( SelectYourFocusPage(setting: true,
-                                        isFromMe: false));
-                                  } else {
-                                    Get.to( SelectYourAffirmationFocusPage(setting: true,
-                                        isFromMe: false));
-                                  }
-                                },
-                              );
-                            },
-                            separatorBuilder: (context, index) => Padding(
-                              padding: Dimens.d20.paddingHorizontal,
-                              child: const SizedBox(
-                                height: 15,
-                              ),
-                            ),
-                            itemCount: settingController.settingsData.length,
-                          ),
+    //statusBarSet(themeController);
+    return Scaffold(
+      backgroundColor: themeController.isDarkMode.value
+          ? ColorConstant.darkBackground
+          : ColorConstant.backGround,
+      appBar: CustomAppBar(
+        title: "settings".tr,
+      ),
+      body: Stack(
+        children: [
+          Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.only(top: Dimens.d100),
+                child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                    ? ImageConstant.profile1Dark
+                    : ImageConstant.profile1),
+              )),
+          Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: Dimens.d120),
+                child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                    ? ImageConstant.profile2Dark
+                    : ImageConstant.profile2),
+              )),
+          Padding(
+            padding: Dimens.d20.paddingHorizontal,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: ListView(
+                    shrinkWrap: true,
+                    physics: const ClampingScrollPhysics(),
+                    padding: const EdgeInsets.only(bottom: 50, top: 30),
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: ColorConstant.transparent,
+                          borderRadius: BorderRadius.circular(Dimens.d16),
                         ),
-                      ],
-                    ),
+                        child: ListView.separated(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          clipBehavior: Clip.none,
+                          padding: EdgeInsets.zero,
+                          itemBuilder: (context, index) {
+                            var data = settingController.settingsData[index];
+                            return SettingListItem(
+                              setting: data.settings,
+                              isSettings: true,
+                              prefixIcon: data.prefixIcon,
+                              title: data.title,
+                              suffixIcon: data.suffixIcon,
+                              onTap: () {
+                                if (index == 0) {
+                                  Get.toNamed(AppRoutes.notificationSetting);
+                                } else if (index == 1) {
+                                  Get.toNamed(AppRoutes.subscriptionScreen);
+                                } else if (index == 2) {
+                                  Get.toNamed(AppRoutes.accountScreen);
+                                } else if (index == 3) {
+                                } else if (index == 4) {
+                                  Get.toNamed(
+                                      AppRoutes.personalizationScreen);
+                                } else if (index == 5) {
+                                  Get.toNamed(AppRoutes.feedbackScreen);
+                                } else if (index == 6) {
+                                  Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) {
+                                      return const SupportScreen();
+                                    },
+                                  ));
+                                } else if (index == 7) {
+                                  Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) {
+                                      return const DownloadedPodsScreen();
+                                    },
+                                  ));
+                                } else if (index == 8) {
+                                  Get.to(
+                                      BreathScreen(
+                                        skip: false,
+                                        setting: true,
+                                      ),
+                                      transition: Transition.noTransition);
+                                } else if (index == 9) {
+                                  Get.to( SelectYourFocusPage(setting: true,
+                                      isFromMe: false));
+                                } else {
+                                  Get.to( SelectYourAffirmationFocusPage(setting: true,
+                                      isFromMe: false));
+                                }
+                              },
+                            );
+                          },
+                          separatorBuilder: (context, index) => Padding(
+                            padding: Dimens.d20.paddingHorizontal,
+                            child: const SizedBox(
+                              height: 15,
+                            ),
+                          ),
+                          itemCount: settingController.settingsData.length,
+                        ),
+                      ),
+                    ],
                   ),
-                  Dimens.d30.spaceHeight,
-                ],
-              ),
-            )
-          ],
-        ),
+                ),
+                Dimens.d30.spaceHeight,
+              ],
+            ),
+          )
+        ],
       ),
     );
   }

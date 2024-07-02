@@ -11,10 +11,7 @@ class NotificationController extends GetxController{
 
   @override
   void onInit() {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.white, // Status bar background color
-      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
-    ));
+
     super.onInit();
   }
 }

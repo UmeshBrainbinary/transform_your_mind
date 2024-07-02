@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pinput/pinput.dart';
@@ -87,166 +86,164 @@ class _VerificationsScreenState extends State<VerificationsScreen> {
 
   @override
   Widget build(BuildContext context) {
-   statusBarSet(themeController);
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: themeController.isDarkMode.value
-            ? ColorConstant.darkBackground
-            : ColorConstant.backGround,
-        appBar: CustomAppBar(
-          title: "verification".tr,
-        ),
-        body: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
-              child: LayoutBuilder(
-                builder: (context, constraint) {
-                  return Stack(
-                    children: [
-                      SingleChildScrollView(
-                        child: ConstrainedBox(
-                          constraints:
-                              BoxConstraints(minHeight: constraint.maxHeight),
-                          child: IntrinsicHeight(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Dimens.d25.spaceHeight,
-                                SizedBox(
-                                  width: Dimens.d296,
-                                  child: Text(
-                                      textAlign: TextAlign.center,
-                                      "enterVerification".tr,
-                                      style: Style.montserratRegular(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          color: ColorConstant.color716B6B)),
-                                ),
-                                Dimens.d61.spaceHeight,
-                                Pinput(
-                                  length: 6,
-                                  // Set the number of fields to 6
-                                  controller: forgotController.otpController,
-                                  keyboardType: TextInputType.number,
-                                  defaultPinTheme: PinTheme(
-                                    height: 43.h,
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: Dimens.d3),
-                                    width: 43.h,
-                                    textStyle: Style.montserratRegular(
-                                        fontSize: Dimens.d23,
-                                        fontWeight: FontWeight.w400,
-                                        color: ColorConstant.color716B6B),
-                                    decoration: BoxDecoration(
-                                      color: themeController.isDarkMode.value
-                                          ? ColorConstant.textfieldFillColor
-                                          : ColorConstant.white,
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                  ),
-                                  focusedPinTheme: PinTheme(
-                                    height: 43.h,
-                                    width: 43.h,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(5),
-                                      border: Border.all(
-                                          color: Colors
-                                              .black), // Set border color to black when focused
-                                    ),
-                                    textStyle: Style.montserratRegular(
-                                        fontSize: Dimens.d23,
-                                        fontWeight: FontWeight.w400,
-                                        color: ColorConstant.color716B6B),
-                                  ),
-                                ),
-                                Dimens.d23.spaceHeight,
-                                SizedBox(
-                                  height: Dimens.d24,
-                                  width: Dimens.d296,
-                                  child: Row(
-                                    children: [
-                                      const Spacer(),
-                                      Text(
-                                          textAlign: TextAlign.center,
-                                          "notReceiveCode".tr,
-                                          style: Style.montserratRegular(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w400,
-                                              color:
-                                                  ColorConstant.color716B6B)),
-                                      Dimens.d5.spaceWidth,
-                                      GestureDetector(
-                                        onTap: () {
-                                          if (_start == 0) {
-                                            resendOtp(context);
-                                          }
-                                        },
-                                        child: Text(
-                                            textAlign: TextAlign.center,
-                                            "resend".tr,
-                                            style: Style.montserratRegular(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w400,
-                                                color: _start != 0
-                                                    ? themeController
-                                                            .isDarkMode.isTrue
-                                                        ? Colors.grey
-                                                        : Colors.black
-                                                            .withOpacity(0.2)
-                                                    : ColorConstant
-                                                        .themeColor)),
-                                      ),
-                                      const Spacer(),
-                                    ],
-                                  ),
-                                ),
-                                Dimens.d30.spaceHeight,
-                                _start == 0?const SizedBox(): Text('${"timeLeft".tr}: ${formatTime(_start)}',
+   //statusBarSet(themeController);
+    return Scaffold(
+      backgroundColor: themeController.isDarkMode.value
+          ? ColorConstant.darkBackground
+          : ColorConstant.backGround,
+      appBar: CustomAppBar(
+        title: "verification".tr,
+      ),
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
+            child: LayoutBuilder(
+              builder: (context, constraint) {
+                return Stack(
+                  children: [
+                    SingleChildScrollView(
+                      child: ConstrainedBox(
+                        constraints:
+                            BoxConstraints(minHeight: constraint.maxHeight),
+                        child: IntrinsicHeight(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Dimens.d25.spaceHeight,
+                              SizedBox(
+                                width: Dimens.d296,
+                                child: Text(
                                     textAlign: TextAlign.center,
+                                    "enterVerification".tr,
                                     style: Style.montserratRegular(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w400,
-                                        color: ColorConstant.themeColor)),
-                                Dimens.d30.spaceHeight,
-                                CommonElevatedButton(
-                                  title: "verify".tr,
-                                  onTap: () {
-                                    FocusScope.of(context).unfocus();
-                                    if (forgotController
-                                        .otpController.text.isNotEmpty) {
-                                      if (widget.forgot == true) {
-                                        forgotController
-                                            .onTapOtpVerifyChangePass(context,
-                                                widget.email!, widget.forgot);
-                                      } else {
-                                        forgotController.onTapOtpVerify(context,
-                                            widget.token!, widget.imagePath);
-                                      }
+                                        color: ColorConstant.color716B6B)),
+                              ),
+                              Dimens.d61.spaceHeight,
+                              Pinput(
+                                length: 6,
+                                // Set the number of fields to 6
+                                controller: forgotController.otpController,
+                                keyboardType: TextInputType.number,
+                                defaultPinTheme: PinTheme(
+                                  height: 43.h,
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: Dimens.d3),
+                                  width: 43.h,
+                                  textStyle: Style.montserratRegular(
+                                      fontSize: Dimens.d23,
+                                      fontWeight: FontWeight.w400,
+                                      color: ColorConstant.color716B6B),
+                                  decoration: BoxDecoration(
+                                    color: themeController.isDarkMode.value
+                                        ? ColorConstant.textfieldFillColor
+                                        : ColorConstant.white,
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                ),
+                                focusedPinTheme: PinTheme(
+                                  height: 43.h,
+                                  width: 43.h,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(5),
+                                    border: Border.all(
+                                        color: Colors
+                                            .black), // Set border color to black when focused
+                                  ),
+                                  textStyle: Style.montserratRegular(
+                                      fontSize: Dimens.d23,
+                                      fontWeight: FontWeight.w400,
+                                      color: ColorConstant.color716B6B),
+                                ),
+                              ),
+                              Dimens.d23.spaceHeight,
+                              SizedBox(
+                                height: Dimens.d24,
+                                width: Dimens.d296,
+                                child: Row(
+                                  children: [
+                                    const Spacer(),
+                                    Text(
+                                        textAlign: TextAlign.center,
+                                        "notReceiveCode".tr,
+                                        style: Style.montserratRegular(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400,
+                                            color:
+                                                ColorConstant.color716B6B)),
+                                    Dimens.d5.spaceWidth,
+                                    GestureDetector(
+                                      onTap: () {
+                                        if (_start == 0) {
+                                          resendOtp(context);
+                                        }
+                                      },
+                                      child: Text(
+                                          textAlign: TextAlign.center,
+                                          "resend".tr,
+                                          style: Style.montserratRegular(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w400,
+                                              color: _start != 0
+                                                  ? themeController
+                                                          .isDarkMode.isTrue
+                                                      ? Colors.grey
+                                                      : Colors.black
+                                                          .withOpacity(0.2)
+                                                  : ColorConstant
+                                                      .themeColor)),
+                                    ),
+                                    const Spacer(),
+                                  ],
+                                ),
+                              ),
+                              Dimens.d30.spaceHeight,
+                              _start == 0?const SizedBox(): Text('${"timeLeft".tr}: ${formatTime(_start)}',
+                                  textAlign: TextAlign.center,
+                                  style: Style.montserratRegular(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                      color: ColorConstant.themeColor)),
+                              Dimens.d30.spaceHeight,
+                              CommonElevatedButton(
+                                title: "verify".tr,
+                                onTap: () {
+                                  FocusScope.of(context).unfocus();
+                                  if (forgotController
+                                      .otpController.text.isNotEmpty) {
+                                    if (widget.forgot == true) {
+                                      forgotController
+                                          .onTapOtpVerifyChangePass(context,
+                                              widget.email!, widget.forgot);
                                     } else {
-                                      errorToast(
-                                          "pleaseEnterVerificationCode".tr);
+                                      forgotController.onTapOtpVerify(context,
+                                          widget.token!, widget.imagePath);
                                     }
-                                  },
-                                )
-                              ],
-                            ),
+                                  } else {
+                                    errorToast(
+                                        "pleaseEnterVerificationCode".tr);
+                                  }
+                                },
+                              )
+                            ],
                           ),
                         ),
                       ),
-                    ],
-                  );
-                },
-              ),
+                    ),
+                  ],
+                );
+              },
             ),
-            Obx(
-              () => forgotController.loader.isTrue
-                  ? commonLoader()
-                  : const SizedBox(),
-            )
-          ],
-        ),
+          ),
+          Obx(
+            () => forgotController.loader.isTrue
+                ? commonLoader()
+                : const SizedBox(),
+          )
+        ],
       ),
     );
   }

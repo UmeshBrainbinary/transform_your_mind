@@ -68,7 +68,6 @@ dependencies:
   alarm: ^3.1.4
   numberpicker: ^2.1.2
   voice_message_package:
-  flutter_audio_waveforms: ^1.2.1+8
   android_alarm_manager_plus: ^4.0.3
   flutter_calendar_carousel:
   flutter_html:
@@ -80,7 +79,9 @@ dependencies:
   dots_indicator: ^3.0.0
   url_launcher: ^6.3.0
   styled_text: ^8.1.0
-  audio_wave: ^0.1.5
+  flutter_alarm_clock: ^0.1.1
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

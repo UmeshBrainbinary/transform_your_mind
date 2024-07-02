@@ -31,8 +31,7 @@ class Tag {
 }
 
 class SelectYourFocusPage extends StatefulWidget {
-  SelectYourFocusPage({Key? key, required this.isFromMe, this.setting})
-      : super(key: key);
+  SelectYourFocusPage({super.key, required this.isFromMe, this.setting});
   static const selectFocus = '/selectFocus';
 
   final bool isFromMe;
@@ -53,6 +52,9 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
   FocusesModel focusesModel = FocusesModel();
 
   getFocuses() async {
+    setState(() {
+      loader = true;
+    });
     var headers = {
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
@@ -68,13 +70,31 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
       final responseBody = await response.stream.bytesToString();
 
       focusesModel = focusesModelFromJson(responseBody);
+
       for (int i = 0; i < focusesModel.data!.length; i++) {
-        listOfTags.add(Tag(focusesModel.data![i].name.toString(), false));
+        if(tempData.contains(focusesModel.data![i].name)){
+          listOfTags.add(Tag(focusesModel.data![i].name.toString(), true));
+        }else{
+          listOfTags.add(Tag(focusesModel.data![i].name.toString(), false));
+        }
       }
-      setState(() {});
+      for(int y=0;y<listOfTags.length;y++){
+        if(listOfTags[y].isSelected==true){
+          selectedTagNames.add(listOfTags[y].name);
+        }
+      }
+      setState(() {
+        loader = false;
+      });
     } else {
+      setState(() {
+        loader = false;
+      });
       debugPrint(response.reasonPhrase);
     }
+    setState(() {
+      loader = false;
+    });
   }
 
   setFocuses(setting) async {
@@ -99,6 +119,7 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
           loader = false;
         });
         if (setting == true) {
+          showSnackBarSuccess(context, "yourFocusHasBeenSelected".tr);
           Get.back();
         } else {
           Navigator.push(context, MaterialPageRoute(
@@ -127,6 +148,9 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
   GetUserModel getUserModel = GetUserModel();
 
   getUSer() async {
+    setState(() {
+      loader = true;
+    });
     try {
       var headers = {
         'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
@@ -148,13 +172,20 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
         for (int i = 0; i < getUserModel.data!.focuses!.length; i++) {
           tempData.add(getUserModel.data!.focuses![i].toString());
         }
+        debugPrint("selected past data from User $tempData");
+        getFocuses();
+        setState(() {
+          loader = false;
+        });
       } else {
         debugPrint(response.reasonPhrase);
       }
     } catch (e) {
       debugPrint(e.toString());
     }
-    setState(() {});
+    setState(() {
+      loader = false;
+    });
   }
 
   @override
@@ -166,7 +197,7 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
 
   getData() async {
     await getUSer();
-    await getFocuses();
+
     setState(() {});
   }
 
@@ -183,96 +214,94 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
 
   @override
   Widget build(BuildContext context) {
-   statusBarSet(themeController);
-    return SafeArea(bottom: false,
-      child: Stack(
-        children: [
-          Scaffold(
-            backgroundColor: themeController.isDarkMode.isTrue
-                ? ColorConstant.darkBackground
-                : ColorConstant.white,
-            appBar:  CustomAppBar(showBack: widget.setting,
-              title: "selectYourFocus".tr,
-            ),
-            body: Stack(
-              alignment: Alignment.bottomCenter,
-              children: [
-                Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: Dimens.d100),
-                      child: SvgPicture.asset(themeController.isDarkMode.isTrue
-                          ? ImageConstant.profile1Dark
-                          : ImageConstant.profile1),
-                    )),
-                Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: Dimens.d120),
-                      child: SvgPicture.asset(themeController.isDarkMode.isTrue
-                          ? ImageConstant.profile2Dark
-                          : ImageConstant.profile2),
-                    )),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
-                  child: Column(
-                    children: [
-                      Dimens.d30.spaceHeight,
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Text(
-                          "chooseMinInterest".tr,textAlign: TextAlign.center,
-                          style: Style.gothamLight(
-                              color: themeController.isDarkMode.value
-                                  ? ColorConstant.white
-                                  : ColorConstant.black,
-                              fontSize: Dimens.d15,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                      Dimens.d18.spaceHeight,
-                      Expanded(
-                        child: ListView(
-                          shrinkWrap: true,
-                          children: [
-                            Wrap(
-                              alignment: WrapAlignment.center,
-                              children: listOfTags.map((tag) {
-                                return GestureDetector(
-                                  onTap: () => _onTagTap(tag),
-                                  child: CustomChip(
-                                    label: tag.name,
-                                    isChipSelected: tag.isSelected,
-                                  ),
-                                );
-                              }).toList(),
-                            ),
-                          ],
-                        ),
-                      ),
-                      FocusSelectButton(
-                        primaryBtnText: widget.isFromMe ? "Save" : "Next",
-                        secondaryBtnText: widget.isFromMe ? '' : "Skip",
-                        isLoading: false,
-                        primaryBtnCallBack: () {
-                         // getFocuses();
-                          if (selectedTagNames.isNotEmpty) {
-                            setFocuses(widget.setting);
-                          } else {
-                            showSnackBarError(
-                                context, 'Please5Focuses'.tr);
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+  /* statusBarSet(themeController);*/
+    return Stack(
+      children: [
+        Scaffold(
+          backgroundColor: themeController.isDarkMode.isTrue
+              ? ColorConstant.darkBackground
+              : ColorConstant.white,
+          appBar:  CustomAppBar(showBack: widget.setting,
+            title: "selectYourFocus".tr,
           ),
-          loader == true ? commonLoader() : const SizedBox()
-        ],
-      ),
+          body: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: Dimens.d100),
+                    child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                        ? ImageConstant.profile1Dark
+                        : ImageConstant.profile1),
+                  )),
+              Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: Dimens.d120),
+                    child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                        ? ImageConstant.profile2Dark
+                        : ImageConstant.profile2),
+                  )),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
+                child: Column(
+                  children: [
+                    Dimens.d30.spaceHeight,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Text(
+                        "chooseMinInterest".tr,textAlign: TextAlign.center,
+                        style: Style.gothamLight(
+                            color: themeController.isDarkMode.value
+                                ? ColorConstant.white
+                                : ColorConstant.black,
+                            fontSize: Dimens.d15,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                    Dimens.d18.spaceHeight,
+                    Expanded(
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: [
+                          Wrap(
+                            alignment: WrapAlignment.center,
+                            children: listOfTags.map((tag) {
+                              return GestureDetector(
+                                onTap: () => _onTagTap(tag),
+                                child: CustomChip(
+                                  label: tag.name,
+                                  isChipSelected: tag.isSelected,
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    FocusSelectButton(
+                      primaryBtnText: widget.isFromMe ? "Save" : "Next",
+                      secondaryBtnText: widget.isFromMe ? '' : "Skip",
+                      isLoading: false,
+                      primaryBtnCallBack: () {
+                       // getFocuses();
+                        if (selectedTagNames.isNotEmpty) {
+                          setFocuses(widget.setting);
+                        } else {
+                          showSnackBarError(
+                              context, 'Please5Focuses'.tr);
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        loader == true ? commonLoader() : const SizedBox()
+      ],
     );
   }
 }

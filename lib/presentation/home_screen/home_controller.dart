@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:transform_your_mind/core/service/pref_service.dart';
+import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
@@ -28,12 +29,12 @@ class HomeController extends GetxController {
   List<bool> affirmationCheckList = [];
   List<bool> gratitudeCheckList = [];
   List<Map<String, dynamic>> quickAccessList = [
-    {"title": "motivational", "icon": ImageConstant.meditationIconQuick},
-    {"title": "transformPods", "icon": ImageConstant.podIconQuick},
-    {"title": "gratitudeJournal", "icon": ImageConstant.journalIconQuick},
-    {"title": "positiveMoments", "icon": ImageConstant.sleepIconQuick},
-    {"title": "affirmation", "icon": ImageConstant.homeAffirmation},
-    {"title": "breathingExerciseTitle", "icon": ImageConstant.breathing},
+    {"title": "motivational", "icon": ImageConstant.meditationIconQuick,"color": ColorConstant.colorF7E2CD},
+    {"title": "transformPods", "icon": ImageConstant.podIconQuick,"color": ColorConstant.colorEDC9ED},
+    {"title": "gratitudeJournal", "icon": ImageConstant.journalIconQuick,"color": ColorConstant.colorC8CDF7},
+    {"title": "positiveMoments", "icon": ImageConstant.sleepIconQuick,"color": ColorConstant.colorF9CDCE},
+    {"title": "affirmation", "icon": ImageConstant.homeAffirmation,"color": ColorConstant.colorFFDDAA},
+    {"title": "breathingExerciseTitle", "icon": ImageConstant.breathing,"color": ColorConstant.colorD5F8A9},
   ];
   //_______________________________________  Model Class __________________________
   GetUserModel getUserModel = GetUserModel();

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -32,7 +33,9 @@ Future<XFile?>? showImagePickerActionSheet(BuildContext context) async {
                 await Permission.camera.request();
 
               }else if(cameraStatus ==PermissionStatus.permanentlyDenied ){
-                await handlePermanentlyDenied();
+                await handlePermanentlyDenied().then((value) {
+                  Navigator.pop(context, ImageSource.camera);
+                },);
 
               }
             },
@@ -93,3 +96,4 @@ Future<XFile?>? showImagePickerActionSheet(BuildContext context) async {
 Future<void> handlePermanentlyDenied() async {
   await openAppSettings();
 }
+

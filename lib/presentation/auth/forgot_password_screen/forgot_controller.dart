@@ -105,14 +105,11 @@ ResendModel resendModel = ResendModel();
         loader.value = false;
         final responseBody = await response.stream.bytesToString();
         forgotPassword = forgotPasswordFromJson(responseBody);
-        update();
-        Navigator.pushReplacement(context, MaterialPageRoute(
-          builder: (context) {
-            return VerificationsScreen(
-              forgot: true,email:  emailController.text,
-            );
-          },
-        ));
+
+       Get.to(VerificationsScreen(
+         forgot: true,email:  emailController.text,
+       ));
+
         showSnackBarSuccessForgot(context, "otpSend".tr);
       } else {
         loader.value = false;

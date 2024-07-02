@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -54,8 +55,15 @@ class _CustomAppBarState extends State<CustomAppBar>
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(foregroundColor: Colors.white,surfaceTintColor: Colors.transparent,
-
+    return AppBar(
+      systemOverlayStyle: themeController.isDarkMode.isTrue
+          ? const SystemUiOverlayStyle(
+              statusBarBrightness: Brightness.dark,
+              statusBarIconBrightness: Brightness.light)
+          : const SystemUiOverlayStyle(
+              statusBarColor: ColorConstant.backGround,
+              statusBarBrightness: Brightness.light,
+              statusBarIconBrightness: Brightness.dark),
       centerTitle: widget.centerTitle,
       title: Text(widget.title,
           style: widget.titleStyle ??
@@ -78,9 +86,9 @@ class _CustomAppBarState extends State<CustomAppBar>
     return widget.showBack!?InkWell(
       onTap: widget.onTap ??
           () {
-            Get.back();
-            FocusScope.of(context).unfocus();
-          },
+                  Navigator.pop(context);
+                  FocusScope.of(context).unfocus();
+                },
       child: Container(
         height: Dimens.d50,
         width: Dimens.d40,

@@ -31,8 +31,7 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSCameraUsageDescription</key>
-	<string>Need permission to access the camera</string>
+
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Need permission to access the microphone</string>
 	<key>UIBackgroundModes</key>
@@ -59,7 +58,11 @@
     <string>We need access to your location to show your current position.</string>
     <key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSPhotoLibraryUsageDescription</key>
+	<key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
+    <key>NSCameraUsageDescription</key>
+    <string>We need access to your camera to take pictures.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
 	<string>Need permission to access photo library</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>

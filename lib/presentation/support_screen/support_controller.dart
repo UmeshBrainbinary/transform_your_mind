@@ -2,17 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
-import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/model_class/faq_model.dart';
-import 'package:transform_your_mind/presentation/profile_screen/profile_controller.dart';
 class SupportController extends GetxController {
   RxList supportData = [].obs;
   TextEditingController name = TextEditingController();
@@ -27,10 +25,7 @@ class SupportController extends GetxController {
   RxBool loader = false.obs;
   @override
   void onInit() {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.backGround, // Status bar background color
-      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
-    ));
+
     supportData.value = _SupportData.getSettingsData;
     super.onInit();
   }

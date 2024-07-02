@@ -39,144 +39,142 @@ class _LoginPreviewViewState extends State<LoginPreviewView> {
   }
   @override
   Widget build(BuildContext context) {
-  statusBarSet(themeController);
-    return SafeArea(bottom: false,
-      child: Scaffold(backgroundColor: ColorConstant.white,
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Dimens.d80.spaceHeight,
-              Image.asset(
-                ImageConstant.loginBack,
-                height: 209,
-                width:245,
-              ),
-              Dimens.d22.spaceHeight,
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Dimens.d36),
-                child: Text(
-                  "wT".tr,
-                  textAlign: TextAlign.center,
-                  style: Style.gothamLight(fontSize: 24,),
-                ),
-              ),
-              Dimens.d18.spaceHeight,
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Dimens.d36),
-                child: Text(
-                  "awaken".tr,
-                  textAlign: TextAlign.center,
-                  style: Style.gothamLight(
-                      fontSize: 16, fontWeight: FontWeight.w400),
-                ),
-              ),
-              Dimens.d41.spaceHeight,
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Dimens.d24),
-                child: Row(
-                  children: [
-                    Checkbox(hoverColor: ColorConstant.themeColor,
-                       focusColor: ColorConstant.themeColor,
-                      activeColor: ColorConstant.themeColor,
-                      checkColor: ColorConstant.white,
-                      value: _isChecked,
-                      onChanged: _toggleCheckbox,
-                    ),
-                    StyledText(textAlign: TextAlign.center,
-                      text: '<bold>${"iAgreeThe".tr}</bold><red>${"t&m".tr}</red>\n<bold>${"ofThe".tr}</bold><red>${"privacyPolicy".tr}</red>',
-                      tags: {
-                        'bold': StyledTextTag(style:Style.gothamMedium(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black,
-                            height: 1.5),),
-      
-                        'red': StyledTextTag(style: Style.gothamMedium(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400,
-                            color: ColorConstant.themeColor)),
-                       // 'privacyPolicy': StyledTextTag(style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
-                      },
-                    )
-                   /* Expanded(
-                      child: RichText(
-                        text: TextSpan(
-                            text: "iAgreeThe".tr,
-                            style: Style.gothamMedium(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black,
-                                height: 1.5),
-                            children: [
-                              TextSpan(
-                                text: "t&m".tr,
-                                style: Style.gothamMedium(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w400,
-                                    color: ColorConstant.themeColor),
-                              ),
-                              TextSpan(
-                                text: "ofThe".tr,
-                                style: Style.gothamMedium(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black),
-                              ),
-                              TextSpan(
-                                text: "privacyPolicy".tr,
-                                style: Style.gothamMedium(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w400,
-                                    color: ColorConstant.themeColor),
-                              ),
-                            ]),
-                      ),
-                    )*/
-                  ],
-                ),
-              ),
-              Dimens.d50.spaceHeight,
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 86),
-                child: CommonElevatedButton(
-                  title: "login".tr,
-                  onTap: () {
-                    if(_isChecked){
-                      PrefService.setValue(PrefKey.introSkip, true);
-                      Get.toNamed(AppRoutes.loginScreen);
-                    }else{
-                      showSnackBarError(context, "pleaseAcceptTerms".tr);
-                    }
-                  },
-                ),
-              ),
-              Dimens.d16.spaceHeight,
-              Text(
-                "Or",
+/*  statusBarSet(themeController);*/
+    return Scaffold(backgroundColor: ColorConstant.white,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Dimens.d80.spaceHeight,
+            Image.asset(
+              ImageConstant.loginBack,
+              height: 209,
+              width:245,
+            ),
+            Dimens.d22.spaceHeight,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Dimens.d36),
+              child: Text(
+                "wT".tr,
                 textAlign: TextAlign.center,
-                style:
-                    Style.gothamLight(fontSize: 20, fontWeight: FontWeight.w400),
+                style: Style.gothamLight(fontSize: 24,),
               ),
-              Dimens.d16.spaceHeight,
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 86),
-                child: CommonElevatedButton(
-                  title: "register".tr,
-                  onTap: () {
-                    if(_isChecked){
-                      Get.toNamed(AppRoutes.registerScreen);
-                    }else{
-                      showSnackBarError(context, "pleaseAcceptTerms".tr);
-                    }
-      
-      
-                  },
-                ),
+            ),
+            Dimens.d18.spaceHeight,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Dimens.d36),
+              child: Text(
+                "awaken".tr,
+                textAlign: TextAlign.center,
+                style: Style.gothamLight(
+                    fontSize: 16, fontWeight: FontWeight.w400),
               ),
-              Dimens.d52.spaceHeight,
-            ],
-          ),
+            ),
+            Dimens.d41.spaceHeight,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Dimens.d24),
+              child: Row(
+                children: [
+                  Checkbox(hoverColor: ColorConstant.themeColor,
+                     focusColor: ColorConstant.themeColor,
+                    activeColor: ColorConstant.themeColor,
+                    checkColor: ColorConstant.white,
+                    value: _isChecked,
+                    onChanged: _toggleCheckbox,
+                  ),
+                  StyledText(textAlign: TextAlign.center,
+                    text: '<bold>${"iAgreeThe".tr}</bold><red>${"t&m".tr}</red>\n<bold>${"ofThe".tr}</bold><red>${"privacyPolicy".tr}</red>',
+                    tags: {
+                      'bold': StyledTextTag(style:Style.gothamMedium(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black,
+                          height: 1.5),),
+
+                      'red': StyledTextTag(style: Style.gothamMedium(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w400,
+                          color: ColorConstant.themeColor)),
+                     // 'privacyPolicy': StyledTextTag(style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+                    },
+                  )
+                 /* Expanded(
+                    child: RichText(
+                      text: TextSpan(
+                          text: "iAgreeThe".tr,
+                          style: Style.gothamMedium(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
+                              height: 1.5),
+                          children: [
+                            TextSpan(
+                              text: "t&m".tr,
+                              style: Style.gothamMedium(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
+                                  color: ColorConstant.themeColor),
+                            ),
+                            TextSpan(
+                              text: "ofThe".tr,
+                              style: Style.gothamMedium(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.black),
+                            ),
+                            TextSpan(
+                              text: "privacyPolicy".tr,
+                              style: Style.gothamMedium(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
+                                  color: ColorConstant.themeColor),
+                            ),
+                          ]),
+                    ),
+                  )*/
+                ],
+              ),
+            ),
+            Dimens.d50.spaceHeight,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 86),
+              child: CommonElevatedButton(
+                title: "login".tr,
+                onTap: () {
+                  if(_isChecked){
+                    PrefService.setValue(PrefKey.introSkip, true);
+                    Get.toNamed(AppRoutes.loginScreen);
+                  }else{
+                    showSnackBarError(context, "pleaseAcceptTerms".tr);
+                  }
+                },
+              ),
+            ),
+            Dimens.d16.spaceHeight,
+            Text(
+              "Or",
+              textAlign: TextAlign.center,
+              style:
+                  Style.gothamLight(fontSize: 20, fontWeight: FontWeight.w400),
+            ),
+            Dimens.d16.spaceHeight,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 86),
+              child: CommonElevatedButton(
+                title: "register".tr,
+                onTap: () {
+                  if(_isChecked){
+                    Get.toNamed(AppRoutes.registerScreen);
+                  }else{
+                    showSnackBarError(context, "pleaseAcceptTerms".tr);
+                  }
+
+
+                },
+              ),
+            ),
+            Dimens.d52.spaceHeight,
+          ],
         ),
       ),
     );

@@ -13,10 +13,7 @@ class MotivationalController extends GetxController {
  RxBool loader = false.obs;
   @override
   void onInit() {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.backGround, // Status bar background color
-      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
-    ));
+
     getMotivational();
     super.onInit();
   }

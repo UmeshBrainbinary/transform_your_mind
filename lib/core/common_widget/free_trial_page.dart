@@ -46,87 +46,85 @@ class _FreeTrialPageState extends State<FreeTrialPage>
  ThemeController themeController = Get.find<ThemeController>();
   @override
   Widget build(BuildContext context) {
-   statusBarSet(themeController);
-    return SafeArea(bottom: false,
-      child: Scaffold(backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
-        body: Stack(
-          children: [
-            const BgSemiCircleTexture(),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: Dimens.d105, vertical: Dimens.d115),
-              child: SizedBox(
-                width: Dimens.d200,
-                height: Dimens.d120,
-                child: Image.asset(ImageConstant.splashLogo),
-              ),
+   /*statusBarSet(themeController);*/
+    return Scaffold(backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
+      body: Stack(
+        children: [
+          const BgSemiCircleTexture(),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: Dimens.d105, vertical: Dimens.d115),
+            child: SizedBox(
+              width: Dimens.d200,
+              height: Dimens.d120,
+              child: Image.asset(ImageConstant.splashLogo),
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // const Spacer(),
-                    Dimens.d251.spaceHeight,
-                    Text(
-                      "welcomeTransform".tr,
-                      style: Style.montserratRegular(
-                        fontSize: Dimens.d15,
-                      ),
-                      textAlign: TextAlign.center,
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // const Spacer(),
+                  Dimens.d251.spaceHeight,
+                  Text(
+                    "welcomeTransform".tr,
+                    style: Style.montserratRegular(
+                      fontSize: Dimens.d15,
                     ),
-                    Dimens.d25.spaceHeight,
-                    Text(
-                      //i10n.freeGeneralDesc,
-                      "accessTo".tr,
-                      style: Style.montserratRegular(
-                          fontSize: Dimens.d12, fontWeight: FontWeight.w500),
-                      textAlign: TextAlign.center,
-                    ),
-                    Dimens.d30.spaceHeight,
-                    const _DescriptionPoints(
-                      title: "journalInput",
-                    ),
-                    const _DescriptionPoints(
-                      title: "transOrSleep",
-                    ),
-                    const _DescriptionPoints(
-                      title: "transformMood",
-                    ),
-                    const _DescriptionPoints(
-                      title: "focusedAffirmations",
-                    ),
-                    // const Spacer(),
-                    Dimens.d20.spaceHeight,
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
-                      child: CommonElevatedButton(textStyle: Style.montserratRegular(fontSize: 17,color: ColorConstant.white),
-                        title: "premiumAccess".tr,
-                        onTap: () async {
-                          await PrefService.setValue(PrefKey.premium, true);
+                    textAlign: TextAlign.center,
+                  ),
+                  Dimens.d25.spaceHeight,
+                  Text(
+                    //i10n.freeGeneralDesc,
+                    "accessTo".tr,
+                    style: Style.montserratRegular(
+                        fontSize: Dimens.d12, fontWeight: FontWeight.w500),
+                    textAlign: TextAlign.center,
+                  ),
+                  Dimens.d30.spaceHeight,
+                  const _DescriptionPoints(
+                    title: "journalInput",
+                  ),
+                  const _DescriptionPoints(
+                    title: "transOrSleep",
+                  ),
+                  const _DescriptionPoints(
+                    title: "transformMood",
+                  ),
+                  const _DescriptionPoints(
+                    title: "focusedAffirmations",
+                  ),
+                  // const Spacer(),
+                  Dimens.d20.spaceHeight,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
+                    child: CommonElevatedButton(textStyle: Style.montserratRegular(fontSize: 17,color: ColorConstant.white),
+                      title: "premiumAccess".tr,
+                      onTap: () async {
+                        await PrefService.setValue(PrefKey.premium, true);
 
-                          Navigator.pushReplacement(context, MaterialPageRoute(
-                            builder: (context) {
-                              return SubscriptionScreen(
-                                skip: true,
-                              );
-                            },
-                          ));
-                        },
-                      ),
+                        Navigator.pushReplacement(context, MaterialPageRoute(
+                          builder: (context) {
+                            return SubscriptionScreen(
+                              skip: true,
+                            );
+                          },
+                        ));
+                      },
                     ),
-                    Dimens.d10.spaceHeight,
-                  ],
-                ),
+                  ),
+                  Dimens.d10.spaceHeight,
+                ],
               ),
             ),
-            const SizedBox(
-              height: Dimens.d100,
-              child: CustomAppBar(title: ''),
-            )
-          ],
-        ),
+          ),
+          const SizedBox(
+            height: Dimens.d100,
+            child: CustomAppBar(title: ''),
+          )
+        ],
       ),
     );
   }

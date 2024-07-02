@@ -31,6 +31,7 @@ class BackGroundContainer extends StatelessWidget {
     );
   }
 }
+/*
 
 
 statusBarSet(ThemeController themeController){
@@ -41,6 +42,7 @@ statusBarSet(ThemeController themeController){
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: ColorConstant.backGround,
     statusBarIconBrightness: Brightness.dark,
+    statusBarBrightness: Brightness.light,
   ));
 
 }
@@ -68,3 +70,4 @@ menuBarSet(ThemeController themeController){
 
 }
 
+*/

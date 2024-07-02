@@ -48,6 +48,12 @@ class ColorConstant {
 
 
   static const colorFF0000 = Color(0XFFFF0000);
+  static const colorF7E2CD = Color(0XFFF7E2CD);
+  static const colorEDC9ED= Color(0XFFEDC9ED);
+  static const colorC8CDF7= Color(0XFFC8CDF7);
+  static const colorF9CDCE= Color(0XFFF9CDCE);
+  static const colorFFDDAA= Color(0XFFFFDDAA);
+  static const colorD5F8A9= Color(0XFFD5F8A9);
   static const colorECECEC = Color(0XFFECECEC);
   static const color777575 = Color(0XFF777575);
   static const colorFFC700 = Color(0XFFFFC700);

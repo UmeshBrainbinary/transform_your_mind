@@ -94,10 +94,7 @@ class _AddPositivePageState extends State<AddPositivePage>
     }
 
     _lottieIconsController = AnimationController(vsync: this);
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.backGround, // Status bar background color
-      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
-    ));
+
     super.initState();
   }
 

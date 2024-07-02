@@ -86,134 +86,132 @@ class _BreathScreenState extends State<BreathScreen> with TickerProviderStateMix
  ThemeController themeController  = Get.find<ThemeController>();
   @override
   Widget build(BuildContext context) {
-    statusBarSet(themeController);
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.backGround,
-        appBar: CustomAppBar(
-          title: "breathTraining".tr,
-          action: widget.skip!?
-          GestureDetector(
-              onTap: () async {
-                 Get.toNamed(AppRoutes.selectYourFocusPage);
+    //statusBarSet(themeController);
+    return Scaffold(
+      backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.backGround,
+      appBar: CustomAppBar(
+        title: "breathTraining".tr,
+        action: widget.skip!?
+        GestureDetector(
+            onTap: () async {
+               Get.toNamed(AppRoutes.selectYourFocusPage);
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(right: 20),
+              child: Text(
+                "skip".tr,
+                style: Style.montserratRegular(
+                    fontSize: Dimens.d15, color: themeController.isDarkMode.isTrue?ColorConstant.white:ColorConstant.black),
+              ),
+            )):const SizedBox(),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Dimens.d30.spaceHeight,
+            Lottie.asset(
+              ImageConstant.breathInhale,
+              height: 212,
+              width: 212,
+              controller: _lottieController,
+              onLoaded: (composition) {
+                _lottieController
+                  ..duration = composition.duration
+                  ..addListener(() {
+                    setState(() {});
+                  })
+                  ..addStatusListener((status) {
+                    if (status == AnimationStatus.completed) {
+                      _lottieController.reset();
+                    }
+                  });
               },
-              child: Padding(
-                padding: const EdgeInsets.only(right: 20),
-                child: Text(
-                  "skip".tr,
-                  style: Style.montserratRegular(
-                      fontSize: Dimens.d15, color: themeController.isDarkMode.isTrue?ColorConstant.white:ColorConstant.black),
-                ),
-              )):const SizedBox(),
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Dimens.d30.spaceHeight,
-              Lottie.asset(
-                ImageConstant.breathInhale,
-                height: 212,
-                width: 212,
-                controller: _lottieController,
-                onLoaded: (composition) {
-                  _lottieController
-                    ..duration = composition.duration
-                    ..addListener(() {
-                      setState(() {});
-                    })
-                    ..addStatusListener((status) {
-                      if (status == AnimationStatus.completed) {
-                        _lottieController.reset();
-                      }
-                    });
-                },
-              ),
-              Dimens.d20.spaceHeight,
-              GestureDetector(onTap: () {
-                if (!isPlaying) {
-                  _startAnimationSequence();
-                }
+            ),
+            Dimens.d20.spaceHeight,
+            GestureDetector(onTap: () {
+              if (!isPlaying) {
+                _startAnimationSequence();
+              }
 
-              },child: SvgPicture.asset(isPlaying?ImageConstant.breathPause:ImageConstant.breathPlay)),
-              Dimens.d20.spaceHeight,
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Dimens.d35),
-                child: Text(
-                  "breathingMeditation".tr,
-                  textAlign: TextAlign.center,
-                  style: Style.montserratRegular(
-                      fontSize: 16, fontWeight: FontWeight.w600),
-                ),
+            },child: SvgPicture.asset(isPlaying?ImageConstant.breathPause:ImageConstant.breathPlay)),
+            Dimens.d20.spaceHeight,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Dimens.d35),
+              child: Text(
+                "breathingMeditation".tr,
+                textAlign: TextAlign.center,
+                style: Style.montserratRegular(
+                    fontSize: 16, fontWeight: FontWeight.w600),
               ),
-              Dimens.d20.spaceHeight,
+            ),
+            Dimens.d20.spaceHeight,
 
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Dimens.d36),
-                child: Text(
-                  "breatheNote".tr,
-                  textAlign: TextAlign.center,
-                  style: Style.montserratRegular(height: 2,
-                      fontSize: 14, fontWeight: FontWeight.w400),
-                ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Dimens.d36),
+              child: Text(
+                "breatheNote".tr,
+                textAlign: TextAlign.center,
+                style: Style.montserratRegular(height: 2,
+                    fontSize: 14, fontWeight: FontWeight.w400),
               ),
-              Dimens.d30.spaceHeight,
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                margin: const EdgeInsets.symmetric(horizontal: 40),
-                decoration: BoxDecoration(
-                  color:  themeController.isDarkMode.isTrue?ColorConstant.textfieldFillColor:ColorConstant.white,
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Text("In",
-                            style: Style.montserratRegular(
-                              fontSize: 16,
-                            )),
-                        const Spacer(),
-                        Text("4sec".tr,
-                            style: Style.montserratRegular(
-                                fontSize: 16, color: ColorConstant.colorA49F9F)),
-                      ],
-                    ),
-                    Dimens.d10.spaceHeight,
-                    Row(
-                      children: [
-                        Text("out".tr,
-                            style: Style.montserratRegular(
-                              fontSize: 16,
-                            )),
-                        const Spacer(),
-                        Text("4sec".tr,
-                            style: Style.montserratRegular(
-                                fontSize: 16, color: ColorConstant.colorA49F9F)),
-                      ],
-                    ),
-                    Dimens.d10.spaceHeight,
-                    Row(
-                      children: [
-                        Text("hold".tr,
-                            style: Style.montserratRegular(fontSize: 16)),
-                        const Spacer(),
-                        Text("4sec".tr,
-                            style: Style.montserratRegular(
-                                fontSize: 16, color: ColorConstant.colorA49F9F)),
-                      ],
-                    ),
-                  ],
-                ),
+            ),
+            Dimens.d30.spaceHeight,
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              margin: const EdgeInsets.symmetric(horizontal: 40),
+              decoration: BoxDecoration(
+                color:  themeController.isDarkMode.isTrue?ColorConstant.textfieldFillColor:ColorConstant.white,
+                borderRadius: BorderRadius.circular(10.0),
               ),
-              Dimens.d30.spaceHeight,
-              GestureDetector(onLongPress: () {
-                _triggerSOS(context);
-              },child: SvgPicture.asset(ImageConstant.sos,height: 86,width: 86,)),
-              Dimens.d30.spaceHeight,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Text("In",
+                          style: Style.montserratRegular(
+                            fontSize: 16,
+                          )),
+                      const Spacer(),
+                      Text("4sec".tr,
+                          style: Style.montserratRegular(
+                              fontSize: 16, color: ColorConstant.colorA49F9F)),
+                    ],
+                  ),
+                  Dimens.d10.spaceHeight,
+                  Row(
+                    children: [
+                      Text("out".tr,
+                          style: Style.montserratRegular(
+                            fontSize: 16,
+                          )),
+                      const Spacer(),
+                      Text("4sec".tr,
+                          style: Style.montserratRegular(
+                              fontSize: 16, color: ColorConstant.colorA49F9F)),
+                    ],
+                  ),
+                  Dimens.d10.spaceHeight,
+                  Row(
+                    children: [
+                      Text("hold".tr,
+                          style: Style.montserratRegular(fontSize: 16)),
+                      const Spacer(),
+                      Text("4sec".tr,
+                          style: Style.montserratRegular(
+                              fontSize: 16, color: ColorConstant.colorA49F9F)),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Dimens.d30.spaceHeight,
+            GestureDetector(onLongPress: () {
+              _triggerSOS(context);
+            },child: SvgPicture.asset(ImageConstant.sos,height: 86,width: 86,)),
+            Dimens.d30.spaceHeight,
 
-            ],
-          ),
+          ],
         ),
       ),
     );

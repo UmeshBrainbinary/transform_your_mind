@@ -26,7 +26,9 @@ class ChangePasswordController extends GetxController {
   TextEditingController currentPController = TextEditingController();
   TextEditingController newPController = TextEditingController();
   TextEditingController confirmPController = TextEditingController();
-
+  FocusNode currentFocus = FocusNode();
+  FocusNode newFocus = FocusNode();
+  FocusNode confirmFocus = FocusNode();
   ValueNotifier<bool> current = ValueNotifier(true);
   ValueNotifier<bool> securePass = ValueNotifier(true);
   ValueNotifier<bool> securePass2 = ValueNotifier(true);
@@ -34,10 +36,7 @@ class ChangePasswordController extends GetxController {
 
   @override
   void onInit() {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: ColorConstant.backGround, // Status bar background color
-      statusBarIconBrightness: Brightness.dark, // Status bar icon/text color
-    ));
+
     super.onInit();
   }
   RxBool loader = false.obs;
@@ -130,7 +129,6 @@ class ChangePasswordController extends GetxController {
         "newPassword": newPController.text.trim(),
         "currentPassword": currentPController.text.trim(),
         "isChangePassword": true
-
       });
 
       request.headers.addAll(headers);
