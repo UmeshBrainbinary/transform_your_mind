@@ -1,9 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:transform_your_mind/core/app_export.dart';
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
@@ -25,18 +27,13 @@ Future<XFile?>? showImagePickerActionSheet(BuildContext context) async {
           color: themeController.isDarkMode.value? ColorConstant.textfieldFillColor : ColorConstant.white,
           child: CupertinoActionSheetAction(
             onPressed: () async {
-              final cameraStatus = await Permission.camera.status;
-              if(cameraStatus==PermissionStatus.granted){
+              var cameraStatus = await Permission.camera.status;
+              if( cameraStatus==PermissionStatus.granted){
                 Navigator.pop(context, ImageSource.camera);
-
               }else if(cameraStatus == PermissionStatus.denied){
                 await Permission.camera.request();
-
               }else if(cameraStatus ==PermissionStatus.permanentlyDenied ){
-                await handlePermanentlyDenied().then((value) {
-                  Navigator.pop(context, ImageSource.camera);
-                },);
-
+                await handlePermanentlyDenied();
               }
             },
             child: Text("takePhoto".tr, style: Style.montserratRegular(color: themeController.isDarkMode.value? ColorConstant.white : ColorConstant.black,)),
@@ -96,4 +93,3 @@ Future<XFile?>? showImagePickerActionSheet(BuildContext context) async {
 Future<void> handlePermanentlyDenied() async {
   await openAppSettings();
 }
-

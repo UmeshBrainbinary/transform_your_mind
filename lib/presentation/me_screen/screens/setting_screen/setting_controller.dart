@@ -64,7 +64,9 @@ class _SettingsData {
               value: themeController.isDarkMode.value,
               onChanged: (value) async {
                 themeController.switchTheme();
+
                 Get.forceAppUpdate();
+
               },
               width: 50.0,
               height: 25.0,

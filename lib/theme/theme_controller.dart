@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
+import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 
 
@@ -26,6 +28,11 @@ class ThemeController extends GetxController {
     Get.changeThemeMode(isDarkMode.value ? ThemeMode.dark : ThemeMode.light);
     await PrefService.setValue(PrefKey.theme, isDarkMode.value);
     saveThemeToBox(isDarkMode.value);
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarBrightness: Brightness.dark,
+      statusBarColor: ColorConstant.darkBackground,
+      statusBarIconBrightness: Brightness.light,
+    ));
     //setThemeWiseColor();
 }
 

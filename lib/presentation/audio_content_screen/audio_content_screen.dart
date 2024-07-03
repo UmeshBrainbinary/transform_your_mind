@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:transform_your_mind/core/app_export.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -54,11 +52,14 @@ class _AudioContentScreenState extends State<AudioContentScreen>
         showScrollTop.value = false;
       }
     });
+    getData();
 
-    audioContentController.getPodsData();
     super.initState();
   }
-
+getData() async {
+ await audioContentController.getRate();
+ await audioContentController.getPodsData();
+}
   @override
   void dispose() {
     _lottieBgController.dispose();
@@ -590,6 +591,14 @@ class _AudioContentScreenState extends State<AudioContentScreen>
         return NowPlayingScreen(
           audioData: audioContent,
         );
+      },
+    ).then(
+      (value) async {
+        await audioContentController.getRate();
+        await audioContentController.getPodsData();
+
+
+        setState(() {});
       },
     );
   }

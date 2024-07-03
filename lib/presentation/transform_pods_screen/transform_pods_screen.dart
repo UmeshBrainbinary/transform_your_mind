@@ -77,8 +77,8 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
 
   @override
   Widget build(BuildContext context) {
-    //statusBarSet(themeController);
-    return Scaffold(backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
+    return Scaffold(
+        backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
         appBar: CustomAppBar(
           title: "transformPods".tr,
           showBack: true,
@@ -127,7 +127,6 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
                     controller: searchController,
                     focusNode: searchFocusNode),
               ),
-              // const TransFormRitualsButton(),
               Dimens.d20.h.spaceHeight,
               Expanded(
                   child: GetBuilder<AudioContentController>(
@@ -273,8 +272,22 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
                               );
                             })
                             : Padding(
-                          padding: const EdgeInsets.only(bottom: Dimens.d130),
-                          child: Center(child: Image.asset(themeController.isDarkMode.isTrue?ImageConstant.searchDark:ImageConstant.searchNotFound,height: 245,width: 288,)),
+                          padding: const EdgeInsets.only(top: Dimens.d50),
+                          child: Column(
+                            children: [
+                              SvgPicture.asset(ImageConstant.noSearch,),
+                              Text("dataNotFound".tr,style: Style.gothamMedium(
+                                  fontSize: 24,fontWeight: FontWeight.w700),),
+                              Dimens.d11.spaceHeight,
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 35),
+                                child: Text("noSearchAgain".tr,
+                                  textAlign: TextAlign.center,
+                                  style: Style.montserratRegular(fontSize: 14,fontWeight: FontWeight.w400),),
+                              ),
+
+                            ],
+                          ),
                         ),
                       );
                     },

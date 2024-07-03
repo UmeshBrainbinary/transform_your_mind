@@ -45,7 +45,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   ];
   @override
   void initState() {
-    if (themeController.isDarkMode.isTrue) {
+/*    if (themeController.isDarkMode.isTrue) {
       SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         statusBarBrightness: Brightness.dark,
         statusBarIconBrightness: Brightness.light,
@@ -55,7 +55,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         statusBarBrightness: Brightness.light,
         statusBarIconBrightness: Brightness.dark,
       ));
-    }
+    }*/
     super.initState();
   }
   @override

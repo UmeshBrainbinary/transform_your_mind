@@ -38,6 +38,31 @@ class _SettingScreenState extends State<SettingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    themeController.isDarkMode.value
+        ? ThemeData(
+        brightness: Brightness.dark,
+        primaryColor: Colors.black,
+        dialogTheme: const DialogTheme(
+            backgroundColor: ColorConstant.textfieldFillColor),
+        scaffoldBackgroundColor: ColorConstant.black,
+        navigationBarTheme: const NavigationBarThemeData(
+            backgroundColor: Colors.transparent,
+            iconTheme: WidgetStatePropertyAll(IconThemeData(
+              color: Colors.white, // Icon color
+            ),)
+        ),
+        textTheme: const TextTheme(
+          displayLarge: TextStyle(color: ColorConstant.white),
+        ),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(backgroundColor: ColorConstant.black)
+
+    )
+        : ThemeData(
+        appBarTheme: Theme.of(Get.context!)
+            .appBarTheme
+            .copyWith(backgroundColor: Colors.black),
+        primaryColor: ColorConstant.backGround,
+        visualDensity: VisualDensity.adaptivePlatformDensity);
     //statusBarSet(themeController);
     return Scaffold(
       backgroundColor: themeController.isDarkMode.value

@@ -15,6 +15,7 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/model_class/common_model.dart';
 import 'package:transform_your_mind/model_class/reset_password_model.dart';
 import 'package:transform_your_mind/presentation/auth/login_screen/login_screen.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
@@ -118,10 +119,14 @@ class ChangePasswordController extends GetxController {
       debugPrint(e.toString());
     }
   }
+  CommonModel commonModel = CommonModel();
   changePasswordApi(BuildContext context) async {
     loader.value = true;
     try {
-      var headers = {'Content-Type': 'application/json'};
+      var headers = {'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+
+      };
       var request = http.Request(
           'POST', Uri.parse('${EndPoints.baseUrl}${EndPoints.resetPassword}'));
       request.body = json.encode({
@@ -144,8 +149,10 @@ class ChangePasswordController extends GetxController {
         //showSnackBarSuccess(context, resetPassword.message ?? "");
       } else {
         loader.value = false;
-        // print(response.reasonPhrase);
-        showSnackBarError(context, "Incorrect password");
+
+        final responseBody = await response.stream.bytesToString();
+        commonModel = commonModelFromJson(responseBody);
+        showSnackBarError(context, commonModel.message.toString());
       }
     } catch (e) {
       loader.value = false;

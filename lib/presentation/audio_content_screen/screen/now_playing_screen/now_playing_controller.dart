@@ -246,6 +246,7 @@ class NowPlayingController extends GetxController {
       rated.value = true;
       loader.value = false;
       Get.back();
+      
       showSnackBarSuccess(context!, "ratingsAdded".tr);
 
       debugPrint(await response.stream.bytesToString());

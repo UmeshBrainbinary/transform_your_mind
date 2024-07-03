@@ -72,7 +72,7 @@ class NoticeHowYouFeelScreen extends StatelessWidget {
                         child: Center(
                           child: Text(
                             controller.feel[index],
-                            style:Style.montserratRegular(fontSize: 18),
+                            style:Style.montserratRegular(fontSize: 18,color: Colors.black),
                           ),
                         ),
                       ),

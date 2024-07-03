@@ -96,6 +96,25 @@ class AudioContentController extends GetxController {
     }
     update(['update']);
   }
+  Future<void> getRate() async {
+    var headers = {
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.Request('GET', Uri.parse('https://transformyourmind-server.onrender.com/api/v1/rating-pod'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+    }
+    else {
+      print(response.reasonPhrase);
+    }
+
+    update(['update']);
+  }
 
 
 

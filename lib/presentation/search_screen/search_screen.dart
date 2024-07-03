@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:transform_your_mind/core/app_export.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
@@ -54,18 +52,22 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //statusBarSet(themeController);
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    final isKeyboardOpen = bottomInset > 0;
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
+      backgroundColor: themeController.isDarkMode.isTrue
+          ? ColorConstant.darkBackground
+          : ColorConstant.white,
       appBar: CustomAppBar(
         title: "search".tr,
         showBack: true,
       ),
       body: Stack(
         children: [
-          Align(
-            alignment: const Alignment(1, 0),
+          isKeyboardOpen
+              ? const SizedBox()
+              : Align(
+                  alignment: const Alignment(1, 0),
             child: SvgPicture.asset(ImageConstant.bgVector,
                 height: Dimens.d230.h),
           ),

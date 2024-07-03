@@ -8,12 +8,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:numberpicker/numberpicker.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
-import 'package:transform_your_mind/core/utils/audio_manager/audio_player_manager.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/end_points.dart';
@@ -97,26 +95,10 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   AnimationController? animationController;
   @override
   void initState() {
-/*    animationController =AnimationController(vsync: this,duration: const Duration(milliseconds: 1200));
-    final curvedAnimation = CurvedAnimation(parent: animationController!, curve: Curves.easeInOutCubic);
-    animation  = Tween<double>(begin:0,end: 100 ).animate(curvedAnimation)..addListener(() {
-      setState(() {
-      });
-    },);
-    animationController!.repeat();*/
     getData();
 
     super.initState();
   }
-
-  List<Color> colorsList = [
-    Colors.red,
-    Colors.black,
-    Colors.yellow,
-    Colors.purple,
-    Colors.pinkAccent
-  ];
-  List<int> durations = [900, 700, 600, 800, 500];
 
   getData() async {
     await getAffirmationData();
@@ -691,7 +673,6 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                     CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-
                       SvgPicture.asset(ImageConstant.noSearch,),
                       Text("dataNotFound".tr,style: Style.gothamMedium(
                           fontSize: 24,fontWeight: FontWeight.w700),),
@@ -849,6 +830,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                               Dimens.d10.spaceHeight,
                               Text(
                                 affirmationModel.data?[index].description ?? '',
+                                overflow: TextOverflow.ellipsis,
                                 style: Style.montserratRegular(
                                         height: Dimens.d2,
                                         fontSize: Dimens.d11,

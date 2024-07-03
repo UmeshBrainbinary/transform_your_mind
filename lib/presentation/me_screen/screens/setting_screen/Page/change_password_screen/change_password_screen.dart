@@ -231,7 +231,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
                                     FocusScope.of(context).unfocus();
                                     if (_formKey.currentState!.validate()) {
-                                      if (widget.title!.isNotEmpty) {
+                                      if (!widget.title!.isNotEmpty) {
                                         changePasswordController
                                             .resetPasswordApi(context);
                                       } else {

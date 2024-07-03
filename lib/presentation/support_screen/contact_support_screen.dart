@@ -15,24 +15,35 @@ import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
-class ContactSupportScreen extends StatelessWidget {
+class ContactSupportScreen extends StatefulWidget {
   const ContactSupportScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-    ThemeController themeController = Get.find<ThemeController>();
-    SupportController supportController = Get.put(SupportController());
-    //statusBarSet(themeController);
+  State<ContactSupportScreen> createState() => _ContactSupportScreenState();
+}
 
-    return Scaffold(
-      backgroundColor: themeController.isDarkMode.isTrue
-          ? ColorConstant.darkBackground
-          : ColorConstant.backGround,
-      appBar: CustomAppBar(title: "contactSupport".tr),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
+class _ContactSupportScreenState extends State<ContactSupportScreen> {
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  ThemeController themeController = Get.find<ThemeController>();
+  SupportController supportController = Get.put(SupportController());
+  @override
+  void initState() {
+
+    // TODO: implement initState
+    super.initState();
+  }
+  @override
+  Widget build(BuildContext context) {
+
+
+    return Stack(
+      children: [
+        Scaffold(
+          backgroundColor: themeController.isDarkMode.isTrue
+              ? ColorConstant.darkBackground
+              : ColorConstant.backGround,
+          appBar: CustomAppBar(title: "contactSupport".tr),
+          body: SingleChildScrollView(
             child: Stack(
               children: [
                 Align(
@@ -107,7 +118,16 @@ class ContactSupportScreen extends StatelessWidget {
                             FocusScope.of(context).unfocus();
 
                             if (_formKey.currentState!.validate()) {
+
                               await supportController.addSupport(context: context);
+                              _formKey = GlobalKey<FormState>();
+                              supportController.name.clear();
+                              supportController.email.clear();
+                              supportController.comment.clear();
+                              setState(() {
+
+                              });
+
                             }
                           },
                         ),
@@ -118,13 +138,13 @@ class ContactSupportScreen extends StatelessWidget {
               ],
             ),
           ),
-          Obx(
-            () => supportController.loader.isTrue
-                ? commonLoader()
-                : const SizedBox(),
-          )
-        ],
-      ),
+        ),
+        Obx(
+              () => supportController.loader.isTrue
+              ? commonLoader()
+              : const SizedBox(),
+        )
+      ],
     );
   }
 }

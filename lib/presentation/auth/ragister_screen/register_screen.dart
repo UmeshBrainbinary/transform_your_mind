@@ -5,6 +5,7 @@ import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
@@ -39,10 +40,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   DateTime? picked;
   ThemeController themeController = Get.find<ThemeController>();
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-  /* statusBarSet(themeController);*/
     return Stack(
       children: [
         Scaffold(
@@ -83,6 +88,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             value;
                                       }
                                     });
+
 
                                   },
                                   onDeleteTap: () async {
@@ -387,7 +393,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     FocusScope.of(context).unfocus();
     picked = await showDatePicker(
       builder: (context, child) {
-        TextStyle customTextStyle = Style.montserratRegular(fontSize: 14);
+        TextStyle customTextStyle = Style.montserratRegular(fontSize: 14,color: Colors.black);
+        TextStyle editedTextStyle = customTextStyle.copyWith(color: Colors.red); // Define the edited text style
 
         return Theme(
           data: ThemeData.light().copyWith(focusColor: ColorConstant.themeColor,
@@ -407,14 +414,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 displayMedium: customTextStyle,
                 headlineLarge: customTextStyle,
                 titleLarge: customTextStyle,
-                titleSmall: customTextStyle,
                 displaySmall: customTextStyle,
                 headlineMedium: customTextStyle,
                 headlineSmall: customTextStyle,
                 labelLarge: customTextStyle,
                 labelMedium: customTextStyle,
                 labelSmall: customTextStyle,
-                titleMedium: customTextStyle,
+                titleMedium: editedTextStyle,
+                titleSmall: editedTextStyle,
               )),
           child: child!,
         );

@@ -430,7 +430,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     FocusScope.of(context).unfocus();
     picked = await showDatePicker(
       builder: (context, child) {
-        TextStyle customTextStyle = Style.montserratRegular(fontSize: 14);
+        TextStyle customTextStyle = Style.montserratRegular(fontSize: 14,color: Colors.black);
+        TextStyle editedTextStyle = customTextStyle.copyWith(color: Colors.red); // Define the edited text style
 
         return Theme(
           data: ThemeData.light().copyWith(focusColor: ColorConstant.themeColor,
@@ -450,14 +451,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 displayMedium: customTextStyle,
                 headlineLarge: customTextStyle,
                 titleLarge: customTextStyle,
-                titleSmall: customTextStyle,
                 displaySmall: customTextStyle,
                 headlineMedium: customTextStyle,
                 headlineSmall: customTextStyle,
                 labelLarge: customTextStyle,
                 labelMedium: customTextStyle,
                 labelSmall: customTextStyle,
-                titleMedium: customTextStyle,
+                titleMedium: editedTextStyle,
+                titleSmall: editedTextStyle,
               )),
           child: child!,
         );

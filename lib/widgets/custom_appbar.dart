@@ -18,7 +18,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final VoidCallback? onTap;
 
   const CustomAppBar({
-    Key? key,
+    super.key,
     required this.title,
     this.centerTitle = true,
     this.showBack = true,
@@ -26,7 +26,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
     this.onTap,
     this.leading,
     this.action,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomAppBar> createState() => _CustomAppBarState();
@@ -55,7 +55,9 @@ class _CustomAppBarState extends State<CustomAppBar>
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
+    return AppBar( shadowColor: Colors.transparent,
+      forceMaterialTransparency: false,
+      surfaceTintColor: Colors.transparent,
       systemOverlayStyle: themeController.isDarkMode.isTrue
           ? const SystemUiOverlayStyle(
               statusBarBrightness: Brightness.dark,
@@ -86,6 +88,9 @@ class _CustomAppBarState extends State<CustomAppBar>
     return widget.showBack!?InkWell(
       onTap: widget.onTap ??
           () {
+
+                   Get.closeCurrentSnackbar();
+                   Get.closeAllSnackbars();
                   Navigator.pop(context);
                   FocusScope.of(context).unfocus();
                 },

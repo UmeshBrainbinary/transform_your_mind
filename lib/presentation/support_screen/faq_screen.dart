@@ -70,61 +70,62 @@ class _FaqScreenState extends State<FaqScreen> {
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
                             var data = controller.faqData?[index];
-                            return Container(
-                              margin:
-                              const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-                              padding:
-                              const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-                              decoration: BoxDecoration(
-                                  color: themeController.isDarkMode.isTrue
-                                      ? ColorConstant.textfieldFillColor
-                                      : ColorConstant.white,
-                                  borderRadius: BorderRadius.circular(12)),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      SizedBox(
-                                          width: 260,
-                                          child: Text(
-                                            data?.question ?? "",
-                                            style: Style.montserratSemiBold(fontSize: 14),
-                                          )),
-                                      GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              controller.faq[index] =
-                                              !controller.faq[index];
-                                            });
-                                          },
-                                          child: SvgPicture.asset(
-                                            controller.faq[index]
-                                                ? ImageConstant.upArrowFaq
-                                                : ImageConstant.downArrowFaq,
-                                            height: 18,
-                                            width: 18,
-                                            color: themeController.isDarkMode.isTrue
-                                                ? ColorConstant.white
-                                                : ColorConstant.black,
-                                          )),
-                                    ],
-                                  ),
-                                  controller.faq[index]
-                                      ? Column(
-                                    children: [
-                                      const Divider(
-                                        thickness: 0.7,
-                                      ),
-                                      Text(
-                                        data?.answer ?? "",
-                                        style: Style.montserratRegular(fontSize: 10)
-                                            .copyWith(height: 1.5),
-                                      )
-                                    ],
-                                  )
-                                      : const SizedBox()
-                                ],
+                            return GestureDetector(onTap: () {
+                              setState(() {
+                                controller.faq[index] =
+                                !controller.faq[index];
+                              });
+                            },
+                              child: Container(
+                                margin:
+                                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+                                padding:
+                                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+                                decoration: BoxDecoration(
+                                    color: themeController.isDarkMode.isTrue
+                                        ? ColorConstant.textfieldFillColor
+                                        : ColorConstant.white,
+                                    borderRadius: BorderRadius.circular(12)),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        SizedBox(
+                                            width: 260,
+                                            child: Text(
+                                              data?.question ?? "",
+                                              style: Style.montserratSemiBold(fontSize: 14),
+                                            )),
+                                        SvgPicture.asset(
+                                          controller.faq[index]
+                                              ? ImageConstant.upArrowFaq
+                                              : ImageConstant.downArrowFaq,
+                                          height: 18,
+                                          width: 18,
+                                          color: themeController.isDarkMode.isTrue
+                                              ? ColorConstant.white
+                                              : ColorConstant.black,
+                                        ),
+                                      ],
+                                    ),
+                                    controller.faq[index]
+                                        ? Column(crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const Divider(
+                                          thickness: 0.7,
+                                        ),
+                                        Text(
+                                          data?.answer ?? "",
+                                          textAlign: TextAlign.start,
+                                          style: Style.montserratRegular(fontSize: 10)
+                                              .copyWith(height: 1.5),
+                                        )
+                                      ],
+                                    )
+                                        : const SizedBox()
+                                  ],
+                                ),
                               ),
                             );
                           },

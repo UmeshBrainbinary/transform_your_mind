@@ -71,17 +71,7 @@ class _HomeScreenState extends State<HomeScreen>
     g.getTodayAffirmation();
     g.getRecentlyList();
 
-    if (themeController.isDarkMode.isTrue) {
-      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-        statusBarBrightness: Brightness.dark,
-        statusBarIconBrightness: Brightness.light,
-      ));
-    } else {
-      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-        statusBarBrightness: Brightness.light,
-        statusBarIconBrightness: Brightness.dark,
-      ));
-    }
+
     setState(() {});
     super.initState();
   }
@@ -840,7 +830,7 @@ class _HomeScreenState extends State<HomeScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                          const Spacer(),
+                         Dimens.d12.spaceHeight,
                           SizedBox(
                             width: Dimens.d200,
                             child: Text(
@@ -850,8 +840,9 @@ class _HomeScreenState extends State<HomeScreen>
                                   fontSize: 20, fontWeight: FontWeight.w600),
                             ),
                           ),
-                          const Spacer(),
-                          SizedBox(
+                    Dimens.d5.spaceHeight,
+
+                    SizedBox(
                       width: Dimens.d200,
                       child: Text(
                         controller.audioData[index].description ?? "",
@@ -862,8 +853,9 @@ class _HomeScreenState extends State<HomeScreen>
                               ),
                       ),
                     ),
-                          const Spacer(),
-                        ],
+                    Dimens.d7.spaceHeight,
+
+                  ],
                 )
               ]),
             ),

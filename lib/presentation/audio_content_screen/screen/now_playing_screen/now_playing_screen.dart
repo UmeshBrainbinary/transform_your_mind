@@ -991,8 +991,9 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                 ),
                 Dimens.d22.spaceHeight,
                 CommonTextField(
+
                     borderRadius: Dimens.d10,
-                    filledColor: ColorConstant.colorECECEC,
+                    filledColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.colorECECEC,
                     hintText: "writeYourNote".tr,
                     maxLines: 5,
                     controller: nowPlayingController.ratingController,

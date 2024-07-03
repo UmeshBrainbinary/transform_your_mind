@@ -172,188 +172,186 @@ class _AddPositivePageState extends State<AddPositivePage>
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: themeController.isDarkMode.value
-            ? ColorConstant.darkBackground
-            : ColorConstant.backGround,
-        appBar: CustomAppBar(
-          title: widget.isEdit!
-              ? "editPositiveMoments".tr
-              : "addPositiveMoments".tr,
-        ),
-        body: Stack(
-          children: [
-            LayoutBuilder(
-              builder: (context, constraints) {
-                return Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Expanded(
-                        child: CustomScrollViewWidget(
-                          child: LayoutContainer(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "addImage".tr,
-                                  style: Style.montserratRegular(fontSize: 14),
-                                ),
-                                ValueListenableBuilder(
-                                  valueListenable: imageFile,
-                                  builder: (context, value, child) {
-                                    return AddGratitudeImageWidget(
-                                      onTap: () async {
-                                        await showImagePickerActionSheet(
-                                                context)
-                                            ?.then((value) async {
-                                          if (value != null) {
-                                            imageFile.value =
-                                                await ImageUtils.compressImage(
-                                                    value);
-                                            imageFile.value = value;
-                                          }
-                                        });
-                                      },
-                                      onDeleteTap: () async {
-                                        imageFile = ValueNotifier(null);
-                                        urlImage = null;
-                                        _isImageRemoved = true;
-                                        setState(() {});
-                                      },
-                                      image: imageFile.value,
-                                      imageURL: urlImage,
-                                    );
-                                  },
-                                ),
-                                imageValid == true
-                                    ? Text(
-                                        "imageRequired".tr,
-                                        style: Style.montserratRegular(
-                                            color: ColorConstant.colorFF0000,
-                                            fontSize: Dimens.d12),
-                                      )
-                                    : const SizedBox(),
-                                Dimens.d20.spaceHeight,
-                                CommonTextField(
-                                  hintText: "enterTitle".tr,
-                                  labelText: "title".tr,
-                                  controller: titleController,
-                                  focusNode: titleFocus,
-                                  prefixLottieIcon: ImageConstant.lottieTitle,
-                                  maxLength: maxLength,
-                                  inputFormatters: [
-                                    LengthLimitingTextInputFormatter(maxLength),
-                                  ],
-                                  validator: (value) {
-                                    if (value == "") {
-                                      return "pleaseEnterTitle".tr;
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                Dimens.d16.spaceHeight,
-                                Stack(
-                                  children: [
-                                    CommonTextField(
-                                      hintText: "enterDescription".tr,
-                                      labelText: "description".tr,
-                                      controller: descController,
-                                      focusNode: descFocus,
-                                      transform: Matrix4.translationValues(
-                                          0, -108.h, 0),
-                                      prefixLottieIcon:
-                                          ImageConstant.lottieDescription,
-                                      maxLines: 15,
-                                      maxLength: maxLengthDesc,
-
-                                      validator: (value) {
-                                        if (value == "") {
-                                          return "pleaseEnterDescription".tr;
+    return Scaffold(
+      backgroundColor: themeController.isDarkMode.value
+          ? ColorConstant.darkBackground
+          : ColorConstant.backGround,
+      appBar: CustomAppBar(
+        title: widget.isEdit!
+            ? "editPositiveMoments".tr
+            : "addPositiveMoments".tr,
+      ),
+      body: Stack(
+        children: [
+          LayoutBuilder(
+            builder: (context, constraints) {
+              return Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(
+                      child: CustomScrollViewWidget(
+                        child: LayoutContainer(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "addImage".tr,
+                                style: Style.montserratRegular(fontSize: 14),
+                              ),
+                              ValueListenableBuilder(
+                                valueListenable: imageFile,
+                                builder: (context, value, child) {
+                                  return AddGratitudeImageWidget(
+                                    onTap: () async {
+                                      await showImagePickerActionSheet(
+                                              context)
+                                          ?.then((value) async {
+                                        if (value != null) {
+                                          imageFile.value =
+                                              await ImageUtils.compressImage(
+                                                  value);
+                                          imageFile.value = value;
                                         }
-                                        return null;
-                                      },
-                                      onChanged: (value) => currentLength
-                                          .value = descController.text.length,
+                                      });
+                                    },
+                                    onDeleteTap: () async {
+                                      imageFile = ValueNotifier(null);
+                                      urlImage = null;
+                                      _isImageRemoved = true;
+                                      setState(() {});
+                                    },
+                                    image: imageFile.value,
+                                    imageURL: urlImage,
+                                  );
+                                },
+                              ),
+                              imageValid == true
+                                  ? Text(
+                                      "imageRequired".tr,
+                                      style: Style.montserratRegular(
+                                          color: ColorConstant.colorFF0000,
+                                          fontSize: Dimens.d12),
+                                    )
+                                  : const SizedBox(),
+                              Dimens.d20.spaceHeight,
+                              CommonTextField(
+                                hintText: "enterTitle".tr,
+                                labelText: "title".tr,
+                                controller: titleController,
+                                focusNode: titleFocus,
+                                prefixLottieIcon: ImageConstant.lottieTitle,
+                                maxLength: maxLength,
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(maxLength),
+                                ],
+                                validator: (value) {
+                                  if (value == "") {
+                                    return "pleaseEnterTitle".tr;
+                                  }
+                                  return null;
+                                },
+                              ),
+                              Dimens.d16.spaceHeight,
+                              Stack(
+                                children: [
+                                  CommonTextField(
+                                    hintText: "enterDescription".tr,
+                                    labelText: "description".tr,
+                                    controller: descController,
+                                    focusNode: descFocus,
+                                    transform: Matrix4.translationValues(
+                                        0, -108.h, 0),
+                                    prefixLottieIcon:
+                                        ImageConstant.lottieDescription,
+                                    maxLines: 15,
+                                    maxLength: maxLengthDesc,
 
-                                    ),
-                                  ],
-                                ),
-                                Dimens.d20.h.spaceHeight,
-                                Row(
-                                  children: [
-                                    if (widget.isEdit!)
-                                      Expanded(
-                                        child: CommonElevatedButton(
-                                          title: "cancel".tr,
-                                          outLined: true,
-                                          textStyle: Style.montserratRegular(
-                                              color:
-                                                  ColorConstant.textDarkBlue),
-                                          onTap: () {
-                                            if (_formKey.currentState!
-                                                .validate()) {
-                                              setState(() {});
-                                              Get.back();
-                                            }
-                                          },
-                                        ),
-                                      ),
-                                    Dimens.d20.spaceWidth,
+                                    validator: (value) {
+                                      if (value == "") {
+                                        return "pleaseEnterDescription".tr;
+                                      }
+                                      return null;
+                                    },
+                                    onChanged: (value) => currentLength
+                                        .value = descController.text.length,
+
+                                  ),
+                                ],
+                              ),
+                              Dimens.d20.h.spaceHeight,
+                              Row(
+                                children: [
+                                  if (widget.isEdit!)
                                     Expanded(
                                       child: CommonElevatedButton(
+                                        title: "cancel".tr,
+                                        outLined: true,
                                         textStyle: Style.montserratRegular(
-                                            fontSize: Dimens.d20,
-                                            color: ColorConstant.white),
-                                        title: widget.isEdit!
-                                            ? "update".tr
-                                            : "save".tr,
-                                        onTap: () async {
-                                          titleFocus.unfocus();
-                                          descFocus.unfocus();
+                                            color:
+                                                ColorConstant.textDarkBlue),
+                                        onTap: () {
                                           if (_formKey.currentState!
-                                                      .validate() &&
-                                                  imageFile.value != null ||
-                                              urlImage != null) {
-                                            setState(() {
-                                              imageValid = false;
-                                            });
-                                            if (widget.isEdit!) {
-                                              await updatePositiveMoments(
-                                                  widget.id);
-                                              /* _showAlertDialog(context);*/
-                                            } else {
-                                              await createPositiveMoment();
-                                            }
-                                          } else {
-                                            setState(() {
-                                              imageValid = true;
-                                            });
+                                              .validate()) {
+                                            setState(() {});
+                                            Get.back();
                                           }
                                         },
                                       ),
                                     ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                                  Dimens.d20.spaceWidth,
+                                  Expanded(
+                                    child: CommonElevatedButton(
+                                      textStyle: Style.montserratRegular(
+                                          fontSize: Dimens.d20,
+                                          color: ColorConstant.white),
+                                      title: widget.isEdit!
+                                          ? "update".tr
+                                          : "save".tr,
+                                      onTap: () async {
+                                        titleFocus.unfocus();
+                                        descFocus.unfocus();
+                                        if (_formKey.currentState!
+                                                    .validate() &&
+                                                imageFile.value != null ||
+                                            urlImage != null) {
+                                          setState(() {
+                                            imageValid = false;
+                                          });
+                                          if (widget.isEdit!) {
+                                            await updatePositiveMoments(
+                                                widget.id);
+                                            /* _showAlertDialog(context);*/
+                                          } else {
+                                            await createPositiveMoment();
+                                          }
+                                        } else {
+                                          setState(() {
+                                            imageValid = true;
+                                          });
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                      Dimens.d10.spaceHeight,
-                    ],
-                  ),
-                );
-              },
-            ),
-            Obx(
-              () => loader.isTrue ? commonLoader() : const SizedBox(),
-            )
-          ],
-        ),
+                    ),
+                    Dimens.d10.spaceHeight,
+                  ],
+                ),
+              );
+            },
+          ),
+          Obx(
+            () => loader.isTrue ? commonLoader() : const SizedBox(),
+          )
+        ],
       ),
     );
   }

@@ -149,24 +149,19 @@ class _MyAppState extends State<MyApp> {
           ? ThemeData(
           brightness: Brightness.dark,
           primaryColor: Colors.black,
-          dialogTheme: DialogTheme(backgroundColor: ColorConstant.textfieldFillColor),
+          dialogTheme: const DialogTheme(
+              backgroundColor: ColorConstant.textfieldFillColor),
           scaffoldBackgroundColor: ColorConstant.black,
-          navigationBarTheme: NavigationBarThemeData(
+          navigationBarTheme: const NavigationBarThemeData(
               backgroundColor: Colors.transparent,
               iconTheme: WidgetStatePropertyAll(IconThemeData(
                 color: Colors.white, // Icon color
               ),)
           ),
-          // elevatedButtonTheme: ElevatedButtonThemeData(
-          //   style: ElevatedButton.styleFrom(
-          //     foregroundColor: Colors.white, backgroundColor: Colors.orange,
-          //     textStyle: TextStyle(fontSize: 16.0),
-          //   ),
-          // ),
-          textTheme: TextTheme(
+          textTheme: const TextTheme(
             displayLarge: TextStyle(color: ColorConstant.white),
           ),
-          bottomNavigationBarTheme: BottomNavigationBarThemeData(backgroundColor: ColorConstant.black)
+          bottomNavigationBarTheme: const BottomNavigationBarThemeData(backgroundColor: ColorConstant.black)
 
       )
           : ThemeData(

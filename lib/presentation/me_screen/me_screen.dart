@@ -70,179 +70,177 @@ class _MeScreenState extends State<MeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
+    return Scaffold(
 
-        appBar: CustomAppBar(
-          title: "me".tr,
-          showBack: false,
-          action: Row(
-            children: [
-             GestureDetector(
-               onTap: (){
-                 Get.toNamed(AppRoutes.settingScreen);
-               },
-                 child: Image.asset(ImageConstant.setting, height: Dimens.d20, width: Dimens.d20, color: ColorConstant.themeColor)),
-              Dimens.d20.spaceWidth
-            ],
-          ),
+      appBar: CustomAppBar(
+        title: "me".tr,
+        showBack: false,
+        action: Row(
+          children: [
+           GestureDetector(
+             onTap: (){
+               Get.toNamed(AppRoutes.settingScreen);
+             },
+               child: Image.asset(ImageConstant.setting, height: Dimens.d20, width: Dimens.d20, color: ColorConstant.themeColor)),
+            Dimens.d20.spaceWidth
+          ],
         ),
-        body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            children: [
-              Padding(
-                  padding: Dimens.d20.paddingHorizontal,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Dimens.d8.spaceHeight,
-                    Center(
-                      child: Text(
-                        "$_greeting, Test!",
-                        textAlign: TextAlign.center,
-                        style: Style.cormorantGaramondBold(fontSize: 20),
-                      ),
-                    ),
-                    Dimens.d15.spaceHeight,
-                    Center(
-                      child: Text(
-                        "everyoneU".tr,
-                        textAlign: TextAlign.center,
-                        style: Style.montserratMedium(
-                          height: Dimens.d1_4,
-                        ),
-                      ),
-                    ),
-
-
-
-                  ],
-                ),
-              ),
-              Dimens.d30.spaceHeight,
-
-              Row(
+      ),
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          children: [
+            Padding(
+                padding: Dimens.d20.paddingHorizontal,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Spacer(),
-                  GestureDetector(
-                    onTap: () {
-                      tabIndexMeSection = 1;
-                      setState(() {});
-                    },
-                    child: Container(
-                      height: 28,
-                      padding: EdgeInsets.symmetric(
-                          horizontal:
-                          tabIndexMeSection == 1
-                              ? 20
-                              : 0),
-                      decoration: BoxDecoration(
-                        borderRadius:
-                        BorderRadius.circular(50),
-                        color: tabIndexMeSection == 1
-                            ? ColorConstant.color3d5157
-                            : Colors.transparent,
-                      ),
-                      child: Center(
-                        child: Text(
-                          "myHub".tr,
-                          textAlign: TextAlign.center,
-                          style: Style.cormorantGaramondBold(
-                            height: Dimens.d1_4,
-                            fontSize: 12,
-                            color: tabIndexMeSection == 1
-                                ? ColorConstant.white
-                                : ColorConstant.grey,
-                          ),
-                        ),
+                  Dimens.d8.spaceHeight,
+                  Center(
+                    child: Text(
+                      "$_greeting, Test!",
+                      textAlign: TextAlign.center,
+                      style: Style.cormorantGaramondBold(fontSize: 20),
+                    ),
+                  ),
+                  Dimens.d15.spaceHeight,
+                  Center(
+                    child: Text(
+                      "everyoneU".tr,
+                      textAlign: TextAlign.center,
+                      style: Style.montserratMedium(
+                        height: Dimens.d1_4,
                       ),
                     ),
                   ),
-                  const Spacer(),
-                  GestureDetector(
-                    onTap: () {
-                      tabIndexMeSection = 2;
-                      setState(() {});
-                    },
-                    child: Container(
-                      height: 28,
-                      padding: EdgeInsets.symmetric(
-                          horizontal:
-                          tabIndexMeSection == 2
-                              ? 20
-                              : 0),
-                      decoration: BoxDecoration(
-                        borderRadius:
-                        BorderRadius.circular(50),
-                        color: tabIndexMeSection == 2
-                            ? ColorConstant.color3d5157
-                            : Colors.transparent,
-                      ),
-                      child: Center(
-                        child: Text(
-                          "myLibrary".tr,
-                          textAlign: TextAlign.center,
-                          style: Style.cormorantGaramondBold(
-                            height: Dimens.d1_4,
-                            fontSize: 12,
-                            color: tabIndexMeSection == 2
-                                ? ColorConstant.white
-                                : ColorConstant.grey,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const Spacer(),
-                  GestureDetector(
-                    onTap: () {
-                      tabIndexMeSection = 3;
-                      setState(() {});
-                    },
-                    child: Container(
-                      height: 28,
-                      padding: EdgeInsets.symmetric(
-                          horizontal:
-                          tabIndexMeSection == 3
-                              ? 20
-                              : 0),
-                      decoration: BoxDecoration(
-                        borderRadius:
-                        BorderRadius.circular(50),
-                        color: tabIndexMeSection == 3
-                            ? ColorConstant.color3d5157
-                            : Colors.transparent,
-                      ),
-                      child: Center(
-                        child: Text(
-                          "myHistory".tr,
-                          textAlign: TextAlign.center,
-                          style: Style.cormorantGaramondBold(
-                            height: Dimens.d1_4,
-                            fontSize: 12,
-                            color: tabIndexMeSection == 3
-                                ? ColorConstant.white
-                                : ColorConstant.grey,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const Spacer(),
+
+
+
                 ],
               ),
+            ),
+            Dimens.d30.spaceHeight,
 
-              Dimens.d25.spaceHeight,
-              tabIndexMeSection == 1
-                  ? myHub()
-                  : tabIndexMeSection == 2
-                  ? myLibrary()
-                  : myHistory(),
-            ],
-          ),
-        )
-      ),
+            Row(
+              children: [
+                const Spacer(),
+                GestureDetector(
+                  onTap: () {
+                    tabIndexMeSection = 1;
+                    setState(() {});
+                  },
+                  child: Container(
+                    height: 28,
+                    padding: EdgeInsets.symmetric(
+                        horizontal:
+                        tabIndexMeSection == 1
+                            ? 20
+                            : 0),
+                    decoration: BoxDecoration(
+                      borderRadius:
+                      BorderRadius.circular(50),
+                      color: tabIndexMeSection == 1
+                          ? ColorConstant.color3d5157
+                          : Colors.transparent,
+                    ),
+                    child: Center(
+                      child: Text(
+                        "myHub".tr,
+                        textAlign: TextAlign.center,
+                        style: Style.cormorantGaramondBold(
+                          height: Dimens.d1_4,
+                          fontSize: 12,
+                          color: tabIndexMeSection == 1
+                              ? ColorConstant.white
+                              : ColorConstant.grey,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const Spacer(),
+                GestureDetector(
+                  onTap: () {
+                    tabIndexMeSection = 2;
+                    setState(() {});
+                  },
+                  child: Container(
+                    height: 28,
+                    padding: EdgeInsets.symmetric(
+                        horizontal:
+                        tabIndexMeSection == 2
+                            ? 20
+                            : 0),
+                    decoration: BoxDecoration(
+                      borderRadius:
+                      BorderRadius.circular(50),
+                      color: tabIndexMeSection == 2
+                          ? ColorConstant.color3d5157
+                          : Colors.transparent,
+                    ),
+                    child: Center(
+                      child: Text(
+                        "myLibrary".tr,
+                        textAlign: TextAlign.center,
+                        style: Style.cormorantGaramondBold(
+                          height: Dimens.d1_4,
+                          fontSize: 12,
+                          color: tabIndexMeSection == 2
+                              ? ColorConstant.white
+                              : ColorConstant.grey,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const Spacer(),
+                GestureDetector(
+                  onTap: () {
+                    tabIndexMeSection = 3;
+                    setState(() {});
+                  },
+                  child: Container(
+                    height: 28,
+                    padding: EdgeInsets.symmetric(
+                        horizontal:
+                        tabIndexMeSection == 3
+                            ? 20
+                            : 0),
+                    decoration: BoxDecoration(
+                      borderRadius:
+                      BorderRadius.circular(50),
+                      color: tabIndexMeSection == 3
+                          ? ColorConstant.color3d5157
+                          : Colors.transparent,
+                    ),
+                    child: Center(
+                      child: Text(
+                        "myHistory".tr,
+                        textAlign: TextAlign.center,
+                        style: Style.cormorantGaramondBold(
+                          height: Dimens.d1_4,
+                          fontSize: 12,
+                          color: tabIndexMeSection == 3
+                              ? ColorConstant.white
+                              : ColorConstant.grey,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const Spacer(),
+              ],
+            ),
+
+            Dimens.d25.spaceHeight,
+            tabIndexMeSection == 1
+                ? myHub()
+                : tabIndexMeSection == 2
+                ? myLibrary()
+                : myHistory(),
+          ],
+        ),
+      )
     );
   }
 
