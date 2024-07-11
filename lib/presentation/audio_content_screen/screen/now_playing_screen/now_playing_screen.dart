@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
@@ -22,7 +23,6 @@ import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
-import 'package:transform_your_mind/widgets/custom_appbar.dart';
 import 'package:volume_controller/volume_controller.dart';
 
 AudioData? audioDataStore;
@@ -62,39 +62,6 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
   @override
   void initState() {
     super.initState();
-  /*  nowPlayingController.rated.value = widget.audioData?.isRated ?? false;
-    nowPlayingController.bookmark.value =
-        widget.audioData?.isBookmarked ?? false;
-    nowPlayingController.update();
-    nowPlayingController.lottieController = AnimationController(
-        vsync: this, duration: const Duration(seconds: 4));
-    nowPlayingController.lottieBgController =
-        AnimationController(vsync: this);
-
-    _setInitValues();
-    if (widget.d == true) {
-      nowPlayingController.setUrlFile(
-          img: widget.audioData?.image ?? "",
-          description: widget.audioData?.description ?? "",
-          expertName: widget.audioData?.expertName ?? "",
-          name: widget.audioData?.name ?? "",
-          widget.audioData?.downloadedPath ?? "");
-    } else {
-      nowPlayingController.setUrl(
-          img: widget.audioData?.image ?? "",
-          description: widget.audioData?.description ?? "",
-          expertName: widget.audioData?.expertName ?? "",
-          name: widget.audioData?.name ?? "",
-          widget.audioData?.audioFile ?? "");
-    }
-
-    VolumeController().listener((volume) {
-      setState(() => _volumeListenerValue = volume);
-    });
-
-    VolumeController().getVolume().then((volume) => _setVolumeValue = volume);
-    getUserDetails();
-    setState(() {});*/
 
     setUrlPlaying();
   }
@@ -217,6 +184,10 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        statusBarBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.light,
+        statusBarColor: Colors.transparent));
     return Scaffold(backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
         body: Stack(
       children: [
@@ -225,20 +196,17 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                 /// background image
                 Align(
                   alignment: Alignment.bottomCenter,
-                  child: ClipPath(
-                    clipper: BgSemiCircleClipPath(),
-                    child: CommonLoadImage(
-                      url: widget.audioData?.image ?? '',
-                      height: Get.height - 150,
-                      width: Get.width,
-                    ),
+                  child: CommonLoadImage(
+                    url: widget.audioData?.image ?? '',
+                    height: Get.height,
+                    width: Get.width,
                   ),
                 ),
 
                 /// description, subtitle
-            Padding(
-              padding: const EdgeInsets.only(top: Dimens.d300),
-              child: Column(
+                Padding(
+                  padding: const EdgeInsets.only(top: 250),
+                  child: Column(
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 35),
@@ -247,19 +215,18 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                       widget.audioData?.description ??
                           "",
                       textAlign: TextAlign.center,
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                      style: Style.montserratRegular(
-                          fontSize: 16, color: ColorConstant.white),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                      style: Style.nunitoSemiBold(
+                          fontSize: 18, color: ColorConstant.white),
                     ),
                   ),
                   Dimens.d20.spaceHeight,
                   Text(
-
                     widget.audioData?.expertName ??
                         "",
                     textAlign: TextAlign.center,
-                    style: Style.montserratRegular(
+                    style: Style.nunMedium(
                         fontSize: 15, color: ColorConstant.white),
                   ),
                   Dimens.d20.spaceHeight,
@@ -271,36 +238,25 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                       textAlign: TextAlign.center,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: Style.montserratRegular(
+                      style: Style.nunRegular(
                           fontSize: 15, color: ColorConstant.white),
                     ),
                   ),
-                ],
-              ),
-            ),
+                      Dimens.d20.spaceHeight,
+                      Row(mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () async {},
+                        child: SvgPicture.asset(
+                          height: Dimens.d25,
+                          ImageConstant.share,
+                          color: ColorConstant.white,
 
-                /// app bar
-                Column(
-                  children: [
-                    Dimens.d30.h.spaceHeight,
-                    CustomAppBar(
-                      showBack: true,
-                      title: "nowPlaying".tr,
-                      leading: GestureDetector(
-                          onTap: () async {
-                            await audioContentController.getPodsData();
-                            Get.back();
-                            setState(() {});
-                          },
-                          child: Icon(
-                            Icons.close,
-                            color: themeController.isDarkMode.isTrue
-                                ? ColorConstant.white
-                                : ColorConstant.black,
-                          )),
-                      action: Row(
-                        children: [
-                          Obx(
+                        ),
+                      ),
+
+                      Dimens.d40.h.spaceWidth,
+                      Obx(
                             () => GestureDetector(
                               onTap: () {
                                 if (nowPlayingController.rated.isTrue) {
@@ -315,18 +271,11 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                                 nowPlayingController.rated.isTrue
                                     ? ImageConstant.rating
                                     : ImageConstant.ratingIcon,
+                                color: ColorConstant.white,
                               ),
                             ),
                           ),
-                          Dimens.d10.h.spaceWidth,
-                          GestureDetector(
-                            onTap: () async {},
-                            child: SvgPicture.asset(
-                              height: Dimens.d25,
-                              ImageConstant.share,
-                            ),
-                          ),
-                          Dimens.d10.h.spaceWidth,
+                          Dimens.d40.h.spaceWidth,
                           Obx(
                             () => GestureDetector(
                               onTap: () async {
@@ -349,6 +298,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                                   ? SvgPicture.asset(
                                       height: Dimens.d25,
                                       ImageConstant.bookmark,
+                                      color: ColorConstant.white,
                                     )
                                   : const Icon(
                                       Icons.bookmark,
@@ -357,33 +307,53 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                                     ),
                             ),
                           ),
-                          Dimens.d20.h.spaceWidth,
                         ],
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
 
-                /// center widget
-            Positioned(
-              top: Dimens.d90,
-              left: Dimens.d110,
-              child: Lottie.asset(
-                ImageConstant.lottieStarOcean,
-                controller: nowPlayingController.lottieBgController,
-                height: 160,
-                width: 160,
-                onLoaded: (composition) {
-                      nowPlayingController.lottieBgController!
-                        ..duration = composition.duration
-                        ..repeat();
-                    },
+                /// close
+
+                Padding(
+                  padding: const EdgeInsets.only(top: Dimens.d55),
+                  child: Stack(
+                    children: [
+                      GestureDetector(
+                          onTap: () async {
+                            await audioContentController.getPodsData();
+                            Get.back();
+                            setState(() {});
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.only(left: 20),
+                            height: 42,
+                            width: 42,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(9),
+                                color: ColorConstant.white.withOpacity(0.15)),
+                            child: const Icon(
+                              Icons.close,
+                              color: ColorConstant.white,
+                            ),
+                          )),
+                      Align(
+                          alignment: Alignment.topCenter,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Text(
+                              "nowPlaying".tr,
+                              style: Style.nunitoSemiBold(
+                                  fontSize: 20, color: ColorConstant.white),
+                            ),
+                          ))
+                    ],
                   ),
                 ),
 
                 ///seekbar
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 StreamBuilder<Duration?>(
                   stream: nowPlayingController.audioPlayer.positionStream,
@@ -428,7 +398,6 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                     );
                   },
                 ),
-                Dimens.d20.h.spaceHeight,
                 ValueListenableBuilder(
                         valueListenable: nowPlayingController.isAudioLoading,
                         builder: (BuildContext context, value, Widget? child) {
@@ -737,7 +706,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: Container(
-                        height: Dimens.d140,
+                        height: Dimens.d115,
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: AssetImage(ImageConstant.curveBottomImg),
@@ -842,7 +811,6 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                     ),
                   ],
                 ),
-
                 ValueListenableBuilder(
               valueListenable: _isVolShowing,
               builder: (context, value, child) {
@@ -953,12 +921,11 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                 Center(
                   child: Text("rateYourExperience".tr,
                       textAlign: TextAlign.center,
-                      style: Style.cormorantGaramondBold(
-                        fontSize: Dimens.d22,
-                        fontWeight: FontWeight.w700,
-                      )),
+                      style: Style.nunitoSemiBold(
+
+                      ).copyWith(fontSize: Dimens.d22,letterSpacing: 1.5)),
                 ),
-                Dimens.d28.spaceHeight,
+                Dimens.d14.spaceHeight,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -1009,6 +976,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                     ),
                     title: "submit".tr,
                     onTap: () async {
+                      nowPlayingController.ratingFocusNode.unfocus();
                       nowPlayingController.addRating(
                           context: context,
                           id: id,

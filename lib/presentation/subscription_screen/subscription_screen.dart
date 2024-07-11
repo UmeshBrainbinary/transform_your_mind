@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -10,8 +8,8 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
-import 'package:transform_your_mind/presentation/journal_screen/widget/add_gratitude_page.dart';
 import 'package:transform_your_mind/presentation/subscription_screen/subscription_controller.dart';
+import 'package:transform_your_mind/presentation/welcome_screen/welcome_screen.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
@@ -38,8 +36,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //statusBarSet(themeController);
-
     return Scaffold(
       backgroundColor: themeController.isDarkMode.value
           ? ColorConstant.darkBackground
@@ -52,13 +48,12 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 GestureDetector(
                     onTap: () async {
                       await PrefService.setValue(PrefKey.subscription, true);
-                      Navigator.pushReplacement(context, MaterialPageRoute(
+                      await PrefService.setValue(
+                          PrefKey.firstTimeRegister, true);
+                      await PrefService.setValue(PrefKey.addGratitude, true);
+                      Navigator.push(context, MaterialPageRoute(
                         builder: (context) {
-                          return  AddGratitudePage(
-                            registerUser: true,
-                            isFromMyGratitude: true,
-                            isSaved: true,
-                          );
+                          return const WelcomeHomeScreen();
                         },
                       ));
                     },
@@ -117,18 +112,11 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           Text(
             "selectPlan".tr,
             textAlign: TextAlign.center,
-            style: Style.montserratRegular(
+            style: Style.nunitoBold(
               fontSize: Dimens.d16,
             ),
           ),
-          Dimens.d10.spaceHeight,
-          Text(
-            "discountsSub".tr,
-            style: Style.montserratRegular(
-              fontSize: Dimens.d12,
-            ),
-          ),
-          Dimens.d30.spaceHeight,
+          Dimens.d20.spaceHeight,
           SingleChildScrollView(
             child: Obx(
               () => ListView.builder(
@@ -200,11 +188,24 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                           Dimens.d5.spaceHeight,
                           Padding(
                             padding: const EdgeInsets.only(left: 35),
-                            child: Text(
-                              data["des"],
-                              style: Style.montserratRegular(
-                                  fontSize: 13,
-                                  color: ColorConstant.color797777),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  data["des"],
+                                  style: Style.montserratRegular(
+                                      fontSize: 13,
+                                      color: ColorConstant.color797777),
+                                ),
+                                index == 1
+                                    ? Text(
+                                        data["free"],
+                                        style: Style.montserratRegular(
+                                            fontSize: 13,
+                                            color: ColorConstant.themeColor),
+                                      )
+                                    : const SizedBox(),
+                              ],
                             ),
                           )
                         ],
@@ -216,6 +217,17 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             ),
           ),
           Dimens.d40.spaceHeight,
+          Text(
+            "additionalInformation".tr,
+            style: Style.nunitoBold(fontSize: 18),
+          ),
+          Dimens.d20.spaceHeight,
+          information("7dayFreeTrial".tr, "forNew".tr),
+          Dimens.d10.spaceHeight,
+          information("FamilyPlan".tr, "allowsUp".tr),
+          Dimens.d10.spaceHeight,
+          information("studentDiscount".tr, "20Pre".tr),
+          Dimens.d30.spaceHeight,
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30.0),
             child: CommonElevatedButton(
@@ -223,27 +235,23 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               onTap: () {},
             ),
           ),
-          Dimens.d20.spaceHeight,
-          Center(
-            child: Text(
-              "restorePurchase".tr,
-              textAlign: TextAlign.center,
-              style: Style.montserratRegular(
-                fontSize: Dimens.d15,
-              ),
-            ),
-          ),
-          Dimens.d33.spaceHeight,
-          Text(
-            textAlign: TextAlign.center,
-            "trailEnds".tr,
-            style: Style.montserratRegular(
-              fontSize: Dimens.d11,
-            ),
-          ),
-          Dimens.d40.spaceHeight,
+          Dimens.d30.spaceHeight,
         ],
       ),
     );
+  }
+
+  Widget information(title, des) {
+    return RichText(
+        text: TextSpan(children: [
+      TextSpan(
+        text: "$title: ",
+        style: Style.nunitoBold(fontSize: 11),
+      ),
+      TextSpan(
+        text: des,
+        style: Style.nunMedium(fontSize: 11),
+      ),
+    ]));
   }
 }

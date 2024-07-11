@@ -1,8 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:transform_your_mind/core/app_export.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -47,14 +45,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-  /*statusBarSet(themeController);*/
     return Stack(
       children: [
         Scaffold(
           backgroundColor: themeController.isDarkMode.value
               ? ColorConstant.darkBackground
               : ColorConstant.backGround,
-          appBar: CustomAppBar(
+          appBar: CustomAppBar(centerTitle: true,
             showBack: false,
             titleStyle:   Style.montserratRegular(
                 fontSize: Dimens.d22,

@@ -8,10 +8,10 @@ class DividerWidget extends StatelessWidget {
   final double? width;
 
   const DividerWidget({
-    Key? key,
+    super.key,
     this.height,
     this.width,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +29,10 @@ class DividerWidgetBlack extends StatelessWidget {
   final double? width;
 
   const DividerWidgetBlack({
-    Key? key,
+    super.key,
     this.height,
     this.width,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

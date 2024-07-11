@@ -36,7 +36,8 @@ class HomeController extends GetxController {
     {"title": "affirmation", "icon": ImageConstant.homeAffirmation,"color": ColorConstant.colorFFDDAA},
     {"title": "breathingExerciseTitle", "icon": ImageConstant.breathing,"color": ColorConstant.colorD5F8A9},
   ];
-  //_______________________________________  Model Class __________________________
+
+  //_______________________________________  Model Class _______________________
   GetUserModel getUserModel = GetUserModel();
   BookmarkedModel bookmarkedModel = BookmarkedModel();
   AffirmationModel affirmationModel = AffirmationModel();
@@ -45,16 +46,12 @@ class HomeController extends GetxController {
   List<TodayAData>? todayAList = [];
   List<TodayGData>? todayGList = [];
   TodayGratitude todayGratitude = TodayGratitude();
-  //_______________________________________  init Methods  __________________________
+
+  //_______________________________________  init Methods  _____________________
 
   @override
   void onInit() {
-    Future.delayed(
-      const Duration(milliseconds: 100),
-      () {
-
-      },
-    );
+    getMotivationalMessage();
     super.onInit();
   }
 

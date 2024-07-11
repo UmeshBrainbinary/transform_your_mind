@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
-import 'package:transform_your_mind/core/common_widget/bg_semi_circle_texture_painter.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -11,7 +8,7 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
-import 'package:transform_your_mind/presentation/subscription_screen/subscription_screen.dart';
+import 'package:transform_your_mind/presentation/welcome_screen/welcome_screen.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
@@ -50,74 +47,83 @@ class _FreeTrialPageState extends State<FreeTrialPage>
     return Scaffold(backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
       body: Stack(
         children: [
-          const BgSemiCircleTexture(),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: Dimens.d105, vertical: Dimens.d115),
-            child: SizedBox(
-              width: Dimens.d200,
-              height: Dimens.d120,
-              child: Image.asset(ImageConstant.splashLogo),
-            ),
-          ),
           Align(
-            alignment: Alignment.bottomCenter,
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // const Spacer(),
-                  Dimens.d251.spaceHeight,
-                  Text(
-                    "welcomeTransform".tr,
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.only(top: Dimens.d100),
+                child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                    ? ImageConstant.profile1Dark
+                    : ImageConstant.profile1),
+              )),
+          Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: Dimens.d120),
+                child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                    ? ImageConstant.profile2Dark
+                    : ImageConstant.profile2),
+              )),
+          SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Dimens.d100.spaceHeight,
+                Text(
+                  "wT".tr,
+                  style: Style.montserratSemiBold(
+                    fontSize: Dimens.d28,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                Dimens.d28.spaceHeight,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 43),
+                  child: Text(
+                    "Your transform basic package is now live.".tr,
                     style: Style.montserratRegular(
-                      fontSize: Dimens.d15,
-                    ),
+                        fontSize: Dimens.d18, fontWeight: FontWeight.w500),
                     textAlign: TextAlign.center,
                   ),
-                  Dimens.d25.spaceHeight,
-                  Text(
-                    //i10n.freeGeneralDesc,
-                    "accessTo".tr,
-                    style: Style.montserratRegular(
-                        fontSize: Dimens.d12, fontWeight: FontWeight.w500),
-                    textAlign: TextAlign.center,
+                ),
+                Dimens.d30.spaceHeight,
+                const _DescriptionPoints(
+                  title: "journalInput",
+                ),
+                const _DescriptionPoints(
+                  title: "transOrSleep",
+                ),
+                const _DescriptionPoints(
+                  title: "dailyProvide",
+                ),
+                const _DescriptionPoints(
+                  title: "focusedAffirmations",
+                ),
+                const _DescriptionPoints(
+                  title: "dailyProvideReminder",
+                ),
+                Dimens.d64.spaceHeight,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
+                  child: CommonElevatedButton(
+                    textStyle: Style.montserratRegular(
+                        fontSize: 17, color: ColorConstant.white),
+                    title: "premiumAccess".tr,
+                    onTap: () async {
+                      await PrefService.setValue(PrefKey.premium, true);
+                      await PrefService.setValue(PrefKey.subscription, true);
+                      await PrefService.setValue(
+                          PrefKey.firstTimeRegister, true);
+                      await PrefService.setValue(PrefKey.addGratitude, true);
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) {
+                          return const WelcomeHomeScreen();
+                        },
+                      ));
+                    },
                   ),
-                  Dimens.d30.spaceHeight,
-                  const _DescriptionPoints(
-                    title: "journalInput",
-                  ),
-                  const _DescriptionPoints(
-                    title: "transOrSleep",
-                  ),
-                  const _DescriptionPoints(
-                    title: "transformMood",
-                  ),
-                  const _DescriptionPoints(
-                    title: "focusedAffirmations",
-                  ),
-                  // const Spacer(),
-                  Dimens.d20.spaceHeight,
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
-                    child: CommonElevatedButton(textStyle: Style.montserratRegular(fontSize: 17,color: ColorConstant.white),
-                      title: "premiumAccess".tr,
-                      onTap: () async {
-                        await PrefService.setValue(PrefKey.premium, true);
-
-                        Navigator.pushReplacement(context, MaterialPageRoute(
-                          builder: (context) {
-                            return SubscriptionScreen(
-                              skip: true,
-                            );
-                          },
-                        ));
-                      },
-                    ),
-                  ),
-                  Dimens.d10.spaceHeight,
-                ],
-              ),
+                ),
+                Dimens.d10.spaceHeight,
+              ],
             ),
           ),
           const SizedBox(
@@ -141,19 +147,24 @@ class _DescriptionPoints extends StatelessWidget {
       padding: const EdgeInsets.symmetric(
           horizontal: Dimens.d20, vertical: Dimens.d10),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          SvgPicture.asset(ImageConstant.icTick,color: ColorConstant.black,),
-          Dimens.d6.spaceWidth,
+          Container(
+            height: 8,
+            width: 8,
+            decoration: const BoxDecoration(
+                color: ColorConstant.black, shape: BoxShape.circle),
+          ),
+          //SvgPicture.asset(ImageConstant.icTick,color: ColorConstant.black,),
+          Dimens.d16.spaceWidth,
           Expanded(
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 title.tr,
                 style: Style.montserratRegular(
-                  fontSize: Dimens.d14,
-
+                  fontSize: Dimens.d16,
                 ),
               ),
             ),

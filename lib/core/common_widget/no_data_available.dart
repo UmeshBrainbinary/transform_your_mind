@@ -9,11 +9,10 @@ import 'package:transform_your_mind/core/utils/size_utils.dart';
 
 class NoDataAvailable extends StatelessWidget {
   const NoDataAvailable(
-      {Key? key,
+      {super.key,
       this.message,
       this.showBottomHeight = true,
-      this.horizontalPadding = 20})
-      : super(key: key);
+      this.horizontalPadding = 20});
 
   final String? message;
   final bool showBottomHeight;

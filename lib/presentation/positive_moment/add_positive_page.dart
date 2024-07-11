@@ -65,8 +65,7 @@ class _AddPositivePageState extends State<AddPositivePage>
   int maxLengthDesc = 2000;
   String? urlImage;
   File? selectedImage;
-  late final AnimationController _lottieIconsController;
-  bool _isImageRemoved = false;
+
   Rx<bool> loader = false.obs;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -93,7 +92,6 @@ class _AddPositivePageState extends State<AddPositivePage>
       });
     }
 
-    _lottieIconsController = AnimationController(vsync: this);
 
     super.initState();
   }
@@ -220,7 +218,6 @@ class _AddPositivePageState extends State<AddPositivePage>
                                     onDeleteTap: () async {
                                       imageFile = ValueNotifier(null);
                                       urlImage = null;
-                                      _isImageRemoved = true;
                                       setState(() {});
                                     },
                                     image: imageFile.value,

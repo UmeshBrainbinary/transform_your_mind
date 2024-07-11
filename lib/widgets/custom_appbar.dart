@@ -20,7 +20,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   const CustomAppBar({
     super.key,
     required this.title,
-    this.centerTitle = true,
+    this.centerTitle = false,
     this.showBack = true,
     this.titleStyle,
     this.onTap,
@@ -67,13 +67,16 @@ class _CustomAppBarState extends State<CustomAppBar>
               statusBarBrightness: Brightness.light,
               statusBarIconBrightness: Brightness.dark),
       centerTitle: widget.centerTitle,
-      title: Text(widget.title,
-          style: widget.titleStyle ??
-              Style.montserratRegular(
-                  fontSize: Dimens.d18,
-                  color: themeController.isDarkMode.value
-                      ? ColorConstant.white
-                      : ColorConstant.black)),
+      title: Padding(
+        padding: const EdgeInsets.only(left: 10,top: 5),
+        child: Text(widget.title,
+            style: widget.titleStyle ??
+                Style.nunitoSemiBold(
+                    fontSize: Dimens.d20,
+                    color: themeController.isDarkMode.value
+                        ? ColorConstant.white
+                        : ColorConstant.black)),
+      ),
       backgroundColor: ColorConstant.transparent,
       leading: widget.leading ?? _getLeading(),
       //automaticallyImplyLeading: false,

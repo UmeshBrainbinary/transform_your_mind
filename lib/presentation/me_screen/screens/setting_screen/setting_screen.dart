@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -9,8 +8,10 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/presentation/bookmark_screen/bookmark_screen.dart';
 import 'package:transform_your_mind/presentation/breath_screen/breath_screen.dart';
 import 'package:transform_your_mind/presentation/downloaded_pods_screen/downloaded_pods_screen.dart';
+import 'package:transform_your_mind/presentation/favourite_screen/favourite_screen.dart';
 import 'package:transform_your_mind/presentation/intro_screen/select_your_affirmation_focus_page.dart';
 import 'package:transform_your_mind/presentation/intro_screen/select_your_focus_page.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/setting_controller.dart';
@@ -20,7 +21,7 @@ import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 class SettingScreen extends StatefulWidget {
-  SettingScreen({super.key});
+  const SettingScreen({super.key});
 
   @override
   State<SettingScreen> createState() => _SettingScreenState();
@@ -153,9 +154,13 @@ class _SettingScreenState extends State<SettingScreen> {
                                 } else if (index == 9) {
                                   Get.to( SelectYourFocusPage(setting: true,
                                       isFromMe: false));
-                                } else {
+                                } else if (index == 10) {
                                   Get.to( SelectYourAffirmationFocusPage(setting: true,
                                       isFromMe: false));
+                                } else if (index == 11) {
+                                  Get.to(const FavouriteScreen());
+                                } else {
+                                  Get.to(const BookmarkScreen());
                                 }
                               },
                             );
@@ -227,7 +232,7 @@ class SettingListItem extends StatelessWidget {
             Expanded(
               child: Text(
                 title == "Light Mode" ? theme : title.tr,
-                style: Style.montserratMedium().copyWith(
+                style: Style.nunMedium().copyWith(
                   letterSpacing: Dimens.d0_16,
                 ),
               ),
@@ -264,7 +269,8 @@ class CustomSwitch extends StatefulWidget {
   final Color activeColor;
   final Color inactiveColor;
 
-  CustomSwitch({
+  const CustomSwitch({
+    super.key,
     required this.value,
     required this.onChanged,
     this.width = 50.0,

@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
-import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
-import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/model_class/get_pods_model.dart';
@@ -123,7 +119,7 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
                     ),
                     hintText: "search".tr,
                     textStyle:
-                    Style.montserratRegular(fontSize: 12),
+                    Style.nunRegular(fontSize: 12),
                     controller: searchController,
                     focusNode: searchFocusNode),
               ),
@@ -210,7 +206,7 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
                                                     .toString(),
                                                 // "Motivational",
                                                 style: Style
-                                                    .montserratMedium(
+                                                    .nunitoBold(
                                                   fontSize: Dimens.d12,
                                                 ),
                                                 overflow: TextOverflow
@@ -233,12 +229,13 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
                                                   height: 10,
                                                   width: 10,
                                                 ),
+                                                Dimens.d5.spaceWidth,
                                                 Text(
                                                   "${controller
                                                       .audioData[index].rating
                                                       .toString()}.0" ?? '',
                                                   style: Style
-                                                      .montserratMedium(
+                                                      .nunMedium(
                                                     fontSize:
                                                     Dimens.d12,
                                                   ),

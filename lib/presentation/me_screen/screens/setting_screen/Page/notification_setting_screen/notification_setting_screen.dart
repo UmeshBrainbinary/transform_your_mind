@@ -104,20 +104,19 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
                     child: Text(
                       "howManyTimesWouldYouLikeToBe".tr,
                       textAlign: TextAlign.center,
-                      style: Style.montserratRegular(fontSize: Dimens.d12),
+                      style: Style.nunRegular(fontSize: Dimens.d13),
                     ),
                   ),
-                  Dimens.d24.h.spaceHeight,
+                  Dimens.d21.h.spaceHeight,
                   Expanded(
                     child: Stack(
                       children: [
                         ListView(
                           physics: const ClampingScrollPhysics(),
                           children: [
-                            Dimens.d20.h.spaceHeight,
                             Text(
                               "affirmations".tr,
-                              style: Style.montserratSemiBold(fontSize: 14),
+                              style: Style.nunitoSemiBold(fontSize: 14),
                             ),
                             Dimens.d20.h.spaceHeight,
                             Container(

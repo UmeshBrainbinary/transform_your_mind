@@ -55,7 +55,7 @@ class _AudioListState extends State<AudioList> {
     },
   ];
   List playPause = [];
-  bool isPlaying = false; // Track play/pause state
+  int currentIndex = -1;
   final AudioPlayer player = AudioPlayer();
 
   @override
@@ -67,22 +67,22 @@ class _AudioListState extends State<AudioList> {
     super.initState();
   }
 
-  int currentIndex = -1;
-   _playPause(int index) async {
+  Future<void> _playPause(int index) async {
     if (player.playing) {
-      await player.pause();
+      await player.stop();
       setState(() {
         playPause[index] = false;
       });
     } else {
-      await player.setUrl(audioList[index]["url"]);
-      await player.play();
       setState(() {
         playPause[index] = true;
       });
-    }
-  }
+      await player.setUrl(audioList[index]["url"]);
 
+      await player.play();
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -171,29 +171,13 @@ class _AudioListState extends State<AudioList> {
                         ),
                       ),
                       GestureDetector(
-                          onTap: () async {
-                            // Handle audio play for tapped item
-                            if (isPlaying) {
-
-                              playPause[index] = false;
-                              player.pause();
-                              setState(() {
-                                isPlaying = false;
-                              });
-                            } else {
-                              playPause[index] = true;
-                              await player.setUrl(audioList[index]["url"]);
-
-                              player.play();
-                              setState(() {
-                                isPlaying = true;
-                              });
-                            }
-
-                          },
-                          child: SvgPicture.asset(playPause[index]
+                        onTap: () => _playPause(index),
+                        child: SvgPicture.asset(
+                          playPause[index]
                               ? ImageConstant.breathPause
-                              : ImageConstant.breathPlay)),
+                              : ImageConstant.breathPlay,
+                        ),
+                      ),
                       Dimens.d9.spaceWidth,
                     ]),
                   );

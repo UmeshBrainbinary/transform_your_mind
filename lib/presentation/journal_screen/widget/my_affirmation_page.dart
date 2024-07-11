@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
@@ -29,6 +30,8 @@ import 'package:transform_your_mind/presentation/journal_screen/journal_controll
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_affirmation_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/affirmation_share_screen.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/audio_list.dart';
+import 'package:transform_your_mind/presentation/start_practcing_screen/start_pratice_screen.dart';
+import 'package:transform_your_mind/presentation/start_pratice_affirmation/start_pratice_affirmation.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
@@ -93,6 +96,10 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   File i = File("");
   Animation<double>? animation;
   AnimationController? animationController;
+  DateTime? picked;
+  var birthDate = DateFormat("yyyy-MM-dd").format(DateTime.now());
+  TextEditingController dateController = TextEditingController();
+
   @override
   void initState() {
     getData();
@@ -499,14 +506,27 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
 
   @override
   Widget build(BuildContext context) {
-    //statusBarSet(themeController);
     return Scaffold(
+      floatingActionButton: GestureDetector(
+        onTap: () {
+          datePicker(context);
+        },
+        child: Container(
+          height: 50,
+          width: 50,
+          decoration: const BoxDecoration(
+              color: ColorConstant.themeColor, shape: BoxShape.circle),
+          child:
+              Center(child: SvgPicture.asset(ImageConstant.calenderGratitude)),
+        ),
+      ),
       backgroundColor: themeController.isDarkMode.value
           ? ColorConstant.darkBackground
           : ColorConstant.backGround,
       appBar: CustomAppBar(
         showBack: true,
-        title: "myAffirmation".tr,
+        title:
+            _currentTabIndex == 0 ? "yourAffirmation".tr : "myAffirmation".tr,
         action: (_isLoading)
             ? const Offstage()
             : Padding(
@@ -685,150 +705,208 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                 children: [
                   Align(
                     alignment: Alignment.topLeft,
-                    child: Text("myAffirmation".tr,
+                    child: Text("todayAffirmation".tr,
                         style: Style.montserratRegular(
                           fontSize: Dimens.d18,
                         )),
                   ),
-                  Dimens.d11.spaceHeight,
+                  Dimens.d20.spaceHeight,
                   ListView.builder(
                     itemCount: affirmationModel.data?.length ?? 0,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) {
-                              return AffirmationShareScreen(
-                                des:
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: Dimens.d16),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: Dimens.d11, vertical: Dimens.d11),
+                        decoration: BoxDecoration(
+                          color: themeController.isDarkMode.isTrue
+                              ? ColorConstant.textfieldFillColor
+                              : ColorConstant.white,
+                          borderRadius: Dimens.d16.radiusAll,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    affirmationModel.data?[index].name ?? '',
+                                    style: Style.montserratRegular(
+                                            height: Dimens.d1_3.h,
+                                            fontSize: Dimens.d18,
+                                            color: themeController
+                                                    .isDarkMode.isTrue
+                                                ? ColorConstant.white
+                                                : Colors.black)
+                                        .copyWith(wordSpacing: Dimens.d4),
+                                    maxLines: 1,
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.topRight,
+                                  child: PopupMenuButton(
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(10.0),
+                                      ),
+                                    ),
+                                    color: themeController.isDarkMode.isTrue
+                                        ? ColorConstant.textfieldFillColor
+                                        : ColorConstant.white,
+                                    child: SvgPicture.asset(
+                                      ImageConstant.moreVert,
+                                      height: 5,
+                                      color: ColorConstant.colorD9D9D9,
+                                    ),
+                                    itemBuilder: (context) {
+                                      return [
+                                        PopupMenuItem(
+                                          child: Column(
+                                            children: [
+                                              InkWell(
+                                                onTap: () {
+                                                  Get.back();
+                                                  Navigator.push(context,
+                                                      MaterialPageRoute(
+                                                    builder: (context) {
+                                                      return AddAffirmationPage(
+                                                        index: index,
+                                                        id: affirmationModel
+                                                                .data?[index]
+                                                                .id ??
+                                                            "",
+                                                        isFromMyAffirmation:
+                                                            true,
+                                                        title: affirmationModel
+                                                                .data?[index]
+                                                                .name ??
+                                                            "",
+                                                        isEdit: true,
+                                                        des: affirmationModel
+                                                                .data?[index]
+                                                                .description ??
+                                                            "",
+                                                      );
+                                                    },
+                                                  )).then(
+                                                    (value) async {
+                                                      await getAffirmation();
+
+                                                      setState(() {});
+                                                    },
+                                                  );
+                                                },
+                                                child: Container(
+                                                  height: 28,
+                                                  width: 86,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
+                                                    color: ColorConstant
+                                                        .color5B93FF
+                                                        .withOpacity(0.05),
+                                                  ),
+                                                  child: Row(
+                                                    children: [
+                                                      Dimens.d5.spaceWidth,
+                                                      SvgPicture.asset(
+                                                        ImageConstant.editTools,
+                                                        color: ColorConstant
+                                                            .color5B93FF,
+                                                      ),
+                                                      Dimens.d5.spaceWidth,
+                                                      Text(
+                                                        'edit'.tr,
+                                                        style: Style
+                                                            .montserratRegular(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: ColorConstant
+                                                              .color5B93FF,
+                                                        ),
+                                                      ),
+                                                      const Spacer(),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              Dimens.d15.spaceHeight,
+                                              InkWell(
+                                                onTap: () {
+                                                  Get.back();
+                                                  _showAlertDialogDelete(
+                                                      context,
+                                                      index,
+                                                      affirmationModel
+                                                              .data?[index]
+                                                              .id ??
+                                                          "");
+                                                },
+                                                child: Container(
+                                                  height: 28,
+                                                  width: 86,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
+                                                    color: ColorConstant
+                                                        .colorE71D36
+                                                        .withOpacity(0.05),
+                                                  ),
+                                                  child: Row(
+                                                    children: [
+                                                      Dimens.d5.spaceWidth,
+                                                      SvgPicture.asset(
+                                                        ImageConstant.delete,
+                                                        color: ColorConstant
+                                                            .colorE71D36,
+                                                      ),
+                                                      Dimens.d5.spaceWidth,
+                                                      Text(
+                                                        'delete'.tr,
+                                                        style: Style
+                                                            .montserratRegular(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: ColorConstant
+                                                              .colorE71D36,
+                                                        ),
+                                                      ),
+                                                      const Spacer(),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ];
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Dimens.d10.spaceHeight,
+                            GestureDetector(
+                              onTap: () {
+                                /*  Navigator.push(context, MaterialPageRoute(
+                                builder: (context) {
+                                  return AffirmationShareScreen(
+                                    des:
                                     affirmationModel.data?[index].description ??
                                         "",
-                                title: affirmationModel.data?[index].name ?? "",
-                              );
-                            },
-                          ));
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.only(bottom: Dimens.d16),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: Dimens.d11, vertical: Dimens.d11),
-                          decoration: BoxDecoration(
-                            color: themeController.isDarkMode.isTrue
-                                ? ColorConstant.textfieldFillColor
-                                : ColorConstant.white,
-                            borderRadius: Dimens.d16.radiusAll,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      affirmationModel.data?[index].name ?? '',
-                                      style: Style.montserratRegular(
-                                              height: Dimens.d1_3.h,
-                                              fontSize: Dimens.d18,
-                                              color: themeController
-                                                      .isDarkMode.isTrue
-                                                  ? ColorConstant.white
-                                                  : Colors.black)
-                                          .copyWith(wordSpacing: Dimens.d4),
-                                      maxLines: 1,
-                                    ),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(context, MaterialPageRoute(
-                                        builder: (context) {
-                                          return AddAffirmationPage(
-                                            index: index,
-                                            id: affirmationModel
-                                                    .data?[index].id ??
-                                                "",
-                                            isFromMyAffirmation: true,
-                                            title: affirmationModel
-                                                    .data?[index].name ??
-                                                "",
-                                            isEdit: true,
-                                            des: affirmationModel
-                                                    .data?[index].description ??
-                                                "",
-                                          );
-                                        },
-                                      )).then(
-                                        (value) async {
-                                          await getAffirmation();
-
-                                          setState(() {});
-                                        },
-                                      );
-                                    },
-                                    child: SvgPicture.asset(
-                                      ImageConstant.editTools,
-                                      height: 20,width: 20,
-                                      color: themeController.isDarkMode.isTrue
-                                          ? ColorConstant.white
-                                          : ColorConstant.black,
-                                    ),
-                                  ),
-                                  Dimens.d10.spaceWidth,
-                                  GestureDetector(
-                                    onTap: () {
-                                      _showAlertDialogDelete(
-                                          context,
-                                          index,
-                                          affirmationModel.data?[index].id ??
-                                              "");
-                                    },
-                                    child: SvgPicture.asset(
-                                      ImageConstant.delete,
-                                      height: 20,width: 20,
-                                      color: themeController.isDarkMode.isTrue
-                                          ? ColorConstant.white
-                                          : ColorConstant.black,
-                                    ),
-                                  ),
-                                  Dimens.d10.spaceWidth,
-                                  GestureDetector(
-                                    onTap: () async {
-                                      setState(() {
-                                        like[index] = !like[index];
-                                      });
-                                      if (affirmationModel
-                                          .data![index].isLiked!) {
-                                        await updateLike(
-                                            id: affirmationModel
-                                                .data?[index].id,
-                                            isLiked: false);
-                                        await getAffirmation();
-                                      } else {
-                                        await updateLike(
-                                            id: affirmationModel
-                                                .data?[index].id,
-                                            isLiked: true);
-                                        await getAffirmation();
-                                      }
-
-                                      setState(() {});
-                                    },
-                                    child: SvgPicture.asset(
-                                      like[index]
-                                          ? ImageConstant.likeRedTools
-                                          : ImageConstant.likeTools,
-                                      height: 20,width: 20,
-                                      color: like[index]
-                                          ? ColorConstant.deleteRed
-                                          : themeController.isDarkMode.isTrue
-                                              ? ColorConstant.white
-                                              : ColorConstant.black,
-                                    ),
-                                  )
-                                ],
-                              ),
-                              Dimens.d10.spaceHeight,
-                              Text(
+                                    title: affirmationModel.data?[index].name ?? "",
+                                  );
+                                },
+                              ));*/
+                              },
+                              child: Text(
                                 affirmationModel.data?[index].description ?? '',
                                 overflow: TextOverflow.ellipsis,
                                 style: Style.montserratRegular(
@@ -840,12 +918,243 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                     .copyWith(wordSpacing: Dimens.d4),
                                 maxLines: 4,
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       );
                     },
                   ),
+                  Dimens.d10.spaceHeight,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) {
+                          return const StartPracticeAffirmation();
+                        },
+                      ));
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 30),
+                      height: Dimens.d46,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(80),
+                          color: ColorConstant.themeColor),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(ImageConstant.playGratitude,
+                              height: 20, width: 20),
+                          Dimens.d8.spaceWidth,
+                          Text(
+                            "startPracticing".tr,
+                            style: Style.montserratRegular(
+                                fontSize: 16, color: ColorConstant.white),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  /*    Dimens.d40.spaceHeight,
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text("June 2024".tr,
+                        style: Style.montserratRegular(
+                          fontSize: Dimens.d18,
+                        )),
+                  ),
+                  Dimens.d20.spaceHeight,
+
+                  ListView.builder(
+                    itemCount: affirmationModel.data?.length ?? 0,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: Dimens.d16),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: Dimens.d11, vertical: Dimens.d11),
+                        decoration: BoxDecoration(
+                          color: themeController.isDarkMode.isTrue
+                              ? ColorConstant.textfieldFillColor
+                              : ColorConstant.white,
+                          borderRadius: Dimens.d16.radiusAll,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    affirmationModel.data?[index].name ?? '',
+                                    style: Style.montserratRegular(
+                                        height: Dimens.d1_3.h,
+                                        fontSize: Dimens.d18,
+                                        color: themeController
+                                            .isDarkMode.isTrue
+                                            ? ColorConstant.white
+                                            : Colors.black)
+                                        .copyWith(wordSpacing: Dimens.d4),
+                                    maxLines: 1,
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.topRight,
+                                  child: PopupMenuButton(
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(10.0),
+                                      ),
+                                    ),
+                                    color: themeController.isDarkMode.isTrue
+                                        ? ColorConstant.textfieldFillColor
+                                        : ColorConstant.white,
+                                    child: SvgPicture.asset(
+                                      ImageConstant.moreVert,
+                                      height: 5,
+                                      color: ColorConstant.colorD9D9D9,
+                                    ),
+                                    itemBuilder: (context) {
+                                      return [
+                                        PopupMenuItem(
+                                          child: Column(
+                                            children: [
+                                              InkWell(
+                                                onTap: () {
+                                                  Get.back();
+                                                  Navigator.push(context, MaterialPageRoute(
+                                                    builder: (context) {
+                                                      return AddAffirmationPage(
+                                                        index: index,
+                                                        id: affirmationModel
+                                                            .data?[index].id ??
+                                                            "",
+                                                        isFromMyAffirmation: true,
+                                                        title: affirmationModel
+                                                            .data?[index].name ??
+                                                            "",
+                                                        isEdit: true,
+                                                        des: affirmationModel
+                                                            .data?[index].description ??
+                                                            "",
+                                                      );
+                                                    },
+                                                  )).then(
+                                                        (value) async {
+                                                      await getAffirmation();
+
+                                                      setState(() {});
+                                                    },
+                                                  );
+                                                },
+                                                child: Container(
+                                                  height: 28,
+                                                  width: 86,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(5),
+                                                    color: ColorConstant.color5B93FF.withOpacity(0.05),
+                                                  ),
+                                                  child: Row(
+                                                    children: [
+                                                      Dimens.d5.spaceWidth,
+                                                      SvgPicture.asset(
+                                                        ImageConstant.editTools,
+                                                        color: ColorConstant.color5B93FF,
+                                                      ),
+                                                      Dimens.d5.spaceWidth,
+                                                      Text(
+                                                        'edit'.tr,
+                                                        style: Style.montserratRegular(
+                                                          fontSize: 14,
+                                                          fontWeight: FontWeight.w500,
+                                                          color: ColorConstant.color5B93FF,
+                                                        ),
+                                                      ),
+                                                      const Spacer(),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              Dimens.d15.spaceHeight,
+                                              InkWell(
+                                                onTap: () {
+                                                  Get.back();
+                                                  _showAlertDialogDelete(
+                                                      context,
+                                                      index,
+                                                      affirmationModel.data?[index].id ??
+                                                          "");
+                                                },
+                                                child: Container(
+                                                  height: 28,
+                                                  width: 86,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(5),
+                                                    color: ColorConstant.colorE71D36.withOpacity(0.05),
+                                                  ),
+                                                  child: Row(
+                                                    children: [
+                                                      Dimens.d5.spaceWidth,
+                                                      SvgPicture.asset(
+                                                        ImageConstant.delete,
+                                                        color: ColorConstant.colorE71D36,
+                                                      ),
+                                                      Dimens.d5.spaceWidth,
+                                                      Text(
+                                                        'delete'.tr,
+                                                        style: Style.montserratRegular(
+                                                          fontSize: 14,
+                                                          fontWeight: FontWeight.w500,
+                                                          color: ColorConstant.colorE71D36,
+                                                        ),
+                                                      ),
+                                                      const Spacer(),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ];
+                                    },
+                                  ),
+                                ),
+
+                              ],
+                            ),
+                            Dimens.d10.spaceHeight,
+                            GestureDetector(onTap: () {
+                           */ /*   Navigator.push(context, MaterialPageRoute(
+                                builder: (context) {
+                                  return AffirmationShareScreen(
+                                    des:
+                                    affirmationModel.data?[index].description ??
+                                        "",
+                                    title: affirmationModel.data?[index].name ?? "",
+                                  );
+                                },
+                              ));*/ /*
+                            },
+                              child: Text(
+                                affirmationModel.data?[index].description ?? '',
+                                overflow: TextOverflow.ellipsis,
+                                style: Style.montserratRegular(
+                                    height: Dimens.d2,
+                                    fontSize: Dimens.d11,
+                                    color: themeController.isDarkMode.isTrue
+                                        ? ColorConstant.white
+                                        : Colors.black)
+                                    .copyWith(wordSpacing: Dimens.d4),
+                                maxLines: 4,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),*/
                 ],
               ),
       ),
@@ -989,7 +1298,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                                   : ColorConstant.black),
                                     ),
                                     Dimens.d10.spaceWidth,
-                                    GestureDetector(
+                                    /*   GestureDetector(
                                       onTap: () async {
                                         await journalController.setUrl(
                                             _filteredBookmarks?[index]
@@ -1063,7 +1372,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                                 ? ColorConstant.white
                                                 : ColorConstant.black,
                                       ),
-                                    )
+                                    )*/
                                   ],
                                 ),
                                 Dimens.d10.spaceHeight,
@@ -1429,7 +1738,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
             fontSize: 22, color: ColorConstant.themeColor));
   }
 
-  void _showAlertDialogPlayPause(BuildContext context,
+/*  void _showAlertDialogPlayPause(BuildContext context,
       {String? title, String? des, String? mp3}) {
     showDialog(
       context: context,
@@ -1581,7 +1890,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
         );
       },
     );
-  }
+  }*/
 
   Widget _buildCategoryDropDown(BuildContext context) {
     return Expanded(
@@ -1683,14 +1992,60 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
     );
   }
 
-  void addUserAffirmation({bool isSave = true}) {
-    if (_userAffirmationController.text.trim().isEmpty) {
-      showSnackBarError(context, "pleaseEnterYourOwnAffirmation".tr);
-      return;
-    }
+  datePicker(
+    context,
+  ) async {
+    FocusScope.of(context).unfocus();
+    picked = await showDatePicker(
+      builder: (context, child) {
+        TextStyle customTextStyle =
+            Style.montserratRegular(fontSize: 14, color: Colors.black);
+        TextStyle editedTextStyle = customTextStyle.copyWith(
+            color: Colors.red); // Define the edited text style
 
-    _userAffirmationController.clear();
-    _userAffirmationFocus.unfocus();
+        return Theme(
+          data: ThemeData.light().copyWith(
+              focusColor: ColorConstant.themeColor,
+              scaffoldBackgroundColor: ColorConstant.themeColor,
+              primaryColor: ColorConstant.themeColor,
+              colorScheme: const ColorScheme.light(
+                primary: ColorConstant.themeColor,
+              ),
+              buttonTheme: const ButtonThemeData(
+                textTheme: ButtonTextTheme.primary,
+              ),
+              textTheme: TextTheme(
+                bodyLarge: customTextStyle,
+                bodyMedium: customTextStyle,
+                bodySmall: customTextStyle,
+                displayLarge: customTextStyle,
+                displayMedium: customTextStyle,
+                headlineLarge: customTextStyle,
+                titleLarge: customTextStyle,
+                displaySmall: customTextStyle,
+                headlineMedium: customTextStyle,
+                headlineSmall: customTextStyle,
+                labelLarge: customTextStyle,
+                labelMedium: customTextStyle,
+                labelSmall: customTextStyle,
+                titleMedium: editedTextStyle,
+                titleSmall: editedTextStyle,
+              )),
+          child: child!,
+        );
+      },
+      context: context,
+      firstDate: DateTime(1970),
+      lastDate: DateTime.now(),
+      currentDate: DateTime.now(),
+      initialDate: DateTime.now(),
+    );
+
+    if (picked != null) {
+      birthDate = DateFormat('dd/MM/yyyy').format(picked!);
+      // birthDate = DateFormat("yyyy-MM-dd").format(picked!);
+      dateController.text = birthDate;
+    }
   }
 
 }

@@ -7,7 +7,7 @@ class AppTheme {
     brightness: Brightness.light,
     primaryColor: Colors.white,
 
-      navigationBarTheme: NavigationBarThemeData(
+      navigationBarTheme: const NavigationBarThemeData(
           backgroundColor: Colors.transparent,
           iconTheme: WidgetStatePropertyAll(
             IconThemeData(
@@ -22,20 +22,20 @@ class AppTheme {
     //   ),
     // ),
 
-    dialogTheme: DialogTheme(backgroundColor: ColorConstant.white),
+    dialogTheme: const DialogTheme(backgroundColor: ColorConstant.white),
     scaffoldBackgroundColor: ColorConstant.white,
-    textTheme: TextTheme(
+    textTheme: const TextTheme(
       displayLarge: TextStyle(color: ColorConstant.black),
     ),
-     bottomNavigationBarTheme: BottomNavigationBarThemeData(backgroundColor: ColorConstant.white)
+     bottomNavigationBarTheme: const BottomNavigationBarThemeData(backgroundColor: ColorConstant.white)
   );
 
   static final ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
     primaryColor: Colors.black,
-    dialogTheme: DialogTheme(backgroundColor: ColorConstant.textfieldFillColor),
+    dialogTheme: const DialogTheme(backgroundColor: ColorConstant.textfieldFillColor),
     scaffoldBackgroundColor: ColorConstant.black,
-    navigationBarTheme: NavigationBarThemeData(
+    navigationBarTheme: const NavigationBarThemeData(
       backgroundColor: Colors.transparent,
       iconTheme: WidgetStatePropertyAll(IconThemeData(
         color: Colors.white, // Icon color
@@ -47,10 +47,10 @@ class AppTheme {
     //     textStyle: TextStyle(fontSize: 16.0),
     //   ),
     // ),
-    textTheme: TextTheme(
+    textTheme: const TextTheme(
       displayLarge: TextStyle(color: ColorConstant.white),
     ),
-      bottomNavigationBarTheme: BottomNavigationBarThemeData(backgroundColor: ColorConstant.black)
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(backgroundColor: ColorConstant.black)
 
   );
 }

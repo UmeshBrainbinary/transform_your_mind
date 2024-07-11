@@ -17,27 +17,32 @@ import 'package:transform_your_mind/widgets/custom_appbar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BreathScreen extends StatefulWidget {
-   bool? skip = false;
-   bool? setting = false;
-   BreathScreen({super.key,this.skip,this.setting});
+  bool? skip = false;
+  bool? setting = false;
+
+  BreathScreen({super.key, this.skip, this.setting});
 
   @override
   State<BreathScreen> createState() => _BreathScreenState();
 }
 
-class _BreathScreenState extends State<BreathScreen> with TickerProviderStateMixin{
-
-  late final AnimationController  _lottieController;
+class _BreathScreenState extends State<BreathScreen>
+    with TickerProviderStateMixin {
+  late final AnimationController _lottieController;
   bool isPlaying = false;
+  bool _isPaused = false;
   int playCount = 0;
   Timer? _timer;
+  int _remainingSeconds = 19;
+  ThemeController themeController = Get.find<ThemeController>();
 
   @override
   void initState() {
     _lottieController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 4), // Adjust the duration as needed
-    );    super.initState();
+      duration: const Duration(seconds: 4),
+    );
+    super.initState();
   }
 
   @override
@@ -46,63 +51,129 @@ class _BreathScreenState extends State<BreathScreen> with TickerProviderStateMix
     _timer?.cancel();
     super.dispose();
   }
+
   void _startAnimationSequence() {
     setState(() {
       isPlaying = true;
+      _isPaused = false;
     });
     _lottieController.forward();
 
-    _timer = Timer(const Duration(seconds: 19), () {
-      setState(() {
-        isPlaying = false;
-        playCount++;
-      });
-      if (playCount < 3) {
-        _startAnimationSequence();
-      } else {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return NoticeHowYouFeelScreen(notice:widget.skip,setting: widget.setting,);
-        },)).then((value) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!_isPaused) {
         setState(() {
-         playCount = 0;
-         _timer;
-         isPlaying = false;
-         _lottieController.reset();
-         _lottieController.stop();
-       });
-        },);
+          _remainingSeconds--;
+        });
+      }
+
+      if (_remainingSeconds <= 0) {
+        setState(() {
+          isPlaying = false;
+          playCount++;
+          _remainingSeconds = 19;
+        });
+        _timer?.cancel();
+        if (playCount < 3) {
+          _startAnimationSequence();
+        } else {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return NoticeHowYouFeelScreen(
+                notice: widget.skip, setting: widget.setting);
+          })).then((value) {
+            setState(() {
+              playCount = 0;
+              _timer;
+              isPlaying = false;
+              _lottieController.reset();
+              _lottieController.stop();
+            });
+          });
+        }
       }
     });
   }
+
+  void _pauseAnimation() {
+    setState(() {
+      _isPaused = true;
+      _lottieController.stop();
+      _timer?.cancel();
+    });
+  }
+
+  void _resumeAnimation() {
+    setState(() {
+      _isPaused = false;
+      _lottieController.forward();
+      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        setState(() {
+          _remainingSeconds--;
+        });
+
+        if (_remainingSeconds <= 0) {
+          setState(() {
+            isPlaying = false;
+            playCount++;
+            _remainingSeconds = 19;
+          });
+          _timer?.cancel();
+          if (playCount < 3) {
+            _startAnimationSequence();
+          } else {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return NoticeHowYouFeelScreen(
+                  notice: widget.skip, setting: widget.setting);
+            })).then((value) {
+              setState(() {
+                playCount = 0;
+                _timer;
+                isPlaying = false;
+                _lottieController.reset();
+                _lottieController.stop();
+              });
+            });
+          }
+        }
+      });
+    });
+  }
+
   void _triggerSOS(BuildContext context) async {
     final url = Uri.parse('tel:+911234567899');
     if (await canLaunchUrl(url)) {
       await launchUrl(url);
     } else {
-     showSnackBarError(context, "CouldLaunch".tr);
+      showSnackBarError(context, "CouldLaunch".tr);
     }
   }
- ThemeController themeController  = Get.find<ThemeController>();
+
   @override
   Widget build(BuildContext context) {
-    //statusBarSet(themeController);
     return Scaffold(
-      backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.backGround,
+      backgroundColor: themeController.isDarkMode.isTrue
+          ? ColorConstant.darkBackground
+          : ColorConstant.backGround,
       appBar: CustomAppBar(
         title: "breathTraining".tr,
-        action: widget.skip!?
-        GestureDetector(
-            onTap: () async {
-               Get.toNamed(AppRoutes.selectYourFocusPage);
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(right: 20),
-              child: Text(
-                "skip".tr,
-                style: Style.montserratRegular(
-                    fontSize: Dimens.d15, color: themeController.isDarkMode.isTrue?ColorConstant.white:ColorConstant.black),
-              ),
-            )):const SizedBox(),
+        action: widget.skip!
+            ? GestureDetector(
+                onTap: () async {
+                  Get.toNamed(AppRoutes.selectYourFocusPage);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 20),
+                  child: Text(
+                    "skip".tr,
+                    style: Style.montserratRegular(
+                      fontSize: Dimens.d15,
+                      color: themeController.isDarkMode.isTrue
+                          ? ColorConstant.white
+                          : ColorConstant.black,
+                    ),
+                  ),
+                ),
+              )
+            : const SizedBox(),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -128,12 +199,20 @@ class _BreathScreenState extends State<BreathScreen> with TickerProviderStateMix
               },
             ),
             Dimens.d20.spaceHeight,
-            GestureDetector(onTap: () {
-              if (!isPlaying) {
-                _startAnimationSequence();
-              }
-
-            },child: SvgPicture.asset(isPlaying?ImageConstant.breathPause:ImageConstant.breathPlay)),
+            GestureDetector(
+              onTap: () {
+                if (isPlaying && !_isPaused) {
+                  _pauseAnimation();
+                } else if (isPlaying && _isPaused) {
+                  _resumeAnimation();
+                } else {
+                  _startAnimationSequence();
+                }
+              },
+              child: SvgPicture.asset(isPlaying && !_isPaused
+                  ? ImageConstant.breathPause
+                  : ImageConstant.breathPlay),
+            ),
             Dimens.d20.spaceHeight,
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: Dimens.d35),
@@ -141,18 +220,22 @@ class _BreathScreenState extends State<BreathScreen> with TickerProviderStateMix
                 "breathingMeditation".tr,
                 textAlign: TextAlign.center,
                 style: Style.montserratRegular(
-                    fontSize: 16, fontWeight: FontWeight.w600),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             Dimens.d20.spaceHeight,
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: Dimens.d36),
               child: Text(
                 "breatheNote".tr,
                 textAlign: TextAlign.center,
-                style: Style.montserratRegular(height: 2,
-                    fontSize: 14, fontWeight: FontWeight.w400),
+                style: Style.montserratRegular(
+                  height: 2,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
             ),
             Dimens.d30.spaceHeight,
@@ -160,7 +243,9 @@ class _BreathScreenState extends State<BreathScreen> with TickerProviderStateMix
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
               margin: const EdgeInsets.symmetric(horizontal: 40),
               decoration: BoxDecoration(
-                color:  themeController.isDarkMode.isTrue?ColorConstant.textfieldFillColor:ColorConstant.white,
+                color: themeController.isDarkMode.isTrue
+                    ? ColorConstant.textfieldFillColor
+                    : ColorConstant.white,
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: Column(
@@ -168,48 +253,64 @@ class _BreathScreenState extends State<BreathScreen> with TickerProviderStateMix
                   Row(
                     children: [
                       Text("In",
-                          style: Style.montserratRegular(
-                            fontSize: 16,
-                          )),
+                        style: Style.montserratRegular(
+                          fontSize: 16,
+                        ),
+                      ),
                       const Spacer(),
                       Text("4sec".tr,
-                          style: Style.montserratRegular(
-                              fontSize: 16, color: ColorConstant.colorA49F9F)),
+                        style: Style.montserratRegular(
+                          fontSize: 16,
+                          color: ColorConstant.colorA49F9F,
+                        ),
+                      ),
                     ],
                   ),
                   Dimens.d10.spaceHeight,
                   Row(
                     children: [
                       Text("out".tr,
-                          style: Style.montserratRegular(
-                            fontSize: 16,
-                          )),
+                        style: Style.montserratRegular(
+                          fontSize: 16,
+                        ),
+                      ),
                       const Spacer(),
                       Text("4sec".tr,
-                          style: Style.montserratRegular(
-                              fontSize: 16, color: ColorConstant.colorA49F9F)),
+                        style: Style.montserratRegular(
+                          fontSize: 16,
+                          color: ColorConstant.colorA49F9F,
+                        ),
+                      ),
                     ],
                   ),
                   Dimens.d10.spaceHeight,
                   Row(
                     children: [
                       Text("hold".tr,
-                          style: Style.montserratRegular(fontSize: 16)),
+                        style: Style.montserratRegular(
+                          fontSize: 16,
+                        ),
+                      ),
                       const Spacer(),
                       Text("4sec".tr,
-                          style: Style.montserratRegular(
-                              fontSize: 16, color: ColorConstant.colorA49F9F)),
+                        style: Style.montserratRegular(
+                          fontSize: 16,
+                          color: ColorConstant.colorA49F9F,
+                        ),
+                      ),
                     ],
                   ),
                 ],
               ),
             ),
             Dimens.d30.spaceHeight,
-            GestureDetector(onLongPress: () {
-              _triggerSOS(context);
-            },child: SvgPicture.asset(ImageConstant.sos,height: 86,width: 86,)),
+            GestureDetector(
+              onLongPress: () {
+                _triggerSOS(context);
+              },
+              child: SvgPicture.asset(ImageConstant.sos, height: 86, width: 86),
+            ),
             Dimens.d30.spaceHeight,
-
           ],
         ),
       ),

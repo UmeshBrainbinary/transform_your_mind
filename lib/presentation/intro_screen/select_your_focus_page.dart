@@ -1,11 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/custom_chip.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/select_focus_button.dart';
@@ -214,7 +212,6 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
 
   @override
   Widget build(BuildContext context) {
-  /* statusBarSet(themeController);*/
     return Stack(
       children: [
         Scaffold(
@@ -256,11 +253,11 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
                             color: themeController.isDarkMode.value
                                 ? ColorConstant.white
                                 : ColorConstant.black,
-                            fontSize: Dimens.d15,
-                            fontWeight: FontWeight.w500),
+                            fontSize: Dimens.d16,
+                            fontWeight: FontWeight.w400),
                       ),
                     ),
-                    Dimens.d18.spaceHeight,
+                    Dimens.d30.spaceHeight,
                     Expanded(
                       child: ListView(
                         shrinkWrap: true,

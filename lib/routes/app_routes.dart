@@ -234,7 +234,7 @@ class AppRoutes {
     GetPage(
       transition: Transition.rightToLeft,
       name: settingScreen,
-      page: () =>  SettingScreen(),
+      page: () =>  const SettingScreen(),
       bindings: [
         SettingBinding(),
       ],

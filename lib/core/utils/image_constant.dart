@@ -25,7 +25,6 @@ class ImageConstant {
   static String userPlaceHolder = '$imagePath/userPlaceHolder.svg';
   static String nonPlaceHolder = '$imagePath/non_profile.svg';
   static String bgVector = '$imagePath/bgVector.svg';
-  static String imgTransformLight = '$imagePath/img_transform_light.png';
 
 
    /// icons
@@ -74,7 +73,6 @@ class ImageConstant {
   static String ritualsRight = '$iconExplorePath/ritualsRight.svg';
   static String play = '$iconExplorePath/play.svg';
   static String downloadCircle = '$iconExplorePath/download_circle.svg';
-  static String staticImage = '$imagePath/staticImage.svg';
   static String static1 = '$imageExplorePath/static1.png';
   static String static2 = '$imageExplorePath/static2.png';
   static String static3 = '$imageExplorePath/static3.png';
@@ -84,7 +82,6 @@ class ImageConstant {
 
 
   /// NOW PLAYING
-  static String bgImagePlaying = '$imagePath/bgImagePlaying.png';
   static String share = '$iconExplorePath/share.svg';
   static String bookmark = '$iconExplorePath/bookmark.svg';
   static String loudSpeaker = '$iconExplorePath/loud_speaker.svg';
@@ -141,8 +138,6 @@ class ImageConstant {
   static  String icClose = "$iconHomePath/ic_close.svg";
   static  String icDelete = "$iconHomePath/ic_delete_white.svg";
   static  String icPencil = "$iconHomePath/ic_pencil.svg";
-  static  String imgRitualSelected= "$imagePath/img_selected_ritual.png";
-  static  String imgRitualUnSelected= "$imagePath/img_unselected_ritual.png";
   static  String icUpArrow = "$iconHomePath/ic_up_arrow.svg";
   static  String journalIcon = "$iconPath/ic_journal_selected.svg";
   static  String journalIconQuick = "$iconHomePath/ic_journal_quick.svg";
@@ -167,28 +162,16 @@ class ImageConstant {
   static  String lottieAudio = "$lottie/lottie_audio_animation_shoorah.json";
   static  String lottieFilter = "$lottie/lottie_filter.json";
 
-  static  String homeBgBookmarks = "$imagePath/img_home_bg_bookmarks.png";
   static  String icDeleteWhite = "$iconPath/ic_delete_white.svg";
   static  String icEditFolderBorder = "$iconPath/ic_folder_border_icon.svg";
-  static  String imgAffirmationTileBg1 = "$imagePath/img_affirmation_tile_bg1.png";
-  static  String imgAffirmationTileBg2 = "$imagePath/img_affirmation_tile_bg2.png";
   static  String lottieNoDataForRestoring = "$lottie/lottie_no_data_for_restorin.json";
+  static String rippleEffect = "$lottie/rippleEffect.json";
+  static String rippleE = "$lottie/ripplee.json";
   static  String imgAddRounded = "$imagePath/img_add_rounded.png";
   static  String playIcon = "$iconPath/ic_shoorah_play.svg";
-  static  String ratingFillSvg = "$iconPath/tran_star_fill.svg";
-  static  String ratingNoFillSvg = "$iconPath/transform_star_no.svg";
-  static  String imgTransformSemi = "$iconHomePath/img_transform_semi.png";
-  static  String transformYour = "$imagePath/transform_your_back.png";
-  static  String imgAboutShapes = "$imagePath/img_about_shapes.png";
   static  String imgPlayButton = "$imagePath/img_play_button.png";
-  static  String imgSelectFocus = "$imagePath/img_select_focus_bg.png";
   static  String icTick = "$iconPath/ic_tick.svg";
   static  String icNewFolder = "$iconPath/ic_new_folder.png";
-  static  String icMenuFolder = "$iconPath/ic_folder_menu.png";
-  static  String icFolderColor = "$iconPath/ic_folder_color.png";
-  static  String folderIcon = "$iconPath/transfrom_folder_add.svg";
-  static  String homeBg = "$imagePath/img_home_message_page_bg_img.png";
-  static  String transformDot = "$iconPath/transform_dot.svg";
   static String addTools = "$iconPath/add_tools.svg";
   static String editTools = "$iconPath/edit_tools.svg";
   static String likeRedTools = "$iconPath/like_red_tools.svg";
@@ -202,7 +185,6 @@ class ImageConstant {
   static String profile2Dark = "$iconPath/profile2Dark.svg";
 
 
-  static String successTools = "$iconPath/success_tools.svg";
   static String affirmationSuccessTools = "$iconPath/affirmation_success_icon.svg";
   static String success = "$iconPath/Success.svg";
   static String deleteAffirmation = "$iconPath/red_delete_icon.svg";
@@ -211,11 +193,9 @@ class ImageConstant {
   static String select = "$iconPath/select.svg";
   static String alarm = "$iconPath/alarm.svg";
   static String playAffirmation = "$iconPath/play_affirmation.svg";
-  static String moment = "$imagePath/moment.png";
   static String upArrowFaq = "$iconPath/up_arrow.svg";
   static String downArrowFaq = "$iconPath/down_arrow.svg";
   static String pauseAudio = "$iconPath/ic_pause_audio.svg";
-  static String bgImage = "$imagePath/background_image.png";
   static String closePositive = "$iconPath/close_positive.svg";
   static String checkBox = "$iconPath/check_box.svg";
   static String playPause = "$iconPath/playPause.svg";
@@ -236,17 +216,32 @@ class ImageConstant {
   static String checkMark = "$iconPath/chek_mark_pods.svg";
   static String sos = "$iconPath/sos.svg";
   static String noSearch = "$iconPath/no_serach.svg";
+  static String playGratitude = "$iconPath/play_gratitude.png";
+  static String addGratitude = "$iconPath/add_gratitide.svg";
+  static String calenderGratitude = "$iconPath/calendar_gratitude.svg";
   static String noInternet = "$iconPath/noInternet.png";
-  static String searchNotFound = "$imagePath/serach_not_found.png";
   static String searchDark = "$imagePath/search_dark.png";
+  static String themeChange = "$iconPath/theme_change.png";
+  static String welcomeBack = "$imagePath/welcom_back.png";
+  static String music = "$iconPath/music.svg";
+  static String checkCircle = "$iconPath/check_circle.png";
+  static String heartGratitude = "$iconPath/heart_gratitude.png";
+  static String motivational = "$iconPath/motivational.png";
+  static String positiveBulb= "$iconPath/positive_bulb.png";
   static String descriptionImage = "$iconPath/description_image.png";
   static String welcomeBackImage = "$imagePath/welcome_back_image.png";
+  static String welcomeLogo = "$imagePath/welcome_logo.png";
   static String noticeImage = "$imagePath/notice_how_you_feel.png";
+  static String gratitudeBackground = "$imagePath/gratitude_back.png";
   static String chooseLanguages = "$imagePath/choose_langauge.png";
-  static String homeBack = "$imagePath/home_back_motivation.png";
+  static String homeBack = "$imagePath/home_back.png";
+  static String splashBack = "$imagePath/share_background.png";
+  static String logoSplash = "$iconPath/logo_splash.png";
+  static String chooseBackEn = "$imagePath/choose_background_en.png";
+  static String chooseBackGe = "$imagePath/choose_background_ge.png";
+  static String chooseBack = "$imagePath/choose_background.png";
   static String breathInhale = "$lottie/breath_inhale.json";
-  static String shapeAffirmationShare =
-      "$imagePath/shape_affirmation_share.svg";
+
   static String settingArrowRight = "$iconPath/setting_arrow_right.svg";
   static  String lottieDeleteAccount = "$lottie/lottie_delete_account.json";
 

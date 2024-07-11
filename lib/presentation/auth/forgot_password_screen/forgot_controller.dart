@@ -61,7 +61,6 @@ ResendModel resendModel = ResendModel();
       });
     }else{
       request.body = json.encode({
-        //  "email": PrefService.getString(PrefKey.email),
         "isSignUp": true,
         "token":token
       });

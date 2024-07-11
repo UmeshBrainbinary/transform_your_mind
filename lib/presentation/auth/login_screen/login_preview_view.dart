@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:styled_text/tags/styled_text_tag.dart';
 import 'package:styled_text/widgets/styled_text.dart';
 import 'package:transform_your_mind/core/app_export.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
@@ -45,11 +43,11 @@ class _LoginPreviewViewState extends State<LoginPreviewView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Dimens.d80.spaceHeight,
+            Dimens.d75.spaceHeight,
             Image.asset(
               ImageConstant.loginBack,
               height: 209,
-              width:245,
+              width:282,
             ),
             Dimens.d22.spaceHeight,
             Padding(
@@ -57,17 +55,17 @@ class _LoginPreviewViewState extends State<LoginPreviewView> {
               child: Text(
                 "wT".tr,
                 textAlign: TextAlign.center,
-                style: Style.gothamLight(fontSize: 24,),
+                style: Style.nunitoBold(fontSize: 24,),
               ),
             ),
-            Dimens.d18.spaceHeight,
+            Dimens.d15.spaceHeight,
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: Dimens.d36),
               child: Text(
                 "awaken".tr,
                 textAlign: TextAlign.center,
-                style: Style.gothamLight(
-                    fontSize: 16, fontWeight: FontWeight.w400),
+                style: Style.nunLight(
+                    fontSize: 16, height: 1.8),
               ),
             ),
             Dimens.d41.spaceHeight,
@@ -98,46 +96,12 @@ class _LoginPreviewViewState extends State<LoginPreviewView> {
                      // 'privacyPolicy': StyledTextTag(style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
                     },
                   )
-                 /* Expanded(
-                    child: RichText(
-                      text: TextSpan(
-                          text: "iAgreeThe".tr,
-                          style: Style.gothamMedium(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
-                              height: 1.5),
-                          children: [
-                            TextSpan(
-                              text: "t&m".tr,
-                              style: Style.gothamMedium(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w400,
-                                  color: ColorConstant.themeColor),
-                            ),
-                            TextSpan(
-                              text: "ofThe".tr,
-                              style: Style.gothamMedium(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black),
-                            ),
-                            TextSpan(
-                              text: "privacyPolicy".tr,
-                              style: Style.gothamMedium(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w400,
-                                  color: ColorConstant.themeColor),
-                            ),
-                          ]),
-                    ),
-                  )*/
                 ],
               ),
             ),
             Dimens.d50.spaceHeight,
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 86),
+              padding: const EdgeInsets.symmetric(horizontal: 50),
               child: CommonElevatedButton(
                 title: "login".tr,
                 onTap: () {
@@ -159,7 +123,7 @@ class _LoginPreviewViewState extends State<LoginPreviewView> {
             ),
             Dimens.d16.spaceHeight,
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 86),
+              padding: const EdgeInsets.symmetric(horizontal: 50),
               child: CommonElevatedButton(
                 title: "register".tr,
                 onTap: () {

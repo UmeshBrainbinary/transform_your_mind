@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:transform_your_mind/core/app_export.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -32,111 +30,114 @@ class _PersonalizationScreenScreenState
       Get.put(PersonalizationController());
 
   ThemeController themeController = Get.find<ThemeController>();
+  String currentLanguage = 'en-US';
 
   @override
   void initState() {
-
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: themeController.isDarkMode.value
-          ? ColorConstant.darkBackground
-          : ColorConstant.backGround,
-      appBar: CustomAppBar(
-        title: "chooseLanguage".tr,
-        showBack: widget.intro! ? false : true,
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Dimens.d44.spaceHeight,
-        
-              Center(child: Image.asset(ImageConstant.chooseLanguages,height: 195,width: 258,)),
-              Dimens.d10.spaceHeight,
-        
-              Center(
-                child: Text(
-                  "chooseYourLanguage".tr,
-                  style: Style.gothamMedium(
-                      fontSize: Dimens.d22, fontWeight: FontWeight.w700),
-                ),
-              ),
-              Dimens.d14.spaceHeight,
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 47),
-                child: Text(
-                  "selectYourPreferred".tr,
-                  textAlign: TextAlign.center,
-                  style: Style.montserratRegular(fontSize: Dimens.d13),
-                ),
-              ),
-              Dimens.d50.spaceHeight,
-              Obx(
+    return Stack(
+      children: [
+        Image.asset(
+         /* currentLanguage != 'en-US'
+              ? ImageConstant.chooseBack
+              :*/ ImageConstant.chooseBack,
+          height: Get.height,
+          width: Get.width,
+          fit: BoxFit.cover,
+        ),
+
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: CustomAppBar(centerTitle: true,
+            title: "chooseLanguage".tr,
+            showBack: widget.intro! ? false : true,
+          ),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+
+                  Dimens.d140.spaceHeight,
+                  Text("changeYour".tr,textAlign: TextAlign.center,
+                    style: Style.nunitoSemiBold(fontSize: 24,color: ColorConstant.white),),
+                  Dimens.d20.spaceHeight,
+                  Align(alignment: Alignment.topRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 30),
+                        child: Text(" Norman Vincent Peale",style: Style.nunRegular(fontSize: 12,color: ColorConstant.white),),
+                      )),
+                  Dimens.d100.spaceHeight,
+
+                  Obx(
                     () => GestureDetector(
-                  onTap: () async {
-                    personalizationController.english.value = true;
-                    personalizationController.german.value = false;
-        
-                    Locale newLocale;
-        
-                    newLocale = const Locale('en', 'US');
-                    Get.updateLocale(newLocale);
-        
-                    await PrefService.setValue(
-                        PrefKey.language, newLocale.toLanguageTag());
-                  },
-                  child: Container(
-                    height: 46,
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: 17),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 22),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(80),
-                        color: ColorConstant.white),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment
-                          .spaceBetween,
-                      children: [
-                        Text(
-                          "English",
-                          style: Style.montserratRegular(
-                              fontSize: Dimens.d16,
-                              fontWeight: FontWeight.w500),
+                      onTap: () async {
+                        personalizationController.english.value = true;
+                        personalizationController.german.value = false;
+                        Locale newLocale;
+                        newLocale = const Locale('en', 'US');
+
+                        Get.updateLocale(newLocale);
+                        await PrefService.setValue(
+                            PrefKey.language, newLocale.toLanguageTag());
+                        setState(() {
+                          currentLanguage =
+                              PrefService.getString(PrefKey.language);
+                        });
+                      },
+                      child: Container(
+                        height: 46,
+                        margin: const EdgeInsets.symmetric(horizontal: 17),
+                        padding: const EdgeInsets.symmetric(horizontal: 22),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(80),
+                            color: ColorConstant.white),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "English",
+                              style: Style.montserratRegular(
+                                  fontSize: Dimens.d16,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            SvgPicture.asset(
+                              personalizationController.english.isTrue
+                                  ? ImageConstant.select
+                                  : ImageConstant.unSelect,
+                              height: 16,
+                              width: 16,
+                            )
+                          ],
                         ),
-                        SvgPicture.asset(
-                          personalizationController.english.isTrue
-                              ? ImageConstant.select
-                              : ImageConstant.unSelect,
-                          height: 16,
-                          width: 16,
-                        )
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              ),
-              Dimens.d14.spaceHeight,
-              Obx(
-                    () =>
-                    GestureDetector(
+                  Dimens.d14.spaceHeight,
+                  Obx(
+                    () => GestureDetector(
                       onTap: () async {
                         personalizationController.german.value = true;
                         personalizationController.english.value = false;
-        
+
                         Locale newLocale;
-        
+
                         newLocale = const Locale('de', 'DE');
+
                         Get.updateLocale(newLocale);
-        
+
                         await PrefService.setValue(
                             PrefKey.language, newLocale.toLanguageTag());
+                        setState(() {
+                          currentLanguage =
+                              PrefService.getString(PrefKey.language);
+                        });
                       },
                       child: Container(
                         height: 46,
@@ -165,27 +166,31 @@ class _PersonalizationScreenScreenState
                         ),
                       ),
                     ),
+                  ),
+                  Dimens.d50.spaceHeight,
+                  widget.intro!
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: CommonElevatedButton(
+                            title: "continue".tr,
+                            onTap: () {
+                              Get.toNamed(AppRoutes.introScreen);
+                            },
+                          ),
+                        )
+                      : const SizedBox()
+                ],
               ),
-              Dimens.d20.spaceHeight,
-              Dimens.d70.spaceHeight,
-              widget.intro!?CommonElevatedButton(
-                title: "continue".tr,
-                onTap: () {
-                   Get.toNamed(AppRoutes.loginPreviewScreen)!.then((value) {
-                     //menuBarSet(themeController);
-        
-                   },);
-                },):const SizedBox()
-            ],
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 }
 
-class AccountListItem extends StatelessWidget {
-  AccountListItem({
+class AccountListItem extends StatefulWidget {
+  const AccountListItem({
     super.key,
     required this.index,
     required this.title,
@@ -201,13 +206,19 @@ class AccountListItem extends StatelessWidget {
   final bool isSettings;
   final VoidCallback? onTap;
 
+  @override
+  State<AccountListItem> createState() => _AccountListItemState();
+}
+
+class _AccountListItemState extends State<AccountListItem> {
   ThemeController themeController = Get.find<ThemeController>();
+
   PersonalizationController pController = Get.put(PersonalizationController());
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: widget.onTap,
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 1.2),
         decoration: BoxDecoration(
@@ -225,7 +236,7 @@ class AccountListItem extends StatelessWidget {
           children: [
             Dimens.d12.spaceWidth,
             Text(
-              title,
+              widget.title,
               style: Style.montserratMedium(fontSize: 14).copyWith(
                 letterSpacing: Dimens.d0_16,
               ),

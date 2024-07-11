@@ -10,12 +10,12 @@ class FocusSelectButton extends StatelessWidget {
   final bool isLoading;
 
   const FocusSelectButton({
-    Key? key,
+    super.key,
     required this.primaryBtnText,
     required this.secondaryBtnText,
     required this.primaryBtnCallBack,
     this.isLoading = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

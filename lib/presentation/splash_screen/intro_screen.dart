@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:transform_your_mind/core/app_export.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
+import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
-import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
-import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/personalisations_screen/personalisations_screen.dart';
-import 'package:transform_your_mind/routes/app_routes.dart';
+import 'package:transform_your_mind/presentation/auth/login_screen/login_preview_view.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 
 class IntroScreen extends StatefulWidget {
@@ -20,16 +19,10 @@ class _IntroScreenState extends State<IntroScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  final List<String> _images = [
-    'assets/images/intro1.png',
-    'assets/images/intro2.png',
-    'assets/images/intro3.png',
-  ];
+  List _images = [];
+  String currentLanguage = PrefService.getString(PrefKey.language);
 
   void _onNext() {
-
-
-
     if (_currentPage < _images.length - 1) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
@@ -37,8 +30,9 @@ class _IntroScreenState extends State<IntroScreen> {
       );
     } else {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-        return const PersonalizationScreenScreen(intro: true,);
-      },));
+          return const LoginPreviewView();
+        },
+      ));
     }
   }
 
@@ -46,8 +40,20 @@ class _IntroScreenState extends State<IntroScreen> {
 
 
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-      return const PersonalizationScreenScreen(intro: true,);
-    },));
+        return const LoginPreviewView();
+      },
+    ));
+  }
+
+  @override
+  void initState() {
+    _images = [
+      {"title": "toBeSuccessful", "img": 'assets/images/intro1.png'},
+      {"title": "theSecret", "img": 'assets/images/intro2.png'},
+      {"title": "peopleWithGoals", "img": 'assets/images/intro3.png'},
+    ];
+
+    super.initState();
   }
 
   @override
@@ -64,11 +70,40 @@ class _IntroScreenState extends State<IntroScreen> {
               });
             },
             itemBuilder: (context, index) {
-              return Image.asset(
-                _images[index],
-                fit: BoxFit.fill,
-                width: double.infinity,
-                height: double.infinity,
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  Image.asset(
+                    _images[index]["img"],
+                    fit: BoxFit.fill,
+                    width: double.infinity,
+                    height: double.infinity,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        left: 36, right: 36, top: Get.height * 0.53),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "${_images[index]["title"]}".tr,
+                          textAlign: TextAlign.center,
+                          style: Style.nunitoBold(
+                              fontSize: currentLanguage.isNotEmpty?19:22, color: ColorConstant.white),
+                        ),
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Text(
+                            "Bob Proctor",
+                            textAlign: TextAlign.center,
+                            style: Style.nunitoSemiBold(
+                                fontSize: 13, color: ColorConstant.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               );
             },
           ),

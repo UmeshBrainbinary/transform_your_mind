@@ -96,13 +96,6 @@ class _AddGratitudeImageWidgetState extends State<AddGratitudeImageWidget> {
               ],
             ),
           ),
-         /* Dimens.d10.spaceHeight,
-          CommonElevatedButton(
-            title: widget.title??'addProfileImage'.tr,
-            onTap: widget.onTap,
-            width: Dimens.d125,
-            textStyle: Style.montserratMedium(color: ColorConstant.white, fontSize: Dimens.d14),
-          ),*/
         ],
       ),
     );

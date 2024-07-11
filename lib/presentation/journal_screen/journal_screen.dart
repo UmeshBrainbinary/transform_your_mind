@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
@@ -25,22 +26,29 @@ class _JournalScreenState extends State<JournalScreen>
     with SingleTickerProviderStateMixin {
   List<JournalData> journalList = [
     JournalData(
+      img: ImageConstant.heartGratitude,
       title: "gratitudeJournal".tr,
       lottie: ImageConstant.lottieSquare,
       route: AppRoutes.myGratitudePage,
     ),
     JournalData(
+      img: ImageConstant.checkCircle,
+
       title: "affirmation".tr,
       lottie: ImageConstant.lottieCircle,
       route: AppRoutes.myAffirmationPage,
     ),
 
     JournalData(
+      img: ImageConstant.motivational,
+
       title: "motivational".tr,
       lottie: ImageConstant.lottieHexagon,
       route: AppRoutes.motivationalMessageScreen,
     ),
     JournalData(
+      img: ImageConstant.positiveBulb,
+
       title: "positiveMoments".tr,
       lottie: ImageConstant.lottieSquircle,
       route: AppRoutes.positiveScreen,
@@ -96,14 +104,14 @@ class _JournalScreenState extends State<JournalScreen>
                   Dimens.d30.spaceHeight,
                   Padding(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: Dimens.d40),
+                        const EdgeInsets.symmetric(horizontal: Dimens.d20),
                     child: Text(
                       textAlign: TextAlign.center,
                       "useSelfDevelopment".tr,
-                      style: Style.montserratRegular(fontSize: 13),
+                      style: Style.nunLight(fontSize: 13,color: ColorConstant.color747474),
                     ),
                   ),
-                  Dimens.d21.spaceHeight,
+                  Dimens.d60.spaceHeight,
                   NotificationListener<ScrollNotification>(
                     onNotification: (ScrollNotification scrollInfo) {
                       if (scrollInfo is UserScrollNotification) {
@@ -147,9 +155,9 @@ class _JournalScreenState extends State<JournalScreen>
                                         gridDelegate:
                                             SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisCount: Dimens.d2.toInt(),
-                                          crossAxisSpacing: Dimens.d20,
-                                          mainAxisSpacing: Dimens.d20,
-                                          mainAxisExtent: 210,
+                                          crossAxisSpacing: Dimens.d30,
+                                          mainAxisSpacing: Dimens.d10,
+
                                         ),
                                         itemBuilder: (BuildContext context,
                                             int index) {
@@ -170,40 +178,30 @@ class _JournalScreenState extends State<JournalScreen>
                                             },
                                             child: Column(
                                               children: [
-                                                Expanded(
-                                                  child: Container(
-                                                    padding:
-                                                        Dimens.d12.paddingAll,
-                                                    alignment:
-                                                        Alignment.center,
-                                                    decoration: BoxDecoration(
-                                                      color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.white,
-                                                      borderRadius: Dimens
-                                                          .d19.radiusAll,
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                          color: Colors.black
-                                                              .withOpacity(
-                                                                  0.1),
-                                                          blurRadius:
-                                                              Dimens.d8,
-                                                        )
-                                                      ],
-                                                    ),
-                                                    child: Lottie.asset(
-                                                        journalList[index]
-                                                            .lottie,
-                                                        height: 180,
-                                                        width: 180,
-                                                    ),
+                                                Container(
+                                                  height: 128,
+                                                  width: 153,
+                                                  padding:
+                                                      Dimens.d12.paddingAll,
+                                                  alignment:
+                                                      Alignment.center,
+                                                  decoration: BoxDecoration(
+                                                    color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.colorF8F8FA,
+                                                    borderRadius: Dimens
+                                                        .d20.radiusAll,
                                                   ),
+                                                  child: Column(children: [
+                                                    Dimens.d8.spaceHeight,
+
+                                                    Image.asset( journalList[index].img!,height: Dimens.d60,width: Dimens.d60,),
+                                                    Dimens.d15.spaceHeight,
+                                                    Text(
+                                                      journalList[index].title,
+                                                      style: Style
+                                                          .nunLight(),
+                                                    )
+                                                  ],)
                                                 ),
-                                                Dimens.d12.spaceHeight,
-                                                Text(
-                                                  journalList[index].title,
-                                                  style: Style
-                                                      .montserratRegular(),
-                                                )
                                               ],
                                             ),
                                           );
@@ -236,10 +234,12 @@ class JournalData {
   final String lottie;
   final String title;
   final String? route;
+  final String? img;
 
   JournalData({
     this.route,
     required this.title,
     required this.lottie,
+    required this.img,
   });
 }

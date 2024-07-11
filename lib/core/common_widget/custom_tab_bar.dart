@@ -44,7 +44,7 @@ class _CustomTabBarState extends State<CustomTabBar> {
   Widget build(BuildContext context) {
     return TabBar(
       isScrollable: widget.isScrollable,
-      overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
+      overlayColor: WidgetStateProperty.all<Color>(Colors.transparent),
       indicator: BoxDecoration(
         borderRadius:
             BorderRadius.circular(widget.borderCurve), // Creates border

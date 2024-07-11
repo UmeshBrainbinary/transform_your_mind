@@ -1,24 +1,24 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-
-import 'package:transform_your_mind/core/utils/color_constant.dart';
 
 
 class FontFamily {
-  static String montserratBold ="Montserrat-Bold";
-  static String montserratMedium ="Montserrat-Medium";
-  static String montserratRegular ="Montserrat-Regular";
-  static String montserratSemiBold ="Montserrat-SemiBold";
+  static String montserratBold ="Nunito-Bold";
+  static String montserratMedium ="Nunito-Medium";
+  static String montserratRegular = "Nunito-Regular";
+  static String montserratSemiBold ="Nunito-SemiBold";
 
 
-  static String cormorantGaramondBold ="CormorantGaramond-Bold";
-  static String cormorantGaramondMedium ="CormorantGaramond-Medium";
-  static String cormorantGaramondRegular ="CormorantGaramond-Regular";
-  static String cormorantGaramondSemiBold ="CormorantGaramond-SemiBold";
-  static String gothamMedium ="GothamMedium";
-  static String gothamLight ="GothamLight";
-
+  static String cormorantGaramondBold ="Nunito-Bold";
+  static String cormorantGaramondMedium ="Nunito-Medium";
+  static String cormorantGaramondRegular ="Nunito-Regular";
+  static String cormorantGaramondSemiBold ="Nunito-SemiBold";
+  static String gothamMedium ="Nunito-Medium";
+  static String gothamLight ="Nunito-Light";
+  static String nunitoRegular = "Nunito-Regular";
+  static String nunito = "Nunito-Light";
+  static String nunitoBold = "Nunito-Bold";
+  static String nunitoSemiBold = "Nunito-SemiBold";
+  static String nunitoMedium = "Nunito-Medium";
 }
 
 class Style {
@@ -68,6 +68,88 @@ class Style {
     return TextStyle(
       color: color,
       fontFamily: FontFamily.montserratRegular,
+      fontWeight: fontWeight,
+      fontStyle: fontStyle,
+      fontSize: fontSize ?? 14,
+      height: height,
+    );
+  }
+
+  static TextStyle nunitoBold({
+    Color? color,
+    FontWeight fontWeight = FontWeight.w400,
+    FontStyle fontStyle = FontStyle.normal,
+    double? fontSize,
+    double? height,
+  }) {
+    return TextStyle(
+      color: color,
+      fontFamily: FontFamily.nunitoBold,
+      fontWeight: fontWeight,
+      fontStyle: fontStyle,
+      fontSize: fontSize ?? 14,
+      height: height,
+    );
+  }
+
+  static TextStyle nunitoSemiBold({
+    Color? color,
+    FontWeight fontWeight = FontWeight.w500,
+    FontStyle fontStyle = FontStyle.normal,
+    double? fontSize,
+    double? height,
+  }) {
+    return TextStyle(
+      color: color,
+      fontFamily: FontFamily.nunitoSemiBold,
+      fontWeight: fontWeight,
+      fontStyle: fontStyle,
+      fontSize: fontSize ?? 14,
+      height: height,
+    );
+  }
+  static TextStyle nunMedium({
+    Color? color,
+    FontWeight fontWeight = FontWeight.w500,
+    FontStyle fontStyle = FontStyle.normal,
+    double? fontSize,
+    double? height,
+  }) {
+    return TextStyle(
+      color: color,
+      fontFamily: FontFamily.nunitoMedium,
+      fontWeight: fontWeight,
+      fontStyle: fontStyle,
+      fontSize: fontSize ?? 14,
+      height: height,
+    );
+  }
+  static TextStyle nunLight({
+    Color? color,
+    FontWeight fontWeight = FontWeight.w500,
+    FontStyle fontStyle = FontStyle.normal,
+    double? fontSize,
+    double? height,
+  }) {
+    return TextStyle(
+      color: color,
+      fontFamily: FontFamily.nunito,
+      fontWeight: fontWeight,
+      fontStyle: fontStyle,
+      fontSize: fontSize ?? 14,
+      height: height,
+    );
+  }
+  static TextStyle nunRegular({
+    Color? color,
+    FontWeight fontWeight = FontWeight.w500,
+    FontStyle fontStyle = FontStyle.normal,
+    double? fontSize,
+    double? height,
+  }) {
+    return TextStyle(
+      color: color,
+      fontFamily: FontFamily.nunitoRegular,
       fontWeight: fontWeight,
       fontStyle: fontStyle,
       fontSize: fontSize ?? 14,

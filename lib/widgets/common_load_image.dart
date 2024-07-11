@@ -122,8 +122,8 @@ class PlaceHolderCNI extends StatelessWidget {
     this.isRounded = false,
     this.borderRadius = 0.0,
     this.customBorderRadius,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final double width;
   final double height;

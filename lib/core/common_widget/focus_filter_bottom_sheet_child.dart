@@ -144,7 +144,7 @@ class _FocusFilterBottomSheetChildState
                                             splashColor: Colors.transparent,
                                             highlightColor:
                                                 Colors.transparent,
-                                            icon: Icon(
+                                            icon: const Icon(
                                               Icons.close,
                                               color: ColorConstant.themeColor,
                                             ),
@@ -169,8 +169,8 @@ class _FocusFilterBottomSheetChildState
                         setState(() {});
                       },
                       child: (addedResult.isNotEmpty)
-                          ? Padding(
-                              padding: const EdgeInsets.symmetric(
+                          ? const Padding(
+                              padding: EdgeInsets.symmetric(
                                   vertical: 20.0, horizontal: 20),
                               child: Text("ClearAll"),
                             )

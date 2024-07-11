@@ -1,14 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_calendar_carousel/classes/event.dart';
-import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -54,7 +48,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
           backgroundColor: themeController.isDarkMode.value
               ? ColorConstant.darkBackground
               : ColorConstant.backGround,
-          appBar: CustomAppBar(titleStyle:   Style.montserratRegular(
+          appBar: CustomAppBar(centerTitle: true,
+            titleStyle:   Style.montserratRegular(
               fontSize: Dimens.d22,
               color: themeController.isDarkMode.value
                   ? ColorConstant.white

@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:transform_your_mind/core/app_export.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
@@ -100,7 +98,7 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
               itemBuilder: (context, index) {
                 return Slidable(
                   closeOnScroll: true,
-                  key: const ValueKey<String>("" ?? ""),
+                  key: const ValueKey<String>(""),
                   endActionPane: ActionPane(
                     motion: const ScrollMotion(),
                     dragDismissible: false,

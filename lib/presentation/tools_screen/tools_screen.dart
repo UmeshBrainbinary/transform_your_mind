@@ -1,15 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
-import 'package:transform_your_mind/core/common_widget/screen_info_widget.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
-import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_controller.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_screen.dart';
@@ -48,8 +44,6 @@ class _ToolsScreenState extends State<ToolsScreen>
       "icon": ImageConstant.podIconQuick
     },
   ];
-  ValueNotifier<bool> isTutorialVideoVisible = ValueNotifier(false);
-  ValueNotifier<bool> info = ValueNotifier(false);
   final audioPlayerController = Get.find<NowPlayingController>();
   @override
   void initState() {
@@ -72,7 +66,7 @@ class _ToolsScreenState extends State<ToolsScreen>
       backgroundColor: themeController.isDarkMode.isTrue?
       ColorConstant.darkBackground:ColorConstant.white,
       appBar: CustomAppBar(
-        title: "tools".tr,
+        title: "tools".tr,centerTitle: true,
         showBack: false,
         action: Padding(
           padding: const EdgeInsets.only(right: 20.0),
@@ -99,6 +93,7 @@ class _ToolsScreenState extends State<ToolsScreen>
               children: [
                 Column(
                   children: [
+                    Dimens.d40.spaceHeight,
                     ReorderableListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
@@ -278,26 +273,6 @@ class _ToolsScreenState extends State<ToolsScreen>
               ],
             ),
           ),
-          info.value
-              ? Padding(
-                  padding: EdgeInsets.only(top: Dimens.d110.h),
-                  child: SizedBox(
-                    child: ScreenInfoWidget(
-                      info: info,
-                      controller: _controller,
-                      isTutorialVideoVisible: isTutorialVideoVisible,
-                      screenTitle: "welcomeToTools".tr,
-                      screenHeading:
-                          "Use this self reflection fetaure to pratice the art of gratitude, clear unwanted fellings from your life, set goals and help you feel more clam and contect." ??
-                              '',
-                      screenDesc:
-                          "Use this self reflection fetaure to pratice the art of gratitude," ??
-                              '',
-                      onVideoViewTap: () {},
-                    ),
-                  ),
-                )
-              : const SizedBox(),
           Obx(() {
             if (!audioPlayerController.isVisible.value) {
               return const SizedBox.shrink();

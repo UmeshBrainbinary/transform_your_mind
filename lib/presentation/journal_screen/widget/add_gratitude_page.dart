@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -10,9 +9,7 @@ import 'package:http/http.dart' as http ;
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:transform_your_mind/core/app_export.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
-import 'package:transform_your_mind/core/common_widget/layout_container.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
@@ -21,7 +18,9 @@ import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
+import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/model_class/common_model.dart';
+import 'package:transform_your_mind/presentation/journal_screen/widget/my_gratitude_page.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
@@ -61,7 +60,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
   final TextEditingController dateController = TextEditingController();
   bool drop = false;
   ThemeController themeController = Get.find<ThemeController>();
-
+  List addGratitudeData = [];
   bool select = false;
 
   final FocusNode titleFocus = FocusNode();
@@ -82,12 +81,17 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
 
   @override
   void initState() {
-    if ((widget.categoryList ?? []).isNotEmpty) {}
+/*    if ((widget.categoryList ?? []).isNotEmpty) {}
     if (widget.edit == true) {
       setState(() {
         titleController.text = widget.title!;
         descController.text = widget.description!;
         dateController.text = DateFormat('dd/MM/yyyy').format(widget.date!);
+      });
+    }*/
+    if ((widget.categoryList ?? []).isNotEmpty) {
+      setState(() {
+        addGratitudeData = widget.categoryList!;
       });
     }
     super.initState();
@@ -184,9 +188,11 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
     });
   }
 
+  TextEditingController addGratitudeText = TextEditingController();
+  FocusNode gratitudeFocus = FocusNode();
+  int totalIndex = 0;
   @override
   Widget build(BuildContext context) {
-    //statusBarSet(themeController);
     return Stack(
       children: [
         Scaffold(
@@ -233,7 +239,77 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                 ))
                 : const SizedBox.shrink(),
           ),
-          body: Stack(
+            body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: [
+                  Dimens.d20.spaceHeight,
+                  Text(
+                    "10Things".tr,
+                    style: Style.montserratRegular(fontSize: 16),
+                  ),
+                  Dimens.d20.spaceHeight,
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: addGratitudeData.length + 1,
+                      // Increased the itemCount by 1 to accommodate the "+" icon
+                      itemBuilder: (context, index) {
+                        totalIndex = index;
+                        if (index == addGratitudeData.length) {
+                          return Column(
+                            children: [
+                              Dimens.d32.spaceHeight,
+                              GestureDetector(
+                                  onTap: () {
+                                    if (totalIndex != 10) {
+                                      addGratitudeText.clear();
+                                      _showAlertDialog(
+                                          context: context,
+                                          value: false,
+                                          index: index);
+                                    } else {
+                                      showSnackBarError(
+                                          context, "youCanAdd10".tr);
+                                    }
+                                  },
+                                  child: SvgPicture.asset(
+                                      ImageConstant.addGratitude)),
+                              Dimens.d32.spaceHeight,
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                child: CommonElevatedButton(
+                                  textStyle: Style.montserratRegular(
+                                      fontSize: 20, color: ColorConstant.white),
+                                  title: "save".tr,
+                                  onTap: () async {
+                                    setState(() {
+                                      gratitudeList = addGratitudeData;
+                                    });
+                                    Get.back();
+                                  },
+                                ),
+                              ),
+                              Dimens.d32.spaceHeight,
+                            ],
+                          );
+                        } else {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 20),
+                            child: commonContainer(
+                                des: addGratitudeData[index]["title"],
+                                date: "${index + 1}",
+                                day: "TUE",
+                                index: index),
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            )
+            /*Stack(
             children: [
               LayoutBuilder(builder: (context, constraints) {
                 return Form(
@@ -410,10 +486,271 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
               else
                 const SizedBox()
             ],
-          ),
-        ),
+          ),*/
+            ),
         loader == true ? commonLoader() : const SizedBox()
       ],
+    );
+  }
+
+  void _showAlertDialog(
+      {String? id, BuildContext? context, int? index, bool? value}) {
+    showDialog(
+      context: context!,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              contentPadding: EdgeInsets.zero,
+              titlePadding: EdgeInsets.zero,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(11.0), // Set border radius
+              ),
+              content: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Dimens.d10.spaceHeight,
+                    Align(
+                        alignment: Alignment.topRight,
+                        child: GestureDetector(
+                            onTap: () {
+                              Get.back();
+                            },
+                            child: SvgPicture.asset(
+                              ImageConstant.close,
+                              height: 20,
+                              width: 20,
+                            ))),
+                    Dimens.d15.spaceHeight,
+                    CommonTextField(
+                        borderRadius: Dimens.d10,
+                        filledColor: themeController.isDarkMode.isTrue
+                            ? ColorConstant.darkBackground
+                            : ColorConstant.colorECECEC,
+                        hintText: "typeGratitude".tr,
+                        maxLines: 5,
+                        controller: addGratitudeText,
+                        focusNode: gratitudeFocus),
+                    Dimens.d30.spaceHeight,
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: Dimens.d70.h),
+                      child: CommonElevatedButton(
+                        height: Dimens.d33,
+                        textStyle: Style.montserratRegular(
+                          fontSize: Dimens.d18,
+                          color: ColorConstant.white,
+                        ),
+                        title: value == true ? "update".tr : "add".tr,
+                        onTap: () async {
+                          if (value == true) {
+                            setState.call(() {
+                              addGratitudeData[index!]["title"] =
+                                  addGratitudeText.text;
+                            });
+                            Get.back();
+                          } else {
+                            setState.call(() {
+                              addGratitudeData
+                                  .add({"title": addGratitudeText.text});
+                            });
+                            Get.back();
+                          }
+                        },
+                      ),
+                    ),
+                    Dimens.d20.spaceHeight,
+                    value == false
+                        ? const SizedBox()
+                        : GestureDetector(
+                            onTap: () {
+                              Get.back();
+                            },
+                            child: Text(
+                              "cancel".tr,
+                              style: Style.montserratRegular(fontSize: 14),
+                            )),
+                    value == false ? const SizedBox() : Dimens.d20.spaceHeight,
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    ).then(
+      (value) {
+        setState(() {});
+      },
+    );
+  }
+
+  Widget commonContainer({String? date, String? day, String? des, int? index}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      decoration: BoxDecoration(
+        color: themeController.isDarkMode.isTrue
+            ? ColorConstant.textfieldFillColor
+            : ColorConstant.white,
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: 63,
+            width: 63,
+            decoration: BoxDecoration(
+              color: ColorConstant.themeColor,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Dimens.d3.spaceHeight,
+                Text(
+                  day ?? "",
+                  style: Style.gothamLight(
+                    fontSize: 10,
+                    color: ColorConstant.white,
+                  ),
+                ),
+                Text(
+                  date ?? "",
+                  style: Style.gothamMedium(
+                    fontSize: 30,
+                    color: ColorConstant.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Dimens.d13.spaceWidth,
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Dimens.d2.spaceHeight,
+                Align(
+                  alignment: Alignment.topRight,
+                  child: PopupMenuButton(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10.0),
+                      ),
+                    ),
+                    color: themeController.isDarkMode.isTrue
+                        ? ColorConstant.textfieldFillColor
+                        : ColorConstant.white,
+                    child: SvgPicture.asset(
+                      ImageConstant.moreVert,
+                    ),
+                    itemBuilder: (context) {
+                      return [
+                        PopupMenuItem(
+                          child: Column(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  Get.back();
+                                  addGratitudeText.text = des!;
+                                  _showAlertDialog(
+                                      context: context,
+                                      value: true,
+                                      index: index);
+                                },
+                                child: Container(
+                                  height: 28,
+                                  width: 86,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: ColorConstant.color5B93FF
+                                        .withOpacity(0.05),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Dimens.d5.spaceWidth,
+                                      SvgPicture.asset(
+                                        ImageConstant.editTools,
+                                        color: ColorConstant.color5B93FF,
+                                      ),
+                                      Dimens.d5.spaceWidth,
+                                      Text(
+                                        'edit'.tr,
+                                        style: Style.montserratRegular(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          color: ColorConstant.color5B93FF,
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Dimens.d15.spaceHeight,
+                              InkWell(
+                                onTap: () {
+                                  Get.back();
+                                  _showAlertDialogDelete(context, 1, 0);
+                                },
+                                child: Container(
+                                  height: 28,
+                                  width: 86,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: ColorConstant.colorE71D36
+                                        .withOpacity(0.05),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Dimens.d5.spaceWidth,
+                                      SvgPicture.asset(
+                                        ImageConstant.delete,
+                                        color: ColorConstant.colorE71D36,
+                                      ),
+                                      Dimens.d5.spaceWidth,
+                                      Text(
+                                        'delete'.tr,
+                                        style: Style.montserratRegular(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          color: ColorConstant.colorE71D36,
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ];
+                    },
+                  ),
+                ),
+                Dimens.d2.spaceHeight,
+                SizedBox(
+                  width: 240,
+                  child: Text(
+                    des ?? "",
+                    maxLines: 2,
+                    style: Style.montserratRegular(
+                      height: 2,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -548,5 +885,84 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                   ? ColorConstant.white
                   : ColorConstant.black),
         ));
+  }
+
+  void _showAlertDialogDelete(BuildContext context, int index, id) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          //backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(11.0), // Set border radius
+          ),
+          actions: <Widget>[
+            Dimens.d18.spaceHeight,
+            Align(
+                alignment: Alignment.topRight,
+                child: GestureDetector(
+                    onTap: () {
+                      Get.back();
+                    },
+                    child: SvgPicture.asset(
+                      ImageConstant.close,
+                    ))),
+            Center(
+                child: SvgPicture.asset(
+              ImageConstant.deleteAffirmation,
+              height: Dimens.d96,
+              width: Dimens.d96,
+            )),
+            Dimens.d20.spaceHeight,
+            Center(
+              child: Text(
+                  textAlign: TextAlign.center,
+                  "areYouSureDeleteGratitude".tr,
+                  style: Style.montserratRegular(
+                    fontSize: Dimens.d14,
+                  )),
+            ),
+            Dimens.d24.spaceHeight,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                CommonElevatedButton(
+                  height: 33,
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: Dimens.d28),
+                  textStyle: Style.montserratRegular(
+                      fontSize: Dimens.d12, color: ColorConstant.white),
+                  title: "delete".tr,
+                  onTap: () async {
+                    Get.back();
+                  },
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Get.back();
+                  },
+                  child: Container(
+                    height: 33,
+                    margin: const EdgeInsets.symmetric(horizontal: 5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 21,
+                    ),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(80),
+                        border: Border.all(color: ColorConstant.themeColor)),
+                    child: Center(
+                      child: Text(
+                        "cancel".tr,
+                        style: Style.montserratRegular(fontSize: 14),
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            )
+          ],
+        );
+      },
+    );
   }
 }

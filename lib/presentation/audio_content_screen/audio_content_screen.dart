@@ -149,7 +149,7 @@ getData() async {
                               children: [
                                 Text(
                                   "audioContent".tr,
-                                  style: Style.montserratRegular(fontSize: 18),
+                                  style: Style.nunitoSemiBold(fontSize: Dimens.d20),
                                 ),
                                 const Spacer(),
                                 GestureDetector(
@@ -212,7 +212,7 @@ getData() async {
                                         ),
                                   hintText: "search".tr,
                                   textStyle:
-                                      Style.montserratRegular(fontSize: 12),
+                                      Style.nunLight(fontSize: 12,color: ColorConstant.color7F7E7E),
                                   controller:
                                       audioContentController.searchController,
                                   focusNode:
@@ -309,7 +309,7 @@ getData() async {
                                                                   .toString(),
                                                               // "Motivational",
                                                               style: Style
-                                                                  .montserratMedium(
+                                                                  .nunitoBold(
                                                                 fontSize: Dimens.d12,
                                                               ),
                                                               overflow: TextOverflow
@@ -336,7 +336,7 @@ getData() async {
                                                                 "${controller.audioData[index].rating.toString()}.0" ??
                                                                     '',
                                                                 style: Style
-                                                                    .montserratMedium(
+                                                                    .nunLight(
                                                                   fontSize:
                                                                       Dimens.d12,
                                                                 ),
@@ -388,7 +388,7 @@ getData() async {
                                                             .description
                                                             .toString(),
                                                         maxLines: Dimens.d2.toInt(),
-                                                        style: Style.montserratMedium(
+                                                        style: Style.nunMedium(
                                                             fontSize: Dimens.d14),
                                                         overflow:
                                                             TextOverflow.ellipsis,
@@ -410,14 +410,14 @@ getData() async {
                                         child: Column(
                                           children: [
                                             SvgPicture.asset(ImageConstant.noSearch,),
-                                            Text("dataNotFound".tr,style: Style.gothamMedium(
+                                            Text("dataNotFound".tr,style: Style.nunMedium(
                                                 fontSize: 24,fontWeight: FontWeight.w700),),
                                             Dimens.d11.spaceHeight,
                                             Padding(
                                               padding: const EdgeInsets.symmetric(horizontal: 35),
                                               child: Text("noSearchAgain".tr,
                                                 textAlign: TextAlign.center,
-                                                style: Style.montserratRegular(fontSize: 14,fontWeight: FontWeight.w400),),
+                                                style: Style.nunMedium(fontSize: 14,fontWeight: FontWeight.w400),),
                                             ),
 
                                           ],

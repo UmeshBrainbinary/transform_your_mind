@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
@@ -114,6 +113,18 @@ class _SettingsData {
           title: "YourAffirmationFocus",
           suffixIcon: ImageConstant.settingArrowRight,
           index: 10,
+        ),
+        _SettingsData(
+          prefixIcon: ImageConstant.settingsLegals,
+          title: "Favourite",
+          suffixIcon: ImageConstant.settingArrowRight,
+          index: 11,
+        ),
+        _SettingsData(
+          prefixIcon: ImageConstant.settingsLegals,
+          title: "Bookmark",
+          suffixIcon: ImageConstant.settingArrowRight,
+          index: 12,
         ),
       ];
 }

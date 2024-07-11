@@ -38,6 +38,7 @@
         <string>processing</string>
         <string>audio</string>
         <string>location</string>
+        <string>remote-notification</string>
     </array>
     <key>NSAppTransportSecurity</key>
     <dict>

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
-import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
@@ -59,14 +58,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           child: Column(
                             mainAxisSize: MainAxisSize.max,
                             children: [
-                              Dimens.d34.spaceHeight,
+                              Dimens.d25.spaceHeight,
                               SizedBox(
                                 width: Dimens.d296,
                                 child: Text(
                                     textAlign: TextAlign.center,
                                     "forgotInstructions".tr,
-                                    style: Style.montserratRegular(
-                                        fontSize: 14,
+                                    style: Style.nunLight(
+                                        fontSize: 16,
                                         fontWeight: FontWeight.w400,
                                         color: ColorConstant.color716B6B)),
                               ),

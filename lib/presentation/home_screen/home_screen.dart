@@ -1,11 +1,7 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_alarm_clock/flutter_alarm_clock.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/service/method_channal_alarm.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
@@ -23,15 +19,21 @@ import 'package:transform_your_mind/presentation/breath_screen/breath_screen.dar
 import 'package:transform_your_mind/presentation/home_screen/home_controller.dart';
 import 'package:transform_your_mind/presentation/home_screen/home_message_page.dart';
 import 'package:transform_your_mind/presentation/home_screen/widgets/home_widget.dart';
+import 'package:transform_your_mind/presentation/journal_screen/widget/add_gratitude_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/my_affirmation_page.dart';
+import 'package:transform_your_mind/presentation/journal_screen/widget/my_gratitude_page.dart';
 import 'package:transform_your_mind/presentation/positive_moment/positive_screen.dart';
+import 'package:transform_your_mind/presentation/start_practcing_screen/start_pratice_screen.dart';
+import 'package:transform_your_mind/presentation/start_pratice_affirmation/start_pratice_affirmation.dart';
 import 'package:transform_your_mind/presentation/subscription_screen/subscription_screen.dart';
 import 'package:transform_your_mind/presentation/transform_pods_screen/transform_pods_screen.dart';
+import 'package:transform_your_mind/presentation/welcome_screen/welcome_screen.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:transform_your_mind/widgets/custom_view_controller.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -52,29 +54,30 @@ class _HomeScreenState extends State<HomeScreen>
   void initState() {
     _setGreetingBasedOnTime();
     _lottieBgController = AnimationController(vsync: this);
-
     scrollController.addListener(() {
-      //scroll listener
       double showOffset = 10.0;
-
       if (scrollController.offset > showOffset) {
         showScrollTop.value = true;
       } else {
         showScrollTop.value = false;
       }
     });
-    g.getMotivationalMessage();
-    g.getUSer();
+
+    getData();
+
+    setState(() {});
+    super.initState();
+  }
+
+  getData() async {
+    await g.getUSer();
     g.getPodApi();
     g.getBookMarkedList();
     g.getTodayGratitude();
     g.getTodayAffirmation();
     g.getRecentlyList();
-
-
-    setState(() {});
-    super.initState();
   }
+
 
   String greeting = "";
 
@@ -108,7 +111,8 @@ class _HomeScreenState extends State<HomeScreen>
     _lottieBgController.dispose();
     super.dispose();
   }
-  final audioPlayerController = Get.find<NowPlayingController>();
+
+  final audioPlayerController = Get.put(NowPlayingController());
 
   Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
@@ -137,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen>
               duration: const Duration(milliseconds: 700), //show/hide animation
               opacity: showScrollTop.value
                   ? 1.0
-                  : 0.0, //set opacity to 1 on visible, or hide
+                  : 0.0,
               child: Container(
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
@@ -167,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen>
         ),
         backgroundColor: themeController.isDarkMode.isTrue
             ? ColorConstant.darkBackground
-            : ColorConstant.themeColor.withOpacity(0.1),
+            : ColorConstant.white,
         body: GetBuilder<HomeController>(
           id: "home",
           builder: (controller) {
@@ -179,45 +183,57 @@ class _HomeScreenState extends State<HomeScreen>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Dimens.d17.spaceHeight,
-                      Padding(
-                        padding: const EdgeInsets.only(top: 40.0),
-                        child: Center(
-                          child: Text(
-                            "TransformYourMind",
-                            style: Style.montserratRegular(
-                              fontSize: 18,
-                            ),
-                          ),
-                        ),
-                      ),
                       Dimens.d50.spaceHeight,
 
                       //__________________________ top view ____________________
                       topView(controller
                               .getUserModel.data?.motivationalMessage ??
                           "Believe in yourself, even when doubt creeps in. Today's progress is a step towards your dreams."),
-                      Dimens.d36.spaceHeight,
-
-                      Dimens.d16.spaceHeight,
-                      Padding(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: Dimens.d20),
-                        child: Text(
-                          "${greeting.tr}, ${PrefService.getString(PrefKey.name).toString()}",
-                          textAlign: TextAlign.center,
-                          style: Style.montserratRegular(fontSize: 22),
+                      Dimens.d30.spaceHeight,
+                      Align(
+                        alignment: Alignment.center,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: Dimens.d20),
+                          child: Text(
+                              "${greeting.tr}, ${PrefService.getString(PrefKey.name).toString()}",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: themeController.isDarkMode.isTrue
+                                      ? ColorConstant.white
+                                      : ColorConstant.black,
+                                  fontFamily: FontFamily.montserratRegular,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 24,
+                                  letterSpacing: 1.5)),
                         ),
                       ),
-                      Dimens.d16.spaceHeight,
+
+                      Dimens.d25.spaceHeight,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Text(
+                          "“ ${g.getUserModel.data?.motivationalMessage ?? "“ Believe in yourself and all that you are. Know that there is something inside you that is greater than any obstacle.” "}” ",
+                          textAlign: TextAlign.center,
+                          style: Style.gothamLight(fontSize: 15),
+                        ),
+                      ),
+                      Dimens.d12.spaceHeight,
+                      Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            "Christian D. Larson",
+                            style: Style.gothamLight(
+                                fontSize: 13, fontWeight: FontWeight.w300),
+                          )),
 
                       //______________________________ Recently Played _______________________
-                      recentlyView(),
+                      /* recentlyView(),*/
 
-                      Dimens.d20.spaceHeight,
+                      Dimens.d30.spaceHeight,
 
                       yourGratitude(),
-                      Dimens.d40.spaceHeight,
+                      Dimens.d30.spaceHeight,
                       yourAffirmation(),
                       Dimens.d30.spaceHeight,
 
@@ -227,16 +243,16 @@ class _HomeScreenState extends State<HomeScreen>
                         padding:
                             const EdgeInsets.symmetric(horizontal: Dimens.d20),
                         child: Text(
-                          "yourRecommendations".tr,
+                          "feelGood".tr,
                           textAlign: TextAlign.center,
-                          style: Style.montserratRegular(fontSize: Dimens.d22),
+                          style: Style.nunitoBold(fontSize: Dimens.d22),
                         ),
                       ),
                       Dimens.d20.spaceHeight,
-                      recommendationsView(controller),
-
-                      Dimens.d20.spaceHeight,
-                      controller.bookmarkedModel.data == null
+                      recentlyView(),
+                      //recommendationsView(controller),
+                      Dimens.d40.spaceHeight,
+                      /*       controller.bookmarkedModel.data == null
                           ? const SizedBox()
                           : controller.bookmarkedModel.data!.isNotEmpty
                               ? Padding(
@@ -250,19 +266,62 @@ class _HomeScreenState extends State<HomeScreen>
                                 )
                               : const SizedBox(),
                       Dimens.d20.spaceHeight,
-
                       bookmarkViw(controller),
                       controller.bookmarkedModel.data == null
                           ? const SizedBox()
-                          : Dimens.d30.spaceHeight,
-
+                          : Dimens.d30.spaceHeight,*/
+                      Padding(
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: Dimens.d20),
+                        child: Row(children: [
+                          Text(
+                            "positiveMoments".tr,
+                            textAlign: TextAlign.center,
+                            style:
+                                Style.nunitoBold(fontSize: Dimens.d22),
+                          ),
+                          const Spacer(),
+                          GestureDetector(
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) {
+                                    return const PositiveScreen();
+                                  },
+                                )).then(
+                                  (value) {
+                                    setState(() {});
+                                  },
+                                );
+                              },
+                              child: Text(
+                                "seeAll".tr,
+                                style: Style.gothamLight(
+                                    color: ColorConstant.color5A7681,
+                                    fontSize: 12),
+                              ))
+                        ]),
+                      ),
+                      Dimens.d24.spaceHeight,
+                      SizedBox(
+                        height: Dimens.d113,
+                        child: ListView.builder(
+                          itemCount: 4,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            return const PositiveMoment();
+                          },
+                        ),
+                      ),
+                      Dimens.d40.spaceHeight,
                       Padding(
                         padding:
                             const EdgeInsets.symmetric(horizontal: Dimens.d20),
                         child: Text(
                           "quickAccess".tr,
                           textAlign: TextAlign.center,
-                          style: Style.montserratRegular(fontSize: Dimens.d22),
+                          style: Style.nunitoBold(
+                            fontSize: Dimens.d22,
+                          ),
                         ),
                       ),
                       Dimens.d30.spaceHeight,
@@ -276,7 +335,6 @@ class _HomeScreenState extends State<HomeScreen>
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 3,
-                                  // 3 items per row
                                   childAspectRatio: 1.2,
                                   crossAxisSpacing: 30,
                                   mainAxisSpacing:
@@ -539,41 +597,27 @@ class _HomeScreenState extends State<HomeScreen>
     return GestureDetector(
         onTap: () {
 
-          _setAlarm();
+          /* _setAlarm();*/
 
-          /*Navigator.push(context, MaterialPageRoute(
+              Navigator.push(context, MaterialPageRoute(
             builder: (context) {
               return HomeMessagePage(
                   motivationalMessage: motivationalMessage ??
                       "Believe in yourself, even when doubt creeps in. Today's progress is a step towards your dreams.");
               },
-          ));*/
+              ));
 
         },
-        child: Container(
-          height: 174,
-          margin: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Image.asset(
+            ImageConstant.welcomeBackImage
+            ,height: 189,
 
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-             image: DecorationImage(image: AssetImage( ImageConstant.homeBack,))),
-          child:     Center(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 30.0,right: 30.0),
-              child: AutoSizeText(
-                "“$motivationalMessage”",
-                wrapWords: false,
-                maxLines: 4,
-                style: Style.gothamLight(
-                    height: 1.8,
-                    fontSize: Dimens.d18,
-                    color: ColorConstant.black),
-              ),
-            ),
+            width: Get.width,
+            fit: BoxFit.cover,
           ),
-        )
-
-        );
+        ));
   }
 
   Widget recentlyView() {
@@ -585,11 +629,10 @@ class _HomeScreenState extends State<HomeScreen>
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: List.generate(controller.recentlyModel.data?.length ?? 0,
-                (index) {
+            children: List.generate(controller.audioData.length ?? 0, (index) {
               return GestureDetector(
                   onTap: () {
-                    if(controller.recentlyModel.data![index].isPaid!){
+                    if (controller.audioData[index].isPaid!) {
                       showModalBottomSheet(
                         context: context,
                         isScrollControlled: true,
@@ -603,24 +646,28 @@ class _HomeScreenState extends State<HomeScreen>
                         builder: (BuildContext context) {
                           return NowPlayingScreen(
                             audioData: AudioData(
-                              id: controller.recentlyModel.data![index].id,
-                              isPaid: controller.recentlyModel.data![index].isPaid,
-                              image: controller.recentlyModel.data![index].image,
-                              rating: controller.recentlyModel.data![index].rating,
-                              description: controller.recentlyModel.data![index].description,
-                              name: controller.recentlyModel.data![index].name,
-                              isBookmarked: controller.recentlyModel.data![index].isBookmarked,
-                              isRated: controller.recentlyModel.data![index].isRated,
-                              category:controller.recentlyModel.data![index].category,
-                              createdAt: controller.recentlyModel.data![index].createdAt,
-                              podsBy: controller.recentlyModel.data![index].podsBy,
-                              expertName: controller.recentlyModel.data![index].expertName,
-                              audioFile: controller.recentlyModel.data![index].audioFile,
-                              isRecommended: controller.recentlyModel.data![index].isRecommended,
-                              status: controller.recentlyModel.data![index].status,
-                              createdBy: controller.recentlyModel.data![index].createdBy,
-                              updatedAt: controller.recentlyModel.data![index].updatedAt,
-                              v: controller.recentlyModel.data![index].v,
+                              id: controller.audioData[index].id,
+                              isPaid: controller.audioData[index].isPaid,
+                              image: controller.audioData[index].image,
+                              rating: controller.audioData[index].rating,
+                              description:
+                                  controller.audioData[index].description,
+                              name: controller.audioData[index].name,
+                              isBookmarked:
+                                  controller.audioData[index].isBookmarked,
+                              isRated: controller.audioData[index].isRated,
+                              category: controller.audioData[index].category,
+                              createdAt: controller.audioData[index].createdAt,
+                              podsBy: controller.audioData[index].podsBy,
+                              expertName:
+                                  controller.audioData[index].expertName,
+                              audioFile: controller.audioData[index].audioFile,
+                              isRecommended:
+                                  controller.audioData[index].isRecommended,
+                              status: controller.audioData[index].status,
+                              createdBy: controller.audioData[index].createdBy,
+                              updatedAt: controller.audioData[index].updatedAt,
+                              v: controller.audioData[index].v,
                               download: false,
                             ),
                           );
@@ -639,8 +686,8 @@ class _HomeScreenState extends State<HomeScreen>
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(right: 20.0),
-                    child: RecentlyPlayed(
-                      dataList: controller.recentlyModel.data![index],
+                    child: FeelGood(
+                      dataList: controller.audioData[index],
                     ),
                   ));
             }),
@@ -875,66 +922,28 @@ class _HomeScreenState extends State<HomeScreen>
             child: Text(
               "today'sAffirmation".tr,
               textAlign: TextAlign.center,
-              style: Style.montserratRegular(fontSize: Dimens.d22),
+              style: Style.nunitoBold(fontSize: Dimens.d22),
             ),
           ),
           Dimens.d30.spaceHeight,
           Container(
             margin: const EdgeInsets.symmetric(
-              horizontal: 20.0,
+              horizontal: 30.0,
             ),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: themeController.isDarkMode.value
-                    ? ColorConstant.textfieldFillColor
-                    : ColorConstant.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: ColorConstant.black.withOpacity(0.1),
-                    offset: const Offset(0, 0),
-                    blurRadius: 4,
-                    spreadRadius: 0, // Specify the spread radius
-                  )
-                ]),
             child: (g.todayAList ?? []).isEmpty
-                ? Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20.0, vertical: 10.0),
-                    child: Column(
-                      children: [
-                        Dimens.d10.spaceHeight,
-                        Text(
-                          g.todayAffirmation.message??"noDataFound".tr,
-                          textAlign: TextAlign.center,
-                          style: Style.montserratRegular(
-                              fontSize: 14,
-                              color: themeController.isDarkMode.isTrue
-                                  ? ColorConstant.white
-                                  : ColorConstant.black),
-                        ),
-                        Dimens.d20.spaceHeight,
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: CommonElevatedButton(
-                            height: Dimens.d46,
-                            textStyle: Style.montserratRegular(
-                                fontSize: Dimens.d17,
-                                color: ColorConstant.white),
-                            title: "addNew".tr,
-                            onTap: () {
-                              Get.toNamed(AppRoutes.myAffirmationPage)!.then(
-                                (value) async {
-                                  await g.getTodayAffirmation();
-                                  setState(() {
-                                  });
-                                },
-                              );
-                            },
-                          ),
-                        ),
-                        Dimens.d10.spaceHeight,
-                      ],
-                    ),
+                ? CommonElevatedButton(
+                    height: Dimens.d46,
+                    textStyle: Style.montserratRegular(
+                        fontSize: Dimens.d17, color: ColorConstant.white),
+                    title: "addTodayAffirmation".tr,
+                    onTap: () {
+                      Get.toNamed(AppRoutes.myAffirmationPage)!.then(
+                        (value) async {
+                          await g.getTodayAffirmation();
+                          setState(() {});
+                        },
+                      );
+                    },
                   )
                 : Column(
                     children: [
@@ -960,45 +969,52 @@ class _HomeScreenState extends State<HomeScreen>
                               );
                               setState(() {});
                             },
-                            child: ListTile(
-                              subtitle: Text(
-                                g.todayAList?[index].description ?? "",
-                                maxLines: 3,
-                                style: Style.montserratRegular(),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: themeController.isDarkMode.isTrue
+                                      ? ColorConstant.textfieldFillColor
+                                      : ColorConstant.backGround,
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: ListTile(
+                                subtitle: Text(
+                                  g.todayAList?[index].description ?? "",
+                                  maxLines: 3,
+                                  style: Style.montserratRegular(),
+                                ),
+                                title: Text(
+                                  g.todayAList?[index].name ?? "",
+                                  style: Style.montserratSemiBold(),
+                                ),
+                                /*       trailing: g.affirmationCheckList.isNotEmpty
+                                    ? g.affirmationCheckList[index]
+                                        ? Container(
+                                            height: 40,
+                                            width: 40,
+                                        decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: ColorConstant.themeColor),
+                                        child: Center(
+                                            child: SvgPicture.asset(
+                                                ImageConstant.checkBox)),
+                                          )
+                                        : Container(
+                                            height: 40,
+                                            width: 40,
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                    color: ColorConstant
+                                                        .themeColor)),
+                                          )
+                                    : Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                                color: ColorConstant.themeColor)),
+                                      ),*/
                               ),
-                              title: Text(
-                                g.todayAList?[index].name ?? "",
-                                style: Style.montserratSemiBold(),
-                              ),
-                              trailing: g.affirmationCheckList.isNotEmpty
-                                  ? g.affirmationCheckList[index]
-                                      ? Container(
-                                          height: 40,
-                                          width: 40,
-                                      decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: ColorConstant.themeColor),
-                                      child: Center(
-                                          child: SvgPicture.asset(
-                                              ImageConstant.checkBox)),
-                                        )
-                                      : Container(
-                                          height: 40,
-                                          width: 40,
-                                          decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                  color: ColorConstant
-                                                      .themeColor)),
-                                        )
-                                  : Container(
-                                      height: 40,
-                                      width: 40,
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                              color: ColorConstant.themeColor)),
-                                    ),
                             ),
                           );
                         },
@@ -1007,26 +1023,36 @@ class _HomeScreenState extends State<HomeScreen>
                         },
                       ),
                       Dimens.d20.spaceHeight,
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: CommonElevatedButton(
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) {
+                              return const StartPracticeAffirmation();
+                            },
+                          ));
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 30),
                           height: Dimens.d46,
-                          title: "addNew".tr,
-                          textStyle: Style.montserratRegular(
-                              fontSize: Dimens.d17, color: ColorConstant.white),
-                          onTap: () {
-                            Get.toNamed(AppRoutes.myAffirmationPage)!.then(
-                              (value) async {
-                                await g.getTodayAffirmation();
-
-                                setState(() {
-                                });
-                              },
-                            );
-                          },
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(80),
+                              color: ColorConstant.themeColor),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(ImageConstant.playGratitude,
+                                  height: 20, width: 20),
+                              Dimens.d8.spaceWidth,
+                              Text(
+                                "startPracticing".tr,
+                                style: Style.montserratRegular(
+                                    fontSize: 16, color: ColorConstant.white),
+                              )
+                            ],
+                          ),
                         ),
                       ),
-                      Dimens.d20.spaceHeight,
                     ],
                   ),
           ),
@@ -1045,64 +1071,95 @@ class _HomeScreenState extends State<HomeScreen>
             child: Text(
               "today'sGratitude".tr,
               textAlign: TextAlign.center,
-              style: Style.montserratRegular(fontSize: Dimens.d22),
+              style: Style.nunitoBold(fontSize: Dimens.d22),
             ),
           ),
-          Dimens.d30.spaceHeight,
+          Dimens.d20.spaceHeight,
           Container(
             margin: const EdgeInsets.symmetric(
-              horizontal: 20.0,
+              horizontal: 27.0,
             ),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: themeController.isDarkMode.value
-                    ? ColorConstant.textfieldFillColor
-                    : ColorConstant.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: ColorConstant.black.withOpacity(0.1),
-                    offset: const Offset(0, 0),
-                    blurRadius: 4,
-                    spreadRadius: 0, // Specify the spread radius
+            child: (gratitudeList ?? []).isEmpty
+                ? CommonElevatedButton(
+                    height: Dimens.d46,
+                    title: "addTodayGratitude".tr,
+                    textStyle: Style.montserratRegular(
+                        fontSize: Dimens.d17, color: ColorConstant.white),
+                    onTap: () {
+                      Get.toNamed(AppRoutes.myGratitudePage)!.then(
+                        (value) async {
+                          await g.getTodayGratitude();
+                          setState(() {});
+                        },
+                      );
+                    },
                   )
-                ]),
-            child: (g.todayGList ?? []).isEmpty
-                ? Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20.0, vertical: 10.0),
-                    child: Column(
-                      children: [
-                        Dimens.d10.spaceHeight,
-                        Text(
-                          g.todayGratitude.message??"noDataFound".tr,
-                          textAlign: TextAlign.center,
-                          style: Style.montserratRegular(
-                              fontSize: 14,
-                              color: themeController.isDarkMode.value
-                                  ? ColorConstant.white
-                                  : ColorConstant.black),
-                        ),
-                        Dimens.d20.spaceHeight,
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: CommonElevatedButton(
-                            height: Dimens.d46,
-                            title: "addNew".tr,
-                            textStyle: Style.montserratRegular(
-                                fontSize: Dimens.d17,
-                                color: ColorConstant.white),
-                            onTap: () {
-                              Get.toNamed(AppRoutes.myGratitudePage)!.then(
-                                (value) async {
-                                  await g.getTodayGratitude();
-                                  setState(() {});
-                                },
-                              );
+                : Column(
+                    children: [
+                      ListView.builder(
+                        padding: EdgeInsets.zero,
+                        itemCount: gratitudeList.length,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 20.0),
+                            child: commonContainer(
+                                des: gratitudeList[index]["title"],
+                                date: "${index + 1}",
+                                day: "TUE"),
+                          );
+                        },
+                      ),
+                      Dimens.d16.spaceHeight,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) {
+                              return const StartPracticeScreen();
                             },
+                          ));
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 30),
+                          height: Dimens.d46,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(80),
+                              color: ColorConstant.themeColor),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(ImageConstant.playGratitude,
+                                  height: 20, width: 20),
+                              Dimens.d8.spaceWidth,
+                              Text(
+                                "startPracticing".tr,
+                                style: Style.montserratRegular(
+                                    fontSize: 16, color: ColorConstant.white),
+                              )
+                            ],
                           ),
                         ),
-                        Dimens.d10.spaceHeight,
-                      ],
+                      ),
+                    ],
+                  ),
+            /*     child: (g.todayGList ?? []).isEmpty
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: CommonElevatedButton(
+                      height: Dimens.d46,
+                      title: "addTodayGratitude".tr,
+                      textStyle: Style.montserratRegular(
+                          fontSize: Dimens.d17, color: ColorConstant.white),
+                      onTap: () {
+                        Get.toNamed(AppRoutes.myGratitudePage)!.then(
+                          (value) async {
+                            await g.getTodayGratitude();
+                            setState(() {});
+                          },
+                        );
+                      },
                     ),
                   )
                 : Column(
@@ -1202,9 +1259,71 @@ class _HomeScreenState extends State<HomeScreen>
                       ),
                       Dimens.d20.spaceHeight,
                     ],
-                  ),
+                  ),*/
           )
         ],
+      ),
+    );
+  }
+
+  Widget commonContainer({String? date, String? day, String? des}) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context) {
+            return AddGratitudePage(
+              categoryList: gratitudeList,
+              isFromMyGratitude: true,
+              registerUser: false,
+              edit: true,
+            );
+          },
+        )).then(
+          (value) {
+            setState(() {});
+          },
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+        decoration: BoxDecoration(
+            color: themeController.isDarkMode.isTrue
+                ? ColorConstant.textfieldFillColor
+                : ColorConstant.backGround,
+            borderRadius: BorderRadius.circular(18)),
+        child: Row(
+          children: [
+            Container(
+              height: 63,
+              width: 63,
+              decoration: BoxDecoration(
+                  color: ColorConstant.themeColor,
+                  borderRadius: BorderRadius.circular(12)),
+              child: Column(
+                children: [
+                  Dimens.d3.spaceHeight,
+                  Text(
+                    day ?? "",
+                    style: Style.gothamLight(
+                        fontSize: 10, color: ColorConstant.white),
+                  ),
+                  Text(
+                    date ?? "",
+                    style: Style.gothamMedium(
+                        fontSize: 30, color: ColorConstant.white),
+                  ),
+                ],
+              ),
+            ),
+            Dimens.d13.spaceWidth,
+            Expanded(
+                child: Text(
+              des ?? "",
+              style: Style.montserratRegular(
+                  height: 2, fontSize: 11, fontWeight: FontWeight.w400),
+            ))
+          ],
+        ),
       ),
     );
   }

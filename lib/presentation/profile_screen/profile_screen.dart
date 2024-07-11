@@ -52,7 +52,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       backgroundColor: themeController.isDarkMode.isTrue
           ? ColorConstant.textfieldFillColor
           : ColorConstant.colorBFD0D4,
-      appBar: CustomAppBar(
+      appBar: CustomAppBar(centerTitle: true,
         title: "profile".tr,
         showBack: false,
       ),
@@ -133,7 +133,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     profileController.mail?.value ??
                         "melissapeters@gmail.com",
                     style: Style.montserratRegular(
-                      fontSize: Dimens.d10,
+                      fontSize: Dimens.d11,
                     ),
                   ),
                 ),
@@ -144,7 +144,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: Text(
                       "progressTracking".tr,
-                      style: Style.montserratRegular(
+                      style: Style.nunitoSemiBold(
                         fontSize: Dimens.d20,
                       ),
                     ),
@@ -181,6 +181,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       aValue: controller
                                           .progressModel.data?.affirmationCount?.toDouble()??10.0,
                                       pValue: controller
+                                          .progressModel.data?.positiveMomentCount?.toDouble()??10.0,
+                                      good: controller
                                           .progressModel.data?.positiveMomentCount?.toDouble()??10.0,
                                     ),
                                     centerSpaceRadius: 40,
@@ -237,7 +239,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         width: 10,
                                         decoration: const BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: ColorConstant.colorBFD0D4,
+                                          color: ColorConstant.color769AA3,
                                         ),
                                       ),
                                       Dimens.d6.spaceWidth,
@@ -257,7 +259,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         width: 10,
                                         decoration: const BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: ColorConstant.color3D5459,
+                                          color: ColorConstant.colorBFD0D4,
                                         ),
                                       ),
                                       Dimens.d6.spaceWidth,
@@ -277,12 +279,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         width: 10,
                                         decoration: const BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: ColorConstant.colorBDDBE5,
+                                          color: ColorConstant.color3D5459,
                                         ),
                                       ),
                                       Dimens.d6.spaceWidth,
                                       Text(
                                         "completedAffirmations".tr,
+                                        style: Style.montserratRegular(
+                                          fontSize: Dimens.d9,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  Dimens.d12.spaceHeight,
+                                  Row(
+                                    children: [
+                                      Container(
+                                        height: 10,
+                                        width: 10,
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: ColorConstant.color5A7681,
+                                        ),
+                                      ),
+                                      Dimens.d6.spaceWidth,
+                                      Text(
+                                        "goodFeel".tr,
                                         style: Style.montserratRegular(
                                           fontSize: Dimens.d9,
                                         ),
@@ -386,7 +408,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Expanded(
                           child: Text(
                             "settings".tr,
-                            style: Style.montserratMedium().copyWith(
+                            style: Style.nunMedium().copyWith(
+                              fontSize: 13,
                               letterSpacing: Dimens.d0_16,
                             ),
                           ),
@@ -450,8 +473,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Dimens.d10.spaceWidth,
                         Text(
                           "logout".tr,
-                          style: Style.montserratMedium(
-                              fontSize: 12, color: ColorConstant.white),
+                          style: Style.nunMedium(
+                              fontSize: 13, color: ColorConstant.white),
                         )
                       ],
                     ),
@@ -599,10 +622,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   List<PieChartSectionData> getSections(
-      {double? gValue, double? pValue, double? aValue}) {
+      {double? gValue, double? pValue, double? aValue,double? good}) {
     return [
       PieChartSectionData(
-        color: ColorConstant.colorBFD0D4,
+        color: ColorConstant.color769AA3,
 
         value: gValue==0.0?0.2:gValue,
         title: '$gValue',
@@ -612,7 +635,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             color: ColorConstant.black),
       ),
       PieChartSectionData(
-        color: ColorConstant.color3D5459,
+        color: ColorConstant.colorBFD0D4,
         value: pValue==0.0?0.2:pValue,
         title: '$pValue',
         radius: 40,
@@ -621,9 +644,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
     color: ColorConstant.black),
       ),
       PieChartSectionData(
-        color: ColorConstant.colorBDDBE5,
+        color: ColorConstant.color3D5459,
         value:aValue==0.0?0.2:aValue,
         title: '$aValue',
+        radius: 40,
+        titleStyle:  Style.montserratBold(
+            fontSize: 12,
+            color: ColorConstant.black),
+      ),
+      PieChartSectionData(
+        color: ColorConstant.color5A7681,
+        value:good==0.0?0.2:good,
+        title: '$good',
         radius: 40,
         titleStyle:  Style.montserratBold(
             fontSize: 12,

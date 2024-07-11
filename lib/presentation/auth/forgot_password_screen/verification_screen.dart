@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pinput/pinput.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -116,8 +115,8 @@ class _VerificationsScreenState extends State<VerificationsScreen> {
                                 child: Text(
                                     textAlign: TextAlign.center,
                                     "enterVerification".tr,
-                                    style: Style.montserratRegular(
-                                        fontSize: 14,
+                                    style: Style.nunLight(
+                                        fontSize: 16,
                                         fontWeight: FontWeight.w400,
                                         color: ColorConstant.color716B6B)),
                               ),
@@ -132,7 +131,7 @@ class _VerificationsScreenState extends State<VerificationsScreen> {
                                   margin: const EdgeInsets.symmetric(
                                       horizontal: Dimens.d3),
                                   width: 43.h,
-                                  textStyle: Style.montserratRegular(
+                                  textStyle: Style.nunRegular(
                                       fontSize: Dimens.d23,
                                       fontWeight: FontWeight.w400,
                                       color: ColorConstant.color716B6B),
@@ -153,7 +152,7 @@ class _VerificationsScreenState extends State<VerificationsScreen> {
                                         color: Colors
                                             .black), // Set border color to black when focused
                                   ),
-                                  textStyle: Style.montserratRegular(
+                                  textStyle: Style.nunRegular(
                                       fontSize: Dimens.d23,
                                       fontWeight: FontWeight.w400,
                                       color: ColorConstant.color716B6B),
@@ -169,7 +168,7 @@ class _VerificationsScreenState extends State<VerificationsScreen> {
                                     Text(
                                         textAlign: TextAlign.center,
                                         "notReceiveCode".tr,
-                                        style: Style.montserratRegular(
+                                        style: Style.nunRegular(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w400,
                                             color:
@@ -184,7 +183,7 @@ class _VerificationsScreenState extends State<VerificationsScreen> {
                                       child: Text(
                                           textAlign: TextAlign.center,
                                           "resend".tr,
-                                          style: Style.montserratRegular(
+                                          style: Style.nunRegular(
                                               fontSize: 14,
                                               fontWeight: FontWeight.w400,
                                               color: _start != 0
@@ -203,7 +202,7 @@ class _VerificationsScreenState extends State<VerificationsScreen> {
                               Dimens.d30.spaceHeight,
                               _start == 0?const SizedBox(): Text('${"timeLeft".tr}: ${formatTime(_start)}',
                                   textAlign: TextAlign.center,
-                                  style: Style.montserratRegular(
+                                  style: Style.nunRegular(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w400,
                                       color: ColorConstant.themeColor)),

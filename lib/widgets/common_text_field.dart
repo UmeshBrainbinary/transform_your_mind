@@ -133,7 +133,7 @@ class _CommonTextFieldState extends State<CommonTextField>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(widget.labelText!,
-              style: widget.labelStyle ?? Style.montserratMedium(fontSize: 14)),
+              style: widget.labelStyle ?? Style.nunRegular(fontSize: 14)),
           Dimens.d10.spaceHeight,
           _textField()
         ],
@@ -152,15 +152,12 @@ class _CommonTextFieldState extends State<CommonTextField>
       inputFormatters: widget.inputFormatters ?? [],
       textInputAction: widget.textInputAction ?? TextInputAction.done,
       keyboardType: widget.keyboardType ?? TextInputType.text,
-      // textCapitalization: widget.isSecure
-      //     ? TextCapitalization.none
-      //     : TextCapitalization.sentences,
       textAlignVertical: TextAlignVertical.center,
       expands: false,
       validator: widget.validator,
       enabled: widget.enabled,
       style: widget.textStyle ??
-          Style.montserratMedium(fontSize: Dimens.d14, color: themeController.isDarkMode.value ?
+          Style.nunMedium(fontSize: Dimens.d14, color: themeController.isDarkMode.value ?
           ColorConstant.white : ColorConstant.black),
 
       decoration: InputDecoration(
@@ -169,9 +166,9 @@ class _CommonTextFieldState extends State<CommonTextField>
           filled: true,
           fillColor: widget.filledColor ?? (themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.white),
           hintText: widget.hintText,
-          counterStyle: Style.montserratRegular(),
+          counterStyle: Style.nunRegular(),
           hintStyle: widget.hintStyle ??
-              Style.montserratRegular(
+              Style.nunRegular(
                 color: ColorConstant.hintText,
                 fontWeight: FontWeight.w100,fontSize: Dimens.d12
               ),
@@ -193,7 +190,7 @@ class _CommonTextFieldState extends State<CommonTextField>
         prefix: widget.prefix,
         suffix: widget.suffix,
 
-        errorStyle: Style.montserratRegular(color: ColorConstant.colorFF0000, fontSize: 12),
+        errorStyle: Style.nunRegular(color: ColorConstant.colorFF0000, fontSize: 12),
         errorMaxLines: 2,
 
       ),
@@ -209,34 +206,5 @@ class _CommonTextFieldState extends State<CommonTextField>
     );
   }
 
-  Widget? _iconButton(String? icon, VoidCallback? onTap, String? lottieIcon,
-      {bool multiIcon = false, heightFactor = 2.2}) {
-
-      if ((icon != null)) {
-        return Align(
-          alignment: Alignment.topCenter,
-          widthFactor: 1,
-          heightFactor: double.parse(((widget.maxLines ?? 0) / 2).toString()),
-          child: InkWell(
-            canRequestFocus: false,
-            highlightColor: ColorConstant.transparent,
-            splashColor: ColorConstant.transparent,
-            onTap: onTap,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                  vertical: Dimens.d14, horizontal: Dimens.d20),
-                child: Icon(Icons.remove_red_eye),
-              // child: SvgPicture.asset(
-              //   icon,
-              //   width: Dimens.d18,
-              //   height: Dimens.d18,
-              // ),
-            ),
-          ),
-        );
-      } else {
-        return null;
-      }
-    }
 
 }
