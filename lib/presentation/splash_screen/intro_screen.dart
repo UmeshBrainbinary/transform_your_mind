@@ -61,10 +61,12 @@ class _IntroScreenState extends State<IntroScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          PageView.builder(
+          PageView.builder(physics: const NeverScrollableScrollPhysics(),
+
             controller: _pageController,
             itemCount: _images.length,
             onPageChanged: (index) {
+              ///__________________________ close auto scroll _____________________
               setState(() {
                 _currentPage = index;
               });
@@ -81,7 +83,7 @@ class _IntroScreenState extends State<IntroScreen> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(
-                        left: 36, right: 36, top: Get.height * 0.53),
+                        left: 36, right: 36, top: Get.height * 0.51),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -114,7 +116,7 @@ class _IntroScreenState extends State<IntroScreen> {
               onPressed: _onSkip,
               child:  Text(
                 'Skip',
-                style: Style.montserratMedium(
+                style: Style.nunMedium(
                     fontSize: Dimens.d16,color: ColorConstant.black),
               ),
             ),

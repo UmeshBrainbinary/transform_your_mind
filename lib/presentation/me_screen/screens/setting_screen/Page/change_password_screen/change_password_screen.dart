@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
+import 'package:transform_your_mind/core/service/http_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/core/utils/validation_functions.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/change_password_screen/change_password_controller.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
@@ -96,7 +96,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
                                             prefixIcon: Image.asset(
                                                 ImageConstant.lock,
-                                                scale: Dimens.d4),
+                                                scale: Dimens.d4,color: themeController.isDarkMode.isTrue?ColorConstant.colorBFBFBF:
+                                              ColorConstant.hintText,),
                                             suffixIcon: GestureDetector(
                                                 onTap: () {
                                                   changePasswordController
@@ -114,6 +115,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                                     fit: BoxFit.contain,
                                                     height: 5,
                                                     width: 5,
+                                                    color: themeController.isDarkMode.isTrue?ColorConstant.colorBFBFBF:
+                                                    ColorConstant.hintText,
                                                   ),
                                                 )),
                                             isSecure: value,
@@ -146,7 +149,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
                                       prefixIcon: Image.asset(
                                           ImageConstant.lock,
-                                          scale: Dimens.d4),
+                                          scale: Dimens.d4,color: themeController.isDarkMode.isTrue?ColorConstant.colorBFBFBF:
+                                        ColorConstant.hintText,),
                                       suffixIcon: GestureDetector(
                                           onTap: () {
                                             changePasswordController
@@ -163,7 +167,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                                   : ImageConstant.eyeOpen,
                                               fit: BoxFit.contain,
                                               height: 5,
-                                              width: 5,
+                                              width: 5,color: themeController.isDarkMode.isTrue?ColorConstant.colorBFBFBF:
+                                            ColorConstant.hintText,
                                             ),
                                           )),
                                       isSecure: value,
@@ -197,7 +202,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                       },
                                       focusNode:changePasswordController.confirmFocus,
                                       prefixIcon: Image.asset(
-                                          ImageConstant.lock,
+                                          ImageConstant.lock,color: themeController.isDarkMode.isTrue?ColorConstant.colorBFBFBF:
+                                      ColorConstant.hintText,
                                           scale: Dimens.d4),
                                       suffixIcon: GestureDetector(
                                           onTap: () {
@@ -216,7 +222,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                                   : ImageConstant.eyeOpen,
                                               fit: BoxFit.contain,
                                               height: 5,
-                                              width: 5,
+                                              width: 5,color: themeController.isDarkMode.isTrue?ColorConstant.colorBFBFBF:
+                                            ColorConstant.hintText,
                                             ),
                                           )),
                                       isSecure: value,
@@ -226,14 +233,18 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                 ),
                                 Dimens.d120.spaceHeight,
                                 CommonElevatedButton(
-                                  title: "submit".tr,
-                                  onTap: () {
-
+                                  title: "save".tr,textStyle: Style.nunMedium(fontSize: 20,color: ColorConstant.white),
+                                  onTap: () async {
                                     FocusScope.of(context).unfocus();
                                     if (_formKey.currentState!.validate()) {
                                       if (!widget.title!.isNotEmpty) {
-                                        changePasswordController
-                                            .resetPasswordApi(context);
+                                        if (await isConnected()) {
+                                          changePasswordController
+                                              .resetPasswordApi(context);
+                                        } else {
+                                          showSnackBarError(
+                                              context, "noInternet".tr);
+                                        }
                                       } else {
                                         if (changePasswordController
                                             .currentPController.text ==
@@ -241,8 +252,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                                 .newPController.text) {
                                           showSnackBarError(context, "You cannot set the current password as the new password.");
                                         } else {
-                                          changePasswordController
-                                              .changePasswordApi(context);
+                                          if (await isConnected()) {
+                                            changePasswordController
+                                                .changePasswordApi(context);
+                                          } else {
+                                            showSnackBarError(
+                                                context, "noInternet".tr);
+                                          }
                                         }
                                       }
                                     }

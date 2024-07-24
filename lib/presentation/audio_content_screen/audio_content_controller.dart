@@ -4,8 +4,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
+import 'package:transform_your_mind/core/service/http_service.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
@@ -17,8 +19,16 @@ class AudioContentController extends GetxController {
 
   @override
   void onInit() {
+    checkInternet();
     super.onInit();
-    getPodsData();
+  }
+
+  checkInternet() async {
+    if (await isConnected()) {
+      getPodsData();
+    } else {
+      showSnackBarError(Get.context!, "noInternet".tr);
+    }
   }
 
   TextEditingController searchController = TextEditingController();
@@ -42,9 +52,14 @@ class AudioContentController extends GetxController {
     update(['update']);
   }
 
+  List audioListDuration = [];
+  List audioListDurationD = [];
+
   RxBool loader = false.obs;
   RxBool loaderD = false.obs;
   GetPodsModel getPodsModel = GetPodsModel();
+  Duration? _audioDuration;
+  final AudioPlayer _audioPlayer = AudioPlayer();
   Future<void> getPodApi() async {
     try {
       var headers = {
@@ -66,6 +81,12 @@ class AudioContentController extends GetxController {
         for(int i = 0;i<audioData.length;i++){
           audioData[i].download = false;
         }
+        for(int i = 0;i<audioData.length;i++){
+          await _audioPlayer.setUrl(audioData[i].audioFile!);
+          final duration = await _audioPlayer.load();
+          audioListDuration.add(duration);
+        }
+
         update(['update']);
         String? audioDataJson = PrefService.getString(PrefKey.podsSave);
 
@@ -129,6 +150,11 @@ class AudioContentController extends GetxController {
 
     if (audioDataSave.isNotEmpty) {
       audioDataDownloaded.value = audioDataSave;
+      for(int i = 0;i<audioDataDownloaded.length;i++){
+        await _audioPlayer.setUrl(audioDataDownloaded[i].audioFile!);
+        final duration = await _audioPlayer.load();
+        audioListDurationD.add(duration);
+      }
     }
   }
 

@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
@@ -82,7 +81,7 @@ class _AffirmationShareScreenState extends State<AffirmationShareScreen> {
                               child: Text(
                                 widget.des??"",
                                 textAlign: TextAlign.center,
-                                style: Style.montserratRegular(
+                                style: Style.nunRegular(
                                     fontSize: Dimens.d14,
                                     color: ColorConstant.black),
                               ),
@@ -134,7 +133,9 @@ class _AffirmationShareScreenState extends State<AffirmationShareScreen> {
         ShareResult res = await Share.shareXFiles([XFile(imgFile.path)]);
 
         if (res.status == ShareResultStatus.success) {}
-      } catch (e) {}
+      } catch (e) {
+        debugPrint(e.toString());
+      }
     }).catchError((onError) {});
   }
 }

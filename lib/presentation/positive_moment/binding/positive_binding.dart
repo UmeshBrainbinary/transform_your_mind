@@ -1,6 +1,5 @@
 
 import 'package:get/get.dart';
-import 'package:transform_your_mind/presentation/motivational_message/motivational_controller.dart';
 import 'package:transform_your_mind/presentation/positive_moment/positive_controller.dart';
 
 

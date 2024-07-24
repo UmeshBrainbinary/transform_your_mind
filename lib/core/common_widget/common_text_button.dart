@@ -8,11 +8,11 @@ class CommonTextButton extends StatelessWidget {
   final TextStyle? textStyle;
 
   const CommonTextButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.onTap,
     this.textStyle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class CommonTextButton extends StatelessWidget {
       onPressed: onTap,
       child: Text(
         text,
-        style: textStyle ?? Style.montserratRegular(),
+        style: textStyle ?? Style.nunRegular(),
       ),
     );
   }
@@ -30,7 +30,7 @@ class CommonTextButton extends StatelessWidget {
 Widget welcomeTextTitle({String? title}){
   return   Text(
     title!,
-    style: Style.montserratRegular(
+    style: Style.nunRegular(
         color: Colors.black, fontSize: 19),
   );
 
@@ -41,7 +41,7 @@ Widget welcomeTextDescriptionTitle({String? title}){
     child: Text(
       title!,
       textAlign: TextAlign.center,
-      style: Style.montserratRegular(
+      style: Style.nunRegular(
           color: Colors.black.withOpacity(0.8), fontSize: 12),
     ),
   );

@@ -115,8 +115,8 @@ class CategoryDropDown extends StatelessWidget {
     required this.onSelected,
     required this.selectedCategory,
     required this.categoryList,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +149,7 @@ class CategoryDropDown extends StatelessWidget {
               padding: const EdgeInsets.only(left: 18, top: 17),
               child: Text(
                 item["title"] ?? '',
-                style: Style.montserratRegular(
+                style: Style.nunRegular(
                   fontSize: Dimens.d14,
                   color: Colors.white,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
@@ -158,7 +158,7 @@ class CategoryDropDown extends StatelessWidget {
             );
           }).toList();
         },
-        style: Style.montserratRegular(
+        style: Style.nunRegular(
           fontSize: Dimens.d14,
           color: Colors.white,
           fontWeight: FontWeight.w500,
@@ -167,7 +167,7 @@ class CategoryDropDown extends StatelessWidget {
           padding: const EdgeInsets.only(left: 15),
           child: Text(
             "selectCategory".tr,
-            style: Style.montserratRegular(
+            style: Style.nunRegular(
                 fontSize: Dimens.d14, color: Colors.white),
           ),
         ),
@@ -200,7 +200,7 @@ class CategoryDropDown extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
                   item["title"] ?? '',
-                  style: Style.montserratRegular(
+                  style: Style.nunRegular(
                     fontSize: Dimens.d14,
                     color: ColorConstant.textGreyColor,
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,

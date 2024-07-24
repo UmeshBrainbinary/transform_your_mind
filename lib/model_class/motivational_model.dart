@@ -9,25 +9,30 @@ MotivationalModel motivationalModelFromJson(String str) => MotivationalModel.fro
 String motivationalModelToJson(MotivationalModel data) => json.encode(data.toJson());
 
 class MotivationalModel {
-  List<Datum>? data;
+  List<MotivationalData>? data;
+  int? total;
 
   MotivationalModel({
     this.data,
+    this.total,
   });
 
   factory MotivationalModel.fromJson(Map<String, dynamic> json) => MotivationalModel(
-    data: json["data"] == null ? [] : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
+    data: json["data"] == null ? [] : List<MotivationalData>.from(json["data"]!.map((x) => MotivationalData.fromJson(x))),
+    total: json["total"],
   );
 
   Map<String, dynamic> toJson() => {
     "data": data == null ? [] : List<dynamic>.from(data!.map((x) => x.toJson())),
+    "total": total,
   };
 }
 
-class Datum {
+class MotivationalData {
+  bool? userLiked;
   String? id;
   String? message;
-  dynamic category;
+  String? category;
   int? status;
   String? createdBy;
   String? motivationalImage;
@@ -35,7 +40,8 @@ class Datum {
   DateTime? updatedAt;
   int? v;
 
-  Datum({
+  MotivationalData({
+    this.userLiked,
     this.id,
     this.message,
     this.category,
@@ -47,7 +53,8 @@ class Datum {
     this.v,
   });
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory MotivationalData.fromJson(Map<String, dynamic> json) => MotivationalData(
+    userLiked: json["userLiked"],
     id: json["_id"],
     message: json["message"],
     category: json["category"],
@@ -60,6 +67,7 @@ class Datum {
   );
 
   Map<String, dynamic> toJson() => {
+    "userLiked": userLiked,
     "_id": id,
     "message": message,
     "category": category,

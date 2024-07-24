@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
@@ -119,7 +117,7 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
                               style: Style.nunitoSemiBold(fontSize: 14),
                             ),
                             Dimens.d20.h.spaceHeight,
-                            Container(
+                            Container(height: 47,
                               margin:
                                   const EdgeInsets.symmetric(horizontal: 1.2),
                               decoration: BoxDecoration(
@@ -139,20 +137,20 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
                                   Expanded(
                                     child: Text(
                                       "affirmationReminder".tr,
-                                      style: Style.montserratMedium().copyWith(
+                                      style: Style.nunMedium().copyWith(
                                         letterSpacing: Dimens.d0_16,
                                       ),
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: CustomSwitch(
+                                    padding: const EdgeInsets.all(6.0),
+                                    child: CustomSwitchD(
                                       value: themeController.isDarkMode.value,
                                       onChanged: (value) async {},
-                                      width: 50.0,
-                                      height: 25.0,
+                                      width: 43.0,
+                                      height: 23.0,
                                       activeColor: ColorConstant.themeColor,
-                                      inactiveColor: ColorConstant.backGround,
+                                      inactiveColor:themeController.isDarkMode.isTrue?ColorConstant.darkBackground: ColorConstant.backGround,
                                     ),
                                   ),
                                 ],
@@ -164,7 +162,7 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
                               style: Style.montserratSemiBold(fontSize: 14),
                             ),
                             Dimens.d16.h.spaceHeight,
-                            Container(
+                            Container(height: 47,
                               margin:
                                   const EdgeInsets.symmetric(horizontal: 1.2),
                               decoration: BoxDecoration(
@@ -184,20 +182,20 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
                                   Expanded(
                                     child: Text(
                                       "motivationalReminder".tr,
-                                      style: Style.montserratMedium().copyWith(
+                                      style: Style.nunMedium().copyWith(
                                         letterSpacing: Dimens.d0_16,
                                       ),
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: CustomSwitch(
+                                    padding: const EdgeInsets.all(6.0),
+                                    child: CustomSwitchD(
                                       value: themeController.isDarkMode.value,
                                       onChanged: (value) async {},
-                                      width: 50.0,
-                                      height: 25.0,
+                                      width: 43.0,
+                                      height: 23.0,
                                       activeColor: ColorConstant.themeColor,
-                                      inactiveColor: ColorConstant.backGround,
+                                      inactiveColor:themeController.isDarkMode.isTrue?ColorConstant.darkBackground: ColorConstant.backGround,
                                     ),
                                   ),
                                 ],
@@ -217,7 +215,7 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
                                   },
                                 ));
                               },
-                              child: Container(
+                              child: Container(height: 47,
                                 margin:
                                     const EdgeInsets.symmetric(horizontal: 1.2),
                                 decoration: BoxDecoration(
@@ -238,7 +236,7 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
                                       child: Text(
                                         "Alarms List".tr,
                                         style:
-                                            Style.montserratMedium().copyWith(
+                                            Style.nunMedium().copyWith(
                                           letterSpacing: Dimens.d0_16,
                                         ),
                                       ),
@@ -266,5 +264,72 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
             ),
           ],
         ));
+  }
+}
+
+class CustomSwitchD extends StatefulWidget {
+  final bool value;
+  final ValueChanged<bool> onChanged;
+  final double width;
+  final double height;
+  final Color activeColor;
+  final Color inactiveColor;
+
+  const CustomSwitchD({
+    super.key,
+    required this.value,
+    required this.onChanged,
+    this.width = 50.0,
+    this.height = 20.0,
+    this.activeColor = Colors.green,
+    this.inactiveColor = Colors.grey,
+  });
+
+  @override
+  _CustomSwitchDState createState() => _CustomSwitchDState();
+}
+
+class _CustomSwitchDState extends State<CustomSwitchD> {
+  late bool _value;
+  ThemeController themeController = Get.find<ThemeController>();
+  @override
+  void initState() {
+    super.initState();
+    _value = widget.value;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _value = !_value;
+          widget.onChanged(_value);
+        });
+      },
+      child: Container(
+        width: widget.width,
+        height: widget.height,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(widget.height / 2),
+          color: _value ? widget.activeColor : widget.inactiveColor,
+        ),
+        child: Row(
+          mainAxisAlignment:
+          _value ? MainAxisAlignment.end : MainAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              width: widget.height - 5,
+              height: widget.height - 5,
+              margin: const EdgeInsets.all(3),
+              decoration:   BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: ColorConstant.white
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

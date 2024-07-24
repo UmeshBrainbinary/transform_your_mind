@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
-
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
+import 'package:transform_your_mind/core/service/http_service.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -118,11 +119,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     focusNode: editProfileController.name,
                                     prefixIcon: Transform.scale(
                                       scale: 0.5,
-                                      child: SvgPicture.asset(ImageConstant.user),
+                                      child: SvgPicture.asset(ImageConstant.user,color: themeController.isDarkMode.isTrue?ColorConstant.colorBFBFBF:
+                                      ColorConstant.hintText,),
                                     ),
                                     keyboardType: TextInputType.emailAddress,
                                     validator: (value) {
-                                      if (value == null /*||
+                                      if (value!.trim() ==""/*||
                                           (!isText(value, isRequired: true))*/) {
                                         return "theNameFieldIsRequired".tr;
                                       }
@@ -135,11 +137,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     controller:
                                         editProfileController.emailController,
                                     focusNode: editProfileController.email,
-                                    filledColor: themeController.isDarkMode.value
-                                        ? ColorConstant.lightGrey2
-                                        : ColorConstant.lightGrey,
+
                                     prefixIcon: Image.asset(ImageConstant.email,
-                                        scale: Dimens.d4),
+                                        scale: Dimens.d4,
+                                      color: themeController.isDarkMode.isTrue?ColorConstant.colorBFBFBF:
+                                      ColorConstant.hintText,),
                                     keyboardType: TextInputType.emailAddress,
                                     readOnly: true,
                                     validator: (value) {
@@ -160,7 +162,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     prefixIcon: Transform.scale(
                                         scale: 0.5,
                                         child: SvgPicture.asset(
-                                            ImageConstant.calendar,
+                                            ImageConstant.calendar,color: themeController.isDarkMode.isTrue?ColorConstant.colorBFBFBF:
+                                        ColorConstant.hintText,
                                             height: Dimens.d5,
                                             width: Dimens.d5)),
                                     readOnly: true,
@@ -185,14 +188,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                         scale: 0.5,
                                         child: SvgPicture.asset(
                                             ImageConstant.gender,
-                                            height: Dimens.d5,
+                                            height: Dimens.d5,color: themeController.isDarkMode.isTrue?ColorConstant.colorBFBFBF:
+                                        ColorConstant.hintText,
                                             width: Dimens.d5)),
                                     readOnly: true,
                                     suffixIcon: Transform.scale(
                                         scale: 0.5,
                                         child: SvgPicture.asset(
                                             ImageConstant.downArrow,
-                                            height: Dimens.d5,
+                                            height: Dimens.d5,color: themeController.isDarkMode.isTrue?ColorConstant.colorBFBFBF:
+                                        ColorConstant.hintText,
                                             width: Dimens.d5)),
                                     onTap: () {
                                       editProfileController.isDropGender.value =
@@ -242,7 +247,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                             editProfileController
                                                                 .genderList[index]
                                                         ? ColorConstant.themeColor
-                                                        : ColorConstant.white,
+                                                        : themeController.isDarkMode.isTrue?
+                                                    ColorConstant.color29363E:ColorConstant.white,
                                                     borderRadius: index == 0
                                                         ? const BorderRadius.only(
                                                             topLeft:
@@ -266,7 +272,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                   child: Text(
                                                     editProfileController
                                                         .genderList[index],
-                                                    style: Style.montserratMedium(
+                                                    style: Style.nunMedium(
                                                         color: editProfileController
                                                                     .genderController
                                                                     .text ==
@@ -274,7 +280,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                                         .genderList[
                                                                     index]
                                                             ? ColorConstant.white
-                                                            : ColorConstant.black),
+                                                            : themeController.isDarkMode.isTrue?ColorConstant.white:ColorConstant.black),
                                                   ),
                                                 )),
                                           )),
@@ -286,7 +292,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: Dimens.d50),
                                   child: CommonElevatedButton(
-                                      textStyle: Style.montserratRegular(
+                                      textStyle: Style.nunRegular(
                                           fontSize: Dimens.d20,
                                           color: ColorConstant.white),
                                       title: "update".tr,
@@ -294,9 +300,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                         FocusScope.of(context).unfocus();
                                         if (_formKey.currentState!
                                             .validate()) {
-                                          await editProfileController
-                                              .updateUser(context);
-                                          editProfileController.getUser();
+                                          if (await isConnected()) {
+                                            await editProfileController
+                                                .updateUser(context);
+                                            editProfileController.getUser();
+                                          } else {
+                                            showSnackBarError(
+                                                context, "noInternet".tr);
+                                          }
                                         }
                                       }
                                   ),
@@ -337,7 +348,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               controller.select = false;
               print('==========${controller.currentDate}');
             },
-            weekendTextStyle: Style.montserratRegular(fontSize: 15,color: ColorConstant.black),
+            weekendTextStyle: Style.nunRegular(fontSize: 15,color: ColorConstant.black),
             // Customize your text style
             thisMonthDayBorderColor: Colors.transparent,
             customDayBuilder: (
@@ -362,7 +373,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   child: Center(
                     child: Text(
                       day.day.toString(),
-                      style: Style.montserratRegular(fontSize: 15, color: Colors.grey), // Customize your future day text style
+                      style: Style.nunRegular(fontSize: 15, color: Colors.grey), // Customize your future day text style
                     ),
                   ),
                 );
@@ -379,7 +390,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   child: Center(
                     child: Text(
                       day.day.toString(),
-                      style: Style.montserratRegular(
+                      style: Style.nunRegular(
                           fontSize: 15,
                           color: ColorConstant
                               .white), // Customize your selected day text style
@@ -391,28 +402,28 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               }
             },
             weekFormat: false,
-            daysTextStyle: Style.montserratRegular(fontSize: 15,color: ColorConstant.black),
+            daysTextStyle: Style.nunRegular(fontSize: 15,color: ColorConstant.black),
             height: 300.0,
             markedDateIconBorderColor: Colors.transparent,
             childAspectRatio: 1.5,
             dayPadding: 0.0,
-            prevDaysTextStyle: Style.montserratRegular(fontSize: 15),
+            prevDaysTextStyle: Style.nunRegular(fontSize: 15),
             selectedDateTime: controller.currentDate,
             headerTextStyle:
-            Style.montserratRegular(color: ColorConstant.black,fontWeight: FontWeight.bold),
+            Style.nunRegular(color: ColorConstant.black,fontWeight: FontWeight.bold),
             dayButtonColor: Colors.white,
             weekDayBackgroundColor: Colors.white,
             markedDateMoreCustomDecoration:
                 const BoxDecoration(color: Colors.white),
             shouldShowTransform: false,
             staticSixWeekFormat: false,
-            weekdayTextStyle:Style.montserratRegular(fontSize: 11,color: ColorConstant.color797B86,fontWeight: FontWeight.bold),
+            weekdayTextStyle:Style.nunRegular(fontSize: 11,color: ColorConstant.color797B86,fontWeight: FontWeight.bold),
             todayButtonColor: Colors.transparent,
             selectedDayBorderColor: Colors.transparent,
             todayBorderColor: Colors.transparent,
             selectedDayButtonColor: Colors.transparent,
             daysHaveCircularBorder: false,
-            todayTextStyle: Style.montserratRegular(fontSize: 15,color: ColorConstant.black),
+            todayTextStyle: Style.nunRegular(fontSize: 15,color: ColorConstant.black),
           );
         },
       ),
@@ -421,20 +432,33 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   datePicker(context, EditProfileController editProfileController) async {
     FocusScope.of(context).unfocus();
-    picked = await showDatePicker(
+    picked = await  showDatePicker(
       builder: (context, child) {
-        TextStyle customTextStyle = Style.montserratRegular(fontSize: 14,color: Colors.black);
+        TextStyle customTextStyle = Style.nunMedium(fontSize: 15,color: Colors.black);
         TextStyle editedTextStyle = customTextStyle.copyWith(color: Colors.red); // Define the edited text style
+        TextStyle selectedDateTextStyle = Style.nunitoBold(fontSize: 15,color: themeController.isDarkMode.isTrue?Colors.white:
+        Colors.black); // Define the style for the selected date
 
         return Theme(
           data: ThemeData.light().copyWith(focusColor: ColorConstant.themeColor,
-              scaffoldBackgroundColor: ColorConstant.themeColor,
-              primaryColor: ColorConstant.themeColor,
-              colorScheme: const ColorScheme.light(
+              colorScheme:  ColorScheme.light(
                 primary: ColorConstant.themeColor,
+                onPrimary: Colors.white,
+                onBackground: Colors.white,
+                background: Colors.white,
+                surface:themeController.isDarkMode.isTrue?ColorConstant.textfieldFillColor: ColorConstant.white,
+                surfaceTint:themeController.isDarkMode.isTrue?ColorConstant.color7A7A7A: ColorConstant.themeColor,
+                onSurface:themeController.isDarkMode.isTrue?Colors.white: ColorConstant.black,
               ),
+
+
               buttonTheme: const ButtonThemeData(
                 textTheme: ButtonTextTheme.primary,
+              ), dialogTheme: const DialogTheme(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.zero, // Remove border radius
+                ),elevation: 0.0,
+                insetPadding: EdgeInsets.all(0), // Remove padding around the dialog
               ),
               textTheme: TextTheme(
                 bodyLarge:customTextStyle,
@@ -442,7 +466,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 bodySmall: customTextStyle,
                 displayLarge: customTextStyle,
                 displayMedium: customTextStyle,
-                headlineLarge: customTextStyle,
                 titleLarge: customTextStyle,
                 displaySmall: customTextStyle,
                 headlineMedium: customTextStyle,
@@ -452,6 +475,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 labelSmall: customTextStyle,
                 titleMedium: editedTextStyle,
                 titleSmall: editedTextStyle,
+
               )),
           child: child!,
         );
@@ -459,9 +483,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
       context: context,
       firstDate: DateTime(1970),
-      // the earliest allowable
       lastDate: DateTime.now(),
-      // the latest allowable
       currentDate: DateTime.now(),
       initialDate: DateTime.now(),
     );

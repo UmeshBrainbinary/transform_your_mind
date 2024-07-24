@@ -1,12 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:get/get.dart';
-import 'package:http/http.dart'as http;
-import 'package:transform_your_mind/core/service/pref_service.dart';
-import 'package:transform_your_mind/core/utils/color_constant.dart';
-import 'package:transform_your_mind/core/utils/end_points.dart';
+
 import 'package:transform_your_mind/core/utils/image_constant.dart';
-import 'package:transform_your_mind/core/utils/prefKeys.dart';
+
 
 class AccountController extends GetxController {
 
@@ -15,8 +11,6 @@ class AccountController extends GetxController {
 
   @override
   void onInit() {
-
-
     accountData.value = _AccountData.getAccountData;
     super.onInit();
   }

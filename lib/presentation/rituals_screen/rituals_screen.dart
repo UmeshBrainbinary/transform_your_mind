@@ -174,7 +174,7 @@ class _RitualsPageState extends State<RitualsPage>
                   child: Center(
                     child: Text(
                       "myRituals".tr,
-                      style: Style.montserratRegular(
+                      style: Style.nunRegular(
                           fontSize: Dimens.d14,
                           color: _currentTabIndex == 0
                               ? ColorConstant.white
@@ -210,7 +210,7 @@ class _RitualsPageState extends State<RitualsPage>
                   child: Center(
                     child: Text(
                       "transformRituals".tr,
-                      style: Style.montserratRegular(
+                      style: Style.nunRegular(
                           fontSize: Dimens.d14,
                           color: _currentTabIndex == 1
                               ? ColorConstant.white
@@ -256,7 +256,7 @@ class _RitualsPageState extends State<RitualsPage>
                     itemBuilder: (context, index) {
                       return Slidable(
                         closeOnScroll: true,
-                        key: const ValueKey<String>("" ?? ""),
+                        key: const ValueKey<String>(""),
                         endActionPane: ActionPane(
                           motion: const ScrollMotion(),
                           dragDismissible: false,
@@ -299,7 +299,7 @@ class _RitualsPageState extends State<RitualsPage>
                                 child: Text(
                                   userDraftRitualsList[index]["title"],
                                   maxLines: 3,
-                                  style: Style.montserratRegular(
+                                  style: Style.nunRegular(
                                       fontSize: Dimens.d14,
                                       color: ColorConstant.white),
                                 ),
@@ -317,7 +317,7 @@ class _RitualsPageState extends State<RitualsPage>
                 : Center(
                     child: Text(
                       "No Data",
-                      style: Style.montserratRegular(
+                      style: Style.nunRegular(
                           fontSize: Dimens.d14,
                           color: themeController.isDarkMode.value
                               ? ColorConstant.white
@@ -339,7 +339,7 @@ class _RitualsPageState extends State<RitualsPage>
                     itemBuilder: (context, index) {
                       return Slidable(
                         closeOnScroll: true,
-                        key: const ValueKey<String>("" ?? ""),
+                        key: const ValueKey<String>(""),
                         endActionPane: ActionPane(
                           motion: const ScrollMotion(),
                           dragDismissible: false,
@@ -382,7 +382,7 @@ class _RitualsPageState extends State<RitualsPage>
                                 child: Text(
                                   listOfMyRituals[index]["title"],
                                   maxLines: 3,
-                                  style: Style.montserratRegular(
+                                  style: Style.nunRegular(
                                       fontSize: Dimens.d14,
                                       color: ColorConstant.white),
                                 ),
@@ -400,7 +400,7 @@ class _RitualsPageState extends State<RitualsPage>
                 : Center(
                     child: Text(
                       "No Data",
-                      style: Style.montserratRegular(
+                      style: Style.nunRegular(
                           fontSize: Dimens.d14,
                           color: themeController.isDarkMode.value
                               ? ColorConstant.white
@@ -477,7 +477,7 @@ class _RitualsPageState extends State<RitualsPage>
                                 : ColorConstant.black.withOpacity(0.5))),
                     child: Text(
                       "drafts".tr,
-                      style: Style.montserratRegular(
+                      style: Style.nunRegular(
                           fontSize: Dimens.d18,
                           color: themeController.isDarkMode.value
                               ? ColorConstant.white
@@ -506,7 +506,7 @@ class _RitualsPageState extends State<RitualsPage>
                         color: ColorConstant.themeColor),
                     child: Text(
                       "save".tr,
-                      style: Style.montserratRegular(
+                      style: Style.nunRegular(
                           fontSize: Dimens.d18, color: ColorConstant.white),
                     ),
                   ),
@@ -597,7 +597,7 @@ class _RitualsPageState extends State<RitualsPage>
                                 Text(
                                   "Listen to a podcast",
                                   // Displaying item index
-                                  style: Style.montserratRegular(
+                                  style: Style.nunRegular(
                                       fontSize: 12, color: ColorConstant.white),
                                 ),
                               ],
@@ -657,7 +657,7 @@ class _RitualsPageState extends State<RitualsPage>
                 padding: const EdgeInsets.only(left: 18, top: 17),
                 child: Text(
                   item["title"] ?? '',
-                  style: Style.montserratRegular(
+                  style: Style.nunRegular(
                     fontSize: Dimens.d14,
                     color: Colors.white,
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
@@ -666,7 +666,7 @@ class _RitualsPageState extends State<RitualsPage>
               );
             }).toList();
           },
-          style: Style.montserratRegular(
+          style: Style.nunRegular(
             fontSize: Dimens.d14,
             color: Colors.white,
             fontWeight: FontWeight.w500,
@@ -675,7 +675,7 @@ class _RitualsPageState extends State<RitualsPage>
             padding: const EdgeInsets.only(left: 15),
             child: Text(
               "selectCategory".tr,
-              style: Style.montserratRegular(
+              style: Style.nunRegular(
                   fontSize: Dimens.d14, color: Colors.white),
             ),
           ),
@@ -708,7 +708,7 @@ class _RitualsPageState extends State<RitualsPage>
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Text(
                     item["title"] ?? '',
-                    style: Style.montserratRegular(
+                    style: Style.nunRegular(
                       fontSize: Dimens.d14,
                       color: ColorConstant.textGreyColor,
                       fontWeight:

@@ -9,6 +9,7 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_controller.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_screen.dart';
+import 'package:transform_your_mind/presentation/motivational_message/motivational_controller.dart';
 import 'package:transform_your_mind/presentation/notification_screen/notification_screen.dart';
 import 'package:transform_your_mind/presentation/transform_pods_screen/transform_pods_screen.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
@@ -26,20 +27,18 @@ class ToolsScreen extends StatefulWidget {
 
 class _ToolsScreenState extends State<ToolsScreen>
     with TickerProviderStateMixin {
-  late final AnimationController _lottieBgController;
-  late AnimationController _controller;
   ThemeController themeController = Get.find<ThemeController>();
 
   List<Map<String, dynamic>> menuItems = [
     {
       "title": "selfDevelopment".tr,
-      "desc": "Self Development Description",
+      "desc": "selfDevelopmentDescription".tr,
       "buttonTitle": "startToday".tr,
       "icon": ImageConstant.journalIconQuick
     },
     {
       "title": "transformPods".tr,
-      "desc": "Self Development Description",
+      "desc": "selfDevelopmentDescription".tr,
       "buttonTitle": "listenGrow".tr,
       "icon": ImageConstant.podIconQuick
     },
@@ -48,11 +47,6 @@ class _ToolsScreenState extends State<ToolsScreen>
   @override
   void initState() {
 
-    _lottieBgController = AnimationController(vsync: this);
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 200),
-    );
 
     setState(() {
 
@@ -93,7 +87,7 @@ class _ToolsScreenState extends State<ToolsScreen>
               children: [
                 Column(
                   children: [
-                    Dimens.d40.spaceHeight,
+                    Dimens.d20.spaceHeight,
                     ReorderableListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
@@ -111,7 +105,9 @@ class _ToolsScreenState extends State<ToolsScreen>
                                     "selfDevelopment".tr) {
                                   Navigator.pushNamed(
                                           context, AppRoutes.journalScreen)
-                                      .then((value) {
+                                      .then((value) async {
+                                        MotivationalController moti = Get.find<MotivationalController>();
+                                        await moti.pause();
                                     setState(() {});
                                   });
                                 } else if (menuItems[index]["title"] ==
@@ -125,17 +121,16 @@ class _ToolsScreenState extends State<ToolsScreen>
                               },
                               child: Padding(
                                 padding: const EdgeInsets.only(
-                                    bottom: 50, left: 30, right: 30),
+                                    bottom: 60, left: 32, right: 32),
                                 child: Stack(
                                   key: ValueKey(menuItems[index]),
-                                  // Use ValueKey for reordering
                                   clipBehavior: Clip.none,
                                   children: [
                                     Container(
                                       width: double.maxFinite,
                                       decoration: BoxDecoration(
                                           borderRadius:
-                                              BorderRadius.circular(25.0),
+                                              BorderRadius.circular(15.0),
                                           color:
                                               themeController.isDarkMode.value
                                                   ? ColorConstant
@@ -145,7 +140,7 @@ class _ToolsScreenState extends State<ToolsScreen>
                                               color: Colors.black
                                                   .withOpacity(0.2))),
                                       padding: const EdgeInsets.only(
-                                        left: 140,
+                                        left: 145,
                                         top: 10,
                                         bottom: 10,
                                         right: 10,
@@ -155,21 +150,24 @@ class _ToolsScreenState extends State<ToolsScreen>
                                             CrossAxisAlignment.start,
                                         children: [
                                           Dimens.d10.spaceHeight,
-                                          AutoSizeText(
-                                            menuItems[index]["title"],
-                                            style: Style.montserratMedium(
-                                              fontSize: 15,
+                                          Padding(
+                                            padding: const EdgeInsets.only(right: 40),
+                                            child: AutoSizeText(
+                                              menuItems[index]["title"],
+                                              style: Style.nunitoSemiBold(
+                                                fontSize: 18,
+                                              ),
                                             ),
                                           ),
                                           Dimens.d10.spaceHeight,
                                           AutoSizeText(
                                             menuItems[index]["desc"],
-                                            style: Style.montserratRegular(
-                                              fontSize: 12.0,
+                                            style: Style.nunMedium(
+                                              fontSize: 14.0,
                                             ),
                                           ),
                                           Dimens.d15.spaceHeight,
-                                          CommonElevatedButton(
+                                          CommonElevatedButton(width: Dimens.d140,
                                             title: menuItems[index]
                                                 ["buttonTitle"],
                                             onTap: () {
@@ -199,8 +197,8 @@ class _ToolsScreenState extends State<ToolsScreen>
                                             },
                                             height: 26.0,
                                             textStyle:
-                                                Style.montserratRegular(
-                                                    fontSize: 14.0,
+                                                Style.nunRegular(
+                                                    fontSize: 12.0,
                                                     color:
                                                         ColorConstant.white),
                                           ),
@@ -215,7 +213,7 @@ class _ToolsScreenState extends State<ToolsScreen>
                                       child: Container(
                                         decoration: BoxDecoration(
                                             borderRadius:
-                                                BorderRadius.circular(25.0),
+                                                BorderRadius.circular(15.0),
                                             color: themeController
                                                     .isDarkMode.value
                                                 ? ColorConstant
@@ -232,10 +230,10 @@ class _ToolsScreenState extends State<ToolsScreen>
                                             menuItems[index]["icon"],
                                             height: 40,
                                             width: 40,
-                                            color: themeController
+                                            color:/* themeController
                                                     .isDarkMode.value
                                                 ? ColorConstant.white
-                                                : ColorConstant.black,
+                                                : */ColorConstant.themeColor,
                                           ),
                                         ),
                                       ),
@@ -301,13 +299,15 @@ class _ToolsScreenState extends State<ToolsScreen>
                       audioData: audioDataStore!,
                     );
                   },
-                );                },
+                );
+                },
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(
-                  height: 87,
+                  height: 72,
                   width: Get.width,
-                  padding: const EdgeInsets.only(top: 8.0, left: 8, right: 8),
+                  padding: const EdgeInsets.only(
+                      top: 8.0, left: 8, right: 8),
                   margin: const EdgeInsets.symmetric(
                       horizontal: 10, vertical: 50),
                   decoration: BoxDecoration(
@@ -322,21 +322,25 @@ class _ToolsScreenState extends State<ToolsScreen>
                       ),
                       color: ColorConstant.themeColor,
                       borderRadius: BorderRadius.circular(6)),
-                  child: Column(
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Row(
                         children: [
-                          CommonLoadImage(borderRadius: 6.0,
-                              url:audioDataStore!.image!,
+                          CommonLoadImage(
+                              borderRadius: 6.0,
+                              url: audioDataStore!.image!,
                               width: 47,
                               height: 47),
                           Dimens.d12.spaceWidth,
                           GestureDetector(
                               onTap: () async {
                                 if (isPlaying) {
-                                  await audioPlayerController.pause();
+                                  await audioPlayerController
+                                      .pause();
                                 } else {
-                                  await audioPlayerController.play();
+                                  await audioPlayerController
+                                      .play();
                                 }
                               },
                               child: SvgPicture.asset(
@@ -352,8 +356,9 @@ class _ToolsScreenState extends State<ToolsScreen>
                               audioDataStore!.name!,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: Style.montserratRegular(
-                                  fontSize: 12, color: ColorConstant.white),
+                              style: Style.nunRegular(
+                                  fontSize: 12,
+                                  color: ColorConstant.white),
                             ),
                           ),
                           Dimens.d10.spaceWidth,
@@ -370,35 +375,41 @@ class _ToolsScreenState extends State<ToolsScreen>
                           Dimens.d10.spaceWidth,
                         ],
                       ),
+                      Dimens.d8.spaceHeight,
                       SliderTheme(
                         data: SliderTheme.of(context).copyWith(
                           activeTrackColor:
                           ColorConstant.white.withOpacity(0.2),
-                          inactiveTrackColor: ColorConstant.color6E949D,
+                          inactiveTrackColor:
+                          ColorConstant.color6E949D,
                           trackHeight: 1.5,
                           thumbColor: ColorConstant.transparent,
-                          // Color of the thumb
                           thumbShape: SliderComponentShape.noThumb,
-                          // Customize the thumb shape and size
-                          overlayColor:
-                          ColorConstant.backGround.withAlpha(32),
-                          // Color when thumb is pressed
+                          overlayColor: ColorConstant.backGround
+                              .withAlpha(32),
                           overlayShape: const RoundSliderOverlayShape(
                               overlayRadius:
                               16.0), // Customize the overlay shape and size
                         ),
-                        child: Slider(
-                          thumbColor: Colors.transparent,
-                          activeColor: ColorConstant.backGround,
-                          value: currentPosition.inMilliseconds.toDouble(),
-                          max: duration.inMilliseconds.toDouble(),
-                          onChanged: (value) {
-                            audioPlayerController.seekForMeditationAudio(
-                                position:
-                                Duration(milliseconds: value.toInt()));
-                          },
+                        child: SizedBox(height: 2,
+                          child: Slider(
+                            thumbColor: Colors.transparent,
+                            activeColor: ColorConstant.backGround,
+                            value: currentPosition.inMilliseconds
+                                .toDouble(),
+                            max: duration.inMilliseconds.toDouble(),
+                            onChanged: (value) {
+                              audioPlayerController
+                                  .seekForMeditationAudio(
+                                  position: Duration(
+                                      milliseconds:
+                                      value.toInt()));
+                            },
+                          ),
                         ),
                       ),
+                      Dimens.d5.spaceHeight,
+
                     ],
                   ),
                 ),

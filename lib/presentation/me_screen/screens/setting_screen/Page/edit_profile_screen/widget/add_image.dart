@@ -6,10 +6,10 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
-import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 
 class AddImageEditWidget extends StatefulWidget {
@@ -34,6 +34,7 @@ class AddImageEditWidget extends StatefulWidget {
 }
 
 class _AddImageEditWidgetState extends State<AddImageEditWidget> {
+  ThemeController themeController = Get.find<ThemeController>();
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -47,40 +48,31 @@ class _AddImageEditWidgetState extends State<AddImageEditWidget> {
             children: [
               widget.image == null
                   ? Container(
-                      margin: const EdgeInsets.only(top: Dimens.d30),
                       height: Dimens.d100,
                       width: Dimens.d100,
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                       ),
                       child: widget.imageURL != null
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(100),
-                              child: Image(
-                                image: NetworkImage(
-                                    widget.imageURL??""),
-                                fit: BoxFit.fill,
+                          ? Container(
+                        decoration: BoxDecoration(border: Border.all(color: ColorConstant.themeColor),
+                        shape: BoxShape.circle),
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: Image(
+                                  image: NetworkImage(
+                                      widget.imageURL??""),
+                                  fit: BoxFit.fill,
+                                ),
                               ),
-                            )
+                          )
                           : SvgPicture.asset(
-                              ImageConstant.userProfile,
+                              themeController.isDarkMode.isTrue?ImageConstant.nonPlaceHolderProfileDark:ImageConstant.userProfile,
                             ),
                     )
 
-                  /*Container(
-                    margin: const EdgeInsets.only(top: Dimens.d30),
-                    height: Dimens.d100,
-                    width: Dimens.d100,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image:  DecorationImage(
-                            image: NetworkImage(
-                                "https://transformyourmind-server.onrender.com/${widget.imageURL}"),fit: BoxFit.cover),
-                        border: Border.all(
-                            color: ColorConstant.themeColor, width: 2)),
-                  )*/
                   : Container(
-                      margin: const EdgeInsets.only(top: Dimens.d30),
+
                       height: Dimens.d100,
                       width: Dimens.d100,
                       decoration: BoxDecoration(
@@ -94,34 +86,30 @@ class _AddImageEditWidgetState extends State<AddImageEditWidget> {
               if ((widget.image != null || widget.imageURL != null) &&
                   !widget.hideDelete)
                 Padding(
-                  padding: const EdgeInsets.only(left: 50, bottom: 50),
+                  padding: const EdgeInsets.only(left: 80, top:50 ),
                   child: Center(
                     child: GestureDetector(
                       onTap: widget.onDeleteTap,
                       child: Container(
-                          height: 30,
-                          width: 30,
+                          height: 20,
+                          width: 20,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(24),
                             color: Colors.white,
                           ),
-                          child: const Icon(
-                            Icons.delete_outline,
-                            color: ColorConstant.colorFF0000,
-                            size: 15,
-                          )),
+                          child: Center(child: SvgPicture.asset(ImageConstant.deleteProfile,color: Colors.red,height: 12,width: 12,))),
                     ),
                   ),
                 ),
             ],
           ),
-          Dimens.d14.spaceHeight,
+          Dimens.d20.spaceHeight,
           if (widget.image == null && widget.imageURL == null)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: Dimens.d90),
-              child: CommonElevatedButton(
+              child: CommonElevatedButton(height: 26,
                 title: "addProfileImage".tr,
-                textStyle: Style.montserratMedium(
+                textStyle: Style.nunMedium(
                     fontSize: 10, color: ColorConstant.white),
                 onTap: widget.onTap,
               ),

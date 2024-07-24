@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:transform_your_mind/core/app_export.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
+import 'package:transform_your_mind/core/service/http_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
@@ -25,15 +26,20 @@ class _FaqScreenState extends State<FaqScreen> {
   ThemeController themeController = Get.find<ThemeController>();
   @override
   void initState() {
-    supportController.getFaqList();
-
+    checkInternet();
     super.initState();
+  }
+
+  checkInternet() async {
+    if (await isConnected()) {
+      supportController.getFaqList();
+    } else {
+      showSnackBarError(context, "noInternet".tr);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    //statusBarSet(themeController);
-
     return Stack(
       children: [
         Scaffold(
@@ -80,7 +86,7 @@ class _FaqScreenState extends State<FaqScreen> {
                                 margin:
                                 const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
                                 padding:
-                                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+                                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15),
                                 decoration: BoxDecoration(
                                     color: themeController.isDarkMode.isTrue
                                         ? ColorConstant.textfieldFillColor
@@ -95,7 +101,7 @@ class _FaqScreenState extends State<FaqScreen> {
                                             width: 260,
                                             child: Text(
                                               data?.question ?? "",
-                                              style: Style.montserratSemiBold(fontSize: 14),
+                                              style: Style.nunitoSemiBold(fontSize: 14),
                                             )),
                                         SvgPicture.asset(
                                           controller.faq[index]
@@ -118,7 +124,7 @@ class _FaqScreenState extends State<FaqScreen> {
                                         Text(
                                           data?.answer ?? "",
                                           textAlign: TextAlign.start,
-                                          style: Style.montserratRegular(fontSize: 10)
+                                          style: Style.nunRegular(fontSize: 10)
                                               .copyWith(height: 1.5),
                                         )
                                       ],

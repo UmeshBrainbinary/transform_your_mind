@@ -9,8 +9,8 @@ class MessageView extends StatelessWidget {
   const MessageView({
     required this.title,
     required this.details,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final String title;
   final String details;
@@ -22,7 +22,7 @@ class MessageView extends StatelessWidget {
       children: [
         Text(
           title,
-          style: Style.montserratRegular(
+          style: Style.nunRegular(
             height: Dimens.d1_4,
             color: ColorConstant.themeColor,
           ).copyWith(
@@ -33,7 +33,7 @@ class MessageView extends StatelessWidget {
         Dimens.d15.spaceHeight,
         Text(
           details,
-          style: Style.montserratRegular(
+          style: Style.nunRegular(
             color: ColorConstant.themeColor,
             fontSize: Dimens.d14,
             height: Dimens.d1_71,

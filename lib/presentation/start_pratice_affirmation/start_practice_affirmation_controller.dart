@@ -10,33 +10,27 @@ class StartPracticeAffirmationController extends GetxController {
 
   List<bool> storyCompleted = [];
   RxBool setSpeed = false.obs;
-  List<String> quotes = [
-    '“Calm mind brings inner strength and self-confidence, so that’s very important for good health”',
-    '“The only way to achieve the impossible is to believe it is possible.”',
-    '“ieve the impossible is to believe it is possible.”',
-    '“impossible is to believe it is possible.”',
-    '“Success is not how high you have climbed, but how you make a positive difference to the world.”',
-  ];
 
   List<String> speedList = ["Auto", "20 sec", "15 sec", "10 sec", "5 sec"];
   List soundList = [
-    {"title": "Rk","audio":"https://commondatastorage.googleapis.com/codeskulptor-demos/riceracer_assets/music/menu.ogg"},
-    {"title": "Mk","audio":"https://commondatastorage.googleapis.com/codeskulptor-demos/riceracer_assets/music/win.ogg"},
-    {"title": "Fk","audio":"https://commondatastorage.googleapis.com/codeskulptor-assets/sounddogs/thrust.ogg"},
+    {"title": "None","audio":""},
+    {"title": "Rk","audio":"https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3"},
+    {"title": "Mk","audio":"https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/theme_01.mp3"},
+    {"title": "Fk","audio":"https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3"},
     {"title": "Gk","audio":"https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/theme_01.mp3"},
-    {"title": "Yk","audio":"https://commondatastorage.googleapis.com/codeskulptor-demos/riceracer_assets/music/win.ogg"},
+    {"title": "Yk","audio":"https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3"},
 
-  ];  List<String> weekList = ["M", "T", "W", "T", "F", "S", "S"];
+  ];
   int currentDayIndex = DateTime.now().weekday % 7;
 
   List<String> themeList = [
-    "https://transformyourmind.s3.eu-north-1.amazonaws.com/1718789963955-3d connections polygonal background with connecting lines and dots.png",
-    "https://transformyourmind.s3.eu-north-1.amazonaws.com/1718865288873-3d connections polygonal background with connecting lines and dots.png",
-    "https://transformyourmind.s3.eu-north-1.amazonaws.com/1719980269394-support-7965543_1280.webp",
-    "https://transformyourmind.s3.eu-north-1.amazonaws.com/1719464225736-Rectangle 5781.png"
+    "https://i.pinimg.com/736x/45/ce/29/45ce2986d79fc7cd05014bd522a88834.jpg",
+    "https://images.unsplash.com/photo-1547483238-2cbf881a559f?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXw1MDI3OTF8fGVufDB8fHx8fA%3D%3D",
+    "https://w0.peakpx.com/wallpaper/233/89/HD-wallpaper-blue-sky-beautiful-clouds-life-love-nature-stars-sunset.jpg",
+    "https://1.bp.blogspot.com/-4iulinQP-Bo/YOBwMdwSlII/AAAAAAAAQmk/wfv9P_KGa7MKzC-7MEc7TGHhqD6jg0mtgCLcBGAsYHQ/s0/V1-SIMPLE-LANDSCAPE-HD.png"
   ];
   bool soundMute = false;
-  late Timer timer;
+   Timer? timer;
   ValueNotifier<double> slideValue = ValueNotifier(40.0);
 
   AudioPlayer _audioPlayer = AudioPlayer();

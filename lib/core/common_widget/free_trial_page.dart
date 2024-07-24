@@ -14,7 +14,7 @@ import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 class FreeTrialPage extends StatefulWidget {
-  const FreeTrialPage({Key? key}) : super(key: key);
+  const FreeTrialPage({super.key});
   static const freeTrial = '/freeTrial';
 
   @override
@@ -67,10 +67,10 @@ class _FreeTrialPageState extends State<FreeTrialPage>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Dimens.d100.spaceHeight,
+                Dimens.d90.spaceHeight,
                 Text(
                   "wT".tr,
-                  style: Style.montserratSemiBold(
+                  style: Style.nunitoBold(
                     fontSize: Dimens.d28,
                   ),
                   textAlign: TextAlign.center,
@@ -79,8 +79,8 @@ class _FreeTrialPageState extends State<FreeTrialPage>
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 43),
                   child: Text(
-                    "Your transform basic package is now live.".tr,
-                    style: Style.montserratRegular(
+                    "yourTransformBasic".tr,
+                    style: Style.nunMedium(
                         fontSize: Dimens.d18, fontWeight: FontWeight.w500),
                     textAlign: TextAlign.center,
                   ),
@@ -105,7 +105,7 @@ class _FreeTrialPageState extends State<FreeTrialPage>
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
                   child: CommonElevatedButton(
-                    textStyle: Style.montserratRegular(
+                    textStyle: Style.nunRegular(
                         fontSize: 17, color: ColorConstant.white),
                     title: "premiumAccess".tr,
                     onTap: () async {
@@ -139,31 +139,31 @@ class _FreeTrialPageState extends State<FreeTrialPage>
 class _DescriptionPoints extends StatelessWidget {
   final String title;
 
-  const _DescriptionPoints({Key? key, required this.title}) : super(key: key);
+  const _DescriptionPoints({required this.title});
 
   @override
   Widget build(BuildContext context) {
+    ThemeController themeController = Get.find<ThemeController>();
     return Padding(
       padding: const EdgeInsets.symmetric(
-          horizontal: Dimens.d20, vertical: Dimens.d10),
+          horizontal: Dimens.d40, vertical: Dimens.d10),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Container(
+          Container(margin: const EdgeInsets.only(top: 7),
             height: 8,
             width: 8,
-            decoration: const BoxDecoration(
-                color: ColorConstant.black, shape: BoxShape.circle),
+            decoration:  BoxDecoration(
+                color: themeController.isDarkMode.isTrue?Colors.white:ColorConstant.black, shape: BoxShape.circle),
           ),
-          //SvgPicture.asset(ImageConstant.icTick,color: ColorConstant.black,),
           Dimens.d16.spaceWidth,
           Expanded(
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 title.tr,
-                style: Style.montserratRegular(
+                style: Style.nunMedium(
                   fontSize: Dimens.d16,
                 ),
               ),

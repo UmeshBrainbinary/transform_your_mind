@@ -13,12 +13,12 @@ class CustomChip extends StatefulWidget {
   final bool isParentPadding;
 
   const CustomChip({
-    Key? key,
+    super.key,
     required this.label,
     this.isFocusMain = null,
     required this.isChipSelected,
     this.isParentPadding = true,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomChip> createState() => _CustomChipState();
@@ -41,7 +41,15 @@ class _CustomChipState extends State<CustomChip> {
       child: AnimatedContainer(
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(Dimens.d80)),
-          gradient: (widget.isFocusMain != null && widget.isFocusMain == true)
+          gradient:themeController.isDarkMode.isTrue?LinearGradient(
+            begin: Alignment.bottomLeft,
+            end: Alignment.topRight,
+            colors: [
+              Colors.transparent,
+              Colors.transparent,
+
+            ],
+          ): (widget.isFocusMain != null && widget.isFocusMain == true)
               ? const LinearGradient(
                   begin: Alignment.bottomLeft,
                   end: Alignment.topRight,
@@ -68,10 +76,7 @@ class _CustomChipState extends State<CustomChip> {
                       ],
                     ),
           border: Border.all(
-            color:
-            !widget.isChipSelected
-                ? Colors.black.withOpacity(Dimens.d0_2)
-                : Colors.black.withOpacity(Dimens.d0_2),
+            color: themeController.isDarkMode.isTrue?Colors.white:Colors.black.withOpacity(Dimens.d0_2),
           ),
         ),
         duration: const Duration(milliseconds: 200),
@@ -82,13 +87,13 @@ class _CustomChipState extends State<CustomChip> {
           ),
           child: Text(
             widget.label,
-            style: Style.montserratRegular(
+            style: Style.nunMedium(
               color: (widget.isFocusMain != null && widget.isFocusMain == true)
                   ?  ColorConstant.textWhiteTransform
                   : widget.isChipSelected
                       ? ColorConstant.themeColor
                       : themeController.isDarkMode.value ? ColorConstant.white : ColorConstant.black,
-              fontSize: Dimens.d14,
+              fontSize: Dimens.d15,
             ),
           ),
         ),

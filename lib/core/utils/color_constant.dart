@@ -10,10 +10,12 @@ class ColorConstant {
   static const themeColor = Color(0XFF769AA3);
   static const grey = Colors.grey;
  // static const textfieldFillColor = Color(0XFF1c1f1f);
-  static const textfieldFillColor = Color(0XFF19193E);
+  //static const textfieldFillColor = Color(0XFF19193E);
+  static const textfieldFillColor = Color(0XFF2E3E45);
 
   static const colorbfd0d4 = Color(0XFFbfd0d4);
   static const color6E949D= Color(0XFF6E949D);
+  static const colorADADAD= Color(0XFFADADAD);
   static const colorebebeb = Color(0XFFebebeb);
   static const color4f4f4f = Color(0XFF4f4f4f);
   static const color545454 = Color(0XFF545454);
@@ -21,9 +23,11 @@ class ColorConstant {
   static const color797777 = Color(0XFF797777);
   static const colorE3E1E1= Color(0XFFE3E1E1);
   static const colorBFBFBF= Color(0XFFBFBFBF);
+  static const color73969FF= Color(0XFF73969F);
   static const colorDCE9EE= Color(0XFFDCE9EE);
   static const colorD6D8E1= Color(0XFFD6D8E1);
   static const colorE71D36= Color(0XFFE71D36);
+  static const color7A7A7A= Color(0XFF7A7A7A);
 
   static const lightBlack = Color(0XFF121212);
 
@@ -46,6 +50,7 @@ class ColorConstant {
   static const color7C9EA7 = Color(0XFF7C9EA7);
   static const colorCACACA = Color(0XFFCACACA);
   static const color5B93FF = Color(0XFF5B93FF);
+  static const color949494 = Color(0XFF949494);
 
   static const color3d5157 = Color(0XFF3d5157);
   static const lightGrey = Color.fromRGBO(220, 220, 220, 1);
@@ -67,8 +72,13 @@ class ColorConstant {
   static const colorAECFD8 = Color(0XFFAECFD8);
   static const colorAFAFAF = Color(0XFFAFAFAF);
   static const color797B86 = Color(0XFF797B86);
-  static const darkBackground = Color(0XFF00051A);
+  //static const darkBackground = Color(0XFF00051A);
+  static const darkBackground = Color(0XFF1C272D);
   static const color7F7E7E = Color(0XFF7F7E7E);
+  static const color394750 = Color(0XFF394750);
+  static const color29363E = Color(0XFF29363E);
+  static const color2E2EFF = Color(0XFF2E2EFF);
+  static const color008000 = Color(0XFF008000);
 
   static const textWhiteBackGround = Color.fromRGBO(229, 234, 249, 1);
   static const textDarkBlue = Color.fromRGBO(49, 59, 107, 1);

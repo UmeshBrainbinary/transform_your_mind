@@ -1,11 +1,9 @@
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:transform_your_mind/core/app_export.dart';
-import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
@@ -36,7 +34,7 @@ Future<XFile?>? showImagePickerActionSheet(BuildContext context) async {
                 await handlePermanentlyDenied();
               }
             },
-            child: Text("takePhoto".tr, style: Style.montserratRegular(color: themeController.isDarkMode.value? ColorConstant.white : ColorConstant.black,)),
+            child: Text("takePhoto".tr, style: Style.nunRegular(color: themeController.isDarkMode.value? ColorConstant.white : ColorConstant.black,)),
           ),
         ),
         Container(
@@ -45,7 +43,7 @@ Future<XFile?>? showImagePickerActionSheet(BuildContext context) async {
             onPressed: () async {
               Navigator.pop(context, ImageSource.gallery);
            },
-            child: Text("chooseFromLibrary".tr, style: Style.montserratRegular(color:  themeController.isDarkMode.value? ColorConstant.white : ColorConstant.black,)),
+            child: Text("chooseFromLibrary".tr, style: Style.nunRegular(color:  themeController.isDarkMode.value? ColorConstant.white : ColorConstant.black,)),
           ),
         ),
       ],
@@ -59,7 +57,7 @@ Future<XFile?>? showImagePickerActionSheet(BuildContext context) async {
           onPressed: () {
             Navigator.pop(context);
           },
-          child: Text("cancel".tr, style: Style.montserratRegular(color: ColorConstant.colorFF0000)),
+          child: Text("cancel".tr, style: Style.nunRegular(color: ColorConstant.colorFF0000)),
         ),
       ),
     ),

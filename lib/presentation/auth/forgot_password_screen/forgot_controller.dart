@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
+import 'package:transform_your_mind/core/service/http_service.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
@@ -30,23 +31,35 @@ class ForgotController extends GetxController {
   ForgotPassword forgotPassword = ForgotPassword();
 
   onTapOtpVerify(BuildContext context, token, ValueNotifier<XFile?>? imagePath) async {
-    loader.value = true;
-    await otpVerify(context, token, imagePath!);
-    loader.value = false;
+    if (await isConnected()) {
+      loader.value = true;
+      await otpVerify(context, token, imagePath!);
+      loader.value = false;
+    } else {
+      showSnackBarError(context, "noInternet".tr);
+    }
   }
 
   onTapOtpVerifyChangePass(BuildContext context, String email, bool? forgot) async {
-    loader.value= true;
-    await otpVerifyChangePass(context,email,forgot);
-    loader.value=false;
-
+    if (await isConnected()) {
+      loader.value = true;
+      await otpVerifyChangePass(context, email, forgot);
+      loader.value = false;
+    } else {
+      showSnackBarError(context, "noInternet".tr);
+    }
   }
 
   forgotPasswordButton(BuildContext context, ) async {
-    loader.value = true;
-    await forgotPasswordApi(context);
-    loader.value = false;
+    if (await isConnected()) {
+      loader.value = true;
+      await forgotPasswordApi(context);
+      loader.value = false;
+    } else {
+      showSnackBarError(context, "noInternet".tr);
+    }
   }
+
   String? tokenVerify = "";
 ResendModel resendModel = ResendModel();
   resendApi(String? token, bool? forgot, String? email, BuildContext context) async {
@@ -149,6 +162,8 @@ ResendModel resendModel = ResendModel();
       http.StreamedResponse response = await request.send();
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        PrefService.setValue(PrefKey.morningQuestion, false);
+
         loader.value = false;
         final responseBody = await response.stream.bytesToString();
 

@@ -16,9 +16,9 @@ class RitualsGridShimmer extends StatelessWidget {
         ...List.generate(
           10,
           (index) => Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.transparent,
-              borderRadius: const BorderRadius.all(Radius.circular(20)),
+              borderRadius: BorderRadius.all(Radius.circular(20)),
             ),
             child: ShimmerWidget.rectangular(
               width: getTileWidth(context),

@@ -1,27 +1,41 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
+import 'package:transform_your_mind/core/service/http_service.dart';
 import 'package:transform_your_mind/core/service/method_channal_alarm.dart';
+import 'package:transform_your_mind/core/service/notification_service.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
+import 'package:transform_your_mind/core/utils/date_time.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
+import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/model_class/affirmation_model.dart';
 import 'package:transform_your_mind/model_class/get_pods_model.dart';
+import 'package:transform_your_mind/model_class/gratitude_model.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_controller.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_screen.dart';
 import 'package:transform_your_mind/presentation/breath_screen/breath_screen.dart';
 import 'package:transform_your_mind/presentation/home_screen/home_controller.dart';
 import 'package:transform_your_mind/presentation/home_screen/home_message_page.dart';
 import 'package:transform_your_mind/presentation/home_screen/widgets/home_widget.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/how_feeling_today_screen.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/how_feelings_evening.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_gratitude_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/my_affirmation_page.dart';
-import 'package:transform_your_mind/presentation/journal_screen/widget/my_gratitude_page.dart';
+import 'package:transform_your_mind/presentation/motivational_message/motivational_controller.dart';
+import 'package:transform_your_mind/presentation/motivational_message/motivational_message.dart';
+import 'package:transform_your_mind/presentation/positive_moment/positive_controller.dart';
 import 'package:transform_your_mind/presentation/positive_moment/positive_screen.dart';
 import 'package:transform_your_mind/presentation/start_practcing_screen/start_pratice_screen.dart';
 import 'package:transform_your_mind/presentation/start_pratice_affirmation/start_pratice_affirmation.dart';
@@ -33,8 +47,7 @@ import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:transform_your_mind/widgets/custom_view_controller.dart';
-import 'package:url_launcher/url_launcher.dart';
-
+import 'package:http/http.dart' as http;
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -47,9 +60,12 @@ class _HomeScreenState extends State<HomeScreen>
   late final AnimationController _lottieBgController;
   late ScrollController scrollController = ScrollController();
   ValueNotifier<bool> showScrollTop = ValueNotifier(false);
-
+  PositiveController positiveController = Get.put(PositiveController());
+  DateTime now = DateTime.now();
   HomeController g = Get.put(HomeController());
   ThemeController themeController = Get.find<ThemeController>();
+  GratitudeModel gratitudeModel = GratitudeModel();
+
   @override
   void initState() {
     _setGreetingBasedOnTime();
@@ -63,19 +79,56 @@ class _HomeScreenState extends State<HomeScreen>
       }
     });
 
-    getData();
+    checkInternet();
 
     setState(() {});
     super.initState();
   }
+  getGratitude() async {
+
+    var headers = {
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.Request(
+        'GET',
+        Uri.parse(
+            '${EndPoints.baseUrl}get-gratitude?created_by=${PrefService.getString(PrefKey.userId)}&date=${DateFormat('dd/MM/yyyy').format(now)}'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      gratitudeModel = GratitudeModel();
+      final responseBody = await response.stream.bytesToString();
+      gratitudeModel = gratitudeModelFromJson(responseBody);
+
+      debugPrint("gratitude Model ${gratitudeModel.data}");
+
+
+    } else {
+
+      debugPrint(response.reasonPhrase);
+    }
+  }
+
+  checkInternet() async {
+    if (await isConnected()) {
+      getData();
+    } else {
+      showSnackBarError(context, "noInternet".tr);
+    }
+  }
 
   getData() async {
+    await g.getMotivationalMessage();
     await g.getUSer();
     g.getPodApi();
     g.getBookMarkedList();
     g.getTodayGratitude();
     g.getTodayAffirmation();
     g.getRecentlyList();
+    await getGratitude();
   }
 
 
@@ -83,9 +136,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   void _setGreetingBasedOnTime() {
     greeting = _getGreetingBasedOnTime();
-   setState(() {
-
-   });
+    setState(() {});
   }
 
   String _getGreetingBasedOnTime() {
@@ -130,458 +181,514 @@ class _HomeScreenState extends State<HomeScreen>
     AlarmService.setAlarm(
         selectedTime.hour, selectedTime.minute+1, "Flutter Alarm");
   }
+
+  Future<void> _refresh() async {
+    checkInternet();
+  }
+  String _formatDuration(Duration? duration) {
+    if (duration == null) return "00:00";
+    final minutes = duration.inMinutes.remainder(60).toString().padLeft(2, '0');
+    final seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+    return "$minutes:$seconds";
+  }
   @override
   Widget build(BuildContext context) {
+    if (themeController.isDarkMode.isTrue) {
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        statusBarBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.light,
+      ));
+    } else {
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        statusBarBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.dark,
+      ));
+    }
+    return Stack(
+      children: [
+        Scaffold(
+            /*floatingActionButton: ValueListenableBuilder(
+              valueListenable: showScrollTop,
+              builder: (context, value, child) {
+                return AnimatedOpacity(
+                  duration: const Duration(milliseconds: 700),
+                  //show/hide animation
+                  opacity: showScrollTop.value ? 1.0 : 0.0,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: ColorConstant.themeColor,
+                    ),
+                    padding: const EdgeInsets.all(5.0),
+                    child: FloatingActionButton(
+                      elevation: 0.0,
+                      onPressed: () {
+                        *//*   if(greeting=="goodMorning"){
+                          Get.to(()=> HowFeelingsEvening());
 
-    return Scaffold(
-        floatingActionButton: ValueListenableBuilder(
-          valueListenable: showScrollTop,
-          builder: (context, value, child) {
-            return AnimatedOpacity(
-              duration: const Duration(milliseconds: 700), //show/hide animation
-              opacity: showScrollTop.value
-                  ? 1.0
-                  : 0.0,
-              child: Container(
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: ColorConstant.themeColor,
-                ),
-                padding: const EdgeInsets.all(5.0),
-                child: FloatingActionButton(
-                  elevation: 0.0,
-                  onPressed: () {
-                    scrollController.animateTo(
-                      0,
-                      duration: const Duration(milliseconds: 500),
-                      curve: Curves.fastOutSlowIn,
-                    );
-                  },
-                  backgroundColor: ColorConstant.themeColor,
-                  child: SvgPicture.asset(
-                    ImageConstant.icUpArrow,
-                    fit: BoxFit.fill,
-                    height: Dimens.d20.h,
-                    color: Colors.white,
+                        }else{
+                          Get.to(()=>const HowFeelingTodayScreen());
+
+                        }*//*
+                        scrollController.animateTo(
+                          0,
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.fastOutSlowIn,
+                        );
+                      },
+                      backgroundColor: ColorConstant.themeColor,
+                      child: SvgPicture.asset(
+                        ImageConstant.icUpArrow,
+                        fit: BoxFit.fill,
+                        height: Dimens.d20.h,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            );
-          },
-        ),
-        backgroundColor: themeController.isDarkMode.isTrue
-            ? ColorConstant.darkBackground
-            : ColorConstant.white,
-        body: GetBuilder<HomeController>(
-          id: "home",
-          builder: (controller) {
-            return Stack(
-              children: [
-                CustomScrollViewWidget(
-                  controller: scrollController,
-                  physics: const ClampingScrollPhysics(),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                );
+              },
+            ),*/
+            backgroundColor: themeController.isDarkMode.isTrue
+                ? ColorConstant.darkBackground
+                : ColorConstant.white,
+            body: RefreshIndicator(
+              onRefresh: _refresh,
+              child: GetBuilder<HomeController>(
+                id: "home",
+                builder: (controller) {
+                  return Stack(
                     children: [
-                      Dimens.d50.spaceHeight,
-
-                      //__________________________ top view ____________________
-                      topView(controller
-                              .getUserModel.data?.motivationalMessage ??
-                          "Believe in yourself, even when doubt creeps in. Today's progress is a step towards your dreams."),
-                      Dimens.d30.spaceHeight,
-                      Align(
-                        alignment: Alignment.center,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: Dimens.d20),
-                          child: Text(
-                              "${greeting.tr}, ${PrefService.getString(PrefKey.name).toString()}",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: themeController.isDarkMode.isTrue
-                                      ? ColorConstant.white
-                                      : ColorConstant.black,
-                                  fontFamily: FontFamily.montserratRegular,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 24,
-                                  letterSpacing: 1.5)),
-                        ),
-                      ),
-
-                      Dimens.d25.spaceHeight,
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Text(
-                          "“ ${g.getUserModel.data?.motivationalMessage ?? "“ Believe in yourself and all that you are. Know that there is something inside you that is greater than any obstacle.” "}” ",
-                          textAlign: TextAlign.center,
-                          style: Style.gothamLight(fontSize: 15),
-                        ),
-                      ),
-                      Dimens.d12.spaceHeight,
-                      Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            "Christian D. Larson",
-                            style: Style.gothamLight(
-                                fontSize: 13, fontWeight: FontWeight.w300),
-                          )),
-
-                      //______________________________ Recently Played _______________________
-                      /* recentlyView(),*/
-
-                      Dimens.d30.spaceHeight,
-
-                      yourGratitude(),
-                      Dimens.d30.spaceHeight,
-                      yourAffirmation(),
-                      Dimens.d30.spaceHeight,
-
-                      //______________________________ yourDaily Recommendations _______________________
-
-                      Padding(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: Dimens.d20),
-                        child: Text(
-                          "feelGood".tr,
-                          textAlign: TextAlign.center,
-                          style: Style.nunitoBold(fontSize: Dimens.d22),
-                        ),
-                      ),
-                      Dimens.d20.spaceHeight,
-                      recentlyView(),
-                      //recommendationsView(controller),
-                      Dimens.d40.spaceHeight,
-                      /*       controller.bookmarkedModel.data == null
-                          ? const SizedBox()
-                          : controller.bookmarkedModel.data!.isNotEmpty
-                              ? Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: Dimens.d20),
-                                  child: Text(
-                                    "yourBookmarks".tr,
-                          textAlign: TextAlign.center,
-                          style: Style.montserratRegular(fontSize: Dimens.d22),
-                        ),
-                                )
-                              : const SizedBox(),
-                      Dimens.d20.spaceHeight,
-                      bookmarkViw(controller),
-                      controller.bookmarkedModel.data == null
-                          ? const SizedBox()
-                          : Dimens.d30.spaceHeight,*/
-                      Padding(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: Dimens.d20),
-                        child: Row(children: [
-                          Text(
-                            "positiveMoments".tr,
-                            textAlign: TextAlign.center,
-                            style:
-                                Style.nunitoBold(fontSize: Dimens.d22),
-                          ),
-                          const Spacer(),
-                          GestureDetector(
-                              onTap: () {
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) {
-                                    return const PositiveScreen();
-                                  },
-                                )).then(
-                                  (value) {
-                                    setState(() {});
-                                  },
-                                );
-                              },
-                              child: Text(
-                                "seeAll".tr,
-                                style: Style.gothamLight(
-                                    color: ColorConstant.color5A7681,
-                                    fontSize: 12),
-                              ))
-                        ]),
-                      ),
-                      Dimens.d24.spaceHeight,
-                      SizedBox(
-                        height: Dimens.d113,
-                        child: ListView.builder(
-                          itemCount: 4,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            return const PositiveMoment();
-                          },
-                        ),
-                      ),
-                      Dimens.d40.spaceHeight,
-                      Padding(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: Dimens.d20),
-                        child: Text(
-                          "quickAccess".tr,
-                          textAlign: TextAlign.center,
-                          style: Style.nunitoBold(
-                            fontSize: Dimens.d22,
-                          ),
-                        ),
-                      ),
-                      Dimens.d30.spaceHeight,
-                      Padding(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: Dimens.d20),
-                        child: GridView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          padding: EdgeInsets.zero,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3,
-                                  childAspectRatio: 1.2,
-                                  crossAxisSpacing: 30,
-                                  mainAxisSpacing:
-                                      30 // Set the aspect ratio as needed
-                                  ),
-                          itemCount: g.quickAccessList.length,
-                          // Total number of items
-                          itemBuilder: (BuildContext context, int index) {
-                            // Generating items for the GridView
-                            return GestureDetector(
-                              onTap: () {
-                                if (g.quickAccessList[index]["title"] ==
-                                    "motivational") {
-                                  Navigator.pushNamed(context,
-                                          AppRoutes.motivationalMessageScreen)
-                                      .then((value) {
-                                    setState(() {});
-                                  });
-                                } else if (g.quickAccessList[index]["title"] ==
-                                    "transformPods") {
-
-                                  Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) {
-                                      return const TransformPodsScreen();
-                                    },
-                                  )).then(
-                                    (value) {
-                                      setState(() {});
-                                    },
-                                  );
-                                } else if (g.quickAccessList[index]["title"] ==
-                                    "gratitudeJournal") {
-
-                                  Navigator.pushNamed(
-                                          context, AppRoutes.myGratitudePage)
-                                      .then((value) {
-                                    setState(() {});
-                                  });
-                                } else if (g.quickAccessList[index]["title"] ==
-                                    "positiveMoments") {
-                                  Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) {
-                                      return const PositiveScreen();
-                                    },
-                                  )).then(
-                                    (value) {
-                                      setState(() {});
-                                    },
-                                  );
-                                } else if (g.quickAccessList[index]["title"] ==
-                                    "affirmation") {
-
-                                  Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) {
-                                      return const MyAffirmationPage();
-                                    },
-                                  )).then(
-                                    (value) {
-                                      setState(() {});
-                                    },
-                                  );
-                                } else {
-
-                                  Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) {
-                                      return  BreathScreen(skip: false,);
-                                    },
-                                  )).then(
-                                    (value) {
-                                      setState(() {});
-                                    },
-                                  );
-                                }
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(9),
-                                    color: themeController.isDarkMode.value
-                                        ? ColorConstant.textfieldFillColor
-                                        : g.quickAccessList[index]["color"]),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SvgPicture.asset(
-                                      g.quickAccessList[index]["icon"],
-                                      height: 30,
-                                      width: 30,
-                                      color: ColorConstant.themeColor,
-                                    ),
-                                    Dimens.d12.spaceHeight,
-                                    Text(
-                                      "${g.quickAccessList[index]["title"]}".tr,
-                                      style:
-                                          Style.montserratSemiBold(fontSize: 8,color: ColorConstant.themeColor),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                      Dimens.d110.spaceHeight,
-                    ],
-                  ),
-                ),
-                Obx(
-                  () => controller.loader.isTrue
-                      ? commonLoader()
-                      : const SizedBox(),
-                ),
-                Obx(() {
-                  if (!audioPlayerController.isVisible.value) {
-                    return const SizedBox.shrink();
-                  }
-
-                  final currentPosition =
-                      audioPlayerController.positionStream.value ??
-                          Duration.zero;
-                  final duration = audioPlayerController.durationStream.value ??
-                      Duration.zero;
-                  final isPlaying = audioPlayerController.isPlaying.value;
-
-                  return GestureDetector(
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(
-                              Dimens.d24,
-                            ),
-                          ),
-                        ),
-                        builder: (BuildContext context) {
-                          return NowPlayingScreen(
-                            audioData: audioDataStore!,
-                          );
-                        },
-                      );
-                    },
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        height: 87,
-                        width: Get.width,
-                        padding: const EdgeInsets.only(top: 8.0, left: 8, right: 8),
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 50),
-                        decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [
-                                ColorConstant.colorB9CCD0,
-                                ColorConstant.color86A6AE,
-                                ColorConstant.color86A6AE,
-                              ], // Your gradient colors
-                              begin: Alignment.bottomLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            color: ColorConstant.themeColor,
-                            borderRadius: BorderRadius.circular(6)),
+                      CustomScrollViewWidget(
+                        controller: scrollController,
+                        physics: const ClampingScrollPhysics(),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                CommonLoadImage(borderRadius: 6.0,
-                                    url:audioDataStore!.image!,
-                                    width: 47,
-                                    height: 47),
-                                Dimens.d12.spaceWidth,
-                                GestureDetector(
-                                    onTap: () async {
-                                      if (isPlaying) {
-                                        await audioPlayerController.pause();
-                                      } else {
-                                        await audioPlayerController.play();
-                                      }
-                                    },
-                                    child: SvgPicture.asset(
-                                      isPlaying
-                                          ? ImageConstant.pause
-                                          : ImageConstant.play,
-                                      height: 17,
-                                      width: 17,
-                                    )),
-                                Dimens.d10.spaceWidth,
-                                Expanded(
+                            Dimens.d50.spaceHeight,
+
+                            //__________________________ top view ____________________
+                            topView(controller
+                                    .getUserModel.data?.motivationalMessage ??
+                                "Believe in yourself, even when doubt creeps in. Today's progress is a step towards your dreams."),
+                            Dimens.d25.spaceHeight,
+                            Align(
+                              alignment: Alignment.center,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: Dimens.d20),
+                                child: GestureDetector(onTap: () {
+
+                                  Get.to(()=>  const HowFeelingTodayScreen());
+
+                                },
                                   child: Text(
-                                    audioDataStore!.name!,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: Style.montserratRegular(
-                                        fontSize: 12, color: ColorConstant.white),
-                                  ),
+                                      "${greeting.tr}, ${PrefService.getString(PrefKey.name).toString()}",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: themeController.isDarkMode.isTrue
+                                              ? ColorConstant.white
+                                              : ColorConstant.black,
+                                          fontFamily: FontFamily.nunitoBold,
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 24,
+                                          letterSpacing: 1)),
                                 ),
-                                Dimens.d10.spaceWidth,
-                                GestureDetector(
-                                    onTap: () async {
-                                      await audioPlayerController.reset();
-                                    },
-                                    child: SvgPicture.asset(
-                                      ImageConstant.closePlayer,
-                                      color: ColorConstant.white,
-                                      height: 24,
-                                      width: 24,
-                                    )),
-                                Dimens.d10.spaceWidth,
-                              ],
-                            ),
-                            SliderTheme(
-                              data: SliderTheme.of(context).copyWith(
-                                activeTrackColor:
-                                ColorConstant.white.withOpacity(0.2),
-                                inactiveTrackColor: ColorConstant.color6E949D,
-                                trackHeight: 1.5,
-                                thumbColor: ColorConstant.transparent,
-                                thumbShape: SliderComponentShape.noThumb,
-                                overlayColor:
-                                ColorConstant.backGround.withAlpha(32),
-                                overlayShape: const RoundSliderOverlayShape(
-                                    overlayRadius:
-                                    16.0), // Customize the overlay shape and size
                               ),
-                              child: Slider(
-                                thumbColor: Colors.transparent,
-                                activeColor: ColorConstant.backGround,
-                                value: currentPosition.inMilliseconds.toDouble(),
-                                max: duration.inMilliseconds.toDouble(),
-                                onChanged: (value) {
-                                  audioPlayerController.seekForMeditationAudio(
-                                      position:
-                                      Duration(milliseconds: value.toInt()));
+                            ),
+
+                            Dimens.d30.spaceHeight,
+
+                            yourGratitude(),
+                            Dimens.d30.spaceHeight,
+                            yourAffirmation(),
+                            Dimens.d30.spaceHeight,
+
+                            //______________________________ yourDaily Recommendations _______________________
+
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: Dimens.d20),
+                              child: Text(
+                                "feelGood".tr,
+                                textAlign: TextAlign.center,
+                                style: Style.nunitoBold(fontSize: Dimens.d22),
+                              ),
+                            ),
+                            Dimens.d20.spaceHeight,
+                            recentlyView(),
+                            positiveController.positiveMomentList.isEmpty?const SizedBox():Dimens.d40.spaceHeight,
+                            positiveController.positiveMomentList.isEmpty?const SizedBox():Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: Dimens.d20),
+                              child: Row(children: [
+                                Text(
+                                  "positiveMoments".tr,
+                                  textAlign: TextAlign.center,
+                                  style: Style.nunitoBold(fontSize: Dimens.d22),
+                                ),
+                                const Spacer(),
+                                GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(context, MaterialPageRoute(
+                                        builder: (context) {
+                                          return const PositiveScreen();
+                                        },
+                                      )).then(
+                                        (value) {
+                                          if (themeController.isDarkMode.isTrue) {
+                                            SystemChrome.setSystemUIOverlayStyle(
+                                                const SystemUiOverlayStyle(
+                                                  statusBarBrightness: Brightness.dark,
+                                                  statusBarIconBrightness: Brightness.light,
+                                                ));
+                                          } else {
+                                            SystemChrome.setSystemUIOverlayStyle(
+                                                const SystemUiOverlayStyle(
+                                                  statusBarBrightness: Brightness.light,
+                                                  statusBarIconBrightness: Brightness.dark,
+                                                ));
+                                          }
+                                          Future.delayed(const Duration(seconds: 1)).then(
+                                                (value) {
+                                              setState(() {});
+                                            },
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: Text(
+                                      "seeAll".tr,
+                                      style: Style.gothamLight(
+                                          color: ColorConstant.color5A7681,
+                                          fontSize: 12),
+                                    )),
+                                Dimens.d4.spaceWidth,
+                                SvgPicture.asset(ImageConstant.seeAll)
+
+                              ]),
+                            ),
+                            positiveController.positiveMomentList.isEmpty?const SizedBox():Dimens.d24.spaceHeight,
+                            positiveController.positiveMomentList.isEmpty?const SizedBox():SizedBox(
+                              height: 156,
+                              child: ListView.builder(padding: const EdgeInsets.only(left: 22),
+                                itemCount: positiveController.positiveMomentList.length,
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: (context, index) {
+                                  return GestureDetector(onTap: () {
+                                    Navigator.push(context, MaterialPageRoute(
+                                      builder: (context) {
+                                        return const PositiveScreen();
+                                      },
+                                    )).then((value) async {
+                                     await positiveController.getPositiveMoments();
+                                      setState(() {});
+                                    },);
+                                  },child: PositiveMoment(index: index,));
                                 },
                               ),
                             ),
+                            Dimens.d40.spaceHeight,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: Dimens.d20),
+                              child: Text(
+                                "quickAccess".tr,
+                                textAlign: TextAlign.center,
+                                style: Style.nunitoBold(
+                                  fontSize: Dimens.d22,
+                                ),
+                              ),
+                            ),
+                            Dimens.d30.spaceHeight,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: Dimens.d20),
+                              child: GridView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                padding: EdgeInsets.zero,
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3,
+                                        childAspectRatio: 1.5,
+                                        crossAxisSpacing: 30,
+                                        mainAxisSpacing:
+                                            30 // Set the aspect ratio as needed
+                                        ),
+                                itemCount: g.quickAccessList.length,
+                                // Total number of items
+                                itemBuilder: (BuildContext context, int index) {
+                                  // Generating items for the GridView
+                                  return GestureDetector(
+                                    onTap: () {
+                                      if (g.quickAccessList[index]["title"] ==
+                                          "motivational") {
+                                        Get.to(()=>MotivationalMessageScreen(skip: false,))!
+                                            .then((value) async {
+                                          MotivationalController moti = Get.put(MotivationalController());
+                                          await moti.audioPlayer.dispose();
+                                          await moti.audioPlayer.pause();
+                                          setState(() {});
+                                        });
+                                      } else if (g.quickAccessList[index]
+                                              ["title"] ==
+                                          "transformAudios") {
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                          builder: (context) {
+                                            return const TransformPodsScreen();
+                                          },
+                                        )).then(
+                                          (value) {
+                                            setState(() {});
+                                          },
+                                        );
+                                      } else if (g.quickAccessList[index]
+                                              ["title"] ==
+                                          "gratitudeJournal") {
+                                        Navigator.pushNamed(context,
+                                                AppRoutes.myGratitudePage)
+                                            .then((value) {
+                                          setState(() {});
+                                        });
+                                      } else if (g.quickAccessList[index]
+                                              ["title"] ==
+                                          "positiveMoments") {
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                          builder: (context) {
+                                            return const PositiveScreen();
+                                          },
+                                        )).then(
+                                          (value) {
+                                            setState(() {});
+                                          },
+                                        );
+                                      } else if (g.quickAccessList[index]
+                                              ["title"] ==
+                                          "affirmation") {
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                          builder: (context) {
+                                            return const MyAffirmationPage();
+                                          },
+                                        )).then(
+                                          (value) {
+                                            setState(() {});
+                                          },
+                                        );
+                                      } else {
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                          builder: (context) {
+                                            return BreathScreen(
+                                              skip: false,
+                                            );
+                                          },
+                                        )).then(
+                                          (value) {
+                                            setState(() {});
+                                          },
+                                        );
+                                      }
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(9),
+                                          color: themeController
+                                                  .isDarkMode.value
+                                              ? ColorConstant.textfieldFillColor
+                                              : const Color(0xffD7E2E4)),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          SvgPicture.asset(
+                                            g.quickAccessList[index]["icon"],
+                                            height: 30,
+                                            width: 30,
+                                            color: ColorConstant.color5A7681,
+                                          ),
+                                          Dimens.d5.spaceHeight,
+                                          Text(
+                                            "${g.quickAccessList[index]["title"]}"
+                                                .tr,
+                                            style: Style.montserratSemiBold(
+                                                fontSize: 8,
+                                                color:
+                                                    themeController.isDarkMode.isTrue?ColorConstant.white:ColorConstant.black),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            Dimens.d110.spaceHeight,
                           ],
                         ),
                       ),
-                    ),
+                      Obx(() {
+                        if (!audioPlayerController.isVisible.value) {
+                          return const SizedBox.shrink();
+                        }
+
+                        final currentPosition =
+                            audioPlayerController.positionStream.value ??
+                                Duration.zero;
+                        final duration =
+                            audioPlayerController.durationStream.value ??
+                                Duration.zero;
+                        final isPlaying = audioPlayerController.isPlaying.value;
+
+                        return GestureDetector(
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(
+                                    Dimens.d24,
+                                  ),
+                                ),
+                              ),
+                              builder: (BuildContext context) {
+                                return NowPlayingScreen(
+                                  audioData: audioDataStore!,
+                                );
+                              },
+                            );
+                          },
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Container(
+                              height: 72,
+                              width: Get.width,
+                              padding: const EdgeInsets.only(
+                                  top: 8.0, left: 8, right: 8),
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 50),
+                              decoration: BoxDecoration(
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      ColorConstant.colorB9CCD0,
+                                      ColorConstant.color86A6AE,
+                                      ColorConstant.color86A6AE,
+                                    ], // Your gradient colors
+                                    begin: Alignment.bottomLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  color: ColorConstant.themeColor,
+                                  borderRadius: BorderRadius.circular(6)),
+                              child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      CommonLoadImage(
+                                          borderRadius: 6.0,
+                                          url: audioDataStore!.image!,
+                                          width: 47,
+                                          height: 47),
+                                      Dimens.d12.spaceWidth,
+                                      GestureDetector(
+                                          onTap: () async {
+                                            if (isPlaying) {
+                                              await audioPlayerController
+                                                  .pause();
+                                            } else {
+                                              await audioPlayerController
+                                                  .play();
+                                            }
+                                          },
+                                          child: SvgPicture.asset(
+                                            isPlaying
+                                                ? ImageConstant.pause
+                                                : ImageConstant.play,
+                                            height: 17,
+                                            width: 17,
+                                          )),
+                                      Dimens.d10.spaceWidth,
+                                      Expanded(
+                                        child: Text(
+                                          audioDataStore!.name!,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: Style.nunRegular(
+                                              fontSize: 12,
+                                              color: ColorConstant.white),
+                                        ),
+                                      ),
+                                      Dimens.d10.spaceWidth,
+                                      GestureDetector(
+                                          onTap: () async {
+                                            await audioPlayerController.reset();
+                                          },
+                                          child: SvgPicture.asset(
+                                            ImageConstant.closePlayer,
+                                            color: ColorConstant.white,
+                                            height: 24,
+                                            width: 24,
+                                          )),
+                                      Dimens.d10.spaceWidth,
+                                    ],
+                                  ),
+                                  Dimens.d8.spaceHeight,
+                                  SliderTheme(
+                                    data: SliderTheme.of(context).copyWith(
+                                      activeTrackColor:
+                                          ColorConstant.white.withOpacity(0.2),
+                                      inactiveTrackColor:
+                                          ColorConstant.color6E949D,
+                                      trackHeight: 1.5,
+                                      thumbColor: ColorConstant.transparent,
+                                      thumbShape: SliderComponentShape.noThumb,
+                                      overlayColor: ColorConstant.backGround
+                                          .withAlpha(32),
+                                      overlayShape: const RoundSliderOverlayShape(
+                                          overlayRadius:
+                                              16.0), // Customize the overlay shape and size
+                                    ),
+                                    child: SizedBox(height: 2,
+                                      child: Slider(
+                                        thumbColor: Colors.transparent,
+                                        activeColor: ColorConstant.backGround,
+                                        value: currentPosition.inMilliseconds
+                                            .toDouble(),
+                                        max: duration.inMilliseconds.toDouble(),
+                                        onChanged: (value) {
+                                          audioPlayerController
+                                              .seekForMeditationAudio(
+                                                  position: Duration(
+                                                      milliseconds:
+                                                          value.toInt()));
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  Dimens.d5.spaceHeight,
+
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                    ],
                   );
-                }),
-              ],
-            );
-          },
-        ));
+                },
+              ),
+            )),
+        Obx(
+          () => g.loader.isTrue ? commonLoader() : const SizedBox(),
+        ),
+      ],
+    );
   }
 
   Widget customDivider() {
@@ -595,27 +702,48 @@ class _HomeScreenState extends State<HomeScreen>
 
   Widget topView(String? motivationalMessage) {
     return GestureDetector(
-        onTap: () {
-
+        onTap: () async {
+          /*await NotificationService.showNotification();*/
           /* _setAlarm();*/
-
-              Navigator.push(context, MaterialPageRoute(
+            Get.to(()=>  const HowFeelingsEvening());
+          /*    Navigator.push(context, MaterialPageRoute(
             builder: (context) {
               return HomeMessagePage(
                   motivationalMessage: motivationalMessage ??
                       "Believe in yourself, even when doubt creeps in. Today's progress is a step towards your dreams.");
               },
-              ));
+              ));*/
 
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Image.asset(
-            ImageConstant.welcomeBackImage
-            ,height: 189,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Image.asset(
+                  ImageConstant.container,
+                  height: 150,
+                  width: Get.width,
+                  fit: BoxFit.cover,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(
+                    "“ ${g.getUserModel.data?.motivationalMessage ?? "“ Believe in yourself and all that you are. Know that there is something inside you that is greater than any obstacle.” "}” ",
+                    textAlign: TextAlign.center,maxLines: 4,
+                    style: Style.gothamLight(
+                        fontSize: 15, color: ColorConstant.black),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 110,left: 200),
+                  child: Text("Christian D. Larson",style: Style.nunRegular(fontSize: 12,color: ColorConstant.black),),
+                )
 
-            width: Get.width,
-            fit: BoxFit.cover,
+              ],
+            ),
           ),
         ));
   }
@@ -672,7 +800,26 @@ class _HomeScreenState extends State<HomeScreen>
                             ),
                           );
                         },
-                      );
+                      ).then((value) {
+                        if (themeController.isDarkMode.isTrue) {
+                          SystemChrome.setSystemUIOverlayStyle(
+                              const SystemUiOverlayStyle(
+                                statusBarBrightness: Brightness.dark,
+                                statusBarIconBrightness: Brightness.light,
+                              ));
+                        } else {
+                          SystemChrome.setSystemUIOverlayStyle(
+                              const SystemUiOverlayStyle(
+                                statusBarBrightness: Brightness.light,
+                                statusBarIconBrightness: Brightness.dark,
+                              ));
+                        }
+                        Future.delayed(const Duration(seconds: 1)).then(
+                              (value) {
+                            setState(() {});
+                          },
+                        );
+                      },);
                     }else{
                       Navigator.push(context, MaterialPageRoute(
                         builder: (context) {
@@ -687,6 +834,7 @@ class _HomeScreenState extends State<HomeScreen>
                   child: Padding(
                     padding: const EdgeInsets.only(right: 20.0),
                     child: FeelGood(
+                      audioTime: controller.audioListDuration.length > index ? _formatDuration( controller.audioListDuration[index]) : 'Loading...',
                       dataList: controller.audioData[index],
                     ),
                   ));
@@ -779,7 +927,7 @@ class _HomeScreenState extends State<HomeScreen>
           ? Center(
               child: Text(
                 "noPodsRecommendation".tr,
-                style: Style.montserratRegular(fontSize: Dimens.d15),
+                style: Style.nunRegular(fontSize: Dimens.d15),
               ),
             )
           : ListView.builder(
@@ -933,7 +1081,7 @@ class _HomeScreenState extends State<HomeScreen>
             child: (g.todayAList ?? []).isEmpty
                 ? CommonElevatedButton(
                     height: Dimens.d46,
-                    textStyle: Style.montserratRegular(
+                    textStyle: Style.nunRegular(
                         fontSize: Dimens.d17, color: ColorConstant.white),
                     title: "addTodayAffirmation".tr,
                     onTap: () {
@@ -953,9 +1101,13 @@ class _HomeScreenState extends State<HomeScreen>
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: g.todayAList?.length ?? 0,
                         itemBuilder: (context, index) {
-                          return InkWell(
+                          return GestureDetector(
                             onTap: () async {
-                              await g.updateTodayData(g.todayAList![index].id,
+                              Get.to(()=> const MyAffirmationPage())!.then((value) async {
+                                await g.getTodayAffirmation();
+                                setState(() {});
+                              },);
+                          /*    await g.updateTodayData(g.todayAList![index].id,
                                   "update-affirmation");
                               g.affirmationCheckList[index] = true;
                               Future.delayed(const Duration(milliseconds: 500))
@@ -967,7 +1119,7 @@ class _HomeScreenState extends State<HomeScreen>
                                   setState(() {});
                                 },
                               );
-                              setState(() {});
+                              setState(() {});*/
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -979,41 +1131,13 @@ class _HomeScreenState extends State<HomeScreen>
                                 subtitle: Text(
                                   g.todayAList?[index].description ?? "",
                                   maxLines: 3,
-                                  style: Style.montserratRegular(),
+                                  style: Style.nunRegular(),
                                 ),
                                 title: Text(
                                   g.todayAList?[index].name ?? "",
                                   style: Style.montserratSemiBold(),
                                 ),
-                                /*       trailing: g.affirmationCheckList.isNotEmpty
-                                    ? g.affirmationCheckList[index]
-                                        ? Container(
-                                            height: 40,
-                                            width: 40,
-                                        decoration: const BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: ColorConstant.themeColor),
-                                        child: Center(
-                                            child: SvgPicture.asset(
-                                                ImageConstant.checkBox)),
-                                          )
-                                        : Container(
-                                            height: 40,
-                                            width: 40,
-                                            decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                border: Border.all(
-                                                    color: ColorConstant
-                                                        .themeColor)),
-                                          )
-                                    : Container(
-                                        height: 40,
-                                        width: 40,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            border: Border.all(
-                                                color: ColorConstant.themeColor)),
-                                      ),*/
+
                               ),
                             ),
                           );
@@ -1027,9 +1151,31 @@ class _HomeScreenState extends State<HomeScreen>
                         onTap: () {
                           Navigator.push(context, MaterialPageRoute(
                             builder: (context) {
-                              return const StartPracticeAffirmation();
+                              return  StartPracticeAffirmation(id:  g.todayAList?[0].id ,
+                              data: g.todayAList!,);
                             },
-                          ));
+                          )).then(
+                            (value) {
+                              if (themeController.isDarkMode.isTrue) {
+                                SystemChrome.setSystemUIOverlayStyle(
+                                    const SystemUiOverlayStyle(
+                                  statusBarBrightness: Brightness.dark,
+                                  statusBarIconBrightness: Brightness.light,
+                                ));
+                              } else {
+                                SystemChrome.setSystemUIOverlayStyle(
+                                    const SystemUiOverlayStyle(
+                                  statusBarBrightness: Brightness.light,
+                                  statusBarIconBrightness: Brightness.dark,
+                                ));
+                              }
+                              Future.delayed(const Duration(seconds: 1)).then(
+                                (value) {
+                                  setState(() {});
+                                },
+                              );
+                            },
+                          );
                         },
                         child: Container(
                           margin: const EdgeInsets.symmetric(horizontal: 30),
@@ -1046,7 +1192,7 @@ class _HomeScreenState extends State<HomeScreen>
                               Dimens.d8.spaceWidth,
                               Text(
                                 "startPracticing".tr,
-                                style: Style.montserratRegular(
+                                style: Style.nunRegular(
                                     fontSize: 16, color: ColorConstant.white),
                               )
                             ],
@@ -1079,11 +1225,11 @@ class _HomeScreenState extends State<HomeScreen>
             margin: const EdgeInsets.symmetric(
               horizontal: 27.0,
             ),
-            child: (gratitudeList ?? []).isEmpty
+            child: (gratitudeModel.data ?? []).isEmpty
                 ? CommonElevatedButton(
                     height: Dimens.d46,
                     title: "addTodayGratitude".tr,
-                    textStyle: Style.montserratRegular(
+                    textStyle: Style.nunRegular(
                         fontSize: Dimens.d17, color: ColorConstant.white),
                     onTap: () {
                       Get.toNamed(AppRoutes.myGratitudePage)!.then(
@@ -1098,16 +1244,17 @@ class _HomeScreenState extends State<HomeScreen>
                     children: [
                       ListView.builder(
                         padding: EdgeInsets.zero,
-                        itemCount: gratitudeList.length,
+                        itemCount: gratitudeModel.data?.length??0,
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 20.0),
                             child: commonContainer(
-                                des: gratitudeList[index]["title"],
+                                gratitudeList:  gratitudeModel.data,
+                                des: gratitudeModel.data?[index].description??"",
                                 date: "${index + 1}",
-                                day: "TUE"),
+                                day: DateFormat('EEE').format(gratitudeModel.data![index].createdAt!).toUpperCase()),
                           );
                         },
                       ),
@@ -1116,9 +1263,28 @@ class _HomeScreenState extends State<HomeScreen>
                         onTap: () {
                           Navigator.push(context, MaterialPageRoute(
                             builder: (context) {
-                              return const StartPracticeScreen();
+                              return  StartPracticeScreen(gratitudeList: gratitudeModel.data,);
                             },
-                          ));
+                          )).then((value) {
+                            if (themeController.isDarkMode.isTrue) {
+                              SystemChrome.setSystemUIOverlayStyle(
+                                  const SystemUiOverlayStyle(
+                                    statusBarBrightness: Brightness.dark,
+                                    statusBarIconBrightness: Brightness.light,
+                                  ));
+                            } else {
+                              SystemChrome.setSystemUIOverlayStyle(
+                                  const SystemUiOverlayStyle(
+                                    statusBarBrightness: Brightness.light,
+                                    statusBarIconBrightness: Brightness.dark,
+                                  ));
+                            }
+                            Future.delayed(const Duration(seconds: 1)).then(
+                                  (value) {
+                                setState(() {});
+                              },
+                            );
+                          },);
                         },
                         child: Container(
                           margin: const EdgeInsets.symmetric(horizontal: 30),
@@ -1135,7 +1301,7 @@ class _HomeScreenState extends State<HomeScreen>
                               Dimens.d8.spaceWidth,
                               Text(
                                 "startPracticing".tr,
-                                style: Style.montserratRegular(
+                                style: Style.nunRegular(
                                     fontSize: 16, color: ColorConstant.white),
                               )
                             ],
@@ -1150,7 +1316,7 @@ class _HomeScreenState extends State<HomeScreen>
                     child: CommonElevatedButton(
                       height: Dimens.d46,
                       title: "addTodayGratitude".tr,
-                      textStyle: Style.montserratRegular(
+                      textStyle: Style.nunRegular(
                           fontSize: Dimens.d17, color: ColorConstant.white),
                       onTap: () {
                         Get.toNamed(AppRoutes.myGratitudePage)!.then(
@@ -1197,7 +1363,7 @@ class _HomeScreenState extends State<HomeScreen>
                               subtitle: Text(
                                 g.todayGList?[index].description ?? "",
                                 maxLines: 3,
-                                style: Style.montserratRegular(),
+                                style: Style.nunRegular(),
                               ),
                               title: Text(
                                 g.todayGList?[index].name ?? "",
@@ -1245,7 +1411,7 @@ class _HomeScreenState extends State<HomeScreen>
                         child: CommonElevatedButton(
                           height: Dimens.d46,
                           title: "addNew".tr,
-                          textStyle: Style.montserratRegular(
+                          textStyle: Style.nunRegular(
                               fontSize: Dimens.d17, color: ColorConstant.white),
                           onTap: () {
                             Get.toNamed(AppRoutes.myGratitudePage)!.then(
@@ -1266,12 +1432,12 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget commonContainer({String? date, String? day, String? des}) {
+  Widget commonContainer({String? date, String? day, String? des,List<GratitudeData>? gratitudeList}) {
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(
           builder: (context) {
-            return AddGratitudePage(
+            return AddGratitudePage(date:  DateFormat("dd/MM/yyyy").format(DateTime.now()),
               categoryList: gratitudeList,
               isFromMyGratitude: true,
               registerUser: false,
@@ -1279,7 +1445,8 @@ class _HomeScreenState extends State<HomeScreen>
             );
           },
         )).then(
-          (value) {
+          (value) async {
+            await getGratitude();
             setState(() {});
           },
         );
@@ -1291,7 +1458,7 @@ class _HomeScreenState extends State<HomeScreen>
                 ? ColorConstant.textfieldFillColor
                 : ColorConstant.backGround,
             borderRadius: BorderRadius.circular(18)),
-        child: Row(
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               height: 63,
@@ -1318,8 +1485,8 @@ class _HomeScreenState extends State<HomeScreen>
             Dimens.d13.spaceWidth,
             Expanded(
                 child: Text(
-              des ?? "",
-              style: Style.montserratRegular(
+                  "“$des”",
+              style: Style.nunRegular(
                   height: 2, fontSize: 11, fontWeight: FontWeight.w400),
             ))
           ],

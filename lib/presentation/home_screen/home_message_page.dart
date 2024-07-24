@@ -1,11 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
 import 'dart:math' as math;
-import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
@@ -17,7 +15,6 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/dash_board_screen/dash_board_screen.dart';
-import 'package:transform_your_mind/presentation/home_screen/home_controller.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 
@@ -77,7 +74,7 @@ class _HomeMessagePageState extends State<HomeMessagePage> {
                       textAlign: TextAlign.center,
                       wrapWords: false,
                       maxLines: 6,
-                      style: Style.montserratRegular(fontSize: Dimens.d23,color: ColorConstant.white),
+                      style: Style.nunRegular(fontSize: Dimens.d23,color: ColorConstant.white),
                     ),
                   ),
                 ],
@@ -91,26 +88,33 @@ class _HomeMessagePageState extends State<HomeMessagePage> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: Dimens.d8),
-                    child: IconButton(
-                      onPressed: () {
-                        if (widget.fromNotification) {
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                            return const DashBoardScreen();
-                          },));
-                        } else {
-                          Navigator.pop(context,);
-                        }
-                      },
-                      icon: Lottie.asset(
-                        ImageConstant.lottieArrowLef,
-                        height: Dimens.d24,
-                        width: Dimens.d24,
-                        fit: BoxFit.cover,
-                        repeat: false,
+                  GestureDetector(
+                  onTap: () {
+                    if (widget.fromNotification) {
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                        return const DashBoardScreen();
+                      },));
+                    } else {
+                      Navigator.pop(context,);
+                    }
+                  },
+                    child: Container(
+                      height: Dimens.d40,
+                      width: Dimens.d40,
+                      margin: EdgeInsets.only(left: 21.h,top: 15.h,bottom: 10.h),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(Dimens.d5),
+                          color: themeController.isDarkMode.value ?  ColorConstant.textfieldFillColor : ColorConstant.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: themeController.isDarkMode.value ? ColorConstant.transparent : ColorConstant.color8BA4E5.withOpacity(0.25),
+                              blurRadius: 10.0,
+                              spreadRadius: 2.0,
+                            ),
+                          ]
                       ),
+                      child: Center(child: Image.asset(ImageConstant.backArrow, height: 25.h,width: 25.h, color: themeController.isDarkMode.value ?  ColorConstant.white : ColorConstant.black,)),
                     ),
                   ),
                 ],
@@ -127,7 +131,7 @@ class _HomeMessagePageState extends State<HomeMessagePage> {
                       child: CommonElevatedButton(
                           title: _isBookmarked ? "remove".tr : "save".tr,
                           outLined: true,
-                          textStyle: Style.montserratRegular(
+                          textStyle: Style.nunRegular(
                             fontSize: Dimens.d14,color: ColorConstant.white
                           ),
                           onTap: () {
@@ -146,7 +150,7 @@ class _HomeMessagePageState extends State<HomeMessagePage> {
                       child: CommonElevatedButton(
                         title: "share".tr,
                         prefixIcon: ImageConstant.icShareWhite,
-                        textStyle: Style.montserratRegular(
+                        textStyle: Style.nunRegular(
                           color: Colors.white,
                           fontSize: Dimens.d14,
                         ),

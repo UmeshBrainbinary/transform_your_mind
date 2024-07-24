@@ -48,6 +48,7 @@ class CommonTextField extends StatefulWidget {
   final ValueChanged<String>? onChanged;
   final FormFieldValidator<String>? validator;
   final bool? autovalidateMode;
+  final bool? addSuffix;
 
 
   const CommonTextField(
@@ -91,6 +92,7 @@ class CommonTextField extends StatefulWidget {
       this.validator,
     this.borderRadius = Dimens.d26,
     this.autovalidateMode,
+    this.addSuffix = false,
   });
 
   @override
@@ -132,8 +134,11 @@ class _CommonTextFieldState extends State<CommonTextField>
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(widget.labelText!,
-              style: widget.labelStyle ?? Style.nunRegular(fontSize: 14)),
+          Padding(
+            padding: const EdgeInsets.only(left: 10.0),
+            child: Text(widget.labelText!,
+                style: widget.labelStyle ?? Style.nunMedium(fontSize: 14)),
+          ),
           Dimens.d10.spaceHeight,
           _textField()
         ],
@@ -159,7 +164,6 @@ class _CommonTextFieldState extends State<CommonTextField>
       style: widget.textStyle ??
           Style.nunMedium(fontSize: Dimens.d14, color: themeController.isDarkMode.value ?
           ColorConstant.white : ColorConstant.black),
-
       decoration: InputDecoration(
           alignLabelWithHint: true,
           isDense: true,
@@ -169,7 +173,7 @@ class _CommonTextFieldState extends State<CommonTextField>
           counterStyle: Style.nunRegular(),
           hintStyle: widget.hintStyle ??
               Style.nunRegular(
-                color: ColorConstant.hintText,
+                color: themeController.isDarkMode.isTrue?ColorConstant.colorBFBFBF:ColorConstant.hintText,
                 fontWeight: FontWeight.w100,fontSize: Dimens.d12
               ),
           border: OutlineInputBorder(
@@ -183,14 +187,14 @@ class _CommonTextFieldState extends State<CommonTextField>
             right:
                 (widget.suffixIcon != null || widget.suffixLottieIcon != null)
                     ? Dimens.d0
-                    : Dimens.d10,
+                    : widget.addSuffix!?Dimens.d53:Dimens.d10,
           ),
           prefixIcon: widget.prefixIcon,
           suffixIcon: widget.suffixIcon,
         prefix: widget.prefix,
         suffix: widget.suffix,
 
-        errorStyle: Style.nunRegular(color: ColorConstant.colorFF0000, fontSize: 12),
+        errorStyle: Style.nunMedium(color: ColorConstant.colorFF0000, fontSize: 12),
         errorMaxLines: 2,
 
       ),

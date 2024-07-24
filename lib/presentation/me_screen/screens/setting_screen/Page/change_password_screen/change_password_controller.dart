@@ -1,12 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
-import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:http/http.dart'as http;
@@ -18,7 +16,6 @@ import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/model_class/common_model.dart';
 import 'package:transform_your_mind/model_class/reset_password_model.dart';
 import 'package:transform_your_mind/presentation/auth/login_screen/login_screen.dart';
-import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 
 class ChangePasswordController extends GetxController {
@@ -60,7 +57,7 @@ class ChangePasswordController extends GetxController {
             Center(
               child: Text("passwordChanged".tr,
                   textAlign: TextAlign.center,
-                  style: Style.montserratMedium(
+                  style: Style.nunMedium(
                     fontSize: Dimens.d22,
                     fontWeight: FontWeight.w400,
                   )),
@@ -70,7 +67,7 @@ class ChangePasswordController extends GetxController {
               child: Text(
                   textAlign: TextAlign.center,
                   "yourPassword".tr,
-                  style: Style.montserratRegular(
+                  style: Style.nunRegular(
                     fontSize: Dimens.d12,
                     fontWeight: FontWeight.w400,
                   )),
@@ -79,7 +76,7 @@ class ChangePasswordController extends GetxController {
             Padding(
               padding:   EdgeInsets.symmetric(horizontal: Dimens.d70.h),
               child: CommonElevatedButton(title: "ok".tr, onTap: () {
-                Get.offAll(LoginScreen());
+                Get.offAll(const LoginScreen());
               },),
             )
           ],

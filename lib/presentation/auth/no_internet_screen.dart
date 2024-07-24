@@ -33,13 +33,13 @@ class NoInternet extends StatelessWidget {
             const Spacer(),
             Image.asset(ImageConstant.noInternet,color: ColorConstant.themeColor,scale: 4.5,),
             const SizedBox(height: 25,),
-            Text("Whoops".tr,style:Style.montserratRegular(fontSize: 15)),
+            Text("Whoops".tr,style:Style.nunRegular(fontSize: 15)),
             const SizedBox(height: 20,),
-            Text("noInternet".tr,textAlign: TextAlign.center,style: Style.montserratRegular(fontSize: 18)),
+            Text("noInternet".tr,textAlign: TextAlign.center,style: Style.nunRegular(fontSize: 18)),
             const SizedBox(height: 25,),
             InkWell(
                 onTap: onTap,
-                child: Text("tryAgain".tr,style: Style.montserratRegular(fontSize: 24)),),
+                child: Text("tryAgain".tr,style: Style.nunRegular(fontSize: 24)),),
             const Spacer(),
 
           ],

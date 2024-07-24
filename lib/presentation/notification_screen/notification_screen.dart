@@ -53,7 +53,7 @@ class NotificationScreen extends StatelessWidget {
                             width: Get.width - 120,
                             child: Text(
                               data["des"],
-                              style: Style.montserratRegular(fontSize: 12),
+                              style: Style.nunRegular(fontSize: 12),
                             ),
                           ),
                         ],

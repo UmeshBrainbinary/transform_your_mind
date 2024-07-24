@@ -2,7 +2,9 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
+import 'package:transform_your_mind/core/service/http_service.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -28,26 +30,56 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends State<ProfileScreen>
+    with SingleTickerProviderStateMixin {
   ProfileController profileController = Get.put(ProfileController());
   ThemeController themeController = Get.find<ThemeController>();
   bool progressCall = false;
   List dList = ["monthly", "annually", "weekly"];
   String? selectedMonth = "monthly".tr;
   final audioPlayerController = Get.find<NowPlayingController>();
+  int _selectedIndex = 0;
+
+  final List<String> _tabs = ['Progress Tracking', 'Mood', 'Sleep', 'Stress'];
+
+  final List<Widget> _tabContents = [
+    const Center(child: Text('Progress Tracking Content')),
+    const Center(child: Text('Mood Content')),
+    const Center(child: Text('Sleep Content')),
+    const Center(child: Text('Stress Content')),
+  ];
+
+  void _onTabSelected(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   void initState() {
-    profileController.getUserDetail();
+    checkInternet();
 
-    profileController.getGuide();
-    profileController.getPrivacy();
-    profileController.getProgress("isLastMonth");
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  checkInternet() async {
+    if (await isConnected()) {
+      profileController.getUserDetail();
+      profileController.getGuide();
+      profileController.getPrivacy();
+      profileController.getProgress("isLastMonth");
+      setState(() {});
+    } else {
+      showSnackBarError(context, "noInternet".tr);
+    }
   }
   @override
   Widget build(BuildContext context) {
-    /*statusBarSet(themeController);*/
     return Scaffold(
       backgroundColor: themeController.isDarkMode.isTrue
           ? ColorConstant.textfieldFillColor
@@ -101,24 +133,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
           SingleChildScrollView(
             child: Column(
               children: [
-                profileController.image.isEmpty
-                    ? Container(
-                        height: Dimens.d120,
-                        width: Dimens.d120,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: SvgPicture.asset(ImageConstant.userProfile),
-                      )
-                    : ClipRRect(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(80)),
-                        child: CommonLoadImage(
-                          url: profileController.image.value,
-                          height: Dimens.d120,
-                          width: Dimens.d120,
-                        ),
-                      ),
+                Dimens.d30.spaceHeight,
+                GetBuilder<ProfileController>(
+                  builder: (controller) {
+                    return controller.image.isEmpty
+                        ? Container(
+                            height: Dimens.d120,
+                            width: Dimens.d120,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                            ),
+                            child: SvgPicture.asset(ImageConstant.userProfile),
+                          )
+                        : Container(
+                            height: Dimens.d120,
+                            width: Dimens.d120,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                    color: ColorConstant.themeColor)),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(80),
+                              child: CommonLoadImage(
+                                height: Dimens.d120,
+                                width: Dimens.d120,
+                                url: controller.image.value,
+                              ),
+                            ),
+                          );
+                  },
+                ),
                 Dimens.d12.spaceHeight,
                 Text(
                   profileController.name?.value ??
@@ -132,252 +176,417 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   () => Text(
                     profileController.mail?.value ??
                         "melissapeters@gmail.com",
-                    style: Style.montserratRegular(
+                    style: Style.nunRegular(
                       fontSize: Dimens.d11,
                     ),
                   ),
                 ),
                 Dimens.d40.spaceHeight,
-                Align(
+                SizedBox(
+                  height: 50,
+                  child: Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(bottom: 7),
+                        height: 1,
+                        color: Colors.white,
+                        width: Get.width,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: List.generate(_tabs.length, (index) {
+                          return GestureDetector(
+                            onTap: () => _onTabSelected(index),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  _tabs[index],
+                                  style: Style.nunRegular(
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                Dimens.d17.spaceHeight,
+                                if (_selectedIndex == index)
+                                  Container(
+                                      height: 1,
+                                      width: index == 0 ? 130 : 60,
+                                      color: ColorConstant.themeColor)
+                              ],
+                            ),
+                          );
+                        }),
+                      ),
+                    ],
+                  ),
+                ),
+                /*Align(
                   alignment: Alignment.topLeft,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: Text(
                       "progressTracking".tr,
-                      style: Style.nunitoSemiBold(
+                      style: Style.nunitoBold(
                         fontSize: Dimens.d20,
                       ),
                     ),
                   ),
-                ),
-                Dimens.d25.spaceHeight,
+                ),*/
+                Dimens.d10.spaceHeight,
                 Container(
-                  margin: const EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 10),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 30),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
                   decoration: BoxDecoration(
                       color: themeController.isDarkMode.isTrue
                           ? ColorConstant.textfieldFillColor
                           : ColorConstant.white,
                       borderRadius: BorderRadius.circular(10)),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Row(
+                  child: Column(
+                    children: [
+                      _selectedIndex == 0
+                          ? const SizedBox()
+                          : Dimens.d13.spaceHeight,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          GetBuilder<ProfileController>(
-                            id: "update",
-                            builder: (controller) {
-                              return SizedBox(
-                                height: Dimens.d140,
-                                width: Dimens.d140,
-                                child: PieChart(
-                                  PieChartData(
-                                    sections: getSections(
-                                      gValue: controller
-                                          .progressModel.data?.gratitudeCount?.toDouble()??1.0,
-                                      aValue: controller
-                                          .progressModel.data?.affirmationCount?.toDouble()??10.0,
-                                      pValue: controller
-                                          .progressModel.data?.positiveMomentCount?.toDouble()??10.0,
-                                      good: controller
-                                          .progressModel.data?.positiveMomentCount?.toDouble()??10.0,
-                                    ),
-                                    centerSpaceRadius: 40,
-                                    sectionsSpace: 0,
-                                  ),
+                          _selectedIndex == 0
+                              ? const SizedBox()
+                              : Container(
+                                  margin: const EdgeInsets.only(top: 2),
+                                  height: 8,
+                                  width: 8,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: _selectedIndex == 1
+                                          ? ColorConstant.color2E2EFF
+                                          : _selectedIndex == 2
+                                              ? ColorConstant.color008000
+                                              : ColorConstant.colorFF0000),
                                 ),
-                              );
-                            },
-                          ),
-                          Dimens.d40.spaceWidth,
-                          Stack(
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        progressCall = !progressCall;
-                                      });
-                                    },
-                                    child: Container(
-                                      width: 127,
-                                      height: 26,
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10),
-                                      decoration: BoxDecoration(
-                                          color: ColorConstant.themeColor,
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Text(
-                                            selectedMonth!.tr,
-                                            style: Style.montserratRegular(
-                                                fontSize: 12,
-                                                color: ColorConstant.white),
-                                          ),
-                                          const Spacer(),
-                                          SvgPicture.asset(
-                                              ImageConstant.downArrowSetting)
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-
-                                  Dimens.d12.spaceHeight,
-                                  Row(
-                                    children: [
-                                      Container(
-                                        height: 10,
-                                        width: 10,
-                                        decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: ColorConstant.color769AA3,
-                                        ),
-                                      ),
-                                      Dimens.d6.spaceWidth,
-                                      Text(
-                                        "completedGratitude".tr,
-                                        style: Style.montserratRegular(
-                                          fontSize: Dimens.d9,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  Dimens.d12.spaceHeight,
-                                  Row(
-                                    children: [
-                                      Container(
-                                        height: 10,
-                                        width: 10,
-                                        decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: ColorConstant.colorBFD0D4,
-                                        ),
-                                      ),
-                                      Dimens.d6.spaceWidth,
-                                      Text(
-                                        "positiveMoment".tr,
-                                        style: Style.montserratRegular(
-                                          fontSize: Dimens.d9,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  Dimens.d12.spaceHeight,
-                                  Row(
-                                    children: [
-                                      Container(
-                                        height: 10,
-                                        width: 10,
-                                        decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: ColorConstant.color3D5459,
-                                        ),
-                                      ),
-                                      Dimens.d6.spaceWidth,
-                                      Text(
-                                        "completedAffirmations".tr,
-                                        style: Style.montserratRegular(
-                                          fontSize: Dimens.d9,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  Dimens.d12.spaceHeight,
-                                  Row(
-                                    children: [
-                                      Container(
-                                        height: 10,
-                                        width: 10,
-                                        decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: ColorConstant.color5A7681,
-                                        ),
-                                      ),
-                                      Dimens.d6.spaceWidth,
-                                      Text(
-                                        "goodFeel".tr,
-                                        style: Style.montserratRegular(
-                                          fontSize: Dimens.d9,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  Dimens.d12.spaceHeight,
-                                ],
-                              ),
-                              progressCall
-                                  ? Container(
-                                      margin: const EdgeInsets.only(top: 30),
-                                      height: Dimens.d80,
-                                      width: 127,
-                                      decoration: BoxDecoration(
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: themeController
-                                                      .isDarkMode.value
-                                                  ? ColorConstant.transparent
-                                                  : ColorConstant.color8BA4E5
-                                                      .withOpacity(0.25),
-                                              blurRadius: 10.0,
-                                              spreadRadius: 2.0,
-                                            ),
-                                          ],
-                                          color: themeController.isDarkMode.isTrue?ColorConstant.darkBackground: const Color(0xffF3FDFD),
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      child: ListView.builder(
-                                        itemCount: dList.length,
-                                        shrinkWrap: true,
-                                        physics:
-                                            const NeverScrollableScrollPhysics(),
-                                        itemBuilder: (context, index) {
-                                          return Padding(
-                                            padding:
-                                                const EdgeInsets.symmetric(
-                                                    horizontal: 10,
-                                                    vertical: 5),
-                                            child: GestureDetector(
-                                              onTap: () async {
-                                                String selectedData =
-                                                    "${dList[index]}".tr == "monthly".tr
-                                                        ? "isLastMonth"
-                                                        : "${dList[index]}".tr ==
-                                                                "weekly".tr
-                                                            ? "isLastWeek"
-                                                            : "isLastYear";
-                                                await profileController
-                                                    .getProgress(selectedData);
-
-                                                setState(() {
-                                                  selectedMonth =  dList[index];
-                                                progressCall = false;
-                                              });
-                                              },
-                                              child: Text(
-                                                "${dList[index]}".tr,
-                                                style: Style.montserratRegular(
-                                                    fontSize: 10),
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    )
-                                  : const SizedBox(),
-                            ],
-                          )
+                          Dimens.d3.spaceWidth,
+                          _selectedIndex == 0
+                              ? const SizedBox()
+                              : Text(
+                                  _selectedIndex == 0
+                                      ? "Progress tracking"
+                                      : _selectedIndex == 1
+                                          ? "Mood"
+                                          : _selectedIndex == 2
+                                              ? "Sleep"
+                                              : "Stress"
+                                                  "",
+                                  style: Style.nunRegular(fontSize: 10),
+                                ),
+                          Dimens.d10.spaceWidth,
                         ],
                       ),
-                    ),
+                      Dimens.d10.spaceHeight,
+                      _selectedIndex == 0
+                          ? Align(
+                              alignment: Alignment.centerLeft,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 20),
+                                child: Row(
+                                  children: [
+                                    GetBuilder<ProfileController>(
+                                      id: "update",
+                                      builder: (controller) {
+                                        return SizedBox(
+                                          height: Dimens.d140,
+                                          width: Dimens.d140,
+                                          child: PieChart(
+                                            PieChartData(
+                                              sections: getSections(
+                                                gValue: controller.progressModel
+                                                        .data?.gratitudeCount
+                                                        ?.toDouble() ??
+                                                    1.0,
+                                                aValue: controller.progressModel
+                                                        .data?.affirmationCount
+                                                        ?.toDouble() ??
+                                                    10.0,
+                                                pValue: controller
+                                                        .progressModel
+                                                        .data
+                                                        ?.positiveMomentCount
+                                                        ?.toDouble() ??
+                                                    10.0,
+                                                good: controller
+                                                        .progressModel
+                                                        .data
+                                                        ?.positiveMomentCount
+                                                        ?.toDouble() ??
+                                                    10.0,
+                                              ),
+                                              centerSpaceRadius: 40,
+                                              sectionsSpace: 0,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    Dimens.d40.spaceWidth,
+                                    Stack(
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  progressCall = !progressCall;
+                                                });
+                                              },
+                                              child: Container(
+                                                width: 127,
+                                                height: 26,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 10),
+                                                decoration: BoxDecoration(
+                                                    color: ColorConstant
+                                                        .themeColor,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceEvenly,
+                                                  children: [
+                                                    Text(
+                                                      selectedMonth!.tr,
+                                                      style: Style.nunRegular(
+                                                          fontSize: 12,
+                                                          color: ColorConstant
+                                                              .white),
+                                                    ),
+                                                    const Spacer(),
+                                                    SvgPicture.asset(
+                                                        ImageConstant
+                                                            .downArrowSetting)
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            Dimens.d12.spaceHeight,
+                                            Row(
+                                              children: [
+                                                Container(
+                                                  height: 10,
+                                                  width: 10,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: ColorConstant
+                                                        .color769AA3,
+                                                  ),
+                                                ),
+                                                Dimens.d6.spaceWidth,
+                                                Text(
+                                                  "completedGratitude".tr,
+                                                  style: Style.nunRegular(
+                                                    fontSize: Dimens.d9,
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                            Dimens.d12.spaceHeight,
+                                            Row(
+                                              children: [
+                                                Container(
+                                                  height: 10,
+                                                  width: 10,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: ColorConstant
+                                                        .colorBFD0D4,
+                                                  ),
+                                                ),
+                                                Dimens.d6.spaceWidth,
+                                                Text(
+                                                  "positiveMoment".tr,
+                                                  style: Style.nunRegular(
+                                                    fontSize: Dimens.d9,
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                            Dimens.d12.spaceHeight,
+                                            Row(
+                                              children: [
+                                                Container(
+                                                  height: 10,
+                                                  width: 10,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: ColorConstant
+                                                        .color3D5459,
+                                                  ),
+                                                ),
+                                                Dimens.d6.spaceWidth,
+                                                Text(
+                                                  "completedAffirmations".tr,
+                                                  style: Style.nunRegular(
+                                                    fontSize: Dimens.d9,
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                            Dimens.d12.spaceHeight,
+                                            Row(
+                                              children: [
+                                                Container(
+                                                  height: 10,
+                                                  width: 10,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: ColorConstant
+                                                        .color5A7681,
+                                                  ),
+                                                ),
+                                                Dimens.d6.spaceWidth,
+                                                Text(
+                                                  "goodFeel".tr,
+                                                  style: Style.nunRegular(
+                                                    fontSize: Dimens.d9,
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                            Dimens.d12.spaceHeight,
+                                          ],
+                                        ),
+                                        progressCall
+                                            ? Container(
+                                                margin: const EdgeInsets.only(
+                                                    top: 25),
+                                                height: Dimens.d80,
+                                                width: 127,
+                                                decoration: BoxDecoration(
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        offset:
+                                                            const Offset(0, 4),
+                                                        color: themeController
+                                                                .isDarkMode
+                                                                .value
+                                                            ? ColorConstant
+                                                                .transparent
+                                                            : ColorConstant
+                                                                .themeColor
+                                                                .withOpacity(
+                                                                    0.4),
+                                                        blurRadius: 21.0,
+                                                        spreadRadius: 0.0,
+                                                      ),
+                                                    ],
+                                                    color: themeController
+                                                            .isDarkMode.isTrue
+                                                        ? ColorConstant
+                                                            .darkBackground
+                                                        : const Color(
+                                                            0xffF3FDFD),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                                child: ListView.builder(
+                                                  itemCount: dList.length,
+                                                  shrinkWrap: true,
+                                                  physics:
+                                                      const NeverScrollableScrollPhysics(),
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    return Padding(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal: 10,
+                                                          vertical: 5),
+                                                      child: GestureDetector(
+                                                        onTap: () async {
+                                                          String selectedData = "${dList[index]}"
+                                                                      .tr ==
+                                                                  "monthly".tr
+                                                              ? "isLastMonth"
+                                                              : "${dList[index]}"
+                                                                          .tr ==
+                                                                      "weekly"
+                                                                          .tr
+                                                                  ? "isLastWeek"
+                                                                  : "isLastYear";
+                                                          await profileController
+                                                              .getProgress(
+                                                                  selectedData);
+
+                                                          setState(() {
+                                                selectedMonth =
+                                                dList[index];
+                                                progressCall =
+                                                false;
+                                              });
+                                                        },
+                                                        child: Text(
+                                                          "${dList[index]}".tr,
+                                                          style:
+                                                              Style.nunRegular(
+                                                                  fontSize: 10),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              )
+                                            : const SizedBox(),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )
+                          : Container(
+                              height: 131,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: SfCartesianChart(
+                                primaryXAxis: CategoryAxis(labelStyle: Style.nunitoSemiBold(fontSize:11,color:ColorConstant.color949494  ),
+                                  majorGridLines:
+                                      const MajorGridLines(width: 0),
+                                ),
+                                primaryYAxis: NumericAxis(
+                                  labelStyle: Style.nunitoSemiBold(fontSize:11,color:ColorConstant.color949494  ),
+                                  majorGridLines:
+                                      const MajorGridLines(width: 0),
+                                ),
+                                legend: Legend(isVisible: false ),plotAreaBorderColor: Colors.transparent,
+
+                                tooltipBehavior: TooltipBehavior(enable: true),
+                                series: <LineSeries<MoodData, String>>[
+                                  LineSeries<MoodData, String>(
+                                    color: _selectedIndex == 1
+                                        ? ColorConstant.color2E2EFF
+                                        : _selectedIndex == 2
+                                            ? ColorConstant.color008000
+                                            : ColorConstant.colorFF0000,
+                                    dataSource: getMoodData(),
+                                    xValueMapper: (MoodData mood, _) =>
+                                        mood.day,
+                                    yValueMapper: (MoodData mood, _) =>
+                                        mood.value,
+                                    name: 'Mood',width: 1,
+                                    dataLabelSettings: const DataLabelSettings(
+                                        isVisible: false),
+                                  )
+                                ],
+                              ),
+                            ),
+                    ],
                   ),
                 ),
                 Dimens.d25.spaceHeight,
@@ -461,10 +670,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   },
                   child: Container(
                     height: Dimens.d40,
-                    width: Dimens.d170,
+                    width: 176,
                     decoration: BoxDecoration(
                         color: ColorConstant.themeColor,
-                        borderRadius: BorderRadius.circular(10)),
+                        borderRadius: BorderRadius.circular(85)),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -516,7 +725,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(
-                  height: 87,
+                  height: 72,
                   width: Get.width,
                   padding: const EdgeInsets.only(top: 8.0, left: 8, right: 8),
                   margin: const EdgeInsets.symmetric(
@@ -534,11 +743,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       color: ColorConstant.themeColor,
                       borderRadius: BorderRadius.circular(6)),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Row(
                         children: [
-                          CommonLoadImage(borderRadius: 6.0,
-                              url:audioDataStore!.image!,
+                          CommonLoadImage(
+                              borderRadius: 6.0,
+                              url: audioDataStore!.image!,
                               width: 47,
                               height: 47),
                           Dimens.d12.spaceWidth,
@@ -563,7 +775,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               audioDataStore!.name!,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: Style.montserratRegular(
+                              style: Style.nunRegular(
                                   fontSize: 12, color: ColorConstant.white),
                             ),
                           ),
@@ -581,6 +793,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Dimens.d10.spaceWidth,
                         ],
                       ),
+                      Dimens.d8.spaceHeight,
                       SliderTheme(
                         data: SliderTheme.of(context).copyWith(
                           activeTrackColor:
@@ -588,28 +801,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           inactiveTrackColor: ColorConstant.color6E949D,
                           trackHeight: 1.5,
                           thumbColor: ColorConstant.transparent,
-                          // Color of the thumb
                           thumbShape: SliderComponentShape.noThumb,
-                          // Customize the thumb shape and size
-                          overlayColor:
-                          ColorConstant.backGround.withAlpha(32),
-                          // Color when thumb is pressed
+                          overlayColor: ColorConstant.backGround.withAlpha(32),
                           overlayShape: const RoundSliderOverlayShape(
                               overlayRadius:
                               16.0), // Customize the overlay shape and size
                         ),
-                        child: Slider(
-                          thumbColor: Colors.transparent,
-                          activeColor: ColorConstant.backGround,
-                          value: currentPosition.inMilliseconds.toDouble(),
-                          max: duration.inMilliseconds.toDouble(),
-                          onChanged: (value) {
-                            audioPlayerController.seekForMeditationAudio(
-                                position:
-                                Duration(milliseconds: value.toInt()));
-                          },
+                        child: SizedBox(
+                          height: 2,
+                          child: Slider(
+                            thumbColor: Colors.transparent,
+                            activeColor: ColorConstant.backGround,
+                            value: currentPosition.inMilliseconds.toDouble(),
+                            max: duration.inMilliseconds.toDouble(),
+                            onChanged: (value) {
+                              audioPlayerController.seekForMeditationAudio(
+                                  position:
+                                      Duration(milliseconds: value.toInt()));
+                            },
+                          ),
                         ),
                       ),
+                      Dimens.d5.spaceHeight,
                     ],
                   ),
                 ),
@@ -621,11 +834,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  List<PieChartSectionData> getSections(
-      {double? gValue, double? pValue, double? aValue,double? good}) {
+  List<MoodData> getMoodData() {
     return [
-      PieChartSectionData(
-        color: ColorConstant.color769AA3,
+      MoodData('MON',_selectedIndex == 1?   7.0:_selectedIndex == 2?6.9:7.0),
+      MoodData('TUE',_selectedIndex == 1?   6.3:_selectedIndex == 2?6.2:6.2),
+      MoodData('WED', _selectedIndex == 1?  6.7:_selectedIndex == 2?6.3:6.3),
+      MoodData('THU', _selectedIndex == 1?  6.2:_selectedIndex == 2?6.4:6.4),
+      MoodData('FRI', _selectedIndex == 1?  6.5:_selectedIndex == 2?6.5:6.5),
+      MoodData('SAT',_selectedIndex == 1?   6.1:_selectedIndex == 2?6.6:6.6),
+      MoodData('SUN', _selectedIndex == 1?  6.8:_selectedIndex == 2?6.7:6.2),
+    ];
+  }
+}
+
+List<PieChartSectionData> getSections(
+    {double? gValue, double? pValue, double? aValue, double? good}) {
+  return [
+    PieChartSectionData(
+      color: ColorConstant.color769AA3,
 
         value: gValue==0.0?0.2:gValue,
         title: '$gValue',
@@ -663,4 +889,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     ];
   }
+
+class MoodData {
+  MoodData(this.day, this.value);
+
+  final String day;
+  final double value;
 }

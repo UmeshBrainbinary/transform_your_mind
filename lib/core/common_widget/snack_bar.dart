@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -21,7 +20,7 @@ void showSnackBarError(
         textStyle:  TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: Dimens.d14,
-            fontFamily: FontFamily.montserratRegular,
+            fontFamily: FontFamily.nunitoRegular,
             color: Colors.white),
         message: msg,
       ),
@@ -37,7 +36,7 @@ void showSnackBarBottom(
     SnackBar(
       content: Text(
         message,
-        style: Style.montserratRegular(fontSize: Dimens.d15),
+        style: Style.nunRegular(fontSize: Dimens.d15),
       ),
       duration: const Duration(seconds: 2),
       behavior: SnackBarBehavior.floating,
@@ -63,7 +62,7 @@ void showSnackBarSuccess(
         textStyle:  TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: Dimens.d14,
-            fontFamily: FontFamily.montserratRegular,
+            fontFamily: FontFamily.nunitoRegular,
             color: Colors.white),
       ),
       dismissType: DismissType.onSwipe,
@@ -86,7 +85,7 @@ void showSnackBarSuccessForgot(
         textStyle:  TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: Dimens.d14,
-            fontFamily: FontFamily.montserratRegular,
+            fontFamily: FontFamily.nunitoRegular,
             color: Colors.white),
       ),
       dismissType: DismissType.onSwipe,

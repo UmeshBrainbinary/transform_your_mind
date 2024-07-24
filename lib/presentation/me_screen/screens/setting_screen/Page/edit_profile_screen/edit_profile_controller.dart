@@ -124,7 +124,7 @@ class EditProfileController extends GetxController {
 
       if (response.statusCode == 200) {
         await PrefService.setValue(PrefKey.focuses, true);
-        showSnackBarSuccess(context,"User updated successfully"?? "");
+        showSnackBarSuccess(context,"User updated successfully");
 
         loader.value = false;
         update();

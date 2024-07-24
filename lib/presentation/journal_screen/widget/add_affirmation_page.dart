@@ -1,15 +1,17 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
+import 'package:lottie/lottie.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:transform_your_mind/core/app_export.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
+import 'package:transform_your_mind/core/service/http_service.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -24,6 +26,7 @@ import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 import 'package:transform_your_mind/widgets/custom_view_controller.dart';
+import 'package:vibration/vibration.dart';
 
 import '../../../core/utils/prefKeys.dart';
 
@@ -66,8 +69,13 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
   late final AnimationController _lottieIconsController;
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool loader = false;
+  List<String> _speechDataList = [];
+
   @override
   void initState() {
+    _requestMicrophonePermission();
+    _speech = stt.SpeechToText();
+
     if (widget.title != null) {
       setState(() {
         titleController.text = widget.title.toString();
@@ -83,6 +91,22 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
     super.initState();
   }
 
+  Future<void> _requestMicrophonePermission() async {
+    final status = await Permission.microphone.request();
+    if (status == PermissionStatus.granted) {
+      // Microphone permission granted
+      debugPrint('Microphone permission granted');
+      // Proceed with recording
+    } else if (status == PermissionStatus.permanentlyDenied) {
+      // Handle permanently denied case (open app settings)
+      openAppSettings();
+    } else {
+      // Handle other permission status (denied, etc.)
+      debugPrint('Microphone permission denied');
+    }
+  }
+
+
   addAffirmation() async {
     setState(() {
       loader = true;
@@ -96,8 +120,8 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
     var request = http.MultipartRequest('POST', Uri.parse(EndPoints.addAffirmation));
     request.fields.addAll({
       'created_by':PrefService.getString(PrefKey.userId),
-      'name': titleController.text,
-      'description': descController.text
+      'name': titleController.text.trim(),
+      'description': descController.text.trim()
     });
 
     request.headers.addAll(headers);
@@ -106,7 +130,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       loader = false;
-      showSnackBarSuccess(context, "successfullyAffirmation".tr);
+      //showSnackBarSuccess(context, "successfullyAffirmation".tr);
       setState(() {});
       Get.back();
     }
@@ -146,7 +170,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
       setState(() {
         loader = false;
       });
-      showSnackBarSuccess(context, "affirmationSuccessfully".tr);
+      // showSnackBarSuccess(context, "affirmationSuccessfully".tr);
       setState(() {});
       Get.back();
     }
@@ -162,12 +186,26 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
 
   }
 
+  //________________________________ speech to text _________________
+  bool _isPressed = false;
+  bool _isListening = false;
+  stt.SpeechToText? _speech;
+  String speechToSaveText = "";
+
+  void _onLongPressEnd() {
+    setState(() {
+      _isPressed = false;
+      _isListening = false;
+    });
+
+
+    _speech!.stop();
+  }
+
   @override
   Widget build(BuildContext context) {
-
-   // statusBarSet(themeController);
-
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: themeController.isDarkMode.value
           ? ColorConstant.darkBackground
           : ColorConstant.backGround,
@@ -182,6 +220,22 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
       ),
       body: Stack(
         children: [
+          Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.only(top: Dimens.d100),
+                child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                    ? ImageConstant.profile1Dark
+                    : ImageConstant.profile1),
+              )),
+          Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: Dimens.d120),
+                child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                    ? ImageConstant.profile2Dark
+                    : ImageConstant.profile2),
+              )),
           LayoutBuilder(
             builder: (context, constraints) {
               return Form(
@@ -203,13 +257,8 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                                   controller: titleController,
                                   focusNode: titleFocus,
                                   prefixLottieIcon: ImageConstant.lottieTitle,
-                                  maxLength: maxLength,
-                                  inputFormatters: [
-                                    LengthLimitingTextInputFormatter(
-                                        maxLength),
-                                  ],
                                   validator: (value) {
-                                    if (value == "") {
+                                    if (value!.trim() == "") {
                                       return "pleaseEnterTitle".tr;
                                     }
                                     return null;
@@ -217,27 +266,128 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                               Dimens.d16.spaceHeight,
                               Stack(
                                 children: [
-                                  CommonTextField(
-                                    hintText: "enterDescription".tr,
-                                    labelText: "description".tr,
-                                    controller: descController,
-                                    focusNode: descFocus,
-                                    transform: Matrix4.translationValues(
-                                        0, -108.h, 0),
-                                    prefixLottieIcon:
-                                        ImageConstant.lottieDescription,
-                                    maxLines: 15,
-                                    maxLength: maxLengthDesc,
+                                  Stack(alignment: Alignment.topRight,
+                                    children: [
+                                      CommonTextField(addSuffix: true,
+                                        hintText: "typeYourDescription".tr,
+                                        labelText: "description".tr,
+                                        controller: descController,
+                                        focusNode: descFocus,
+                                        transform: Matrix4.translationValues(
+                                            0, -108.h, 0),
+                                        prefixLottieIcon:
+                                            ImageConstant.lottieDescription,
+                                        maxLines: 15,
+                                        maxLength: maxLengthDesc,
+                                        validator: (value) {
+                                          if (value!.trim() == "") {
+                                            return "pleaseEnterDescription".tr;
+                                          }
+                                          return null;
+                                          },
+                                        onChanged: (value) => currentLength
+                                            .value = descController.text.length,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 45,right: 20),
+                                        child: GestureDetector(
+                                            onLongPressStart: (details) async {
+                                              Vibration.vibrate(
+                                                pattern: [80, 80, 0, 0, 0, 0, 0, 0],
+                                                intensities: [
+                                                  20,
+                                                  20,
+                                                  0,
+                                                  0,
+                                                  0,
+                                                  0,
+                                                  0,
+                                                  0
+                                                ],
+                                              );
+                                              setState(() {
+                                                _isPressed = true;
+                                              });
 
-                                    validator: (value) {
-                                      if (value == "") {
-                                        return "pleaseEnterDescription".tr;
-                                      }
-                                      return null;
-                                    },
-                                    onChanged: (value) => currentLength
-                                        .value = descController.text.length,
 
+                                              if (!_isListening) {
+                                                bool available =
+                                                await _speech!.initialize(
+                                                  onStatus: (val) {
+                                                    debugPrint(
+                                                        "Status for speech recording $val");
+                                                    if (val == "done") {
+                                                      _isPressed = false;
+                                                      _isListening = false;
+                                                    } else if (val ==
+                                                        'notListening') {
+                                                      _isPressed = false;
+                                                      _isListening = false;
+                                                    }
+                                                  },
+                                                  onError: (val) {
+                                                    debugPrint(
+                                                        "Status for speech recording error $val");
+
+                                                    if (val.errorMsg ==
+                                                        "error_no_match") {
+                                                      _onLongPressEnd();
+                                                    }
+                                                  },
+                                                );
+                                                if (available) {
+                                                  _isListening = true;
+                                                  _speech!.listen(
+                                                    onResult: (val) => setState(() {
+                                                      descController.text = val.recognizedWords;
+
+                                                    }),
+                                                  );
+                                                } else {
+                                                  _isPressed = false;
+                                                  _isListening = false;
+                                                }
+                                              }
+                                              setState(() {
+
+                                              });
+                                            },
+                                            onLongPressEnd: (details) {
+
+                                              _speechDataList.add(descController.text);
+                                              Vibration.vibrate(
+                                                pattern: [80, 80, 0, 0, 0, 0, 0, 0],
+                                                intensities: [
+                                                  20,
+                                                  20,
+                                                  0,
+                                                  0,
+                                                  0,
+                                                  0,
+                                                  0,
+                                                  0
+                                                ],
+                                              );
+                                              _onLongPressEnd();
+                                              setState(() {
+                                                debugPrint("speech all data store ${_speechDataList.join(' ')}");
+                                               Future.delayed(const Duration(seconds: 1)).then((value) {
+                                                 descController.text = _speechDataList.join(' ');
+                                               },);
+                                              });
+                                            },
+                                            child: _isPressed
+                                                ? Lottie.asset(
+                                              ImageConstant.micAnimation,
+                                              height: Dimens.d50,
+                                              width: Dimens.d50,
+                                              fit: BoxFit.fill,
+                                              repeat: true,
+                                            )
+                                                : SvgPicture.asset(
+                                                ImageConstant.mic)),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -248,9 +398,12 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                                     child: CommonElevatedButton(
                                       title: "cancel".tr,
                                       outLined: true,
-                                      textStyle: Style.montserratRegular(
-                                          color: ColorConstant.textDarkBlue),
-                                      onTap: () {
+                                            textStyle: Style.nunRegular(
+                                                color: themeController
+                                                        .isDarkMode.isTrue
+                                                    ? Colors.white
+                                                    : ColorConstant.black),
+                                            onTap: () {
                                         setState(() {});
                                         Get.back();
                                       },
@@ -259,25 +412,38 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                                   Dimens.d20.spaceWidth,
                                   Expanded(
                                     child: CommonElevatedButton(
-                                      textStyle: Style.montserratRegular(
-                                          fontSize: Dimens.d12,
+                                      textStyle: Style.nunRegular(
+                                          fontSize: widget.isEdit!
+                                              ? Dimens.d14
+                                              : Dimens.d20,
                                           color: ColorConstant.white),
                                       title: widget.isEdit!
                                           ? "update".tr
                                           : "save".tr,
-                                      onTap: () {
-
+                                      onTap: () async {
                                         titleFocus.unfocus();
                                         descFocus.unfocus();
                                         if (_formKey.currentState!
                                             .validate()) {
                                           if (widget.isEdit!) {
-                                            updateAffirmation();
+                                            if (await isConnected()) {
+                                              updateAffirmation();
+                                            } else {
+                                              showSnackBarError(
+                                                  context, "noInternet".tr);
+                                            }
                                           } else {
-                                            PrefService.setValue(PrefKey.firstTimeUserAffirmation, true);
+                                            if (await isConnected()) {
+                                              PrefService.setValue(
+                                                  PrefKey
+                                                      .firstTimeUserAffirmation,
+                                                  true);
 
-                                            addAffirmation();
-
+                                              addAffirmation();
+                                            } else {
+                                              showSnackBarError(
+                                                  context, "noInternet".tr);
+                                            }
                                           }
                                         }
                                       },
@@ -302,57 +468,4 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
     );
   }
 
-  void _showAlertDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          //backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(11.0), // Set border radius
-          ),
-          actions: <Widget>[
-            Dimens.d18.spaceHeight,
-            Align(
-                alignment: Alignment.topRight,
-                child: GestureDetector(
-                    onTap: () {
-                      Get.back();
-                    },
-                    child: SvgPicture.asset(
-                      ImageConstant.close,
-                    ))),
-            Center(
-                child: SvgPicture.asset(
-              ImageConstant.success,
-              height: Dimens.d128,
-              width: Dimens.d128,
-            )),
-            Dimens.d20.spaceHeight,
-            Center(
-              child: Text(
-                  textAlign: TextAlign.center,
-                  "Affirmation updated successfully".tr,
-                  style: Style.montserratRegular(
-                    fontSize: Dimens.d12,
-                  )),
-            ),
-            Dimens.d20.spaceHeight,
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: Dimens.d70.h),
-              child: CommonElevatedButton(
-                textStyle: Style.montserratRegular(
-                    fontSize: Dimens.d12, color: ColorConstant.white),
-                title: "ok".tr,
-                onTap: () {
-                  Get.back();
-                  Get.back();
-                },
-              ),
-            )
-          ],
-        );
-      },
-    );
-  }
 }

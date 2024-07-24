@@ -8,6 +8,7 @@ import 'package:transform_your_mind/core/common_widget/custom_chip.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/select_focus_button.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
+import 'package:transform_your_mind/core/service/http_service.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -194,7 +195,11 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
   }
 
   getData() async {
-    await getUSer();
+    if (await isConnected()) {
+      await getUSer();
+    } else {
+      showSnackBarError(context, "noInternet".tr);
+    }
 
     setState(() {});
   }
@@ -220,6 +225,7 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
               : ColorConstant.white,
           appBar:  CustomAppBar(showBack: widget.setting,
             title: "selectYourFocus".tr,
+             centerTitle: widget.setting!?false:true,
           ),
           body: Stack(
             alignment: Alignment.bottomCenter,
@@ -249,7 +255,7 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Text(
                         "chooseMinInterest".tr,textAlign: TextAlign.center,
-                        style: Style.gothamLight(
+                        style: Style.nunRegular(
                             color: themeController.isDarkMode.value
                                 ? ColorConstant.white
                                 : ColorConstant.black,
@@ -278,7 +284,7 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
                       ),
                     ),
                     FocusSelectButton(
-                      primaryBtnText: widget.isFromMe ? "Save" : "Next",
+                      primaryBtnText: widget.isFromMe ? "save".tr : widget.setting!?"save".tr:"next".tr,
                       secondaryBtnText: widget.isFromMe ? '' : "Skip",
                       isLoading: false,
                       primaryBtnCallBack: () {

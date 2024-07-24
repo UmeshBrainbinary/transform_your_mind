@@ -29,7 +29,7 @@ class NotificationService {
 
       onDidReceiveNotificationResponse: (NotificationResponse response)  {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return LoginScreen();
+          return const LoginScreen();
         },));
       },
     );
@@ -41,11 +41,11 @@ class NotificationService {
     PermissionStatus status = await Permission.notification.request();
 
     if (status.isGranted) {
-      print('Notification permission granted.');
+      debugPrint('Notification permission granted.');
     } else if (status.isDenied) {
-      print('Notification permission denied.');
+      debugPrint('Notification permission denied.');
     } else if (status.isPermanentlyDenied) {
-      print('Notification permission permanently denied. Go to settings to enable it.');
+      debugPrint('Notification permission permanently denied. Go to settings to enable it.');
       await openAppSettings();
     }
   }

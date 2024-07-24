@@ -2,17 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/common_widget/bg_oval_custom_painter.dart';
-import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
-import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/me_screen/me_controller.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
-import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 class MeScreen extends StatefulWidget {
@@ -108,7 +105,7 @@ class _MeScreenState extends State<MeScreen> {
                     child: Text(
                       "everyoneU".tr,
                       textAlign: TextAlign.center,
-                      style: Style.montserratMedium(
+                      style: Style.nunMedium(
                         height: Dimens.d1_4,
                       ),
                     ),
@@ -298,7 +295,7 @@ class _MeScreenState extends State<MeScreen> {
                               .spaceHeight,
                           Text(
                             "The journey of a thousand miles begins with one step. - Lao Tzu",
-                            style: Style.montserratRegular(
+                            style: Style.nunRegular(
                                 height: Dimens
                                     .d1_4,
                                 fontSize:
@@ -383,7 +380,7 @@ class _MeScreenState extends State<MeScreen> {
                           "recentlyPlayed".tr,
                           textAlign:
                           TextAlign.center,
-                          style: Style.montserratMedium(
+                          style: Style.nunMedium(
                               fontSize:
                               18,
                               color: ColorConstant.white
@@ -408,7 +405,7 @@ class _MeScreenState extends State<MeScreen> {
                               textAlign:
                               TextAlign.center,
                               style:
-                              Style.montserratMedium(fontSize: 10, color: Colors.white.withOpacity(0.4)),
+                              Style.nunMedium(fontSize: 10, color: Colors.white.withOpacity(0.4)),
                             ),
                           ),
                         ),
@@ -457,7 +454,7 @@ class _MeScreenState extends State<MeScreen> {
                                       Dimens.d6.spaceHeight,
                                       Text(
                                         "meditation",
-                                        style: Style.montserratRegular(fontSize: Dimens.d12, color: ColorConstant.white).copyWith(
+                                        style: Style.nunRegular(fontSize: Dimens.d12, color: ColorConstant.white).copyWith(
                                           letterSpacing: -Dimens.d0_16,
                                         ),
                                         maxLines: 1,
@@ -466,7 +463,7 @@ class _MeScreenState extends State<MeScreen> {
                                       Dimens.d7.spaceHeight,
                                       Text(
                                         meController.recentlyPlayed[index]["title"],
-                                        style: Style.montserratRegular().copyWith(letterSpacing: Dimens.d0_48, fontSize: Dimens.d12, color: ColorConstant.white),
+                                        style: Style.nunRegular().copyWith(letterSpacing: Dimens.d0_48, fontSize: Dimens.d12, color: ColorConstant.white),
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -564,7 +561,7 @@ class _MeScreenState extends State<MeScreen> {
                           "yourBookmarks".tr,
                           textAlign:
                           TextAlign.center,
-                          style: Style.montserratMedium(
+                          style: Style.nunMedium(
                               fontSize:
                               18,
                               color: ColorConstant.white),
@@ -588,7 +585,7 @@ class _MeScreenState extends State<MeScreen> {
                               textAlign:
                               TextAlign.center,
                               style:
-                              Style.montserratMedium(fontSize: 10, color: Colors.white.withOpacity(0.4)),
+                              Style.nunMedium(fontSize: 10, color: Colors.white.withOpacity(0.4)),
                             ),
                           ),
                         ),
@@ -635,7 +632,7 @@ class _MeScreenState extends State<MeScreen> {
                                       Dimens.d6.spaceHeight,
                                       Text(
                                         "meditation",
-                                        style: Style.montserratRegular(fontSize: Dimens.d12, color: ColorConstant.white).copyWith(
+                                        style: Style.nunRegular(fontSize: Dimens.d12, color: ColorConstant.white).copyWith(
                                           letterSpacing: -Dimens.d0_16,
                                         ),
                                         maxLines: 1,
@@ -644,7 +641,7 @@ class _MeScreenState extends State<MeScreen> {
                                       Dimens.d7.spaceHeight,
                                       Text(
                                         meController.recentlyPlayed[index]["title"],
-                                        style: Style.montserratRegular().copyWith(letterSpacing: Dimens.d0_48, fontSize: Dimens.d12, color: ColorConstant.white),
+                                        style: Style.nunRegular().copyWith(letterSpacing: Dimens.d0_48, fontSize: Dimens.d12, color: ColorConstant.white),
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -744,7 +741,7 @@ class _MeScreenState extends State<MeScreen> {
                           "myDownloads".tr,
                           textAlign:
                           TextAlign.center,
-                          style: Style.montserratMedium(
+                          style: Style.nunMedium(
                               fontSize:
                               18,
                               color: ColorConstant.white),
@@ -768,7 +765,7 @@ class _MeScreenState extends State<MeScreen> {
                               textAlign:
                               TextAlign.center,
                               style:
-                              Style.montserratRegular(fontSize: 10, color: Colors.white.withOpacity(0.4)),
+                              Style.nunRegular(fontSize: 10, color: Colors.white.withOpacity(0.4)),
                             ),
                           ),
                         ),
@@ -813,7 +810,7 @@ class _MeScreenState extends State<MeScreen> {
                                       Dimens.d6.spaceHeight,
                                       Text(
                                         "meditation",
-                                        style: Style.montserratRegular(fontSize: Dimens.d12, color: ColorConstant.white).copyWith(
+                                        style: Style.nunRegular(fontSize: Dimens.d12, color: ColorConstant.white).copyWith(
                                           letterSpacing: -Dimens.d0_16,
                                         ),
                                         maxLines: 1,
@@ -822,7 +819,7 @@ class _MeScreenState extends State<MeScreen> {
                                       Dimens.d7.spaceHeight,
                                       Text(
                                         meController.recentlyPlayed[index]["title"],
-                                        style: Style.montserratRegular().copyWith(letterSpacing: Dimens.d0_48, fontSize: Dimens.d12, color: ColorConstant.white),
+                                        style: Style.nunRegular().copyWith(letterSpacing: Dimens.d0_48, fontSize: Dimens.d12, color: ColorConstant.white),
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -886,7 +883,7 @@ class _MeScreenState extends State<MeScreen> {
                         Text(
                           "downloadYourFavouriteContentToSaveThemHereForQuickAccess".tr,
                           textAlign: TextAlign.center,
-                          style: Style.montserratMedium(fontSize: 12, color: Colors.white.withOpacity(0.4)),
+                          style: Style.nunMedium(fontSize: 12, color: Colors.white.withOpacity(0.4)),
                         ),
                       ],
                     ),
@@ -924,9 +921,9 @@ class _MeScreenState extends State<MeScreen> {
           ),
           margin: EdgeInsets.only(
               top: 27.h),
-          child: Padding(
+          child: const Padding(
             padding:
-            const EdgeInsets
+            EdgeInsets
                 .all(30.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment

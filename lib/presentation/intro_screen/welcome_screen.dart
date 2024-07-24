@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
@@ -25,28 +26,28 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     return Scaffold(backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
       body: SingleChildScrollView(
         child: Column(children: [
-          Dimens.d120.spaceHeight,
-          Center(child: Image.asset(ImageConstant.welcomeBackImage,height: 186,width: 325,)),
+          Dimens.d110.spaceHeight,
+          Center(child: SvgPicture.asset(ImageConstant.welcomeBackImage,height: 186,width: 325,)),
           Dimens.d65.spaceHeight,
             Padding(
             padding: const EdgeInsets.symmetric(horizontal: Dimens.d36),
             child: Text(
              "${"welcome".tr}, “ ${PrefService.getString(PrefKey.name)} ”!",
               textAlign: TextAlign.center,
-              style: Style.gothamLight(fontSize: 24,fontWeight: FontWeight.w600),
+              style: Style.nunitoBold(fontSize: 28,fontWeight: FontWeight.w600),
             ),
           ),
-          Dimens.d14.spaceHeight,
+          Dimens.d17.spaceHeight,
             Padding(
             padding: const EdgeInsets.symmetric(horizontal: Dimens.d36),
             child: Text(
               "howNice".tr,
               textAlign: TextAlign.center,
-              style: Style.gothamLight(
+              style: Style.nunMedium(
                   fontSize: 16, fontWeight: FontWeight.w400),
             ),
           ),
-          Dimens.d45.spaceHeight,
+          Dimens.d34.spaceHeight,
           Padding(
               padding: const EdgeInsets.symmetric(horizontal: Dimens.d40),
               child: Text(

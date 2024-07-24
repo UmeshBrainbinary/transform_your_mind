@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_calendar_carousel/classes/event.dart';
-import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http ;
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
@@ -20,12 +20,13 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/model_class/common_model.dart';
-import 'package:transform_your_mind/presentation/journal_screen/widget/my_gratitude_page.dart';
+import 'package:transform_your_mind/model_class/gratitude_model.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
+import 'package:vibration/vibration.dart';
 
 import '../../../core/utils/style.dart';
 class AddGratitudePage extends StatefulWidget {
@@ -47,20 +48,18 @@ class AddGratitudePage extends StatefulWidget {
   final bool? edit;
   String? title;
   String? description;
-  DateTime? date;
+  String? date;
   String? id;
-  List? categoryList;
+  List<GratitudeData>? categoryList;
   @override
   State<AddGratitudePage> createState() => _AddGratitudePageState();
 }
 
-class _AddGratitudePageState extends State<AddGratitudePage> {
-  final TextEditingController titleController = TextEditingController();
-  final TextEditingController descController = TextEditingController();
-  final TextEditingController dateController = TextEditingController();
+class _AddGratitudePageState extends State<AddGratitudePage>
+    with SingleTickerProviderStateMixin {
   bool drop = false;
   ThemeController themeController = Get.find<ThemeController>();
-  List addGratitudeData = [];
+  List<GratitudeData> addGratitudeData = [];
   bool select = false;
 
   final FocusNode titleFocus = FocusNode();
@@ -72,33 +71,84 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
   ValueNotifier<int> currentLength = ValueNotifier(0);
   String? urlImage;
   int gratitudeAddedCount = 0;
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   DateTime todayDate = DateTime.now();
   bool? loader = false;
   File? selectedImage;
-  DateTime _currentDate = DateTime.now();
   ValueNotifier selectedCategory = ValueNotifier(null);
+  GratitudeModel gratitudeModel = GratitudeModel();
+
+  getGratitude() async {
+    setState(() {
+      loader = true;
+    });
+    var headers = {
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.Request(
+        'GET',
+        Uri.parse(
+            '${EndPoints.baseUrl}get-gratitude?created_by=${PrefService.getString(PrefKey.userId)}&date=${widget.date}'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      gratitudeModel = GratitudeModel();
+      final responseBody = await response.stream.bytesToString();
+      gratitudeModel = gratitudeModelFromJson(responseBody);
+      addGratitudeData = gratitudeModel.data!;
+      debugPrint("gratitude Model ${gratitudeModel.data}");
+      setState(() {
+        loader = false;
+      });
+    } else {
+      setState(() {
+        loader = false;
+      });
+      debugPrint(response.reasonPhrase);
+    }
+  }
+
+  //________________________________ speech to text _________________
+  List<String> _speechDataList = [];
+
+  bool _isPressed = false;
+  AnimationController? _controller;
+  bool _isListening = false;
+  stt.SpeechToText? _speech;
+  String speechToSaveText = "";
+
+  void _onLongPressEnd() {
+    setState(() {
+      _isPressed = false;
+      _isListening = false;
+    });
+    _controller!.reverse();
+
+    _speech!.stop();
+  }
 
   @override
   void initState() {
-/*    if ((widget.categoryList ?? []).isNotEmpty) {}
-    if (widget.edit == true) {
-      setState(() {
-        titleController.text = widget.title!;
-        descController.text = widget.description!;
-        dateController.text = DateFormat('dd/MM/yyyy').format(widget.date!);
-      });
-    }*/
-    if ((widget.categoryList ?? []).isNotEmpty) {
-      setState(() {
-        addGratitudeData = widget.categoryList!;
-      });
-    }
+    _requestMicrophonePermission();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    );
+    getData();
+    _speech = stt.SpeechToText();
+
     super.initState();
   }
+
+  getData() async {
+    await getGratitude();
+  }
+
   CommonModel commonModel = CommonModel();
 
-  addGratitude(bool? registerUser) async {
+  addGratitude() async {
     setState(() {
       loader = true;
     });
@@ -109,9 +159,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
     var request = http.Request(
         'POST', Uri.parse('${EndPoints.baseUrl}add-gratitude'));
     request.body = json.encode({
-      "name": titleController.text,
-      "description":descController.text,
-      "date": dateController.text = DateFormat('dd/MM/yyyy').format(todayDate),
+      "description": addGratitudeText.text,
       "created_by":PrefService.getString(PrefKey.userId)
     });
     request.headers.addAll(headers);
@@ -125,12 +173,9 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
       final responseBody = await response.stream.bytesToString();
 
       commonModel = commonModelFromJson(responseBody);
-      if (registerUser == true) {
-        Get.offAllNamed( AppRoutes.dashBoardScreen);
-      } else {
-        Get.back();
-      }
+
       showSnackBarSuccess(context, "gratitudeAdded".tr);
+      Get.back();
     } else {
       setState(() {
         loader = false;
@@ -145,20 +190,16 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
       loader = false;
     });
   }
-  updateGratitude() async {
-    setState(() {
-      loader = true;
-    });
+
+  updateGratitude(id, description) async {
     var headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
     var request = http.Request(
-        'POST', Uri.parse('${EndPoints.baseUrl}update-gratitude?id=${widget.id}'));
+        'POST', Uri.parse('${EndPoints.baseUrl}update-gratitude?id=$id'));
     request.body = json.encode({
-      "name": titleController.text,
-      "description":descController.text,
-      "date": dateController.text,
+      "description": description,
       "created_by":PrefService.getString(PrefKey.userId)
     });
     request.headers.addAll(headers);
@@ -166,31 +207,47 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      setState(() {
-        loader = false;
-      });
-      final responseBody = await response.stream.bytesToString();
-
-      commonModel = commonModelFromJson(responseBody);
-      Get.back();
-      showSnackBarSuccess(context, "gratitudeUpdate".tr);
-    } else {
-      final responseBody = await response.stream.bytesToString();
-      setState(() {
-        loader = false;
-      });
-      commonModel = commonModelFromJson(responseBody);
-      showSnackBarSuccess(context, commonModel.message??"");
-
-    }
-    setState(() {
-      loader = false;
-    });
+    } else {}
   }
 
   TextEditingController addGratitudeText = TextEditingController();
   FocusNode gratitudeFocus = FocusNode();
   int totalIndex = 0;
+
+  deleteGratitude(id) async {
+    setState(() {
+      loader = true;
+    });
+    var headers = {
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.Request(
+        'DELETE', Uri.parse('${EndPoints.baseUrl}delete-gratitude?id=$id'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      final responseBody = await response.stream.bytesToString();
+      commonModel = commonModelFromJson(responseBody);
+      showSnackBarSuccess(context, commonModel.message ?? "");
+    } else {
+      debugPrint(response.reasonPhrase);
+    }
+  }
+
+  Future<void> _requestMicrophonePermission() async {
+    final status = await Permission.microphone.request();
+    if (status == PermissionStatus.granted) {
+      debugPrint('Microphone permission granted');
+    } else if (status == PermissionStatus.permanentlyDenied) {
+      openAppSettings();
+    } else {
+      debugPrint('Microphone permission denied');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -202,19 +259,20 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
           resizeToAvoidBottomInset: true,
           appBar: CustomAppBar(
             showBack: widget.registerUser! ? false : true,
-            title: widget.edit == true ? "editGratitude".tr : "addGratitude".tr,
-            action: !(widget.isFromMyGratitude!)
-                ? Row(children: [
-                    GestureDetector(
-                        onTap: () {},
-                        child: Text(
+              title:
+                  widget.edit == true ? "editGratitude".tr : "myGratitude".tr,
+              action: !(widget.isFromMyGratitude!)
+                  ? Row(children: [
+                      GestureDetector(
+                          onTap: () {},
+                          child: Text(
                           "skip".tr,
-                          style: Style.montserratRegular(
-                              color: themeController.isDarkMode.value
-                                  ? ColorConstant.white
-                                  : ColorConstant.black),
-                        )),
-                    Dimens.d20.spaceWidth,
+                            style: Style.nunRegular(
+                                color: themeController.isDarkMode.value
+                                    ? ColorConstant.white
+                                    : ColorConstant.black),
+                          )),
+                      Dimens.d20.spaceWidth,
                   ])
                 : widget.registerUser!
                     ? GestureDetector(
@@ -230,12 +288,12 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                   padding: const EdgeInsets.only(right: 20),
                   child: Text(
                     "skip".tr,
-                    style: Style.montserratRegular(
-                        fontSize: Dimens.d15,
-                        color: themeController.isDarkMode.value
-                            ? ColorConstant.white
-                            : ColorConstant.black),
-                  ),
+                              style: Style.nunRegular(
+                                  fontSize: Dimens.d15,
+                                  color: themeController.isDarkMode.value
+                                      ? ColorConstant.white
+                                      : ColorConstant.black),
+                            ),
                 ))
                 : const SizedBox.shrink(),
           ),
@@ -244,15 +302,17 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
               child: Column(
                 children: [
                   Dimens.d20.spaceHeight,
-                  Text(
-                    "10Things".tr,
-                    style: Style.montserratRegular(fontSize: 16),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      "10Things".tr,
+                      style: Style.nunRegular(fontSize: 16),
+                    ),
                   ),
                   Dimens.d20.spaceHeight,
                   Expanded(
                     child: ListView.builder(
                       itemCount: addGratitudeData.length + 1,
-                      // Increased the itemCount by 1 to accommodate the "+" icon
                       itemBuilder: (context, index) {
                         totalIndex = index;
                         if (index == addGratitudeData.length) {
@@ -275,31 +335,15 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                                   child: SvgPicture.asset(
                                       ImageConstant.addGratitude)),
                               Dimens.d32.spaceHeight,
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 20),
-                                child: CommonElevatedButton(
-                                  textStyle: Style.montserratRegular(
-                                      fontSize: 20, color: ColorConstant.white),
-                                  title: "save".tr,
-                                  onTap: () async {
-                                    setState(() {
-                                      gratitudeList = addGratitudeData;
-                                    });
-                                    Get.back();
-                                  },
-                                ),
-                              ),
-                              Dimens.d32.spaceHeight,
+
                             ],
                           );
                         } else {
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 20),
                             child: commonContainer(
-                                des: addGratitudeData[index]["title"],
+                                des: addGratitudeData[index].description,
                                 date: "${index + 1}",
-                                day: "TUE",
                                 index: index),
                           );
                         }
@@ -309,184 +353,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                 ],
               ),
             )
-            /*Stack(
-            children: [
-              LayoutBuilder(builder: (context, constraints) {
-                return Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: LayoutContainer(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CommonTextField(
-                                  hintText: widget.registerUser!
-                                      ? "enterCategory".tr
-                                      : (widget.categoryList ?? []).isNotEmpty
-                                          ? "enterSeCategory".tr
-                                          : "enterCategory".tr,
-                                  labelText: "Category".tr,
-                                  controller: titleController,
-                                  focusNode: titleFocus,
-                                  nextFocusNode: descFocus,
-                                  suffixIcon: Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            drop = !drop;
-                                          });
-                                        },
-                                        child: SvgPicture.asset(
-                                          ImageConstant.downArrow,
-                                          color: (widget.categoryList ?? [])
-                                                  .isNotEmpty
-                                              ? ColorConstant.black
-                                              : Colors.transparent,
-                                        )),
-                                  ),
-                                  validator: (value) {
-                                    if (value == "") {
-                                      return "pleaseEnterTitle".tr;
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                Dimens.d22.spaceHeight,
-                                CommonTextField(
-                                  hintText: "enterDescription".tr,
-                                  labelText: "description".tr,
-                                  controller: descController,
-                                  focusNode: descFocus,
-                                  transform:
-                                      Matrix4.translationValues(0, -108, 0),
-                                  prefixLottieIcon:
-                                      ImageConstant.lottieDescription,
-                                  maxLines: 15,
-                                  maxLength: maxLengthDesc,
-                                  onChanged: (value) {
-                                    currentLength.value =
-                                        descController.text.length;
-                                  },
-                                  validator: (value) {
-                                    if (value == "") {
-                                      return "pleaseEnterDescription".tr;
-                                    }
-                                    return null;
-                                  },
 
-                                ),
-                                Dimens.d30.spaceHeight,
-                                Row(
-                                  children: [
-                                    if (widget.edit == true)
-                                      Expanded(
-                                        child: CommonElevatedButton(
-                                          title: "Cancel".tr,
-                                          outLined: true,
-                                          textStyle: Style.montserratRegular(
-                                              color:
-                                                  ColorConstant.textDarkBlue),
-                                          onTap: () async {
-                                            Get.back();
-                                          },
-                                        ),
-                                      ),
-                                    Dimens.d20.spaceWidth,
-                                    Expanded(
-                                      child: CommonElevatedButton(
-                                         textStyle: Style.montserratRegular(fontSize: 20,color: ColorConstant.white),
-                                        title: widget.edit == true
-                                            ? "Update".tr
-                                            : "save".tr,
-                                        onTap: () async {
-                                          titleFocus.unfocus();
-                                          descFocus.unfocus();
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            if (widget.edit == true) {
-                                              updateGratitude();
-                                            } else {
-                                              PrefService.setValue(
-                                                  PrefKey
-                                                      .firstTimeUserGratitude,
-                                                  true);
-
-                                              addGratitude(widget.registerUser);
-                                            }
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      ///buttons
-
-                      Dimens.d10.spaceHeight,
-                    ],
-                  ),
-                );
-              }),
-              if (drop)
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Container(
-                    width: 160,
-                    margin: const EdgeInsets.only(top: Dimens.d110, right: 20),
-                    decoration: BoxDecoration(
-                      color: themeController.isDarkMode.isTrue
-                          ? ColorConstant.textfieldFillColor
-                          : ColorConstant.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2), // Shadow color
-                          spreadRadius: 2, // How much the shadow spreads
-                          blurRadius: 5, // The blur radius of the shadow
-                          offset: const Offset(
-                              0, 3), // Changes the position of the shadow
-                        ),
-                      ],
-                    ),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.all(8.0),
-                      itemCount: widget.categoryList?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
-                          child: GestureDetector(
-                              onTap: () {
-                                titleController.text =
-                                    widget.categoryList?[index] ?? "";
-                                drop = false;
-                                setState(() {});
-                              },
-                              child: Text(
-                                widget.categoryList?[index] ?? "",
-                                style: Style.gothamLight(fontSize: 14),
-                              )),
-                        );
-                      },
-                    ),
-                  ),
-                )
-              else
-                const SizedBox()
-            ],
-          ),*/
             ),
         loader == true ? commonLoader() : const SizedBox()
       ],
@@ -516,46 +383,143 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                         alignment: Alignment.topRight,
                         child: GestureDetector(
                             onTap: () {
+                              _speechDataList.clear();
                               Get.back();
                             },
                             child: SvgPicture.asset(
                               ImageConstant.close,
                               height: 20,
                               width: 20,
+                              color: themeController.isDarkMode.isTrue
+                                  ? ColorConstant.white
+                                  : ColorConstant.black,
                             ))),
                     Dimens.d15.spaceHeight,
                     CommonTextField(
                         borderRadius: Dimens.d10,
                         filledColor: themeController.isDarkMode.isTrue
-                            ? ColorConstant.darkBackground
-                            : ColorConstant.colorECECEC,
+                            ? ColorConstant.color394750
+                            : Colors.grey.withOpacity(0.3),
                         hintText: "typeGratitude".tr,
                         maxLines: 5,
                         controller: addGratitudeText,
                         focusNode: gratitudeFocus),
-                    Dimens.d30.spaceHeight,
+                    Dimens.d15.spaceHeight,
+                    GestureDetector(
+                        onLongPressStart: (details) async {
+                          Vibration.vibrate(
+                            pattern: [80, 80, 0, 0, 0, 0, 0, 0],
+                            intensities: [20, 20, 0, 0, 0, 0, 0, 0],
+                          );
+                          setState(() {
+                            _isPressed = true;
+                          });
+                          _controller!.forward();
+
+                          if (!_isListening) {
+                            bool available = await _speech!.initialize(
+                              onStatus: (val) {
+                                debugPrint("Status for speech recording $val");
+                                if (val == "done") {
+                                  _isPressed = false;
+                                  _isListening = false;
+                                } else if (val == 'notListening') {
+                                  _isPressed = false;
+                                  _isListening = false;
+                                }
+                              },
+                              onError: (val) {
+                                debugPrint(
+                                    "Status for speech recording error $val");
+
+                                if (val.errorMsg == "error_no_match") {
+                                  _onLongPressEnd();
+                                }
+                              },
+                            );
+                            if (available) {
+                              _isListening = true;
+                              _speech!.listen(
+                                onResult: (val) => setState(() {
+                                  addGratitudeText.text = val.recognizedWords;
+                                }),
+                              );
+                            } else {
+                              _isPressed = false;
+                              _isListening = false;
+                            }
+                          }
+                          setState.call(() {});
+                        },
+                        onLongPressEnd: (details) {
+
+                          _speechDataList.add(addGratitudeText.text);
+                          Vibration.vibrate(
+                            pattern: [80, 80, 0, 0, 0, 0, 0, 0],
+                            intensities: [
+                              20,
+                              20,
+                              0,
+                              0,
+                              0,
+                              0,
+                              0,
+                              0
+                            ],
+                          );
+                          _onLongPressEnd();
+                          setState.call(() {
+                            debugPrint("speech all data store ${_speechDataList.join(' ')}");
+                            Future.delayed(const Duration(seconds: 1)).then((value) {
+                              addGratitudeText.text = _speechDataList.join(' ');
+                            },);
+                          });
+                        },
+
+                        child: _isPressed
+                            ? Lottie.asset(
+                                ImageConstant.micAnimation,
+                                height: Dimens.d50,
+                                width: Dimens.d50,
+                                fit: BoxFit.fill,
+                                repeat: true,
+                              )
+                            : SvgPicture.asset(ImageConstant.mic)),
+                    Dimens.d15.spaceHeight,
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: Dimens.d70.h),
                       child: CommonElevatedButton(
                         height: Dimens.d33,
-                        textStyle: Style.montserratRegular(
+                        width: 155,
+                        textStyle: Style.nunRegular(
                           fontSize: Dimens.d18,
                           color: ColorConstant.white,
                         ),
                         title: value == true ? "update".tr : "add".tr,
                         onTap: () async {
                           if (value == true) {
-                            setState.call(() {
-                              addGratitudeData[index!]["title"] =
-                                  addGratitudeText.text;
-                            });
-                            Get.back();
+                            if (addGratitudeText.text.trim().isNotEmpty) {
+                              Get.back();
+
+                              await updateGratitude(addGratitudeData[index!].id,
+                                  addGratitudeText.text.trim());
+
+                              await getGratitude();
+                              setState.call(() {
+                                addGratitudeData[index].description =
+                                    addGratitudeText.text.trim();
+                              });
+                            }
                           } else {
-                            setState.call(() {
-                              addGratitudeData
-                                  .add({"title": addGratitudeText.text});
-                            });
-                            Get.back();
+                            if (addGratitudeText.text.trim().isNotEmpty) {
+                              Get.back();
+
+                              await addGratitude();
+                              await getGratitude();
+
+                              setState(() {});
+                              setState.call(() {});
+                            }
                           }
                         },
                       ),
@@ -569,7 +533,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                             },
                             child: Text(
                               "cancel".tr,
-                              style: Style.montserratRegular(fontSize: 14),
+                              style: Style.nunRegular(fontSize: 14),
                             )),
                     value == false ? const SizedBox() : Dimens.d20.spaceHeight,
                   ],
@@ -581,6 +545,9 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
       },
     ).then(
       (value) {
+        _onLongPressEnd();
+        _speechDataList.clear();
+
         setState(() {});
       },
     );
@@ -611,16 +578,9 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
               children: [
                 Dimens.d3.spaceHeight,
                 Text(
-                  day ?? "",
-                  style: Style.gothamLight(
-                    fontSize: 10,
-                    color: ColorConstant.white,
-                  ),
-                ),
-                Text(
                   date ?? "",
-                  style: Style.gothamMedium(
-                    fontSize: 30,
+                  style: Style.nunMedium(
+                    fontSize: 38,
                     color: ColorConstant.white,
                   ),
                 ),
@@ -629,11 +589,8 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
           ),
           Dimens.d13.spaceWidth,
           Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.end,
+            child: Stack(
               children: [
-                Dimens.d2.spaceHeight,
                 Align(
                   alignment: Alignment.topRight,
                   child: PopupMenuButton(
@@ -643,10 +600,13 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                       ),
                     ),
                     color: themeController.isDarkMode.isTrue
-                        ? ColorConstant.textfieldFillColor
+                        ? ColorConstant.backGround
                         : ColorConstant.white,
-                    child: SvgPicture.asset(
-                      ImageConstant.moreVert,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SvgPicture.asset(
+                        ImageConstant.moreVert,
+                      ),
                     ),
                     itemBuilder: (context) {
                       return [
@@ -664,7 +624,7 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                                 },
                                 child: Container(
                                   height: 28,
-                                  width: 86,
+                                  width: 88,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(5),
                                     color: ColorConstant.color5B93FF
@@ -677,10 +637,10 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                                         ImageConstant.editTools,
                                         color: ColorConstant.color5B93FF,
                                       ),
-                                      Dimens.d5.spaceWidth,
+                                      Dimens.d8.spaceWidth,
                                       Text(
                                         'edit'.tr,
-                                        style: Style.montserratRegular(
+                                        style: Style.nunRegular(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500,
                                           color: ColorConstant.color5B93FF,
@@ -695,11 +655,12 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                               InkWell(
                                 onTap: () {
                                   Get.back();
-                                  _showAlertDialogDelete(context, 1, 0);
+                                  _showAlertDialogDelete(context, index!,
+                                      addGratitudeData[index].id);
                                 },
                                 child: Container(
                                   height: 28,
-                                  width: 86,
+                                  width: 88,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(5),
                                     color: ColorConstant.colorE71D36
@@ -712,10 +673,10 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                                         ImageConstant.delete,
                                         color: ColorConstant.colorE71D36,
                                       ),
-                                      Dimens.d5.spaceWidth,
+                                      Dimens.d8.spaceWidth,
                                       Text(
                                         'delete'.tr,
-                                        style: Style.montserratRegular(
+                                        style: Style.nunRegular(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500,
                                           color: ColorConstant.colorE71D36,
@@ -733,16 +694,18 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
                     },
                   ),
                 ),
-                Dimens.d2.spaceHeight,
-                SizedBox(
-                  width: 240,
-                  child: Text(
-                    des ?? "",
-                    maxLines: 2,
-                    style: Style.montserratRegular(
-                      height: 2,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w400,
+                Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: SizedBox(
+                    width: 220,
+                    child: Text(
+                      "“$des”",
+                      maxLines: 2,
+                      style: Style.nunRegular(
+                        height: 2,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
                   ),
                 ),
@@ -754,213 +717,106 @@ class _AddGratitudePageState extends State<AddGratitudePage> {
     );
   }
 
-  Widget widgetCalendar(StateSetter setState) {
-    return Container(
-        height: 350,
-        margin: const EdgeInsets.symmetric(horizontal: 16.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          color: themeController.isDarkMode.isTrue
-              ? ColorConstant.textfieldFillColor
-              : ColorConstant.white,
-        ),
-        child: CalendarCarousel<Event>(
-          onDayPressed: (DateTime date, List<Event> events) {
-            if (date.isBefore(DateTime.now())) {
-              setState.call(() => _currentDate = date);
-
-              print("==========$_currentDate");
-              setState.call(() {
-                dateController.text = DateFormat('dd/MM/yyyy').format(date);
-                select = false;
-              });
-              setState((){});
-            }
-
-          },
-
-          weekendTextStyle: Style.montserratRegular(
-              fontSize: 15,
-              color: themeController.isDarkMode.isTrue
-                  ? ColorConstant.white
-                  : ColorConstant.black),
-          // Customize your text style
-          thisMonthDayBorderColor: Colors.transparent,
-          customDayBuilder: (
-            bool isSelectable,
-            int index,
-            bool isSelectedDay,
-            bool isToday,
-            bool isPrevMonthDay,
-            TextStyle textStyle,
-            bool isNextMonthDay,
-            bool isThisMonthDay,
-            DateTime day,
-          ) {
-            if (day.isAfter(DateTime.now())) {
-              return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 5),
-                height: Dimens.d32,
-                width: Dimens.d32,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Center(
-                  child: Text(
-                    day.day.toString(),
-                    style: Style.montserratRegular(
-                        fontSize: 15,
-                        color: Colors
-                            .grey), // Customize your future day text style
-                  ),
-                ),
-              );
-            } else if (isSelectedDay) {
-              return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 5),
-                height: Dimens.d32,
-                width: Dimens.d32,
-                decoration: BoxDecoration(
-                  color: ColorConstant.themeColor,
-                  // Customize your selected day color
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Center(
-                  child: Text(
-                    day.day.toString(),
-                    style: Style.montserratRegular(
-                        fontSize: 15,
-                        color: ColorConstant
-                            .white), // Customize your selected day text style
-                  ),
-                ),
-              );
-            } else {
-              return null;
-            }
-          },
-          weekFormat: false,
-          daysTextStyle: Style.montserratRegular(
-              fontSize: 15,
-              color: themeController.isDarkMode.isTrue
-                  ? ColorConstant.white
-                  : ColorConstant.black),
-          height: 300.0,
-          markedDateIconBorderColor: Colors.transparent,
-          childAspectRatio: 1.5,
-          dayPadding: 0.0,
-          prevDaysTextStyle: Style.montserratRegular(fontSize: 15),
-          selectedDateTime: _currentDate,
-          headerTextStyle: Style.montserratRegular(
-              color: themeController.isDarkMode.isTrue
-                  ? ColorConstant.white
-                  : ColorConstant.black,
-              fontWeight: FontWeight.bold),
-          dayButtonColor: themeController.isDarkMode.isTrue
-              ? ColorConstant.textfieldFillColor
-              : Colors.white,
-          weekDayBackgroundColor: themeController.isDarkMode.isTrue
-              ? ColorConstant.textfieldFillColor
-              : Colors.white,
-          markedDateMoreCustomDecoration: BoxDecoration(
-              color: themeController.isDarkMode.isTrue
-                  ? ColorConstant.black
-                  : Colors.white),
-          shouldShowTransform: false,
-          staticSixWeekFormat: false,
-          weekdayTextStyle: Style.montserratRegular(
-              fontSize: 11,
-              color: themeController.isDarkMode.isTrue
-                  ? ColorConstant.white
-                  : ColorConstant.color797B86,
-              fontWeight: FontWeight.bold),
-          todayButtonColor: Colors.transparent,
-          selectedDayBorderColor: Colors.transparent,
-          todayBorderColor: Colors.transparent,
-          selectedDayButtonColor: Colors.transparent,
-          daysHaveCircularBorder: false,
-          todayTextStyle: Style.montserratRegular(
-              fontSize: 15,
-              color: themeController.isDarkMode.isTrue
-                  ? ColorConstant.white
-                  : ColorConstant.black),
-        ));
-  }
 
   void _showAlertDialogDelete(BuildContext context, int index, id) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          //backgroundColor: Colors.white,
+          contentPadding: EdgeInsets.zero,
+          backgroundColor: themeController.isDarkMode.isTrue
+              ? ColorConstant.textfieldFillColor
+              : Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(11.0), // Set border radius
           ),
-          actions: <Widget>[
-            Dimens.d18.spaceHeight,
-            Align(
-                alignment: Alignment.topRight,
-                child: GestureDetector(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Dimens.d18.spaceHeight,
+              Align(
+                  alignment: Alignment.topRight,
+                  child: GestureDetector(
+                      onTap: () {
+                        Get.back();
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 10.0),
+                        child: SvgPicture.asset(
+                          ImageConstant.close,
+                          color: themeController.isDarkMode.isTrue
+                              ? ColorConstant.white
+                              : ColorConstant.black,
+                        ),
+                      ))),
+              Dimens.d23.spaceHeight,
+              Center(
+                  child: SvgPicture.asset(
+                ImageConstant.deleteAffirmation,
+                height: Dimens.d96,
+                width: Dimens.d96,
+              )),
+              Dimens.d26.spaceHeight,
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  child: Text(
+                      textAlign: TextAlign.center,
+                      "areYouSureDeleteGratitude".tr,
+                      style: Style.nunRegular(
+                        fontSize: Dimens.d15,
+                      )),
+                ),
+              ),
+              Dimens.d24.spaceHeight,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const Spacer(),
+                  CommonElevatedButton(
+                    height: 33,
+                    width: 94,
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: Dimens.d28),
+                    textStyle: Style.nunRegular(
+                        fontSize: Dimens.d12, color: ColorConstant.white),
+                    title: "delete".tr,
+                    onTap: () async {
+                      await deleteGratitude(id);
+                      await getGratitude();
+                      setState.call(() {});
+                      Get.back();
+                    },
+                  ),
+                  Dimens.d20.spaceWidth,
+                  GestureDetector(
                     onTap: () {
                       Get.back();
                     },
-                    child: SvgPicture.asset(
-                      ImageConstant.close,
-                    ))),
-            Center(
-                child: SvgPicture.asset(
-              ImageConstant.deleteAffirmation,
-              height: Dimens.d96,
-              width: Dimens.d96,
-            )),
-            Dimens.d20.spaceHeight,
-            Center(
-              child: Text(
-                  textAlign: TextAlign.center,
-                  "areYouSureDeleteGratitude".tr,
-                  style: Style.montserratRegular(
-                    fontSize: Dimens.d14,
-                  )),
-            ),
-            Dimens.d24.spaceHeight,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                CommonElevatedButton(
-                  height: 33,
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: Dimens.d28),
-                  textStyle: Style.montserratRegular(
-                      fontSize: Dimens.d12, color: ColorConstant.white),
-                  title: "delete".tr,
-                  onTap: () async {
-                    Get.back();
-                  },
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Get.back();
-                  },
-                  child: Container(
-                    height: 33,
-                    margin: const EdgeInsets.symmetric(horizontal: 5),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 21,
-                    ),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(80),
-                        border: Border.all(color: ColorConstant.themeColor)),
-                    child: Center(
-                      child: Text(
-                        "cancel".tr,
-                        style: Style.montserratRegular(fontSize: 14),
+                    child: Container(
+                      height: 33,
+                      width: 93,
+                      margin: const EdgeInsets.symmetric(horizontal: 5),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 21,
+                      ),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(80),
+                          border: Border.all(color: ColorConstant.themeColor)),
+                      child: Center(
+                        child: Text(
+                          "cancel".tr,
+                          style: Style.nunRegular(fontSize: 14),
+                        ),
                       ),
                     ),
                   ),
-                )
-              ],
-            )
-          ],
+                  const Spacer(),
+                ],
+              ),
+              Dimens.d20.spaceHeight,
+            ],
+          ),
         );
       },
     );

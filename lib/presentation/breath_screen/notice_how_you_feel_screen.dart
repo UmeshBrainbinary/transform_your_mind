@@ -24,27 +24,27 @@ class NoticeHowYouFeelScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Dimens.d10.spaceHeight,
+            Dimens.d52.spaceHeight,
             Image.asset(ImageConstant.noticeImage,height: 222,width: 222,),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: Dimens.d40),
               child: Text(
                 "noticeHowYouFeel".tr,
                 textAlign: TextAlign.center,
-                style: Style.gothamMedium(fontSize: 22),
+                style: Style.nunitoBold(fontSize: 24),
               ),
             ),
-            Dimens.d18.spaceHeight,
+            Dimens.d9.spaceHeight,
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Dimens.d45),
+              padding: const EdgeInsets.symmetric(horizontal: Dimens.d40),
               child: Text(
                 "allowYourSelf".tr,
                 textAlign: TextAlign.center,
-                style: Style.gothamLight(
+                style: Style.nunRegular(
                     fontSize: 12, fontWeight: FontWeight.w400),
               ),
             ),
-            Dimens.d30.spaceHeight,
+            Dimens.d56.spaceHeight,
             GetBuilder<BreathController>(
               id: "update",
               builder: (controller) {
@@ -71,7 +71,7 @@ class NoticeHowYouFeelScreen extends StatelessWidget {
                         child: Center(
                           child: Text(
                             controller.feel[index],
-                            style:Style.montserratRegular(fontSize: 18,color: Colors.black),
+                            style:Style.nunRegular(fontSize: 18,color: Colors.black),
                           ),
                         ),
                       ),
@@ -80,7 +80,7 @@ class NoticeHowYouFeelScreen extends StatelessWidget {
                 );
               },
             ),
-            Dimens.d30.spaceHeight,
+            Dimens.d20.spaceHeight,
             Padding(
               padding: const EdgeInsets.all(30.0),
               child: CommonElevatedButton(

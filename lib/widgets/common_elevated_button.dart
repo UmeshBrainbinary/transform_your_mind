@@ -49,7 +49,7 @@ class _CommonElevatedButtonState extends State<CommonElevatedButton> {
         onTap: widget.onTap,
         borderRadius: Dimens.d26.radiusAll,
         child: Container(
-          height: widget.height ?? Dimens.d46.h,
+          height: widget.height ?? Dimens.d46,
           width:  widget.width,
           padding: widget.contentPadding ??
               const EdgeInsets.symmetric(
@@ -88,7 +88,7 @@ class _CommonElevatedButtonState extends State<CommonElevatedButton> {
 class LoadingButton extends StatelessWidget {
   final Color? borderColor;
 
-  const LoadingButton({Key? key, this.borderColor}) : super(key: key);
+  const LoadingButton({super.key, this.borderColor});
 
   @override
   Widget build(BuildContext context) {

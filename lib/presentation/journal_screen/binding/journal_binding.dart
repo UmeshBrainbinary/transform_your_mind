@@ -1,6 +1,5 @@
 
 import 'package:get/get.dart';
-import 'package:transform_your_mind/presentation/home_screen/home_controller.dart';
 import 'package:transform_your_mind/presentation/journal_screen/journal_controller.dart';
 
 

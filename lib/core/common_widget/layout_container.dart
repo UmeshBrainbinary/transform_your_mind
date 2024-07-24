@@ -8,11 +8,11 @@ class LayoutContainer extends StatelessWidget {
   final double horizontal;
 
   const LayoutContainer({
-    Key? key,
+    super.key,
     required this.child,
     this.vertical = Dimens.d20,
     this.horizontal = Dimens.d20,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

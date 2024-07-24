@@ -24,11 +24,7 @@ class LoginPreviewView extends StatefulWidget {
 class _LoginPreviewViewState extends State<LoginPreviewView> {
   bool _isChecked = false;
 
-  _toggleCheckbox(bool? value) {
-    setState(() {
-      _isChecked = value ?? false;
-    });
-  }
+ 
   ThemeController themeController = Get.find<ThemeController>();
 @override
   void initState() {
@@ -37,7 +33,6 @@ class _LoginPreviewViewState extends State<LoginPreviewView> {
   }
   @override
   Widget build(BuildContext context) {
-/*  statusBarSet(themeController);*/
     return Scaffold(backgroundColor: ColorConstant.white,
       body: SingleChildScrollView(
         child: Column(
@@ -70,16 +65,40 @@ class _LoginPreviewViewState extends State<LoginPreviewView> {
             ),
             Dimens.d41.spaceHeight,
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Dimens.d24),
+              padding: const EdgeInsets.symmetric(horizontal: Dimens.d50),
               child: Row(
                 children: [
-                  Checkbox(hoverColor: ColorConstant.themeColor,
+
+                  GestureDetector(onTap: () {
+                    setState(() {
+                      _isChecked = !_isChecked;
+                      
+                    });
+                  },
+                    child: _isChecked?Container(
+                      height: 18,
+                      width: 18,
+                      decoration: BoxDecoration(
+                        color: ColorConstant.themeColor,
+                          borderRadius: BorderRadius.circular(2)),
+                      child: Center(child: Icon(Icons.check,color: Colors.white, size: 15,)),
+                    ):Container(
+                      height: 18,
+                      width: 18,
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black),
+                          borderRadius: BorderRadius.circular(2)),
+                    ),
+                  ),
+                  Dimens.d10.spaceWidth,
+                  /*Checkbox(
+                    hoverColor: ColorConstant.themeColor,
                      focusColor: ColorConstant.themeColor,
                     activeColor: ColorConstant.themeColor,
                     checkColor: ColorConstant.white,
                     value: _isChecked,
                     onChanged: _toggleCheckbox,
-                  ),
+                  ),*/
                   StyledText(textAlign: TextAlign.center,
                     text: '<bold>${"iAgreeThe".tr}</bold><red>${"t&m".tr}</red>\n<bold>${"ofThe".tr}</bold><red>${"privacyPolicy".tr}</red>',
                     tags: {
@@ -103,6 +122,7 @@ class _LoginPreviewViewState extends State<LoginPreviewView> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 50),
               child: CommonElevatedButton(
+                height: 46,
                 title: "login".tr,
                 onTap: () {
                   if(_isChecked){
@@ -125,6 +145,7 @@ class _LoginPreviewViewState extends State<LoginPreviewView> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 50),
               child: CommonElevatedButton(
+                height: 46,
                 title: "register".tr,
                 onTap: () {
                   if(_isChecked){

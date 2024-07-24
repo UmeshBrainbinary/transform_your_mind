@@ -48,9 +48,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
           backgroundColor: themeController.isDarkMode.value
               ? ColorConstant.darkBackground
               : ColorConstant.backGround,
-          appBar: CustomAppBar(centerTitle: true,
-            titleStyle:   Style.montserratRegular(
-              fontSize: Dimens.d22,
+          appBar: CustomAppBar(centerTitle: true,showBack: false,
+            titleStyle:   Style.nunitoSemiBold(
+              fontSize: Dimens.d30,
               color: themeController.isDarkMode.value
                   ? ColorConstant.white
                   : ColorConstant.black),
@@ -107,12 +107,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 focusNode: registerController.nameFocus,
                                 prefixIcon: Transform.scale(
                                   scale: 0.5,
-                                  child: SvgPicture.asset(ImageConstant.user),
+                                  child: SvgPicture.asset(ImageConstant.user,   color: themeController.isDarkMode.isTrue
+                                      ? ColorConstant.colorBFBFBF
+                                      : ColorConstant.color545454,),
                                 ),
                                 keyboardType: TextInputType.emailAddress,
                                 validator: (value) {
-                                  if (value!.isEmpty /*||
-                                      (!isText(value, isRequired: true))*/) {
+                                  if (value!.trim()=="") {
                                     return "theNameFieldIsRequired".tr;
                                   }
                                   return null;
@@ -124,11 +125,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 controller:
                                     registerController.emailController,
                                 focusNode: registerController.emailFocus,
-                                prefixIcon: Image.asset(ImageConstant.email,
+                                prefixIcon: Image.asset(ImageConstant.email,   color: themeController.isDarkMode.isTrue
+                                    ? ColorConstant.colorBFBFBF
+                                    : ColorConstant.color545454,
                                     scale: Dimens.d4),
                                 keyboardType: TextInputType.emailAddress,
                                 validator: (value) {
-                                  if (value == "") {
+                                  if (value!.trim() == "") {
                                     return "theEmailFieldIsRequired".tr;
                                   } else if (!isValidEmail(value,
                                       isRequired: true)) {
@@ -146,7 +149,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   controller:
                                       registerController.passwordController,
                                   validator: (value) {
-                                    if (value == "") {
+                                    if (value!.trim() == "") {
                                       return "thePasswordFieldIsRequired".tr;
                                     } else if (!isValidPassword(value,
                                         isRequired: true)) {
@@ -156,7 +159,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   },
                                   focusNode: registerController.passwordFocus,
 
-                                  prefixIcon: Image.asset(ImageConstant.lock,
+                                  prefixIcon: Image.asset(ImageConstant.lock,   color: themeController.isDarkMode.isTrue
+                                      ? ColorConstant.colorBFBFBF
+                                      : ColorConstant.color545454,
                                       scale: Dimens.d4),
                                   suffixIcon: GestureDetector(
                                       onTap: () {
@@ -169,7 +174,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         child: Image.asset(
                                           registerController.securePass.value
                                               ? ImageConstant.eyeClose
-                                              : ImageConstant.eyeOpen,
+                                              : ImageConstant.eyeOpen,   color: themeController.isDarkMode.isTrue
+                                            ? ColorConstant.colorBFBFBF
+                                            : ColorConstant.color545454,
                                           fit: BoxFit.contain,
                                           height: 5,
                                           width: 5,
@@ -190,7 +197,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 prefixIcon: Transform.scale(
                                     scale: 0.5,
                                     child: SvgPicture.asset(
-                                        ImageConstant.calendar,
+                                        ImageConstant.calendar,   color: themeController.isDarkMode.isTrue
+                                        ? ColorConstant.colorBFBFBF
+                                        : ColorConstant.color545454,
                                         height: Dimens.d5,
                                         width: Dimens.d5)),
                                 readOnly: true,
@@ -215,13 +224,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     scale: 0.5,
                                     child: SvgPicture.asset(
                                         ImageConstant.gender,
-                                        height: Dimens.d5,
+                                        height: Dimens.d5,   color: themeController.isDarkMode.isTrue
+                                        ? ColorConstant.colorBFBFBF
+                                        : ColorConstant.color545454,
                                         width: Dimens.d5)),
                                 readOnly: true,
                                 suffixIcon: Transform.scale(
                                     scale: 0.5,
                                     child: SvgPicture.asset(
-                                        ImageConstant.downArrow,
+                                        ImageConstant.downArrow,   color: themeController.isDarkMode.isTrue
+                                        ? ColorConstant.colorBFBFBF
+                                        : ColorConstant.color545454,
                                         height: Dimens.d5,
                                         width: Dimens.d5)),
                                 onTap: () {
@@ -241,6 +254,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   ? Container(
                                       width: Get.width,
                                       decoration: BoxDecoration(
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: ColorConstant.black.withOpacity(0.1),
+                                            blurRadius: 30,spreadRadius: 0.0,
+
+                                          )
+                                        ],
                                         borderRadius:
                                             BorderRadius.circular(Dimens.d10),
                                         color: ColorConstant.white,
@@ -299,7 +319,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                               child: Text(
                                                 registerController
                                                     .genderList[index],
-                                                style: Style.montserratMedium(
+                                                style: Style.nunMedium(
                                                     color: registerController
                                                                 .genderController
                                                                 .text ==
@@ -336,7 +356,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 children: [
                                   TextSpan(
                                     text: "alreadyHaveAnAccount".tr,
-                                    style: Style.montserratRegular(
+                                    style: Style.nunRegular(
                                         color:
                                             themeController.isDarkMode.value
                                                 ? ColorConstant.white
@@ -386,20 +406,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   datePicker(context,) async {
     FocusScope.of(context).unfocus();
-    picked = await showDatePicker(
+    picked = await  showDatePicker(
       builder: (context, child) {
-        TextStyle customTextStyle = Style.montserratRegular(fontSize: 14,color: Colors.black);
+        TextStyle customTextStyle = Style.nunMedium(fontSize: 15,color: Colors.black);
         TextStyle editedTextStyle = customTextStyle.copyWith(color: Colors.red); // Define the edited text style
+        TextStyle selectedDateTextStyle = Style.nunitoBold(fontSize: 15,color: themeController.isDarkMode.isTrue?Colors.white:
+        Colors.black); // Define the style for the selected date
 
         return Theme(
           data: ThemeData.light().copyWith(focusColor: ColorConstant.themeColor,
-              scaffoldBackgroundColor: ColorConstant.themeColor,
-              primaryColor: ColorConstant.themeColor,
-              colorScheme: const ColorScheme.light(
+              colorScheme:  ColorScheme.light(
                 primary: ColorConstant.themeColor,
+                onPrimary: Colors.white,
+                onBackground: Colors.white,
+                background: Colors.white,
+                surface:themeController.isDarkMode.isTrue?ColorConstant.textfieldFillColor: ColorConstant.white,
+                surfaceTint:themeController.isDarkMode.isTrue?ColorConstant.color7A7A7A: ColorConstant.themeColor,
+                onSurface:themeController.isDarkMode.isTrue?Colors.white: ColorConstant.black,
               ),
+
+
               buttonTheme: const ButtonThemeData(
                 textTheme: ButtonTextTheme.primary,
+              ), dialogTheme: const DialogTheme(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.zero, // Remove border radius
+                ),elevation: 0.0,
+                insetPadding: EdgeInsets.all(0), // Remove padding around the dialog
               ),
               textTheme: TextTheme(
                 bodyLarge:customTextStyle,
@@ -407,7 +440,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 bodySmall: customTextStyle,
                 displayLarge: customTextStyle,
                 displayMedium: customTextStyle,
-                headlineLarge: customTextStyle,
                 titleLarge: customTextStyle,
                 displaySmall: customTextStyle,
                 headlineMedium: customTextStyle,
@@ -417,6 +449,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 labelSmall: customTextStyle,
                 titleMedium: editedTextStyle,
                 titleSmall: editedTextStyle,
+
               )),
           child: child!,
         );

@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/utils/audio_manager/audio_player_manager.dart';
 import 'package:transform_your_mind/core/utils/audio_manager/seek_bar.dart';
@@ -205,7 +206,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
 
                 /// description, subtitle
                 Padding(
-                  padding: const EdgeInsets.only(top: 250),
+                  padding: const EdgeInsets.only(top: 200),
                   child: Column(
                 children: [
                   Padding(
@@ -221,15 +222,15 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                           fontSize: 18, color: ColorConstant.white),
                     ),
                   ),
-                  Dimens.d20.spaceHeight,
+                  Dimens.d14.spaceHeight,
                   Text(
-                    widget.audioData?.expertName ??
-                        "",
+                    /*widget.audioData?.expertName ??*/
+                        "Chris hill",
                     textAlign: TextAlign.center,
                     style: Style.nunMedium(
                         fontSize: 15, color: ColorConstant.white),
                   ),
-                  Dimens.d20.spaceHeight,
+                  Dimens.d14.spaceHeight,
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 35),
                     child: Text(
@@ -242,11 +243,13 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                           fontSize: 15, color: ColorConstant.white),
                     ),
                   ),
-                      Dimens.d20.spaceHeight,
+                      Dimens.d90.spaceHeight,
                       Row(mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       GestureDetector(
-                        onTap: () async {},
+                        onTap: () async {
+                          await Share.share(widget.audioData?.description??"");
+                        },
                         child: SvgPicture.asset(
                           height: Dimens.d25,
                           ImageConstant.share,
@@ -686,7 +689,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                                         child: Text(
                                           "${_opacityOfSpeedText.toDouble()}x",
                                           style:
-                                          Style.montserratRegular(
+                                          Style.nunRegular(
                                               fontSize: 12,
                                               color: ColorConstant
                                                   .white),
@@ -706,7 +709,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: Container(
-                        height: Dimens.d115,
+                        height: Dimens.d100,
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: AssetImage(ImageConstant.curveBottomImg),
@@ -742,7 +745,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                                                       Duration.zero;
                                               return checkUrlSameOrNot == false ?Text(
                                                "00:00",
-                                                style: Style.montserratMedium(
+                                                style: Style.nunMedium(
                                                     fontSize: Dimens.d14,
                                                     color: ColorConstant.white),
                                               ):Text(
@@ -750,7 +753,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                                                     .toString()
                                                     .split('.')
                                                     .first,
-                                                style: Style.montserratMedium(
+                                                style: Style.nunMedium(
                                                     fontSize: Dimens.d14,
                                                     color: ColorConstant.white),
                                               );
@@ -792,7 +795,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                                                     .toString()
                                                     .split('.')
                                                     .first,
-                                                style: Style.montserratMedium(
+                                                style: Style.nunMedium(
                                                     fontSize: Dimens.d14,
                                                     color: ColorConstant.white),
                                               );
@@ -902,93 +905,103 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
-            return AlertDialog(
-              //backgroundColor: Colors.white,
+            return AlertDialog(contentPadding: EdgeInsets.zero,
+              backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.textfieldFillColor:Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(11.0), // Set border radius
               ),
-              actions: <Widget>[
-                Dimens.d10.spaceHeight,
-                GestureDetector(
-                    onTap: () {
-                      Get.back();
-                    },
-                    child: SvgPicture.asset(ImageConstant.close,
-                        color: themeController.isDarkMode.value
-                            ? ColorConstant.white
-                            : ColorConstant.black)),
-                Dimens.d3.spaceHeight,
-                Center(
-                  child: Text("rateYourExperience".tr,
-                      textAlign: TextAlign.center,
-                      style: Style.nunitoSemiBold(
+           content: Padding(
+             padding: const EdgeInsets.all(10.0),
+             child: Column(crossAxisAlignment: CrossAxisAlignment.center,
+               mainAxisSize: MainAxisSize.min,
+               children: [
+               GestureDetector(
+                   onTap: () {
+                     Get.back();
+                   },
+                   child: Align(alignment: Alignment.topRight,
+                     child: SvgPicture.asset(ImageConstant.close,
+                         color: themeController.isDarkMode.value
+                             ? ColorConstant.white
+                             : ColorConstant.black),
+                   )),
+               Dimens.d16.spaceHeight,
+               Center(
+                 child: Text("rateYourExperience".tr,
+                     textAlign: TextAlign.center,
+                     style: Style.nunitoSemiBold(
 
-                      ).copyWith(fontSize: Dimens.d22,letterSpacing: 1.5)),
-                ),
-                Dimens.d14.spaceHeight,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: List.generate(5, (index) {
-                    return GestureDetector(
-                        onTap: () {
-                          setState.call(() {
-                            if (nowPlayingController.currentRating ==
-                                index + 1) {
-                              nowPlayingController.currentRating = 0;
-                            } else {
-                              nowPlayingController.currentRating = index + 1;
-                            }
-                          });
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(3.0),
-                          child: SvgPicture.asset(
-                            index < nowPlayingController.currentRating!
-                                ? ImageConstant.rating
-                                : ImageConstant.rating,
-                            color: index < nowPlayingController.currentRating!
-                                ? ColorConstant.colorFFC700
-                                : ColorConstant.colorD9D9D9,
-                            height: Dimens.d26,
-                            width: Dimens.d26,
-                          ),
-                        ));
-                  }),
-                ),
-                Dimens.d22.spaceHeight,
-                CommonTextField(
+                     ).copyWith(fontSize: Dimens.d22,letterSpacing: 1)),
+               ),
+               Dimens.d14.spaceHeight,
+               Row(
+                 mainAxisAlignment: MainAxisAlignment.center,
+                 crossAxisAlignment: CrossAxisAlignment.center,
+                 children: List.generate(5, (index) {
+                   return GestureDetector(
+                       onTap: () {
+                         setState.call(() {
+                           if (nowPlayingController.currentRating ==
+                               index + 1) {
+                             nowPlayingController.currentRating = 0;
+                           } else {
+                             nowPlayingController.currentRating = index + 1;
+                           }
+                         });
+                       },
+                       child: Padding(
+                         padding: const EdgeInsets.only(left: 15),
+                         child: SvgPicture.asset(
+                           index < nowPlayingController.currentRating!
+                               ? ImageConstant.rating
+                               : ImageConstant.rating,
+                           color: index < nowPlayingController.currentRating!
+                               ? ColorConstant.colorFFC700
+                               : ColorConstant.colorD9D9D9,
+                           height: Dimens.d26,
+                           width: Dimens.d26,
+                         ),
+                       ));
+                 }),
+               ),
+               Dimens.d22.spaceHeight,
+               Padding(
+                 padding: const EdgeInsets.symmetric(horizontal: 20),
+                 child: CommonTextField(
+                     borderRadius: Dimens.d10,
+                     filledColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.grey.withOpacity(0.3),
+                     hintText: "writeYourNote".tr,
+                     maxLines: 3,
+                     controller: nowPlayingController.ratingController,
+                     focusNode: nowPlayingController.ratingFocusNode),
+               ),
+               Dimens.d18.spaceHeight,
+               Padding(
+                 padding: EdgeInsets.symmetric(horizontal: Dimens.d70.h),
+                 child: CommonElevatedButton(
+                   height: Dimens.d33,contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+                   textStyle: Style.nunRegular(
+                     fontSize: Dimens.d16,
+                     color: ColorConstant.white,
+                   ),
+                   title: "submit".tr,
+                   onTap: () async {
+                     nowPlayingController.ratingFocusNode.unfocus();
+                     nowPlayingController.addRating(
+                         context: context,
+                         id: id,
+                         star: nowPlayingController.currentRating);
+                     nowPlayingController.currentRating = 0;
+                     nowPlayingController.ratingController.clear();
+                     await nowPlayingController.getUser(widget.audioData!.id);
+                     setState.call(() {});
+                   },
+                 ),
+               ),
+                 Dimens.d8.spaceHeight,
 
-                    borderRadius: Dimens.d10,
-                    filledColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.colorECECEC,
-                    hintText: "writeYourNote".tr,
-                    maxLines: 5,
-                    controller: nowPlayingController.ratingController,
-                    focusNode: nowPlayingController.ratingFocusNode),
-                Dimens.d18.spaceHeight,
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: Dimens.d70.h),
-                  child: CommonElevatedButton(
-                    height: Dimens.d33,
-                    textStyle: Style.montserratRegular(
-                      fontSize: Dimens.d18,
-                      color: ColorConstant.white,
-                    ),
-                    title: "submit".tr,
-                    onTap: () async {
-                      nowPlayingController.ratingFocusNode.unfocus();
-                      nowPlayingController.addRating(
-                          context: context,
-                          id: id,
-                          star: nowPlayingController.currentRating);
-                      nowPlayingController.currentRating = 0;
-                      nowPlayingController.ratingController.clear();
-                      await nowPlayingController.getUser(widget.audioData!.id);
-                      setState.call(() {});
-                    },
-                  ),
-                )
-              ],
+             ],),
+           ),
             );
           },
         );

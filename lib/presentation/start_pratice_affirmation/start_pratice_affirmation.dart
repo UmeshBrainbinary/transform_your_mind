@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -6,13 +7,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:numberpicker/numberpicker.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
+import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/model_class/affirmation_model.dart';
+import 'package:transform_your_mind/model_class/common_model.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/audio_list.dart';
 import 'package:transform_your_mind/presentation/start_pratice_affirmation/start_practice_affirmation_controller.dart';
 import 'package:transform_your_mind/presentation/start_pratice_affirmation/start_practice_great_work.dart';
@@ -20,8 +28,13 @@ import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:volume_controller/volume_controller.dart';
 
+import '../../core/utils/end_points.dart';
+
 class StartPracticeAffirmation extends StatefulWidget {
-  const StartPracticeAffirmation({super.key});
+  List<AffirmationData>? data;
+  String? id;
+
+  StartPracticeAffirmation({super.key, this.id,this.data});
 
   @override
   State<StartPracticeAffirmation> createState() =>
@@ -33,49 +46,49 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
   StartPracticeAffirmationController startC =
       Get.put(StartPracticeAffirmationController());
   double _setVolumeValue = 0;
-  double _volumeListenerValue = 0;
-  int currentIndex = 0;
+  int currentIndex = 1;
   int chooseImage = 0;
   final PageController _pageController = PageController();
   int _currentIndex = 0;
+  int likeIndex = 0;
   double _progress = 0.0;
   Timer? _timer;
   int selectedTime = 3;
   bool am = true;
   bool pm = false;
   Duration selectedDuration = const Duration(hours: 0, minutes: 0, seconds: 0);
-  int selectedHour = 0;
+  int selectedHour = 1;
   int selectedHourIndex = 0;
-  int selectedMinute = 0;
-  int selectedSeconds = 0;
-
+  int selectedMinute = 1;
+  int selectedSeconds = 1;
+  List<bool> like = [];
   @override
   void initState() {
     super.initState();
+    List.generate(widget.data!.length, (index) => like.add(false),);
+    setBackSounds();
     startC.selectedSpeedIndex = 0;
     startC.setSpeed = false.obs;
 
-    startC.storyCompleted = List.generate(startC.quotes.length,
+    startC.storyCompleted = List.generate(widget.data!.length,
         (index) => false); // Initialize all stories as not completed
 
     _startProgress();
     VolumeController().listener((volume) {
-      setState(() => _volumeListenerValue = volume);
     });
 
     VolumeController().getVolume().then((volume) => _setVolumeValue = volume);
-    setBackSounds();
+
   }
   setBackSounds() async {
     startC.soundMute = false;
     startC.player.setVolume(1);
-    await startC.player
-        .setUrl(startC.soundList[0]["audio"]);
+    await startC.player.setUrl(startC.soundList[1]["audio"]);
     await startC.player.play();
   }
   @override
   void dispose() {
-    startC.timer.cancel();
+    startC.timer?.cancel();
     super.dispose();
   }
 
@@ -83,33 +96,43 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
     _timer?.cancel(); // Cancel any existing timer
     int durationInSeconds = speedChange();
     int durationInMilliseconds = durationInSeconds * 1000;
-    int intervalInMilliseconds = 30;
+    int intervalInMilliseconds = 50;
 
     _timer =
         Timer.periodic(Duration(milliseconds: intervalInMilliseconds), (timer) {
-      setState(() {
-        _progress += 1.0 / (durationInMilliseconds / intervalInMilliseconds);
-        if (_progress >= 1.0) {
-          _progress = 0.0;
-          _currentIndex++;
-          if (_currentIndex >= startC.quotes.length) {
-            _timer!.cancel();
-          } else {
-            _pageController.animateToPage(
-              _currentIndex,
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.easeIn,
-            );
+          _progress += 1.0 / (durationInMilliseconds / intervalInMilliseconds);
+          if (_progress >= 1.0) {
+            _progress = 0.0;
+            _currentIndex++;
+
+            if (_currentIndex >= widget.data!.length) {
+              _timer!.cancel();
+              if(widget.data!.length==1) {
+                startC.player.pause();
+
+                Get.to( AffirmationGreatWork(theme: startC.themeList[chooseImage],));
+              }
+            } else {
+              _pageController.animateToPage(
+                _currentIndex,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeIn,
+              );
+
+            }
           }
-        }
+      setState(()  {
+
       });
     });
   }
 
+
+  CommonModel commonModel = CommonModel();
   int speedChange() {
     switch (startC.selectedSpeedIndex) {
       case 0:
-        return 3;
+        return 5;
       case 1:
         return 20;
       case 2:
@@ -119,9 +142,65 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
       case 4:
         return 5;
       default:
-        return 3;
+        return 5;
     }
   }
+
+  bool loader = false;
+
+  createAlarm(id) async {
+    setState(() {
+      loader == true;
+    });
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.Request('POST', Uri.parse(EndPoints.addAlarm));
+    request.body = json.encode({
+      "hours": selectedHour,
+      "minutes": selectedMinute,
+      "seconds": selectedSeconds,
+      "time": am == true ? "AM" : "PM",
+      "affirmationId": id,
+      "created_by": PrefService.getString(PrefKey.userId)
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      selectedSeconds = 0;
+      selectedMinute = 0;
+      selectedHour = 0;
+      setState(() {
+        loader == false;
+      });
+
+      debugPrint(await response.stream.bytesToString());
+      showSnackBarSuccess(context, "alarmSet".tr);
+      Get.back();
+    } else {
+      selectedSeconds = 0;
+      selectedMinute = 0;
+      selectedHour = 0;
+      final responseBody = await response.stream.bytesToString();
+      commonModel = commonModelFromJson(responseBody);
+      showSnackBarSuccess(context, commonModel.message ?? "alarmAlreadySet".tr);
+      Get.back();
+
+      setState(() {
+        loader == false;
+      });
+
+      debugPrint(response.reasonPhrase);
+    }
+    setState(() {
+      loader == false;
+    });
+  }
+
+  bool showBottom = false;
 
   @override
   Widget build(BuildContext context) {
@@ -188,7 +267,7 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
               left: 10,
               right: 10,
               child: Row(
-                children: List.generate(startC.quotes.length, (index) {
+                children: List.generate(widget.data!.length, (index) {
                   return Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 2.0),
@@ -211,16 +290,21 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
 
             PageView.builder(
               scrollDirection: Axis.vertical,
-              itemCount: startC.quotes.length,
+              itemCount: widget.data!.length,
               controller: _pageController,
-              onPageChanged: (value) {
+              onPageChanged: (value) async {
                 setState(() {
                   _currentIndex = value;
+                  likeIndex = value;
                   _progress = 0.0;
                 });
-                if (_currentIndex == (startC.quotes.length - 1)) {
+                    if (_currentIndex == (widget.data!.length - 1)) {
+
+                  await startC.player.pause();
                   Future.delayed(Duration(seconds: speedChange())).then(
-                    (value) => Get.to(const AffirmationGreatWork()),
+                    (value) {
+                      Get.to( AffirmationGreatWork(theme: startC.themeList[chooseImage],));
+                    },
                   );
                 }
               },
@@ -229,7 +313,7 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
                   children: [
                     Dimens.d220.spaceHeight,
                     Text(
-                      "Self-esteem",
+                      widget.data?[index].name??"",
                       style: Style.gothamMedium(
                           fontSize: 26,
                           fontWeight: FontWeight.w700,
@@ -239,7 +323,7 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
                     Center(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 45),
-                        child: Text(startC.quotes[index],
+                        child: Text(widget.data?[index].description??"",
                             maxLines: 5,
                             textAlign: TextAlign.center,
                             style: Style.gothamLight(
@@ -258,8 +342,9 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
               top: Dimens.d70,
               left: 16,
               child: GestureDetector(
-                onTap: () {
+                onTap: () async {
                   Get.back();
+                  await startC.player.pause();
                 },
                 child: Container(
                   height: 42,
@@ -282,6 +367,9 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
                     children: [
                       GestureDetector(
                         onTap: () {
+                          setState(() {
+                            showBottom = true;
+                          });
                           sheetSound();
                         },
                         child: Container(
@@ -312,6 +400,9 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
                     children: [
                       GestureDetector(
                         onTap: () {
+                          setState(() {
+                            showBottom = true;
+                          });
                           sheetTheme();
                         },
                         child: Container(
@@ -341,34 +432,54 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
               ),
             ),
             //_____________________________ like ,clock, share________________________
-            Positioned(
-                bottom: Dimens.d246,
-                left: MediaQuery.of(context).size.width / 3.2,
+            showBottom
+                ? const SizedBox()
+                : Positioned(
+                    bottom: Dimens.d246,
+                    left: MediaQuery.of(context).size.width / 3.2,
                 child: Row(
                   children: [
                     GestureDetector(
-                      onTap: () {},
-                      child: SvgPicture.asset(ImageConstant.share,
-                          color: ColorConstant.white, height: 20, width: 20),
+                          onTap: () {
+                            Share.share(widget.data![_currentIndex].description.toString());
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: SvgPicture.asset(ImageConstant.share,
+                                color: ColorConstant.white, height: 22, width: 22),
+                          ),
                     ),
                     Dimens.d40.spaceWidth,
                     GestureDetector(
                       onTap: () {
-                        sheetAlarm();
-                      },
+                            setState(() {
+                              showBottom = true;
+                            });
+                            sheetAlarm();
+                          },
                       child: SvgPicture.asset(ImageConstant.alarm,
                           color: ColorConstant.white, height: 20, width: 20),
                     ),
                     Dimens.d40.spaceWidth,
                     GestureDetector(
-                      onTap: () {},
-                      child: SvgPicture.asset(
+                      onTap: () {
+                        setState(() {
+                          like[likeIndex] = !like[likeIndex];
+                        });
+                      },
+                      child: like[likeIndex]
+                          ? Image.asset(
+                        ImageConstant.likeGif,
+                        height: 35,width: 35,
+                      )
+                          : SvgPicture.asset(
                         ImageConstant.likeTools,
                         color: ColorConstant.white,
                         height: 20,
                         width: 20,
                       ),
-                    ),
+                    )
+
                   ],
                 )),
 
@@ -416,7 +527,7 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
                                     Dimens.d5.spaceWidth,
                                     Text(
                                       startC.speedList[index],
-                                      style: Style.montserratRegular(
+                                      style: Style.nunRegular(
                                           fontSize: 10,
                                           color: isChecked
                                               ? ColorConstant.themeColor
@@ -432,9 +543,11 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
                 : const SizedBox(),
             //_________________________________ bottom View sound  _______________________
 
-            Positioned(
-              bottom: Dimens.d85,
-              left: MediaQuery.of(context).size.width / 5,
+            showBottom
+                ? const SizedBox()
+                : Positioned(
+                    bottom: Dimens.d85,
+                    left: MediaQuery.of(context).size.width / 5,
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 27, vertical: 10),
@@ -451,11 +564,11 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
                           startC.soundMute = !startC.soundMute;
                         });
                         if (startC.soundMute) {
-                          startC.audioPlayer.setVolume(0);
-                        } else {
-                          startC.audioPlayer.setVolume(1);
-                        }
-                      },
+                                startC.player.setVolume(0);
+                              } else {
+                                startC.player.setVolume(1);
+                              }
+                            },
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -504,7 +617,7 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
   commonText(text) {
     return Text(
       text,
-      style: Style.montserratRegular(
+      style: Style.nunRegular(
           fontSize: 14, color: ColorConstant.white.withOpacity(0.5)),
     );
   }
@@ -512,7 +625,7 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
   commonTextTitle(text) {
     return Text(
       text,
-      style: Style.montserratRegular(
+      style: Style.nunRegular(
           fontWeight: FontWeight.w600,
           fontSize: 14,
           color: ColorConstant.white),
@@ -527,146 +640,192 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setState) {
-            return Stack(
-              children: [
-                BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                  child: SizedBox(
-                    height: 280,
-                    width: Get.width,
+            return Container(
+              decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                      topRight: Radius.circular(20),
+                      topLeft: Radius.circular(20)),
+                  color: ColorConstant.black.withOpacity(0.2)),
+              height: 280,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(
+                    sigmaX: 0.0,
+                    sigmaY: 0.0,
                   ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(20),
-                          topLeft: Radius.circular(20)),
-                      color: ColorConstant.black.withOpacity(0.3)),
-                  height: 280,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Dimens.d10.spaceHeight,
-                        Center(
-                          child: Container(
-                            height: 4,
-                            width: 40,
-                            decoration: BoxDecoration(
-                                color: ColorConstant.colorBCBCBC,
-                                borderRadius: BorderRadius.circular(4)),
-                          ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Dimens.d10.spaceHeight,
+                      Center(
+                        child: Container(
+                          height: 4,
+                          width: 40,
+                          decoration: BoxDecoration(
+                              color: ColorConstant.colorBCBCBC,
+                              borderRadius: BorderRadius.circular(4)),
                         ),
-                        Dimens.d20.spaceHeight,
-                        Text('sound'.tr,
-                            style: Style.montserratRegular(
-                                fontSize: 32,
-                                fontWeight: FontWeight.w500,
-                                color: ColorConstant.white)),
-                        Dimens.d20.spaceHeight,
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: startC.soundList.length,
-                            padding: EdgeInsets.zero,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
-                                onTap: () async {
-                                  await startC.player
-                                      .setUrl(startC.soundList[index]["audio"]);
-                                  await startC.player.play();
-                                  setState.call(() {
-                                    currentIndex = index;
-                                  });
-                                },
-                                child: Container(
-                                  width: 100,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10),
-                                  decoration: BoxDecoration(
-                                      color: currentIndex == index
-                                          ? Colors.black.withOpacity(0.5)
-                                          : ColorConstant.white
-                                              .withOpacity(0.3),
-                                      borderRadius: BorderRadius.circular(15),
-                                      border: Border.all(
+                      ),
+                      Dimens.d20.spaceHeight,
+                      Text('sound'.tr,
+                          style: Style.nunMedium(
+                              fontSize: 32,
+                              fontWeight: FontWeight.w500,
+                              color: ColorConstant.white)),
+                      Dimens.d20.spaceHeight,
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: startC.soundList.length,
+                          padding: EdgeInsets.zero,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () async {
+                                await startC.player
+                                    .setUrl(startC.soundList[index]["audio"]);
+                                await startC.player.play();
+                                setState.call(() {
+                                  currentIndex = index;
+                                });
+                              },
+                              child: startC.soundList[index]["title"] == "None"
+                                  ? Container(
+                                      width: 100,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10),
+                                      decoration: BoxDecoration(
                                           color: currentIndex == index
-                                              ? ColorConstant.white
-                                              : Colors.transparent)),
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 8.0),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      Dimens.d20.spaceHeight,
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(80),
-                                        child: Image.asset(
-                                          ImageConstant.gratitudeBackground,
-                                          width: 56,
-                                          height: 56,
-                                          fit: BoxFit.cover,
-                                        ),
+                                              ? Colors.black.withOpacity(0.5)
+                                              : ColorConstant.white
+                                                  .withOpacity(0.3),
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          border: Border.all(
+                                              color: currentIndex == index
+                                                  ? ColorConstant.white
+                                                  : Colors.transparent)),
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 8.0),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          Dimens.d36.spaceHeight,
+                                          Container(
+                                            height: 27,
+                                            width: 27,
+                                            decoration: const BoxDecoration(
+                                                color: ColorConstant.white,
+                                                shape: BoxShape.circle),
+                                          ),
+                                          Dimens.d25.spaceHeight,
+                                          Text(
+                                            startC.soundList[index]["title"],
+                                            textAlign: TextAlign.center,
+                                            style: Style.nunRegular(
+                                                fontSize: 12,
+                                                color: ColorConstant.white),
+                                          ),
+                                        ],
                                       ),
-                                      Dimens.d10.spaceHeight,
-                                      Text(
-                                        startC.soundList[index]["title"],
-                                        textAlign: TextAlign.center,
-                                        style: Style.montserratRegular(
-                                            fontSize: 12,
-                                            color: ColorConstant.white),
+                                    )
+                                  : Container(
+                                      width: 100,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10),
+                                      decoration: BoxDecoration(
+                                          color: currentIndex == index
+                                              ? Colors.black.withOpacity(0.5)
+                                              : ColorConstant.white
+                                                  .withOpacity(0.3),
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          border: Border.all(
+                                              color: currentIndex == index
+                                                  ? ColorConstant.white
+                                                  : Colors.transparent)),
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 8.0),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          Dimens.d20.spaceHeight,
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(80),
+                                            child: Image.asset(
+                                              ImageConstant.gratitudeBackground,
+                                              width: 56,
+                                              height: 56,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          Dimens.d10.spaceHeight,
+                                          Text(
+                                            startC.soundList[index]["title"],
+                                            textAlign: TextAlign.center,
+                                            style: Style.nunRegular(
+                                                fontSize: 12,
+                                                color: ColorConstant.white),
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                            );
+                          },
+                        ),
+                      ),
+                      Dimens.d20.spaceHeight,
+                      Row(
+                        children: <Widget>[
+                          SvgPicture.asset(
+                            ImageConstant.soundLow,
+                            color: ColorConstant.white,
+                          ),
+                          ValueListenableBuilder(
+                            valueListenable: startC.slideValue,
+                            builder: (context, value, child) {
+                              return Expanded(
+                                child: Slider(
+                                  thumbColor: ColorConstant.white,
+                                  min: 0,
+                                  max: 1,
+                                  activeColor: ColorConstant.themeColor,
+                                  onChanged: (double value) {
+                                    setState.call(() {
+                                      _setVolumeValue = value;
+                                      VolumeController()
+                                          .setVolume(_setVolumeValue);
+                                    });
+                                    setState(() {});
+                                  },
+                                  value: _setVolumeValue,
                                 ),
                               );
                             },
                           ),
-                        ),
-                        Dimens.d20.spaceHeight,
-                        Row(
-                          children: <Widget>[
-                            SvgPicture.asset(
-                              ImageConstant.soundMax,
-                              color: ColorConstant.white,
-                            ),
-                            ValueListenableBuilder(
-                              valueListenable: startC.slideValue,
-                              builder: (context, value, child) {
-                                return Expanded(
-                                  child: Slider(
-                                    thumbColor: ColorConstant.white,
-                                    min: 0,
-                                    max: 1,
-                                    activeColor: ColorConstant.themeColor,
-                                    onChanged: (double value) {
-                                      setState.call(() {
-                                        _setVolumeValue = value;
-                                        VolumeController()
-                                            .setVolume(_setVolumeValue);
-                                      });
-                                      setState(() {});
-                                    },
-                                    value: _setVolumeValue,
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                          SvgPicture.asset(
+                            ImageConstant.soundMax,
+                            color: ColorConstant.white,
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-              ],
+              ),
             );
           },
         );
       },
+    ).whenComplete(
+      () {
+        setState(() {
+          showBottom = false;
+        });
+      },
     );
   }
-
   Future sheetTheme() {
     return showModalBottomSheet(
       barrierColor: Colors.transparent,
@@ -675,110 +834,108 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setState) {
-            return Stack(
-              children: [
-                BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                  child: SizedBox(
-                    height: 200,
-                    width: Get.width,
+            return Container(
+              decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                      topRight: Radius.circular(20),
+                      topLeft: Radius.circular(20)),
+                  color: ColorConstant.black.withOpacity(0.3)),
+              height: 200,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(
+                    sigmaX: 0.0,
+                    sigmaY: 0.0,
                   ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(20),
-                          topLeft: Radius.circular(20)),
-                      color: ColorConstant.black.withOpacity(0.3)),
-                  height: 200,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Dimens.d10.spaceHeight,
-                        Center(
-                          child: Container(
-                            height: 4,
-                            width: 40,
-                            decoration: BoxDecoration(
-                                color: ColorConstant.colorBCBCBC,
-                                borderRadius: BorderRadius.circular(4)),
-                          ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Dimens.d10.spaceHeight,
+                      Center(
+                        child: Container(
+                          height: 4,
+                          width: 40,
+                          decoration: BoxDecoration(
+                              color: ColorConstant.colorBCBCBC,
+                              borderRadius: BorderRadius.circular(4)),
                         ),
-                        Dimens.d25.spaceHeight,
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: startC.themeList.length,
-                            padding: EdgeInsets.zero,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  setState.call(() {
-                                    chooseImage = index;
-                                  });
-                                  setState(() {});
-                                },
-                                child: Container(
-                                  height: 160,
-                                  decoration: BoxDecoration(
+                      ),
+                      Dimens.d25.spaceHeight,
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: startC.themeList.length,
+                          padding: EdgeInsets.zero,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                setState.call(() {
+                                  chooseImage = index;
+                                });
+                                setState(() {});
+                              },
+                              child: Container(
+                                height: 160,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
                                       color: chooseImage == index
-                                          ? Colors.black.withOpacity(0.5)
-                                          : ColorConstant.white
-                                              .withOpacity(0.3),
-                                      borderRadius: BorderRadius.circular(15),
-                                      border: Border.all(
-                                          color: chooseImage == index
-                                              ? ColorConstant.white
-                                              : Colors.transparent)),
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 8.0),
-                                  child: CachedNetworkImage(
-                                    height: 160,
-                                    width: 100,
-                                    imageUrl: startC.themeList[index],
-                                    imageBuilder: (context, imageProvider) =>
-                                        Container(
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.rectangle,
-                                        borderRadius: BorderRadius.circular(
-                                          10.0,
-                                        ),
-                                        image: DecorationImage(
-                                          image: imageProvider,
-                                          fit: BoxFit.cover,
-                                        ),
+                                          ? Colors.white
+                                          : Colors.transparent,
+                                      width: 2.5),
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: CachedNetworkImage(
+                                  height: 160,
+                                  width: 100,
+                                  imageUrl: startC.themeList[index],
+                                  imageBuilder: (context, imageProvider) =>
+                                      Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(
+                                        10.0,
+                                      ),
+                                      image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.cover,
                                       ),
                                     ),
-                                    placeholder: (context, url) =>
-                                        PlaceHolderCNI(
-                                      height: Get.height,
-                                      width: Get.width,
-                                      borderRadius: 10.0,
-                                    ),
-                                    errorWidget: (context, url, error) =>
-                                        PlaceHolderCNI(
-                                      height: Get.height,
-                                      width: Get.width,
-                                      isShowLoader: false,
-                                      borderRadius: 8.0,
-                                    ),
+                                  ),
+                                  placeholder: (context, url) => PlaceHolderCNI(
+                                    height: Get.height,
+                                    width: Get.width,
+                                    borderRadius: 10.0,
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      PlaceHolderCNI(
+                                    height: Get.height,
+                                    width: Get.width,
+                                    isShowLoader: false,
+                                    borderRadius: 8.0,
                                   ),
                                 ),
-                              );
-                            },
-                          ),
+                              ),
+                            );
+                          },
                         ),
-                        Dimens.d15.spaceHeight,
-                      ],
-                    ),
+                      ),
+                      Dimens.d15.spaceHeight,
+                    ],
                   ),
                 ),
-              ],
+              ),
             );
           },
         );
+      },
+    ).whenComplete(
+      () {
+        setState(() {
+          showBottom = false;
+        });
       },
     );
   }
@@ -793,246 +950,274 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
           builder: (context, setState) {
             return Stack(
               children: [
-                BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                  child: SizedBox(
-                    height: 400,
-                    width: Get.width,
+                Positioned(top: 600,
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                    child: Container(),
                   ),
                 ),
                 Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(20),
+                      topLeft: Radius.circular(20),
+                    ),
+                    color: Colors.transparent,
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
                       borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(20),
-                          topLeft: Radius.circular(20)),
-                      color: ColorConstant.black.withOpacity(0.4)),
-                  height: 400,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Dimens.d10.spaceHeight,
-                        Center(
-                          child: Container(
-                            height: 4,
-                            width: 40,
-                            decoration: BoxDecoration(
-                                color: ColorConstant.colorBCBCBC,
-                                borderRadius: BorderRadius.circular(4)),
-                          ),
-                        ),
-                        Dimens.d18.spaceHeight,
-                        Row(
-                          children: [
-                            Text(
-                              "newAlarms".tr,
-                              style: Style.montserratRegular(
-                                  fontSize: 20, color: ColorConstant.white),
-                            ),
-                            const Spacer(),
-                            Container(
-                              height: 26,
-                              width: Dimens.d100,
+                        topRight: Radius.circular(20),
+                        topLeft: Radius.circular(20),
+                      ),
+                      color: ColorConstant.black.withOpacity(0.4),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Dimens.d10.spaceHeight,
+                          Center(
+                            child: Container(
+                              height: 4,
+                              width: 40,
                               decoration: BoxDecoration(
+                                color: ColorConstant.colorBCBCBC,
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                            ),
+                          ),
+                          Dimens.d10.spaceHeight,
+                          Row(
+                            children: [
+                              Text(
+                                "Alarm".tr,
+                                style: Style.nunMedium(
+                                  fontSize: 32,
                                   color: ColorConstant.white,
+                                ),
+                              ),
+                              const Spacer(),
+                              Container(
+                                height: 26,
+                                width: Dimens.d100,
+                                decoration: BoxDecoration(
+                                  color: ColorConstant.transparent,
                                   borderRadius: BorderRadius.circular(17),
                                   border: Border.all(
-                                      color: ColorConstant.colorBFBFBF)),
-                              child: Row(
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState.call(() {
-                                        am = true;
-                                        pm = false;
-                                      });
-                                    },
-                                    child: Container(
+                                    color: ColorConstant.colorBFBFBF,
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState.call(() {
+                                          am = true;
+                                          pm = false;
+                                        });
+                                      },
+                                      child: Container(
                                         width: Dimens.d49,
                                         decoration: BoxDecoration(
-                                            color: am == true
-                                                ? ColorConstant.themeColor
-                                                : ColorConstant.white,
-                                            borderRadius:
-                                                BorderRadius.circular(17)),
+                                          color: am
+                                              ? ColorConstant.themeColor
+                                              : ColorConstant.transparent,
+                                          borderRadius:
+                                              BorderRadius.circular(17),
+                                        ),
                                         child: Center(
                                           child: Text(
                                             "AM",
-                                            style: Style.montserratRegular(
-                                                fontSize: 12,
-                                                color: am == true
-                                                    ? ColorConstant.white
-                                                    : ColorConstant.black),
+                                            style: Style.nunRegular(
+                                              fontSize: 12,
+                                              color: am
+                                                  ? ColorConstant.white
+                                                  : ColorConstant.white,
+                                            ),
                                           ),
-                                        )),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState.call(() {
-                                        am = false;
-                                        pm = true;
-                                      });
-                                    },
-                                    child: Container(
+                                        ),
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState.call(() {
+                                          am = false;
+                                          pm = true;
+                                        });
+                                      },
+                                      child: Container(
                                         height: 26,
                                         width: Dimens.d49,
                                         decoration: BoxDecoration(
-                                            color: pm == true
-                                                ? ColorConstant.themeColor
-                                                : ColorConstant.white,
-                                            borderRadius:
-                                                BorderRadius.circular(17)),
+                                          color: pm
+                                              ? ColorConstant.themeColor
+                                              : ColorConstant.transparent,
+                                          borderRadius:
+                                              BorderRadius.circular(17),
+                                        ),
                                         child: Center(
                                           child: Text(
                                             "PM",
-                                            style: Style.montserratRegular(
-                                                fontSize: 12,
-                                                color: pm == true
-                                                    ? ColorConstant.white
-                                                    : ColorConstant.black),
+                                            style: Style.nunRegular(
+                                              fontSize: 12,
+                                              color: pm
+                                                  ? ColorConstant.white
+                                                  : ColorConstant.white,
+                                            ),
                                           ),
-                                        )),
-                                  ),
-                                ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        Dimens.d10.spaceHeight,
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            commonTextA(
-                              "hours".tr,
-                            ),
-                            commonTextA(
-                              "minutes".tr,
-                            ),
-                            commonTextA(
-                              "seconds".tr,
-                            ),
-                          ],
-                        ),
-                        Dimens.d10.spaceHeight,
-                        Row(
-                          children: [
-                            NumberPicker(
-                              zeroPad: true,
-                              value: selectedHour,
-                              minValue: 0,
-                              textStyle: Style.montserratRegular(
-                                  fontSize: 14,
-                                  color: ColorConstant.colorCACACA),
-                              selectedTextStyle: Style.montserratBold(
-                                  fontSize: 22,
-                                  color: ColorConstant.themeColor),
-                              maxValue: 24,
-                              itemHeight: 50,
-                              itemWidth: 50,
-                              onChanged: (value) =>
-                                  setState(() => selectedHour = value),
-                            ),
-                            const Spacer(),
-                            numericSymbol(),
-                            const Spacer(),
-                            NumberPicker(
-                              zeroPad: true,
-                              value: selectedMinute,
-                              minValue: 0,
-                              itemHeight: 50,
-                              itemWidth: 50,
-                              textStyle: Style.montserratRegular(
-                                  fontSize: 14,
-                                  color: ColorConstant.colorCACACA),
-                              selectedTextStyle: Style.montserratBold(
-                                  fontSize: 22,
-                                  color: ColorConstant.themeColor),
-                              maxValue: 60,
-                              onChanged: (value) =>
-                                  setState(() => selectedMinute = value),
-                            ),
-                            const Spacer(),
-                            numericSymbol(),
-                            const Spacer(),
-                            NumberPicker(
-                              zeroPad: true,
-                              value: selectedSeconds,
-                              minValue: 0,
-                              itemHeight: 50,
-                              itemWidth: 50,
-                              textStyle: Style.montserratRegular(
-                                  fontSize: 14,
-                                  color: ColorConstant.colorCACACA),
-                              selectedTextStyle: Style.montserratBold(
-                                  fontSize: 22,
-                                  color: ColorConstant.themeColor),
-                              maxValue: 60,
-                              onChanged: (value) =>
-                                  setState(() => selectedSeconds = value),
-                            ),
-                          ],
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (context) {
-                                return const AudioList();
-                              },
-                            ));
-                          },
-                          child: Container(
-                            height: Dimens.d51,
-                            width: Get.width,
-                            decoration: BoxDecoration(
-                                color: ColorConstant.backGround,
-                                borderRadius: BorderRadius.circular(6)),
+                            ],
+                          ),
+                          Dimens.d10.spaceHeight,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 70),
                             child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Dimens.d14.spaceWidth,
-                                Text(
-                                  "sound".tr,
-                                  style: Style.montserratRegular(fontSize: 14),
-                                ),
-                                const Spacer(),
-                                Text(
-                                  "default".tr,
-                                  style: Style.montserratRegular(
-                                      fontSize: 14,
-                                      color: ColorConstant.color787878),
-                                ),
-                                SvgPicture.asset(
-                                  ImageConstant.settingArrowRight,
-                                  color: ColorConstant.color787878,
-                                ),
-                                Dimens.d14.spaceWidth,
+                                Dimens.d10.spaceWidth,
+                                commonTextA("hours".tr),
+                                commonTextA("minutes".tr),
+                                commonTextA("seconds".tr),
+                                Dimens.d10.spaceWidth,
+
                               ],
                             ),
                           ),
-                        ),
-                        Dimens.d20.spaceHeight,
-                        Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: Dimens.d70.h),
-                          child: CommonElevatedButton(
-                            textStyle: Style.montserratRegular(
-                                fontSize: Dimens.d12,
-                                color: ColorConstant.white),
-                            title: "save".tr,
-                            onTap: () async {
-                              /*      await notificationSettingController.editAffirmation(
-                                  context: context,
-                                  id: id,
-                                  seconds: selectedSeconds,
-                                  minutes: selectedMinute,
-                                  hours: selectedHour,
-                                  time: am==true?"AM":"PM");
-                              await notificationSettingController.getAffirmationAlarm();*/
-                            },
+                          Dimens.d10.spaceHeight,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 70),
+                            child: Row(
+                              children: [
+                                NumberPicker(
+                                  zeroPad: true,
+                                  value: selectedHour,
+                                  minValue: 0,
+                                  textStyle: Style.nunRegular(
+                                    fontSize: 14,
+                                    color: ColorConstant.colorCACACA,
+                                  ),
+                                  selectedTextStyle: Style.montserratBold(
+                                    fontSize: 22,
+                                    color: ColorConstant.themeColor,
+                                  ),
+                                  maxValue: am ? 11 : 23,
+                                  itemHeight: 50,
+                                  itemWidth: 50,
+                                  onChanged: (value) =>
+                                      setState(() => selectedHour = value),
+                                ),
+                                const Spacer(),
+                                numericSymbol(),
+                                const Spacer(),
+                                NumberPicker(
+                                  zeroPad: true,
+                                  value: selectedMinute,
+                                  minValue: 0,
+                                  itemHeight: 50,
+                                  itemWidth: 50,
+                                  textStyle: Style.nunRegular(
+                                    fontSize: 14,
+                                    color: ColorConstant.colorCACACA,
+                                  ),
+                                  selectedTextStyle: Style.montserratBold(
+                                    fontSize: 22,
+                                    color: ColorConstant.themeColor,
+                                  ),
+                                  maxValue: 59,
+                                  onChanged: (value) =>
+                                      setState(() => selectedMinute = value),
+                                ),
+                                const Spacer(),
+                                numericSymbol(),
+                                const Spacer(),
+                                NumberPicker(
+                                  zeroPad: true,
+                                  value: selectedSeconds,
+                                  minValue: 0,
+                                  itemHeight: 50,
+                                  itemWidth: 50,
+                                  textStyle: Style.nunRegular(
+                                    fontSize: 14,
+                                    color: ColorConstant.colorCACACA,
+                                  ),
+                                  selectedTextStyle: Style.montserratBold(
+                                    fontSize: 22,
+                                    color: ColorConstant.themeColor,
+                                  ),
+                                  maxValue: 59,
+                                  onChanged: (value) =>
+                                      setState(() => selectedSeconds = value),
+                                ),
+                              ],
+                            ),
                           ),
-                        )
-                      ],
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) {
+                                  return const AudioList();
+                                },
+                              ));
+                            },
+                            child: Container(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 40),
+                              height: Dimens.d51,
+                              width: Get.width,
+                              decoration: BoxDecoration(
+                                color: ColorConstant.backGround,
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Dimens.d14.spaceWidth,
+                                  Text(
+                                    "sound".tr,
+                                    style: Style.nunRegular(fontSize: 14,color: Colors.black),
+                                  ),
+                                  const Spacer(),
+                                  Text(
+                                    "default".tr,
+                                    style: Style.nunRegular(
+                                      fontSize: 14,
+                                      color: ColorConstant.color787878,
+                                    ),
+                                  ),
+                                  SvgPicture.asset(
+                                    ImageConstant.settingArrowRight,
+                                    color: ColorConstant.color787878,
+                                  ),
+                                  Dimens.d14.spaceWidth,
+                                ],
+                              ),
+                            ),
+                          ),
+                          Dimens.d20.spaceHeight,
+                          Padding(
+                            padding:
+                                EdgeInsets.symmetric(horizontal: Dimens.d70.h),
+                            child: CommonElevatedButton(
+                              textStyle: Style.nunRegular(
+                                fontSize: Dimens.d14,
+                                color: ColorConstant.white,
+                              ),
+                              title: "save".tr,
+                              onTap: () async {
+                                await createAlarm(widget.id);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -1041,13 +1226,17 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
           },
         );
       },
-    );
+    ).whenComplete(() {
+      setState(() {
+        showBottom = false;
+      });
+    });
   }
 
   Widget commonTextA(title) {
     return Text(
       title,
-      style: Style.montserratRegular(fontSize: 12, color: Colors.white),
+      style: Style.nunRegular(fontSize: 12, color: Colors.white),
     );
   }
 

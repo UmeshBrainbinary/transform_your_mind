@@ -23,7 +23,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
       backgroundColor: themeController.isDarkMode.isTrue
           ? ColorConstant.darkBackground
           : ColorConstant.backGround,
-      appBar: CustomAppBar(title: "privacyPolicy".tr),
+      appBar: CustomAppBar(title: "privacySettings".tr),
       body: SingleChildScrollView(
         child: Stack(
           children: [
@@ -50,9 +50,9 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 children: [
                   Dimens.d30.spaceHeight,
                   Text(
-                    "privacyPolicy".tr,
+                    "PrivacyPolicy".tr,
                     style: TextStyle(
-                        fontFamily: 'Montserrat-Medium',
+                        fontFamily: 'Nunito-Bold',
                         fontSize: 18,
                         fontWeight: FontWeight.w400,
                         color: themeController.isDarkMode.isTrue

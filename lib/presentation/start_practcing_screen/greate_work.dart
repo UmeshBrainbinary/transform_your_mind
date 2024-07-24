@@ -1,20 +1,27 @@
 import 'dart:math';
 import 'dart:ui';
-
+import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
+import 'package:transform_your_mind/core/service/http_service.dart';
+import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
+import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
+import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/model_class/week_data_model.dart';
 import 'package:transform_your_mind/presentation/start_practcing_screen/start_pratice_controller.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
 
 class GreatWork extends StatefulWidget {
-  const GreatWork({super.key});
+  String? theme;
+   GreatWork({super.key,this.theme});
 
   @override
   State<GreatWork> createState() => _GreatWorkState();
@@ -27,9 +34,11 @@ class _GreatWorkState extends State<GreatWork> {
   late ConfettiController _controllerCenterLeft;
   late ConfettiController _controllerTopCenter;
   late ConfettiController _controllerBottomCenter;
+  List<WeekDataList>? weekList = [];
 
   @override
   void initState() {
+    checkInternet();
     _controllerCenter =
         ConfettiController(duration: const Duration(seconds: 10));
     _controllerCenterRight =
@@ -45,7 +54,44 @@ class _GreatWorkState extends State<GreatWork> {
 
     super.initState();
   }
+  checkInternet() async {
+    if (await isConnected()) {
+      await getWeeklyData();
+    } else {
+      showSnackBarError(context, "noInternet".tr);
+    }
+  }
+  WeekDataModel weekDataModel = WeekDataModel();
+  getWeeklyData() async {
+    try{
+      var headers = {
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+      };
+      var request = http.Request(
+          'GET',
+          Uri.parse(
+              '${EndPoints.weeklyGratitude}${PrefService.getString(PrefKey.userId)}'));
+      request.headers.addAll(headers);
 
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        final responseBody = await response.stream.bytesToString();
+
+        weekDataModel = weekDataModelFromJson(responseBody);
+        weekList =weekDataModel.data;
+        setState(() {
+
+        });
+      }
+      else {
+        debugPrint(response.reasonPhrase);
+      }
+
+    }catch(e){
+      debugPrint(e.toString());
+    }
+  }
   @override
   void dispose() {
     _controllerCenter.dispose();
@@ -109,7 +155,7 @@ class _GreatWorkState extends State<GreatWork> {
                     height: Get.height,
                     width: Get.width,
                     imageUrl:
-                        "https://transformyourmind.s3.eu-north-1.amazonaws.com/1719464225736-Rectangle 5781.png",
+                        widget.theme??"https://transformyourmind.s3.eu-north-1.amazonaws.com/1719464225736-Rectangle 5781.png",
                     imageBuilder: (context, imageProvider) => Container(
                       decoration: BoxDecoration(
                         shape: BoxShape.rectangle,
@@ -171,7 +217,7 @@ class _GreatWorkState extends State<GreatWork> {
 
               Positioned(
                   top: Dimens.d140,
-                  left: 16,
+                 left: 20,
                   child: Column(
                     children: [
                       Center(
@@ -208,7 +254,7 @@ class _GreatWorkState extends State<GreatWork> {
                               children: [
                                 commonText("totalSessions".tr),
                                 Dimens.d6.spaceHeight,
-                                commonTextTitle("10".tr),
+                                commonTextTitle(weekDataModel.todayTotalCompleted??"0"),
                               ],
                             ),
                             Dimens.d32.spaceWidth,
@@ -217,15 +263,17 @@ class _GreatWorkState extends State<GreatWork> {
                               height: 47,
                               color: ColorConstant.white,
                             ),
-                            Dimens.d32.spaceWidth,
+                            Dimens.d45.spaceWidth,
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 commonText("gratitude".tr),
                                 Dimens.d6.spaceHeight,
-                                commonTextTitle("10".tr),
+                                commonTextTitle(weekDataModel.todayTotalGratitude??"0"),
                               ],
                             ),
+                            Dimens.d10.spaceWidth,
+
                           ],
                         ),
                       ),
@@ -236,63 +284,73 @@ class _GreatWorkState extends State<GreatWork> {
                         color: ColorConstant.white,
                       ),
                       Dimens.d60.spaceHeight,
+                      SizedBox(
+                        height: 120,
+                        width: Get.width-50,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          padding: EdgeInsets.zero,
+                          scrollDirection: Axis.horizontal,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: weekList!.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.only(left: 15),
+                              child: Column(
+                                children: [
+                                  startController.currentDayIndex == index + 1
+                                      ? Container(
+                                    height: 30,
+                                    width: 30,
+                                    decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.white),
+                                    child: const Center(
+                                      child: Icon(
+                                        Icons.check,
+                                        color: Colors.black,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  )
+                                      : !weekList![index].isCompleted!?Container(
+                                    height: 30,
+                                    width: 30,
+                                    decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: ColorConstant.themeColor),
+                                  ):Container(
+                                    height: 30,
+                                    width: 30,
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                            color: Colors.white)),
+                                  ),
+                                  Dimens.d6.spaceHeight,
+                                  Text(
+                                    weekList![index].day!,
+                                    style: Style.nunRegular(
+                                        fontSize: 14, color: ColorConstant.white),
+                                  ),
+                                  startController.currentDayIndex == index + 1
+                                      ? Container(
+                                    height: 4,
+                                    width: 4,
+                                    decoration: const BoxDecoration(
+                                        color: ColorConstant.themeColor,
+                                        shape: BoxShape.circle),
+                                  )
+                                      : const SizedBox()
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
                     ],
                   )),
-              Positioned(
-                  bottom: Dimens.d140,
-                  left: 16,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: SizedBox(
-                      height: 120,
-                      width: Get.width,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        padding: EdgeInsets.zero,
-                        scrollDirection: Axis.horizontal,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: startController.weekList.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.only(left: 15),
-                            child: Column(
-                              children: [
-                                startController.currentDayIndex == index + 1
-                                    ? Container(
-                                        height: 30,
-                                        width: 30,
-                                        decoration: const BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.white),
-                                        child: const Center(
-                                          child: Icon(
-                                            Icons.check,
-                                            color: Colors.black,
-                                            size: 20,
-                                          ),
-                                        ),
-                                      )
-                                    : Container(
-                                        height: 30,
-                                        width: 30,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            border: Border.all(
-                                                color: Colors.white)),
-                                      ),
-                                Dimens.d6.spaceHeight,
-                                Text(
-                                  startController.weekList[index],
-                                  style: Style.montserratRegular(
-                                      fontSize: 14, color: ColorConstant.white),
-                                )
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  )),
+
             ],
           ),
         ), // Your widget here
@@ -303,15 +361,15 @@ class _GreatWorkState extends State<GreatWork> {
   commonText(text) {
     return Text(
       text,
-      style: Style.montserratRegular(
+      style: Style.nunRegular(
           fontSize: 14, color: ColorConstant.white.withOpacity(0.5)),
     );
   }
 
   commonTextTitle(text) {
     return Text(
-      text,
-      style: Style.montserratRegular(
+      text.toString(),
+      style: Style.nunRegular(
           fontWeight: FontWeight.w600,
           fontSize: 14,
           color: ColorConstant.white),

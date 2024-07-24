@@ -206,7 +206,7 @@ class _SelectYourAffirmationFocusPageState
                     child: AutoSizeText(
                       "chooseMinInterest".tr,
                       textAlign: TextAlign.center,
-                      style: Style.gothamLight(
+                      style: Style.nunRegular(
                           color: themeController.isDarkMode.value
                               ? ColorConstant.white
                               : ColorConstant.black,
@@ -216,27 +216,30 @@ class _SelectYourAffirmationFocusPageState
                   ),
                   Dimens.d24.spaceHeight,
                   Expanded(
-                    child: ListView(
-                      shrinkWrap: true,
-                      children: [
-                        Wrap(
-                          alignment: WrapAlignment.center,
-                          children: listOfTags.map((tag) {
-                            return GestureDetector(
-                              onTap: () => _onTagTap(tag),
-                              child: CustomChip(
-                                label: tag.name,
-                                isChipSelected: tag.isSelected,
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ],
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: [
+                          Wrap(
+                            alignment: WrapAlignment.center,
+                            children: listOfTags.map((tag) {
+                              return GestureDetector(
+                                onTap: () => _onTagTap(tag),
+                                child: CustomChip(
+                                  label: tag.name,
+                                  isChipSelected: tag.isSelected,
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   Dimens.d20.spaceHeight,
                   FocusSelectButton(
-                    primaryBtnText: widget.isFromMe ? "save".tr : "next".tr,
+                    primaryBtnText: widget.isFromMe ? "save".tr :widget.setting!?"save".tr: "next".tr,
                     secondaryBtnText: widget.isFromMe ? '' : "skip".tr,
                     isLoading: false,
                     primaryBtnCallBack: () {

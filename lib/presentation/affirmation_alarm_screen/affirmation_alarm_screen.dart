@@ -232,7 +232,7 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
                           Dimens.d10.spaceHeight,
                           Text(
                             affirmationList[index]["des"],
-                            style: Style.montserratRegular(fontSize: 11),
+                            style: Style.nunRegular(fontSize: 11),
                           )
                         ],
                       ),
@@ -254,7 +254,7 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              //backgroundColor: Colors.white,
+              backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.textfieldFillColor:Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(11.0), // Set border radius
               ),
@@ -291,7 +291,7 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
                                 child: Center(
                                   child: Text(
                                     "AM",
-                                    style: Style.montserratRegular(
+                                    style: Style.nunRegular(
                                         fontSize: 12,
                                         color: am == true
                                             ? ColorConstant.white
@@ -316,7 +316,7 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
                                 child: Center(
                                   child: Text(
                                     "PM",
-                                    style: Style.montserratRegular(
+                                    style: Style.nunRegular(
                                         fontSize: 12,
                                         color: pm == true
                                             ? ColorConstant.white
@@ -335,15 +335,15 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
                   children: [
                     Text(
                       "hours".tr,
-                      style: Style.montserratRegular(fontSize: 12),
+                      style: Style.nunRegular(fontSize: 12),
                     ),
                     Text(
                       "minutes".tr,
-                      style: Style.montserratRegular(fontSize: 12),
+                      style: Style.nunRegular(fontSize: 12),
                     ),
                     Text(
                       "seconds".tr,
-                      style: Style.montserratRegular(fontSize: 12),
+                      style: Style.nunRegular(fontSize: 12),
                     ),
                   ],
                 ),
@@ -367,7 +367,7 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: Dimens.d70.h),
                   child: CommonElevatedButton(
-                    textStyle: Style.montserratRegular(
+                    textStyle: Style.nunRegular(
                         fontSize: Dimens.d12, color: ColorConstant.white),
                     title: "save".tr,
                     onTap: () {
@@ -391,7 +391,7 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              //backgroundColor: Colors.white,
+              backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.textfieldFillColor:Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(11.0), // Set border radius
               ),
@@ -435,7 +435,7 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
                     children: [
                       Text(
                         des!,
-                        style: Style.montserratRegular(fontSize: 11, height: 2),
+                        style: Style.nunRegular(fontSize: 11, height: 2),
                       ),
                       SvgPicture.asset(ImageConstant.playPause),
                     ],
@@ -478,7 +478,7 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
                 padding: const EdgeInsets.only(left: 18, top: 8),
                 child: Text(
                   item["title"] ?? '',
-                  style: Style.montserratRegular(
+                  style: Style.nunRegular(
                     fontSize: Dimens.d14,
                     color: Colors.white,
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
@@ -487,7 +487,7 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
               );
             }).toList();
           },
-          style: Style.montserratRegular(
+          style: Style.nunRegular(
             fontSize: Dimens.d12,
             color: Colors.white,
             fontWeight: FontWeight.w500,
@@ -496,7 +496,7 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
             padding: const EdgeInsets.only(left: 15),
             child: Text(
               "selectCategory".tr,
-              style: Style.montserratRegular(
+              style: Style.nunRegular(
                   fontSize: Dimens.d12, color: Colors.white),
             ),
           ),
@@ -529,7 +529,7 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Text(
                     item["title"] ?? '',
-                    style: Style.montserratRegular(
+                    style: Style.nunRegular(
                       fontSize: Dimens.d14,
                       color: ColorConstant.white,
                       fontWeight:
@@ -567,7 +567,7 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
         child: Center(
           child: Text(
             "Alarm List".tr,
-            style: Style.montserratRegular(
+            style: Style.nunRegular(
                 fontSize: 12, color: ColorConstant.white),
           ),
         ),
@@ -576,7 +576,7 @@ class _AffirmationAlarmScreenState extends State<AffirmationAlarmScreen> {
   }
 
   void _onAddClick(BuildContext context) {
-    final subscriptionStatus = "SUBSCRIBED";
+    const subscriptionStatus = "SUBSCRIBED";
 
     /// to check if item counts are not more then the config count in case of no subscription
     if (!(subscriptionStatus == "SUBSCRIBED" ||

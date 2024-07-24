@@ -83,13 +83,14 @@ class _AddGratitudeImageWidgetState extends State<AddGratitudeImageWidget> {
                     alignment: Alignment.bottomRight,
                     child: GestureDetector(
                       onTap: widget.onDeleteTap,
-                      child: Container(
+                      child: Container(height: 20,width: 20,
+                        margin: const EdgeInsets.only(bottom: 10),
                         padding: const EdgeInsets.all(Dimens.d5),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(24),
                           color: Colors.white,
                         ),
-                        child:const Icon(Icons.delete,color: Colors.red,),
+                        child:Center(child: SvgPicture.asset(ImageConstant.deleteProfile,color: Colors.red,height: 12,width: 12,))
                       ),
                     ),
                   ),

@@ -3,6 +3,8 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
+import 'package:transform_your_mind/core/service/http_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
@@ -24,8 +26,16 @@ class _TroubleGuideScreenState extends State<TroubleGuideScreen> {
   bool loader = false;
   @override
   void initState() {
-    getGuide();
+    checkInternet();
     super.initState();
+  }
+
+  checkInternet() async {
+    if (await isConnected()) {
+      getGuide();
+    } else {
+      showSnackBarError(Get.context!, "noInternet".tr);
+    }
   }
 
   getGuide() async {

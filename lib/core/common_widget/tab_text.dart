@@ -11,14 +11,14 @@ class TabText extends StatelessWidget {
   final double? fontSize;
 
   const TabText({
-    Key? key,
+    super.key,
     required this.text,
     required this.value,
     required this.selectedIndex,
     this.padding,
     this.textHeight = Dimens.d1_5,
     this.fontSize,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

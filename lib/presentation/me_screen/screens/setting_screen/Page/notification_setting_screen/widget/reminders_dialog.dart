@@ -67,7 +67,7 @@ Future<void> showRemindersDialog(
                       Expanded(
                         child: Text(
                           label,
-                          style: Style.montserratMedium(
+                          style: Style.nunMedium(
                             fontSize: Dimens.d18,
                           ),
                           textAlign: TextAlign.center,
@@ -75,7 +75,7 @@ Future<void> showRemindersDialog(
                       ),
                       GestureDetector(
                         onTap: () => Get.back(),
-                        child: Icon(Icons.close)
+                        child: const Icon(Icons.close)
                       ),
                     ],
                   ),
@@ -88,7 +88,7 @@ Future<void> showRemindersDialog(
                   ),
                   Text(
                     "selectReminderDuration".tr,
-                    style: Style.montserratMedium(
+                    style: Style.nunMedium(
                       color: ColorConstant.grey,
                     ),
                   ),
@@ -110,7 +110,7 @@ Future<void> showRemindersDialog(
                   if (selectedReminderPeriod != ReminderPeriod.off)
                     Text(
                       "selectNumberOfTimesYouWantReminder".tr + selectedReminderPeriod.desc,
-                      style: Style.montserratMedium(
+                      style: Style.nunMedium(
                         color: ColorConstant.grey,
                       ),
                     ),
@@ -204,7 +204,7 @@ Future<void> showReminderIntervalsDialog(
                 children: [
                   Text(
                     "selectReminderTime".tr,
-                    style: Style.montserratMedium(
+                    style: Style.nunMedium(
                       color: ColorConstant.grey,
                     ),
                   ),
@@ -283,12 +283,12 @@ class _RadioWidget extends StatelessWidget {
   final VoidCallback onTap;
 
   const _RadioWidget({
-    Key? key,
+    super.key,
     required this.reminderTime,
     required this.selectedReminderPeriod,
     required this.isSelected,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -313,7 +313,7 @@ class _RadioWidget extends StatelessWidget {
               child: isSelected
                   ? Container(
                       margin: const EdgeInsets.all(Dimens.d5),
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: ColorConstant.themeColor,
                         shape: BoxShape.circle,
                       ),
@@ -325,7 +325,7 @@ class _RadioWidget extends StatelessWidget {
             Dimens.d12.spaceWidth,
             Text(
               reminderTime.name + selectedReminderPeriod.desc,
-              style: Style.montserratRegular(),
+              style: Style.nunRegular(),
             ),
           ],
         ),
@@ -340,11 +340,11 @@ class _RadioWidgetReminderPeriod extends StatelessWidget {
   final VoidCallback onTap;
 
   const _RadioWidgetReminderPeriod({
-    Key? key,
+    super.key,
     required this.reminderTime,
     required this.isSelected,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -369,7 +369,7 @@ class _RadioWidgetReminderPeriod extends StatelessWidget {
               child: isSelected
                   ? Container(
                       margin: const EdgeInsets.all(Dimens.d5),
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: ColorConstant.themeColor,
                         shape: BoxShape.circle,
                       ),
@@ -381,7 +381,7 @@ class _RadioWidgetReminderPeriod extends StatelessWidget {
             Dimens.d12.spaceWidth,
             Text(
               reminderTime.name,
-              style: Style.montserratRegular(),
+              style: Style.nunRegular(),
             ),
           ],
         ),

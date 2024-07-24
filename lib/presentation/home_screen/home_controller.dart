@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:just_audio/just_audio.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/end_points.dart';
@@ -30,7 +31,7 @@ class HomeController extends GetxController {
   List<bool> gratitudeCheckList = [];
   List<Map<String, dynamic>> quickAccessList = [
     {"title": "motivational", "icon": ImageConstant.meditationIconQuick,"color": ColorConstant.colorF7E2CD},
-    {"title": "transformPods", "icon": ImageConstant.podIconQuick,"color": ColorConstant.colorEDC9ED},
+    {"title": "transformAudios", "icon": ImageConstant.podIconQuick,"color": ColorConstant.colorEDC9ED},
     {"title": "gratitudeJournal", "icon": ImageConstant.journalIconQuick,"color": ColorConstant.colorC8CDF7},
     {"title": "positiveMoments", "icon": ImageConstant.sleepIconQuick,"color": ColorConstant.colorF9CDCE},
     {"title": "affirmation", "icon": ImageConstant.homeAffirmation,"color": ColorConstant.colorFFDDAA},
@@ -42,20 +43,14 @@ class HomeController extends GetxController {
   BookmarkedModel bookmarkedModel = BookmarkedModel();
   AffirmationModel affirmationModel = AffirmationModel();
   RecentlyModel recentlyModel = RecentlyModel();
-  TodayAffirmation todayAffirmation = TodayAffirmation();
-  List<TodayAData>? todayAList = [];
+  AffirmationModel todayAffirmation = AffirmationModel();
+  List<AffirmationData>? todayAList = [];
   List<TodayGData>? todayGList = [];
   TodayGratitude todayGratitude = TodayGratitude();
 
-  //_______________________________________  init Methods  _____________________
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
-  @override
-  void onInit() {
-    getMotivationalMessage();
-    super.onInit();
-  }
-
-  //_______________________________________  Api Call Functions  __________________________
+  List audioListDuration = [];
 
   getPodApi() async {
     loader.value = true;
@@ -77,6 +72,12 @@ class HomeController extends GetxController {
 
         getPodsModel = getPodsModelFromJson(responseBody);
         audioData.value = getPodsModel.data ?? [];
+        for(int i = 0;i<audioData.length;i++){
+          await _audioPlayer.setUrl(audioData[i].audioFile!);
+          final duration = await _audioPlayer.load();
+          audioListDuration.add(duration);
+        }
+
         debugPrint("filter Data $audioData");
         update(["home"]);
       } else {
@@ -150,6 +151,11 @@ class HomeController extends GetxController {
     if (response.statusCode == 200) {
       final responseBody = await response.stream.bytesToString();
       bookmarkedModel = bookmarkedModelFromJson(responseBody);
+      for(int i = 0;i<bookmarkedModel.data!.length;i++){
+        await _audioPlayer.setUrl(bookmarkedModel.data![i].audioFile!);
+        final duration = await _audioPlayer.load();
+        audioListDuration.add(duration);
+      }
 
       update(["home"]);
     } else {
@@ -200,7 +206,7 @@ class HomeController extends GetxController {
 
     if (response.statusCode == 200) {
       final responseBody = await response.stream.bytesToString();
-      todayAffirmation = todayAffirmationFromJson(responseBody);
+      todayAffirmation = affirmationModelFromJson(responseBody);
       todayAList = todayAffirmation.data;
       if (todayAffirmation.data != null) {
         List.generate(

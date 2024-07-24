@@ -66,7 +66,7 @@ extension ObjectUtils on Object {
           : (this as num) > 0.0
               ? 0
               : (this as num).abs();
-      print("isPositive $isPositive value $value this $this");
+      debugPrint("isPositive $isPositive value $value this $this");
       return value;
     }
     return this;

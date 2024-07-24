@@ -22,4 +22,7 @@ class PrefKey{
   static const String podsSave = "podsSave";
   static const String subscribed = "subscribed";
   static const String introSkip = "introSkip";
+  static const String morningQuestion = "morningQuestion";
+  static const String eveningQuestion = "eveningQuestion";
+  static const String myGratitude = "myGratitude";
 }

@@ -88,7 +88,7 @@ class _EditRitualDialogWidgetState extends State<EditRitualDialogWidget> {
                 child: CommonElevatedButton(
                   title:"Draft",
                   outLined: true,
-                  textStyle: Style.montserratRegular(color: ColorConstant.textDarkBlue),
+                  textStyle: Style.nunRegular(color: ColorConstant.textDarkBlue),
                   onTap: () => isEmptyRitual
                       ? showSnackBarError(context,"Please Add Own Rituals")
                       : widget.onDraftTap(_userRitualController.text.trim()),

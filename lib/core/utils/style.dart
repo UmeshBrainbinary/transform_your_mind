@@ -40,40 +40,9 @@ class Style {
     );
   }
 
-  static TextStyle montserratMedium({
-    Color? color ,
-    FontWeight fontWeight = FontWeight.w600,
-    FontStyle fontStyle = FontStyle.normal,
-    double? fontSize,
-    double? height,
-  }) {
-    return TextStyle(
-      color: color,
-      fontFamily: FontFamily.montserratMedium,
-      fontWeight: fontWeight,
-      fontStyle: fontStyle,
-      fontSize: fontSize ?? 14,
-      height: height,
-    );
-  }
 
 
-  static TextStyle montserratRegular({
-    Color? color,
-    FontWeight fontWeight = FontWeight.w400,
-    FontStyle fontStyle = FontStyle.normal,
-    double? fontSize,
-    double? height,
-  }) {
-    return TextStyle(
-      color: color,
-      fontFamily: FontFamily.montserratRegular,
-      fontWeight: fontWeight,
-      fontStyle: fontStyle,
-      fontSize: fontSize ?? 14,
-      height: height,
-    );
-  }
+
 
   static TextStyle nunitoBold({
     Color? color,

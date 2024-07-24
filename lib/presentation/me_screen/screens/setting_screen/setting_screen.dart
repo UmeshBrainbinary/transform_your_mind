@@ -285,7 +285,7 @@ class CustomSwitch extends StatefulWidget {
 
 class _CustomSwitchState extends State<CustomSwitch> {
   late bool _value;
-
+  ThemeController themeController = Get.find<ThemeController>();
   @override
   void initState() {
     super.initState();
@@ -313,12 +313,13 @@ class _CustomSwitchState extends State<CustomSwitch> {
               _value ? MainAxisAlignment.end : MainAxisAlignment.start,
           children: <Widget>[
             Container(
-              width: widget.height - 2,
-              height: widget.height - 2,
-              margin: const EdgeInsets.all(1),
-              decoration: const BoxDecoration(
+              width: widget.height - 5,
+              height: widget.height - 5,
+              margin: const EdgeInsets.all(3),
+              decoration:   BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white,
+                color: themeController.isDarkMode.isTrue?ColorConstant.white
+                    :ColorConstant.themeColor,
               ),
             ),
           ],

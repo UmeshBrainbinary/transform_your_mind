@@ -33,7 +33,7 @@ class _BreathScreenState extends State<BreathScreen>
   bool _isPaused = false;
   int playCount = 0;
   Timer? _timer;
-  int _remainingSeconds = 19;
+  int _remainingSeconds = 16;
   ThemeController themeController = Get.find<ThemeController>();
 
   @override
@@ -70,7 +70,7 @@ class _BreathScreenState extends State<BreathScreen>
         setState(() {
           isPlaying = false;
           playCount++;
-          _remainingSeconds = 19;
+          _remainingSeconds = 16;
         });
         _timer?.cancel();
         if (playCount < 3) {
@@ -114,7 +114,7 @@ class _BreathScreenState extends State<BreathScreen>
           setState(() {
             isPlaying = false;
             playCount++;
-            _remainingSeconds = 19;
+            _remainingSeconds = 16;
           });
           _timer?.cancel();
           if (playCount < 3) {
@@ -154,6 +154,8 @@ class _BreathScreenState extends State<BreathScreen>
           ? ColorConstant.darkBackground
           : ColorConstant.backGround,
       appBar: CustomAppBar(
+        centerTitle: widget.skip!?true:false,
+        showBack:widget.skip!?false:true,
         title: "breathTraining".tr,
         action: widget.skip!
             ? GestureDetector(
@@ -164,8 +166,8 @@ class _BreathScreenState extends State<BreathScreen>
                   padding: const EdgeInsets.only(right: 20),
                   child: Text(
                     "skip".tr,
-                    style: Style.montserratRegular(
-                      fontSize: Dimens.d15,
+                    style: Style.nunitoBold(
+                      fontSize: Dimens.d18,
                       color: themeController.isDarkMode.isTrue
                           ? ColorConstant.white
                           : ColorConstant.black,
@@ -176,141 +178,150 @@ class _BreathScreenState extends State<BreathScreen>
             : const SizedBox(),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: Stack(
           children: [
-            Dimens.d30.spaceHeight,
-            Lottie.asset(
-              ImageConstant.breathInhale,
-              height: 212,
-              width: 212,
-              controller: _lottieController,
-              onLoaded: (composition) {
-                _lottieController
-                  ..duration = composition.duration
-                  ..addListener(() {
-                    setState(() {});
-                  })
-                  ..addStatusListener((status) {
-                    if (status == AnimationStatus.completed) {
-                      _lottieController.reset();
-                    }
-                  });
-              },
-            ),
-            Dimens.d20.spaceHeight,
-            GestureDetector(
-              onTap: () {
-                if (isPlaying && !_isPaused) {
-                  _pauseAnimation();
-                } else if (isPlaying && _isPaused) {
-                  _resumeAnimation();
-                } else {
-                  _startAnimationSequence();
-                }
-              },
-              child: SvgPicture.asset(isPlaying && !_isPaused
-                  ? ImageConstant.breathPause
-                  : ImageConstant.breathPlay),
-            ),
-            Dimens.d20.spaceHeight,
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Dimens.d35),
+              padding: const EdgeInsets.only(top: Dimens.d35,right: 40,left: 40),
               child: Text(
                 "breathingMeditation".tr,
                 textAlign: TextAlign.center,
-                style: Style.montserratRegular(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: Style.nunitoBold(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                ).copyWith(letterSpacing: 1),
               ),
             ),
-            Dimens.d20.spaceHeight,
+
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Dimens.d36),
-              child: Text(
-                "breatheNote".tr,
-                textAlign: TextAlign.center,
-                style: Style.montserratRegular(
-                  height: 2,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
+              padding: const EdgeInsets.only(right: 10),
+              child: Lottie.asset(
+                ImageConstant.animation,
+                controller: _lottieController,
+                onLoaded: (composition) {
+                  _lottieController
+                    ..duration = composition.duration
+                    ..addListener(() {
+                      setState(() {});
+                    })
+                    ..addStatusListener((status) {
+                      if (status == AnimationStatus.completed) {
+                        _lottieController.reset();
+                      }
+                    });
+                },
+              ),
+            ),
+
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+
+                Dimens.d280.spaceHeight,
+                GestureDetector(
+                  onTap: () {
+                    if (isPlaying && !_isPaused) {
+                      _pauseAnimation();
+                    } else if (isPlaying && _isPaused) {
+                      _resumeAnimation();
+                    } else {
+                      _startAnimationSequence();
+                    }
+                  },
+                  child: SvgPicture.asset(isPlaying && !_isPaused
+                      ? ImageConstant.breathPause
+                      : ImageConstant.breathPlay),
                 ),
-              ),
-            ),
-            Dimens.d30.spaceHeight,
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-              margin: const EdgeInsets.symmetric(horizontal: 40),
-              decoration: BoxDecoration(
-                color: themeController.isDarkMode.isTrue
-                    ? ColorConstant.textfieldFillColor
-                    : ColorConstant.white,
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Column(
-                children: [
-                  Row(
+                Dimens.d20.spaceHeight,
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Dimens.d36),
+                  child: Text(
+                    "breatheNote".tr,
+                    textAlign: TextAlign.center,
+                    style: Style.nunRegular(
+                      height: 2,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+                Dimens.d44.spaceHeight,
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  margin: const EdgeInsets.symmetric(horizontal: 40),
+                  decoration: BoxDecoration(
+                    color: themeController.isDarkMode.isTrue
+                        ? ColorConstant.textfieldFillColor
+                        : ColorConstant.white,
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Column(
                     children: [
-                      Text("In",
-                        style: Style.montserratRegular(
-                          fontSize: 16,
-                        ),
+                      Row(
+                        children: [
+                          Text("In",
+                            style: Style.nunRegular(
+                              fontSize: 16,
+                            ),
+                          ),
+                          const Spacer(),
+                          Text("4sec".tr,
+                            style: Style.nunRegular(
+                              fontSize: 16,
+                              color: ColorConstant.colorA49F9F,
+                            ),
+                          ),
+                        ],
                       ),
-                      const Spacer(),
-                      Text("4sec".tr,
-                        style: Style.montserratRegular(
-                          fontSize: 16,
-                          color: ColorConstant.colorA49F9F,
-                        ),
+                      Dimens.d10.spaceHeight,
+                      Row(
+                        children: [
+                          Text("hold".tr,
+                            style: Style.nunRegular(
+                              fontSize: 16,
+                            ),
+                          ),
+                          const Spacer(),
+                          Text("4sec".tr,
+                            style: Style.nunRegular(
+                              fontSize: 16,
+                              color: ColorConstant.colorA49F9F,
+                            ),
+                          ),
+                        ],
                       ),
+                      Dimens.d10.spaceHeight,
+                      Row(
+                        children: [
+                          Text("out".tr,
+                            style: Style.nunRegular(
+                              fontSize: 16,
+                            ),
+                          ),
+                          const Spacer(),
+                          Text("4sec".tr,
+                            style: Style.nunRegular(
+                              fontSize: 16,
+                              color: ColorConstant.colorA49F9F,
+                            ),
+                          ),
+                        ],
+                      ),
+
                     ],
                   ),
-                  Dimens.d10.spaceHeight,
-                  Row(
-                    children: [
-                      Text("out".tr,
-                        style: Style.montserratRegular(
-                          fontSize: 16,
-                        ),
-                      ),
-                      const Spacer(),
-                      Text("4sec".tr,
-                        style: Style.montserratRegular(
-                          fontSize: 16,
-                          color: ColorConstant.colorA49F9F,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Dimens.d10.spaceHeight,
-                  Row(
-                    children: [
-                      Text("hold".tr,
-                        style: Style.montserratRegular(
-                          fontSize: 16,
-                        ),
-                      ),
-                      const Spacer(),
-                      Text("4sec".tr,
-                        style: Style.montserratRegular(
-                          fontSize: 16,
-                          color: ColorConstant.colorA49F9F,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                ),
+                Dimens.d30.spaceHeight,
+              ///_________________________________ SOS button _________________________
+              /*  GestureDetector(
+                  onLongPress: () {
+                    _triggerSOS(context);
+                  },
+                  child: SvgPicture.asset(ImageConstant.sos, height: 86, width: 86),
+                ),
+                Dimens.d30.spaceHeight,*/
+              ],
             ),
-            Dimens.d30.spaceHeight,
-            GestureDetector(
-              onLongPress: () {
-                _triggerSOS(context);
-              },
-              child: SvgPicture.asset(ImageConstant.sos, height: 86, width: 86),
-            ),
-            Dimens.d30.spaceHeight,
           ],
         ),
       ),

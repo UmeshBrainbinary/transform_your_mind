@@ -40,9 +40,16 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       backgroundColor: themeController.isDarkMode.value
           ? ColorConstant.darkBackground
           : ColorConstant.backGround,
-      appBar: CustomAppBar(
-        title: "subscription".tr,
-        showBack: widget.skip! ? false : true,
+      appBar: CustomAppBar(centerTitle: true,
+        leading: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: GestureDetector(onTap: () {
+            Get.back();
+          },child: SvgPicture.asset(ImageConstant.close,color: themeController.isDarkMode.isTrue?ColorConstant.colorA49F9F
+              :ColorConstant.hintText,)),
+        ),
+        title: "subscriptions".tr,
+        showBack :false,
         action: widget.skip!
             ? Row(children: [
                 GestureDetector(
@@ -59,7 +66,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     },
                     child: Text(
                       "skip".tr,
-                      style: Style.montserratRegular(
+                      style: Style.nunRegular(
                           color: themeController.isDarkMode.value
                               ? ColorConstant.white
                               : ColorConstant.black),
@@ -74,12 +81,12 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           children: [
             Dimens.d22.spaceHeight,
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Dimens.d45),
+              padding: const EdgeInsets.symmetric(horizontal: Dimens.d50),
               child: Text(
                 "chooseSub".tr,
                 textAlign: TextAlign.center,
-                style: Style.montserratRegular(
-                  fontSize: Dimens.d13,
+                style: Style.nunRegular(
+                  fontSize: Dimens.d14,
                 ),
               ),
             ),
@@ -89,9 +96,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               child: Text(
                 "subscribeNow".tr,
                 textAlign: TextAlign.center,
-                style: Style.montserratRegular(
-                  color: ColorConstant.themeColor,
-                  fontSize: Dimens.d12,
+                style: Style.nunMedium(
+                  color:themeController.isDarkMode.isTrue?ColorConstant.color73969FF:ColorConstant.themeColor,
+                  fontSize: Dimens.d13,
                 ),
               ),
             ),
@@ -174,8 +181,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                                           border: Border.all(
                                               color: themeController
                                                       .isDarkMode.isTrue
-                                                  ? ColorConstant.colorE3E1E1
-                                                      .withOpacity(0.2)
+                                                  ? ColorConstant.white
                                                   : ColorConstant.colorE3E1E1)),
                                     ),
                               Dimens.d10.spaceWidth,
@@ -186,21 +192,21 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                             ],
                           ),
                           Dimens.d5.spaceHeight,
-                          Padding(
+                          data["plan"]=="Free"?const SizedBox():Padding(
                             padding: const EdgeInsets.only(left: 35),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   data["des"],
-                                  style: Style.montserratRegular(
+                                  style: Style.nunRegular(
                                       fontSize: 13,
                                       color: ColorConstant.color797777),
                                 ),
                                 index == 1
                                     ? Text(
                                         data["free"],
-                                        style: Style.montserratRegular(
+                                        style: Style.nunRegular(
                                             fontSize: 13,
                                             color: ColorConstant.themeColor),
                                       )
@@ -243,14 +249,15 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
   Widget information(title, des) {
     return RichText(
-        text: TextSpan(children: [
+        text: TextSpan(
+            children: [
       TextSpan(
         text: "$title: ",
-        style: Style.nunitoBold(fontSize: 11),
+        style: Style.nunitoBold(fontSize: 11,color: themeController.isDarkMode.isTrue?ColorConstant.white:ColorConstant.black),
       ),
       TextSpan(
         text: des,
-        style: Style.nunMedium(fontSize: 11),
+        style: Style.nunMedium(fontSize: 11,color: themeController.isDarkMode.isTrue?ColorConstant.white:ColorConstant.black),
       ),
     ]));
   }

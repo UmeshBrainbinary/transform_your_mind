@@ -1,6 +1,5 @@
 
 import 'package:get/get.dart';
-import 'package:transform_your_mind/presentation/dash_board_screen/dash_board_controller.dart';
 import 'package:transform_your_mind/presentation/me_screen/me_controller.dart';
 
 

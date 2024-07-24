@@ -8,7 +8,7 @@ import 'package:transform_your_mind/theme/theme_controller.dart';
 class BgSemiCircleTexture extends StatelessWidget {
   final double? topAlign;
 
-  const BgSemiCircleTexture({Key? key, this.topAlign}) : super(key: key);
+  const BgSemiCircleTexture({super.key, this.topAlign});
 
   @override
   Widget build(BuildContext context) {

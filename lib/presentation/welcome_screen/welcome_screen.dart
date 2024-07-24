@@ -11,8 +11,7 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
-import 'package:transform_your_mind/presentation/dash_board_screen/dash_board_screen.dart';
-import 'package:transform_your_mind/routes/app_routes.dart';
+import 'package:transform_your_mind/presentation/motivational_message/motivational_message.dart';
 
 class WelcomeHomeScreen extends StatefulWidget {
   const WelcomeHomeScreen({super.key});
@@ -94,7 +93,12 @@ class _WelcomeScreenState extends State<WelcomeHomeScreen>
         if (_isLongPressed) {
           _controller.forward();
           Future.delayed(const Duration(seconds: 1)).then((value) {
-            return Get.offAllNamed(AppRoutes.dashBoardScreen);
+            return Get.offAll(() => MotivationalMessageScreen(
+                  skip: true,
+                  date: DateFormat('d MMMM yyyy').format(DateTime.now()),
+                  userName:
+                      "${greeting.tr}, ${PrefService.getString(PrefKey.name).toString()}",
+                ));
           });
         }
       },
@@ -133,16 +137,16 @@ class _WelcomeScreenState extends State<WelcomeHomeScreen>
                     padding: const EdgeInsets.only(top: 40, right: 27),
                     child: GestureDetector(
                         onTap: () async {
-                          Navigator.pushReplacement(context, MaterialPageRoute(
-                            builder: (context) {
-                              return const DashBoardScreen();
-                            },
+                          Get.offAll(() => MotivationalMessageScreen(
+                            skip: true,
+                            date: DateFormat('d MMMM yyyy').format(DateTime.now()),
+                            userName:
+                            "${greeting.tr}, ${PrefService.getString(PrefKey.name).toString()}",
                           ));
                         },
                         child: Text(
                           _showText ? "" : "skip".tr,
-                          style: Style.montserratRegular(
-                              color: ColorConstant.white),
+                          style: Style.nunRegular(color: ColorConstant.white),
                         )),
                   ),
                 ),
@@ -151,7 +155,7 @@ class _WelcomeScreenState extends State<WelcomeHomeScreen>
                   _showText
                       ? ""
                       : DateFormat('d MMMM yyyy').format(DateTime.now()),
-                  style: Style.gothamLight(
+                  style: Style.nunRegular(
                       fontSize: 16, color: ColorConstant.white),
                 ),
                 Dimens.d15.h.spaceHeight,
@@ -160,7 +164,7 @@ class _WelcomeScreenState extends State<WelcomeHomeScreen>
                       ? ""
                       : "${greeting.tr}, ${PrefService.getString(PrefKey.name).toString()}",
                   textAlign: TextAlign.center,
-                  style: Style.montserratRegular(
+                  style: Style.nunRegular(
                       fontSize: 28, color: ColorConstant.white),
                 ),
                 Dimens.d90.h.spaceHeight,
@@ -196,7 +200,7 @@ class _WelcomeScreenState extends State<WelcomeHomeScreen>
                 Dimens.d120.h.spaceHeight,
                 Text(
                   _showText ? "" : "pressHold".tr,
-                  style: Style.gothamMedium(
+                  style: Style.nunMedium(
                       fontWeight: FontWeight.w700,
                       color: ColorConstant.white,
                       fontSize: 26),
@@ -204,10 +208,11 @@ class _WelcomeScreenState extends State<WelcomeHomeScreen>
                 Dimens.d23.h.spaceHeight,
                 Text(
                   _showText ? "" : "TransformYourMind",
-                  style: Style.gothamLight(
-                      fontWeight: FontWeight.w700,
+                  style: Style.nunLight(
+                          fontWeight: FontWeight.w700,
                       color: ColorConstant.white,
-                      fontSize: 16),
+                          fontSize: 16)
+                      .copyWith(letterSpacing: 1),
                 ),
                 Dimens.d46.h.spaceHeight,
               ],

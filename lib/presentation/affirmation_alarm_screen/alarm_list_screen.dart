@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
+import 'package:transform_your_mind/core/service/http_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/presentation/affirmation_alarm_screen/affirmation_controller.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/audio_list.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/notification_setting_screen/notification_setting_controller.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
-import 'package:voice_message_package/voice_message_package.dart';
 
 class AlarmListScreen extends StatefulWidget {
   const AlarmListScreen({super.key});
@@ -34,15 +37,30 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
   int selectedSeconds = 0;
   bool soundMute = false;
   bool playPause = false;
+  List playPauseList = [];
 
   final String audioFilePath = 'assets/audio/audio.mp3';
   NotificationSettingController notificationSettingController =
       Get.put(NotificationSettingController());
 
+
+
+
+
+ AffirmationController affirmationController = Get.put(AffirmationController());
   @override
   void initState() {
-    getAlarm();
+    checkInternet();
     super.initState();
+  }
+
+
+  checkInternet() async {
+    if (await isConnected()) {
+      getAlarm();
+    } else {
+      showSnackBarError(context, "noInternet".tr);
+    }
   }
 
   getAlarm() async {
@@ -53,11 +71,11 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
     await notificationSettingController.deleteAffirmation(id);
     await notificationSettingController.getAffirmationAlarm();
   }
+  double currentTime = 0.0; // Current position of the audio
+  double totalTime = 100.0;
 
   @override
   Widget build(BuildContext context) {
-    //statusBarSet(themeController);
-
     return Stack(
       children: [
         Scaffold(
@@ -83,7 +101,9 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                                   horizontal: 20.0, vertical: 10),
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                  color: ColorConstant.white,
+                                  color: themeController.isDarkMode.isTrue
+                                      ? ColorConstant.textfieldFillColor
+                                      : Colors.white,
                                   borderRadius: BorderRadius.circular(15)),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,7 +112,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                                     children: [
                                       Text(
                                         "${controller.alarmModel.data?[index].hours}:${controller.alarmModel.data?[index].minutes} ",
-                                        style: Style.montserratRegular(
+                                        style: Style.nunRegular(
                                           fontSize: 30,
                                         ),
                                       ),
@@ -100,7 +120,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                                         controller
                                                 .alarmModel.data?[index].time ??
                                             "",
-                                        style: Style.montserratRegular(
+                                        style: Style.nunRegular(
                                           fontSize: 22,
                                         ),
                                       ),
@@ -108,6 +128,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                                       GestureDetector(
                                         onTap: () {
                                           _showAlertDialogPlayPause(context,
+                                              index: index,
                                               mp3: controller.alarmModel
                                                       .data?[index].audioFile ??
                                                   "",
@@ -124,6 +145,10 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                                           ImageConstant.playAffirmation,
                                           height: 18,
                                           width: 18,
+                                          color:
+                                              themeController.isDarkMode.isTrue
+                                                  ? ColorConstant.white
+                                                  : Colors.black,
                                         ),
                                       ),
                                       Dimens.d10.spaceWidth,
@@ -165,7 +190,10 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                                           ImageConstant.editTools,
                                           height: 18,
                                           width: 18,
-                                          color: ColorConstant.black,
+                                          color:
+                                              themeController.isDarkMode.isTrue
+                                                  ? ColorConstant.white
+                                                  : Colors.black,
                                         ),
                                       ),
                                       Dimens.d10.spaceWidth,
@@ -182,7 +210,10 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                                           ImageConstant.delete,
                                           height: 18,
                                           width: 18,
-                                          color: ColorConstant.black,
+                                          color:
+                                              themeController.isDarkMode.isTrue
+                                                  ? ColorConstant.white
+                                                  : Colors.black,
                                         ),
                                       ),
                                       Dimens.d10.spaceWidth,
@@ -191,17 +222,17 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                                   Text(
                                     controller.alarmModel.data?[index].name ??
                                         "",
-                                    style: Style.montserratRegular(
+                                    style: Style.nunRegular(
                                       fontSize: 18,
                                     ),
                                   ),
                                   Dimens.d10.spaceHeight,
                                   Text(
+                                    maxLines: 2,
                                     controller.alarmModel.data?[index]
                                             .description ??
                                         "",
-                                    style:
-                                        Style.montserratRegular(fontSize: 11),
+                                    style: Style.nunRegular(fontSize: 11),
                                   )
                                 ],
                               ),
@@ -245,87 +276,122 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          //backgroundColor: Colors.white,
+        return AlertDialog(contentPadding: EdgeInsets.zero,
+          backgroundColor:themeController.isDarkMode.isTrue?ColorConstant.textfieldFillColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(11.0), // Set border radius
           ),
-          actions: <Widget>[
-            Dimens.d18.spaceHeight,
-            Align(
-                alignment: Alignment.topRight,
-                child: GestureDetector(
+          content: Column(mainAxisSize: MainAxisSize.min,
+            children: [
+              Dimens.d18.spaceHeight,
+              Align(
+                  alignment: Alignment.topRight,
+                  child: GestureDetector(
+                      onTap: () {
+                        Get.back();
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 10.0),
+                        child: SvgPicture.asset(
+                          ImageConstant.close,color: themeController.isDarkMode.isTrue?ColorConstant.white:ColorConstant.black,
+                        ),
+                      ))),
+              Dimens.d23.spaceHeight,
+
+              Center(
+                  child: SvgPicture.asset(
+                    ImageConstant.deleteAffirmation,
+                    height: Dimens.d96,
+                    width: Dimens.d96,
+                  )),
+              Dimens.d26.spaceHeight,
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  child: Text(
+                      textAlign: TextAlign.center,
+                      "areYouSureDeleteAlarm".tr,
+                      style: Style.nunRegular(
+                        fontSize: Dimens.d15,
+                      )),
+                ),
+              ),
+              Dimens.d24.spaceHeight,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const Spacer(),
+
+                  CommonElevatedButton(
+                    height: 33,width: 94,
+
+                    contentPadding:
+                    const EdgeInsets.symmetric(horizontal: Dimens.d28),
+                    textStyle: Style.nunRegular(
+                        fontSize: Dimens.d12, color: ColorConstant.white),
+                    title: "delete".tr,
+                    onTap: () async {
+                      if (await isConnected()) {
+                        deleteAlarm(id);
+                      } else {
+                        showSnackBarError(context, "noInternet".tr);
+                      }
+
+                      setState(() {});
+                      Get.back();
+                    },
+                  ),
+                  Dimens.d20.spaceWidth,
+                  GestureDetector(
                     onTap: () {
                       Get.back();
                     },
-                    child: SvgPicture.asset(
-                      ImageConstant.close,
-                    ))),
-            Center(
-                child: SvgPicture.asset(
-              ImageConstant.deleteAffirmation,
-              height: Dimens.d96,
-              width:  Dimens.d96,
-            )),
-            Dimens.d20.spaceHeight,
-            Center(
-              child: Text(
-                  textAlign: TextAlign.center,
-                  "areYouSureDeleteAlarm".tr,
-                  style: Style.montserratRegular(
-                    fontSize: Dimens.d14,
-                  )),
-            ),
-            Dimens.d24.spaceHeight,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                CommonElevatedButton(
-                  height: 33,
-                  textStyle: Style.montserratRegular(
-                      fontSize: Dimens.d12, color: ColorConstant.white),
-                  title: "Delete".tr,
-                  onTap: () {
-                    deleteAlarm(id);
-                    setState(() {});
-                    Get.back();
-                  },
-                ),
-                Container(
-                  height: 33,
-                  margin: const EdgeInsets.symmetric(horizontal: 5),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 21,
-                  ),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(80),
-                      border: Border.all(color: ColorConstant.themeColor)),
-                  child: Center(
-                    child: Text(
-                      "cancel".tr,
-                      style: Style.montserratRegular(fontSize: 14),
+                    child: Container(
+                      height: 33,width: 93,
+
+                      margin: const EdgeInsets.symmetric(horizontal: 5),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 21,
+                      ),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(80),
+                          border: Border.all(color: ColorConstant.themeColor)),
+                      child: Center(
+                        child: Text(
+                          "cancel".tr,
+                          style: Style.nunRegular(fontSize: 14),
+                        ),
+                      ),
                     ),
                   ),
-                )
-              ],
-            )
-          ],
+                  const Spacer(),
+
+                ],
+              ),
+              Dimens.d20.spaceHeight,
+
+            ],),
         );
       },
     );
+
   }
 
   void _showAlertDialogPlayPause(BuildContext context,
-      {String? title, String? des, String? mp3}) {
+      {String? title, String? des, String? mp3,int? index}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
+            final isPlaying = affirmationController.isPlaying.value;
+
             return AlertDialog(
               contentPadding: EdgeInsets.zero,
               insetPadding: const EdgeInsets.symmetric(horizontal: 20.0),
-              backgroundColor: ColorConstant.backGround,
+              backgroundColor: themeController.isDarkMode.isTrue
+                  ? ColorConstant.textfieldFillColor
+                  : ColorConstant.backGround,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(11.0), // Set border radius
               ),
@@ -347,9 +413,17 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                           const Spacer(),
                           GestureDetector(
                               onTap: () {
+                                affirmationController = Get.put(AffirmationController());
                                 Get.back();
+                                setState.call((){});
+
                               },
-                              child: SvgPicture.asset(ImageConstant.close)),
+                              child: SvgPicture.asset(
+                                ImageConstant.close,
+                                color: themeController.isDarkMode.isTrue
+                                    ? ColorConstant.white
+                                    : ColorConstant.black,
+                              )),
                           Dimens.d20.spaceWidth,
                         ],
                       ),
@@ -360,7 +434,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                       margin: const EdgeInsets.symmetric(horizontal: 20.0),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: ColorConstant.white),
+                          color: themeController.isDarkMode.isTrue?ColorConstant.color394750:ColorConstant.white),
                       child: Row(
                         children: [
                           Dimens.d10.spaceWidth,
@@ -372,52 +446,84 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                                 color: ColorConstant.themeColor),
                             child: Center(
                               child: GestureDetector(
-                                onTap: () {
-                                  setState.call(() {
-                                    playPause = !playPause;
+                                onTap: () async {
+                                  affirmationController.setUrl("https://media.shoorah.io/admins/shoorah_pods/audio/1682951517-7059.mp3");
+                                  if (isPlaying) {
+                                    await affirmationController
+                                        .pause();
+                                  } else {
+                                    await affirmationController
+                                        .play();
+                                  }
+                                  setState((){
+
+                                  });
+                                  setState.call((){
+
                                   });
                                 },
                                 child: SvgPicture.asset(
-                                  playPause
+                                  isPlaying
                                       ? ImageConstant.pauseAudio
                                       : ImageConstant.play,
                                   height: 10,
                                   width: 10,
-                                  color: ColorConstant.black,
+                                  color:  themeController.isDarkMode.isTrue?Colors.white:ColorConstant.black,
                                 ),
                               ),
                             ),
                           ),
-                          /*  Dimens.d10.spaceWidth,
-                          Text("0:32",style: Style.montserratRegular(fontSize: 11),),
-                          Dimens.d10.spaceWidth,*/
-                          VoiceMessageView(
-                            size: 0.0,
-                            controller: VoiceController(
-                              audioSrc: mp3!,
-                              onComplete: () {
-                                /// do something on complete
-                              },
-                              onPause: () {
-                                /// do something on pause
-                              },
-                              onPlaying: () {
-                                /// do something on playing
-                              },
-                              maxDuration: const Duration(minutes: 5),
-                              isFile: false,
-                            ),
-                            activeSliderColor: ColorConstant.themeColor,
-                            innerPadding: 0.0,
-                            cornerRadius: 0.0,
-                            circlesColor: Colors.transparent,
-                            circlesTextStyle: const TextStyle(fontSize: 0.0),
-                            counterTextStyle: const TextStyle(fontSize: 0.0),
-                          ),
+                     GetBuilder<AffirmationController>(builder: (controller) {
+                       final currentPosition =
+                           controller.positionStream.value ??
+                               Duration.zero;
+                       final duration =
+                           controller.durationStream.value ??
+                               Duration.zero;
+                       return   Expanded(
+                         child: SliderTheme(
+                           data: SliderTheme.of(context).copyWith(
+                             activeTrackColor:
+                             ColorConstant.white.withOpacity(0.2),
+                             inactiveTrackColor:
+                             ColorConstant.colorADADAD,
+                             trackHeight: 1.5,
+                             thumbColor: ColorConstant.themeColor,
+                             thumbShape: const RoundSliderThumbShape(
+                               enabledThumbRadius: 8.0, // Decrease thumb height by adjusting the radius
+                             ),
+                           // Customize the overlay shape and size
+                           ),
+                           child: Slider(
+                             thumbColor: ColorConstant.themeColor,
+                             min: 0,
+                             activeColor: ColorConstant.themeColor,
+                             onChanged: (double value) {
+                               setState.call(() {
+                                 controller
+                                     .seekForMeditationAudio(
+                                     position: Duration(
+                                         milliseconds:
+                                         value.toInt()));
+                               });
+                               setState(() {});
+                             },
+                             value: currentPosition.inMilliseconds
+                                 .toDouble(),
+                             max: duration.inMilliseconds.toDouble(),
+                           ),
+                         ),
+                       );
+                     },),
                           GestureDetector(
                               onTap: () {
                                 setState.call(() {
                                   soundMute = !soundMute;
+                                  if (soundMute) {
+                                    affirmationController.audioPlayer.setVolume(0);
+                                  } else {
+                                    affirmationController.audioPlayer.setVolume(1);
+                                  }
                                 });
                               },
                               child: SvgPicture.asset(
@@ -426,6 +532,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                                     : ImageConstant.soundMax,
                                 height: Dimens.d22,
                                 width: Dimens.d22,
+                                color:  themeController.isDarkMode.isTrue?Colors.white:Colors.black,
                               )),
                           Dimens.d10.spaceWidth,
                         ],
@@ -439,19 +546,23 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
           },
         );
       },
-    );
+    ).whenComplete(() {
+      setState(() {
+        affirmationController = Get.put(AffirmationController());
+
+        affirmationController.audioPlayer.pause();
+      });
+    },);
   }
 
-
-
-  void _showAlertDialog(BuildContext context, id, {String? title}) {
+  void _showAlertDialog(BuildContext context, id) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              //backgroundColor: Colors.white,
+              backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.textfieldFillColor:Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(11.0), // Set border radius
               ),
@@ -460,8 +571,8 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                 Row(
                   children: [
                     Text(
-                      "newAlarms".tr,
-                      style: Style.montserratRegular(fontSize: 20),
+                      "editAlarms".tr,
+                      style: Style.nunRegular(fontSize: 20),
                     ),
                     const Spacer(),
                     Container(
@@ -484,16 +595,16 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                                 decoration: BoxDecoration(
                                     color: am == true
                                         ? ColorConstant.themeColor
-                                        : ColorConstant.white,
+                                        :themeController.isDarkMode.isTrue?ColorConstant.textfieldFillColor: ColorConstant.white,
                                     borderRadius: BorderRadius.circular(17)),
                                 child: Center(
                                   child: Text(
                                     "AM",
-                                    style: Style.montserratRegular(
+                                    style: Style.nunRegular(
                                         fontSize: 12,
                                         color: am == true
                                             ? ColorConstant.white
-                                            : ColorConstant.black),
+                                            :themeController.isDarkMode.isTrue?ColorConstant.white: ColorConstant.black),
                                   ),
                                 )),
                           ),
@@ -510,16 +621,16 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                                 decoration: BoxDecoration(
                                     color: pm == true
                                         ? ColorConstant.themeColor
-                                        : ColorConstant.white,
+                                        :themeController.isDarkMode.isTrue?ColorConstant.textfieldFillColor: ColorConstant.white,
                                     borderRadius: BorderRadius.circular(17)),
                                 child: Center(
                                   child: Text(
                                     "PM",
-                                    style: Style.montserratRegular(
+                                    style: Style.nunRegular(
                                         fontSize: 12,
                                         color: pm == true
                                             ? ColorConstant.white
-                                            : ColorConstant.black),
+                                            : themeController.isDarkMode.isTrue?ColorConstant.white: ColorConstant.black),
                                   ),
                                 )),
                           ),
@@ -528,77 +639,85 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                     ),
                   ],
                 ),
-                Dimens.d10.spaceHeight,
+                Dimens.d15.spaceHeight,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    Dimens.d30.spaceWidth,
                     Text(
                       "hours".tr,
-                      style: Style.montserratRegular(fontSize: 12),
+                      style: Style.nunRegular(fontSize: 12),
                     ),
+                    const Spacer(),
                     Text(
                       "minutes".tr,
-                      style: Style.montserratRegular(fontSize: 12),
+                      style: Style.nunRegular(fontSize: 12),
                     ),
+                    const Spacer(),
+
                     Text(
                       "seconds".tr,
-                      style: Style.montserratRegular(fontSize: 12),
+                      style: Style.nunRegular(fontSize: 12),
                     ),
+                    Dimens.d20.spaceWidth,
+
                   ],
                 ),
                 Dimens.d10.spaceHeight,
-
-                Row(
-                  children: [
-                    NumberPicker(
-                      zeroPad: true,
-                      value: selectedHour,
-                      minValue: 0,
-                      textStyle: Style.montserratRegular(
-                          fontSize: 14, color: ColorConstant.colorCACACA),
-                      selectedTextStyle: Style.montserratBold(
-                          fontSize: 22, color: ColorConstant.themeColor),
-                      maxValue: 24,
-                      itemHeight: 50,
-                      itemWidth: 50,
-                      onChanged: (value) =>
-                          setState(() => selectedHour = value),
-                    ),
-                    const Spacer(),
-                    numericSymbol(),
-                    const Spacer(),
-                    NumberPicker(
-                      zeroPad: true,
-                      value: selectedMinute,
-                      minValue: 0,
-                      itemHeight: 50,
-                      itemWidth: 50,
-                      textStyle: Style.montserratRegular(
-                          fontSize: 14, color: ColorConstant.colorCACACA),
-                      selectedTextStyle: Style.montserratBold(
-                          fontSize: 22, color: ColorConstant.themeColor),
-                      maxValue: 60,
-                      onChanged: (value) =>
-                          setState(() => selectedMinute = value),
-                    ),
-                    const Spacer(),
-                    numericSymbol(),
-                    const Spacer(),
-                    NumberPicker(
-                      zeroPad: true,
-                      value: selectedSeconds,
-                      minValue: 0,
-                      itemHeight: 50,
-                      itemWidth: 50,
-                      textStyle: Style.montserratRegular(
-                          fontSize: 14, color: ColorConstant.colorCACACA),
-                      selectedTextStyle: Style.montserratBold(
-                          fontSize: 22, color: ColorConstant.themeColor),
-                      maxValue: 60,
-                      onChanged: (value) =>
-                          setState(() => selectedSeconds = value),
-                    ),
-                  ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    children: [
+                      NumberPicker(
+                        zeroPad: true,
+                        value: selectedHour,
+                        minValue: 0,
+                        textStyle: Style.nunRegular(
+                            fontSize: 14, color: ColorConstant.colorCACACA),
+                        selectedTextStyle: Style.montserratBold(
+                            fontSize: 22, color: ColorConstant.themeColor),
+                        maxValue: am == true ? 11 : 23,
+                        itemHeight: 50,
+                        itemWidth: 50,
+                        onChanged: (value) =>
+                            setState(() => selectedHour = value),
+                      ),
+                      const Spacer(),
+                      numericSymbol(),
+                      const Spacer(),
+                      NumberPicker(
+                        zeroPad: true,
+                        value: selectedMinute,
+                        minValue: 0,
+                        itemHeight: 50,
+                        itemWidth: 50,
+                        textStyle: Style.nunRegular(
+                            fontSize: 14, color: ColorConstant.colorCACACA),
+                        selectedTextStyle: Style.montserratBold(
+                            fontSize: 22, color: ColorConstant.themeColor),
+                        maxValue: 59,
+                        onChanged: (value) =>
+                            setState(() => selectedMinute = value),
+                      ),
+                      const Spacer(),
+                      numericSymbol(),
+                      const Spacer(),
+                      NumberPicker(
+                        zeroPad: true,
+                        value: selectedSeconds,
+                        minValue: 0,
+                        itemHeight: 50,
+                        itemWidth: 50,
+                        textStyle: Style.nunRegular(
+                            fontSize: 14, color: ColorConstant.colorCACACA),
+                        selectedTextStyle: Style.montserratBold(
+                            fontSize: 22, color: ColorConstant.themeColor),
+                        maxValue: 59,
+                        onChanged: (value) =>
+                            setState(() => selectedSeconds = value),
+                      ),
+                    ],
+                  ),
                 ),
 
                 GestureDetector(onTap: () {
@@ -610,22 +729,26 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                     height: Dimens.d51,
                     width: Get.width,
                     decoration:
-                    BoxDecoration(color: ColorConstant.backGround,borderRadius: BorderRadius.circular(6)),
+                    BoxDecoration(color: themeController.isDarkMode.isTrue?ColorConstant.color394750:ColorConstant.backGround,borderRadius: BorderRadius.circular(6)),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Dimens.d14.spaceWidth,
                         Text(
                           "sound".tr,
-                          style: Style.montserratRegular(fontSize: 14),
+                          style: Style.nunRegular(fontSize: 14,color:themeController.isDarkMode.isTrue?ColorConstant.white: ColorConstant.black),
                         ),
                         const Spacer(),
                         Text(
                           "default".tr,
-                          style: Style.montserratRegular(
-                              fontSize: 14, color: ColorConstant.color787878),
+                          style: Style.nunRegular(
+                              fontSize: 14, color:themeController.isDarkMode.isTrue?ColorConstant.white: ColorConstant.color787878),
                         ),
-                        SvgPicture.asset(ImageConstant.settingArrowRight,color: ColorConstant.color787878,),
+                        SvgPicture.asset(
+                          ImageConstant.settingArrowRight,
+                          color: themeController.isDarkMode.isTrue?Colors.white:ColorConstant.color787878,
+                          height: 25,
+                        ),
                         Dimens.d14.spaceWidth,
 
                       ],
@@ -635,10 +758,10 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                 Dimens.d20.spaceHeight,
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: Dimens.d70.h),
-                  child: CommonElevatedButton(
-                    textStyle: Style.montserratRegular(
-                        fontSize: Dimens.d12, color: ColorConstant.white),
-                    title: "save".tr,
+                  child: CommonElevatedButton(height: 38,width: 153,
+                    textStyle: Style.nunRegular(
+                        fontSize: Dimens.d14, color: ColorConstant.white),
+                    title: "update".tr,
                     onTap: () async {
                       await notificationSettingController.editAffirmation(
                           context: context,

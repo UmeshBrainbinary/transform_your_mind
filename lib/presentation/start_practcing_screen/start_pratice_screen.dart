@@ -1,23 +1,29 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:ui';
-
+import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:transform_your_mind/core/app_export.dart';
+import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
+import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/model_class/gratitude_model.dart';
 import 'package:transform_your_mind/presentation/start_practcing_screen/greate_work.dart';
 import 'package:transform_your_mind/presentation/start_practcing_screen/start_pratice_controller.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:volume_controller/volume_controller.dart';
 
 class StartPracticeScreen extends StatefulWidget {
-  const StartPracticeScreen({super.key});
+  List<GratitudeData>? gratitudeList;
+   StartPracticeScreen({super.key,this.gratitudeList});
 
   @override
   State<StartPracticeScreen> createState() => _StartPracticeScreenState();
@@ -27,27 +33,27 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
     with TickerProviderStateMixin {
   StartPracticeController startC = Get.put(StartPracticeController());
   double _setVolumeValue = 0;
-  double _volumeListenerValue = 0;
-  int currentIndex = 0;
+  int currentIndex = 1;
   int chooseImage = 0;
   final PageController _pageController = PageController();
   int _currentIndex = 0;
   double _progress = 0.0;
   Timer? _timer;
   int selectedTime = 3;
-
+  bool showBottom = false;
+  List<String> quotes = [
+  ];
   @override
   void initState() {
     super.initState();
     startC.selectedSpeedIndex = 0;
     startC.setSpeed = false.obs;
 
-    startC.storyCompleted = List.generate(startC.quotes.length,
+    startC.storyCompleted = List.generate(widget.gratitudeList!.length,
         (index) => false); // Initialize all stories as not completed
 
     _startProgress();
     VolumeController().listener((volume) {
-      setState(() => _volumeListenerValue = volume);
     });
 
     VolumeController().getVolume().then((volume) => _setVolumeValue = volume);
@@ -55,14 +61,16 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
   }
   setBackSounds() async {
     startC.soundMute = false;
-    startC.player.setVolume(1);
-    await startC.player
-        .setUrl(startC.soundList[0]["audio"]);
-    await startC.player.play();
+    try {
+      await startC.setUrl(startC.soundList[1]["audio"]);
+      await startC.play();
+    } catch (e) {
+      debugPrint("Error playing audio: $e");
+    }
   }
   @override
   void dispose() {
-    startC.timer!.cancel();
+    startC.timer?.cancel();
     super.dispose();
   }
 
@@ -70,7 +78,7 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
     _timer?.cancel(); // Cancel any existing timer
     int durationInSeconds = speedChange();
     int durationInMilliseconds = durationInSeconds * 1000;
-    int intervalInMilliseconds = 30;
+    int intervalInMilliseconds = 50;
 
     _timer =
         Timer.periodic(Duration(milliseconds: intervalInMilliseconds), (timer) {
@@ -79,8 +87,14 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
         if (_progress >= 1.0) {
           _progress = 0.0;
           _currentIndex++;
-          if (_currentIndex >= startC.quotes.length) {
+          if (_currentIndex >= widget.gratitudeList!.length) {
             _timer!.cancel();
+            if(widget.gratitudeList!.length==1) {
+              startC.pause();
+               updateGratitude(widget.gratitudeList![0].id);
+
+              Get.to(()=> GreatWork(theme: startC.themeList[chooseImage],));
+            }
           } else {
             _pageController.animateToPage(
               _currentIndex,
@@ -92,11 +106,37 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
       });
     });
   }
+  updateGratitude(id) async {
+
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.Request(
+        'POST', Uri.parse('${EndPoints.baseUrl}update-gratitude?id=$id'));
+    request.body = json.encode({
+      "isCompleted":true,
+      "created_by":PrefService.getString(PrefKey.userId)
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+
+    } else {
+
+
+
+    }
+
+  }
+
 
   int speedChange() {
     switch (startC.selectedSpeedIndex) {
       case 0:
-        return 3;
+        return 5;
       case 1:
         return 20;
       case 2:
@@ -106,7 +146,7 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
       case 4:
         return 5;
       default:
-        return 3;
+        return 5;
     }
   }
 
@@ -159,7 +199,6 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
                 ),
                 BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
-                  // Adjust the sigmaX and sigmaY values to control the blur intensity
                   child: Container(
                     height: Get.height,
                     width: Get.width,
@@ -175,7 +214,7 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
               left: 10,
               right: 10,
               child: Row(
-                children: List.generate(startC.quotes.length, (index) {
+                children: List.generate(widget.gratitudeList!.length, (index) {
                   return Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 2.0),
@@ -197,29 +236,34 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
             //_________________________________ story list  _______________________
             PageView.builder(
               scrollDirection: Axis.vertical,
-              itemCount: startC.quotes.length,
+              itemCount: widget.gratitudeList!.length,
               controller: _pageController,
-              onPageChanged: (value) {
+              onPageChanged: (value) async {
+                await updateGratitude([widget.gratitudeList![value].id]);
+
                 setState(() {
                   _currentIndex = value;
                   _progress = 0.0;
                 });
-               /* if (_currentIndex == (startC.quotes.length - 1)) {
+                  if (_currentIndex == (widget.gratitudeList!.length - 1)) {
                   Future.delayed(Duration(seconds: speedChange())).then(
                     (value) async {
-                      await startC.player.pause();
-                      Get.to(const GreatWork());
+                      for(int i = 0;i<widget.gratitudeList!.length;i++){
+                        await updateGratitude(widget.gratitudeList![i].id);
+                      }
+                      await startC.pause();
+                      Get.to( GreatWork(theme:  startC.themeList[chooseImage],));
                     },
                   );
-                }*/
+                }
               },
               itemBuilder: (context, index) {
                 return Stack(
                   children: [
                     Center(
                       child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text(startC.quotes[index],
+                        padding:  const EdgeInsets.symmetric(horizontal: 40),
+                        child: Text("“ ${widget.gratitudeList?[index].description} ”",maxLines: 7,
                             textAlign: TextAlign.center,
                             style: Style.gothamLight(
                                 fontSize: 23,
@@ -238,7 +282,7 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
               left: 16,
               child: GestureDetector(
                 onTap: () async {
-                  await startC.player.pause();
+                  await startC.pause();
 
                   Get.back();
                 },
@@ -263,6 +307,9 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
                     children: [
                       GestureDetector(
                         onTap: () {
+                          setState(() {
+                            showBottom = true;
+                          });
                           sheetSound();
                         },
                         child: Container(
@@ -293,6 +340,9 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
                     children: [
                       GestureDetector(
                         onTap: () {
+                          setState(() {
+                            showBottom = true;
+                          });
                           sheetTheme();
                         },
                         child: Container(
@@ -341,7 +391,6 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
                           itemCount: startC.speedList.length,
                           itemBuilder: (context, index) {
                             bool isChecked = startC.selectedSpeedIndex == index;
-
                             return GestureDetector(
                               onTap: () {
                                 setState(() {
@@ -366,7 +415,7 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
                                     Dimens.d5.spaceWidth,
                                     Text(
                                       startC.speedList[index],
-                                      style: Style.montserratRegular(
+                                      style: Style.nunRegular(
                                           fontSize: 10,
                                           color: isChecked
                                               ? ColorConstant.themeColor
@@ -382,13 +431,15 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
                 : const SizedBox(),
             //_________________________________ bottom View sound  _______________________
 
-            Positioned(
-              bottom: Dimens.d85,
+            showBottom
+                ? const SizedBox()
+                : Positioned(
+                    bottom: Dimens.d85,
               left: MediaQuery.of(context).size.width / 5,
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 27, vertical: 10),
-                decoration: BoxDecoration(
+                padding: const EdgeInsets.symmetric(
+                          horizontal: 27, vertical: 10),
+                      decoration: BoxDecoration(
                     color: ColorConstant.white.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(20)),
                 child: Row(
@@ -401,9 +452,9 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
                           startC.soundMute = !startC.soundMute;
                         });
                         if (startC.soundMute) {
-                          startC.player.setVolume(0);
+                          startC.audioPlayer.setVolume(0);
                         } else {
-                          startC.player.setVolume(1);
+                          startC.audioPlayer.setVolume(1);
                         }
                         setState(() {
 
@@ -457,7 +508,7 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
   commonText(text) {
     return Text(
       text,
-      style: Style.montserratRegular(
+      style: Style.nunRegular(
           fontSize: 14, color: ColorConstant.white.withOpacity(0.5)),
     );
   }
@@ -465,7 +516,7 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
   commonTextTitle(text) {
     return Text(
       text,
-      style: Style.montserratRegular(
+      style: Style.nunRegular(
           fontWeight: FontWeight.w600,
           fontSize: 14,
           color: ColorConstant.white),
@@ -480,142 +531,190 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setState) {
-            return Stack(
-              children: [
-                BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                  child: SizedBox(
-                    height: 280,
-                    width: Get.width,
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(20),
-                          topLeft: Radius.circular(20)),
-                      color: ColorConstant.black.withOpacity(0.3)),
-                  height: 280,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Dimens.d10.spaceHeight,
-                        Center(
-                          child: Container(
-                            height: 4,
-                            width: 40,
-                            decoration: BoxDecoration(
-                                color: ColorConstant.colorBCBCBC,
-                                borderRadius: BorderRadius.circular(4)),
-                          ),
-                        ),
-                        Dimens.d20.spaceHeight,
-                        Text('sound'.tr,
-                            style: Style.montserratRegular(
-                                fontSize: 32,
-                                fontWeight: FontWeight.w500,
-                                color: ColorConstant.white)),
-                        Dimens.d20.spaceHeight,
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: startC.soundList.length,
-                            padding: EdgeInsets.zero,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
-                                onTap: () async {
-                                  await startC.player
-                                      .setUrl(startC.soundList[index]["audio"]);
-                                  await startC.player.play();
-                                  setState.call(() {
-                                    currentIndex = index;
-                                  });
-                                },
-                                child: Container(
-                                  width: 100,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10),
-                                  decoration: BoxDecoration(
-                                      color: currentIndex == index
-                                          ? Colors.black.withOpacity(0.5)
-                                          : ColorConstant.white
-                                              .withOpacity(0.3),
-                                      borderRadius: BorderRadius.circular(15),
-                                      border: Border.all(
-                                          color: currentIndex == index
-                                              ? ColorConstant.white
-                                              : Colors.transparent)),
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 8.0),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      Dimens.d20.spaceHeight,
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(80),
-                                        child: Image.asset(
-                                          ImageConstant.gratitudeBackground,
-                                          width: 56,
-                                          height: 56,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      Dimens.d10.spaceHeight,
-                                      Text(
-                                        startC.soundList[index]["title"],
-                                        textAlign: TextAlign.center,
-                                        style: Style.montserratRegular(
-                                            fontSize: 12,
-                                            color: ColorConstant.white),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
+            return Container(
+              decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      spreadRadius: 1,
+                      blurRadius: 7,
+                      offset: const Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
+                  borderRadius: const BorderRadius.only(
+                      topRight: Radius.circular(20),
+                      topLeft: Radius.circular(20)),
+                  color: ColorConstant.black.withOpacity(0.2)),
+              height: 280,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Dimens.d10.spaceHeight,
+                    Center(
+                      child: Container(
+                        height: 4,
+                        width: 40,
+                        decoration: BoxDecoration(
+                            color: ColorConstant.colorBCBCBC,
+                            borderRadius: BorderRadius.circular(4)),
+                      ),
+                    ),
+                    Dimens.d20.spaceHeight,
+                    Text('sound'.tr,
+                        style: Style.nunMedium(
+                            fontSize: 32,
+                            fontWeight: FontWeight.w500,
+                            color: ColorConstant.white)),
+                    Dimens.d20.spaceHeight,
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: startC.soundList.length,
+                        padding: EdgeInsets.zero,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () async {
+                              await startC.audioPlayer
+                                  .setUrl(startC.soundList[index]["audio"]);
+                              await startC.play();
+                              setState.call(() {
+                                currentIndex = index;
+                              });
                             },
-                          ),
-                        ),
-                        Dimens.d20.spaceHeight,
-                        Row(
-                          children: <Widget>[
-                            SvgPicture.asset(
-                              ImageConstant.soundMax,
-                              color: ColorConstant.white,
-                            ),
-                            ValueListenableBuilder(
-                              valueListenable: startC.slideValue,
-                              builder: (context, value, child) {
-                                return Expanded(
-                                  child: Slider(
-                                    thumbColor: ColorConstant.white,
-                                    min: 0,
-                                    max: 1,
-                                    activeColor: ColorConstant.themeColor,
-                                    onChanged: (double value) {
-                                      setState.call(() {
-                                        _setVolumeValue = value;
-                                        VolumeController()
-                                            .setVolume(_setVolumeValue);
-                                      });
-                                      setState(() {});
-                                    },
-                                    value: _setVolumeValue,
+                            child: startC.soundList[index]["title"] == "None"
+                                ? Container(
+                                    width: 100,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    decoration: BoxDecoration(
+                                        color: currentIndex == index
+                                            ? Colors.black.withOpacity(0.5)
+                                            : ColorConstant.white
+                                                .withOpacity(0.3),
+                                        borderRadius: BorderRadius.circular(15),
+                                        border: Border.all(
+                                            color: currentIndex == index
+                                                ? ColorConstant.white
+                                                : Colors.transparent)),
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 3.0),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        Dimens.d36.spaceHeight,
+                                        Container(
+                                          height: 27,
+                                          width: 27,
+                                          decoration: const BoxDecoration(
+                                              color: ColorConstant.white,
+                                              shape: BoxShape.circle),
+                                        ),
+                                        Dimens.d25.spaceHeight,
+                                        Text(
+                                          startC.soundList[index]["title"],
+                                          textAlign: TextAlign.center,
+                                          style: Style.nunRegular(
+                                              fontSize: 12,
+                                              color: ColorConstant.white),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : Container(
+                                    width: 100,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    decoration: BoxDecoration(
+                                        color: currentIndex == index
+                                            ? Colors.black.withOpacity(0.5)
+                                            : ColorConstant.white
+                                                .withOpacity(0.3),
+                                        borderRadius: BorderRadius.circular(15),
+                                        border: Border.all(
+                                            color: currentIndex == index
+                                                ? ColorConstant.white
+                                                : Colors.transparent)),
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        Dimens.d20.spaceHeight,
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(80),
+                                          child: Image.asset(
+                                            ImageConstant.gratitudeBackground,
+                                            width: 56,
+                                            height: 56,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        Dimens.d10.spaceHeight,
+                                        Text(
+                                          startC.soundList[index]["title"],
+                                          textAlign: TextAlign.center,
+                                          style: Style.nunRegular(
+                                              fontSize: 12,
+                                              color: ColorConstant.white),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                );
-                              },
-                            ),
-                          ],
+                          );
+                        },
+                      ),
+                    ),
+                    Dimens.d20.spaceHeight,
+                    Row(
+                      children: <Widget>[
+                        SvgPicture.asset(
+                          ImageConstant.soundLow,
+                          color: ColorConstant.white,
+                        ),
+                        ValueListenableBuilder(
+                          valueListenable: startC.slideValue,
+                          builder: (context, value, child) {
+                            return Expanded(
+                              child: Slider(
+                                thumbColor: ColorConstant.white,
+                                min: 0,
+                                max: 1,
+                                activeColor: ColorConstant.themeColor,
+                                onChanged: (double value) {
+                                  setState.call(() {
+                                    _setVolumeValue = value;
+                                    VolumeController()
+                                        .setVolume(_setVolumeValue);
+                                  });
+                                  setState(() {});
+                                },
+                                value: _setVolumeValue,
+                              ),
+                            );
+                          },
+                        ),
+                        SvgPicture.asset(
+
+                          ImageConstant.soundMax,
+                          color: ColorConstant.white,
                         ),
                       ],
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             );
           },
         );
+      },
+    ).whenComplete(
+      () {
+        setState(() {
+          showBottom = false;
+        });
       },
     );
   }
@@ -628,71 +727,67 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setState) {
-            return Stack(
-              children: [
-                BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                  child: SizedBox(
-                    height: 200,
-                    width: Get.width,
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(20),
-                          topLeft: Radius.circular(20)),
-                      color: ColorConstant.black.withOpacity(0.3)),
-                  height: 200,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Dimens.d10.spaceHeight,
-                        Center(
-                          child: Container(
-                            height: 4,
-                            width: 40,
-                            decoration: BoxDecoration(
-                                color: ColorConstant.colorBCBCBC,
-                                borderRadius: BorderRadius.circular(4)),
-                          ),
-                        ),
-                        Dimens.d25.spaceHeight,
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: startC.themeList.length,
-                            padding: EdgeInsets.zero,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  setState.call(() {
-                                    chooseImage = index;
-                                  });
-                                  setState(() {});
-                                },
-                                child: Container(
-                                  height: 160,
-                                  decoration: BoxDecoration(
-                                      color: chooseImage == index
-                                          ? Colors.black.withOpacity(0.5)
-                                          : ColorConstant.white
-                                              .withOpacity(0.3),
-                                      borderRadius: BorderRadius.circular(15),
-                                      border: Border.all(
-                                          color: chooseImage == index
-                                              ? ColorConstant.white
-                                              : Colors.transparent)),
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 8.0),
-                                  child: CachedNetworkImage(
-                                    height: 160,
-                                    width: 100,
-                                    imageUrl: startC.themeList[index],
-                                    imageBuilder: (context, imageProvider) =>
-                                        Container(
+            return Container(
+              decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      spreadRadius: 1,
+                      blurRadius: 7,
+                      offset: const Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
+                  borderRadius: const BorderRadius.only(
+                      topRight: Radius.circular(20),
+                      topLeft: Radius.circular(20)),
+                  color: ColorConstant.black.withOpacity(0.2)),
+              height: 200,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Dimens.d10.spaceHeight,
+                    Center(
+                      child: Container(
+                        height: 4,
+                        width: 40,
+                        decoration: BoxDecoration(
+                            color: ColorConstant.colorBCBCBC,
+                            borderRadius: BorderRadius.circular(4)),
+                      ),
+                    ),
+                    Dimens.d25.spaceHeight,
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: startC.themeList.length,
+                        padding: EdgeInsets.zero,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              chooseImage = index;
+
+                              setState(() {});
+                            },
+                            child: Container(
+                              height: 160,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: chooseImage == index
+                                        ? Colors.white
+                                        : Colors.transparent,
+                                    width: 2.5),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              margin:
+                              const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: CachedNetworkImage(
+                                height: 160,
+                                width: 100,
+                                imageUrl: startC.themeList[index],
+                                imageBuilder: (context, imageProvider) =>
+                                    Container(
                                       decoration: BoxDecoration(
                                         shape: BoxShape.rectangle,
                                         borderRadius: BorderRadius.circular(
@@ -704,35 +799,36 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
                                         ),
                                       ),
                                     ),
-                                    placeholder: (context, url) =>
-                                        PlaceHolderCNI(
-                                      height: Get.height,
-                                      width: Get.width,
-                                      borderRadius: 10.0,
-                                    ),
-                                    errorWidget: (context, url, error) =>
-                                        PlaceHolderCNI(
+                                placeholder: (context, url) => PlaceHolderCNI(
+                                  height: Get.height,
+                                  width: Get.width,
+                                  borderRadius: 10.0,
+                                ),
+                                errorWidget: (context, url, error) =>
+                                    PlaceHolderCNI(
                                       height: Get.height,
                                       width: Get.width,
                                       isShowLoader: false,
                                       borderRadius: 8.0,
                                     ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        Dimens.d15.spaceHeight,
-                      ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  ),
+                    Dimens.d15.spaceHeight,
+                  ],
                 ),
-              ],
+              ),
             );
           },
         );
       },
+    ).whenComplete(
+      () => setState(() {
+        showBottom = false;
+      }),
     );
   }
 }

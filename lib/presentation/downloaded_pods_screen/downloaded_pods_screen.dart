@@ -1,8 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
@@ -27,18 +27,22 @@ class _DownloadedPodsScreenState extends State<DownloadedPodsScreen> {
   late ScrollController scrollController = ScrollController();
   AudioContentController audioContentController =
       Get.put(AudioContentController());
-ThemeController themeController = Get.find<ThemeController>();
+   ThemeController themeController = Get.find<ThemeController>();
   @override
   void initState() {
     audioContentController.getDownloadedList();
     super.initState();
   }
+  String _formatDuration(Duration? duration) {
+    if (duration == null) return "00:00";
+    final minutes = duration.inMinutes.remainder(60).toString().padLeft(2, '0');
+    final seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+    return "$minutes:$seconds";
+  }
 
   @override
   Widget build(BuildContext context) {
-    //statusBarSet(themeController);
-
-    return Scaffold(backgroundColor:themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.backGround,
+    return Scaffold(backgroundColor:themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
         appBar: CustomAppBar(
           title: "Downloads".tr,
           showBack: true,
@@ -90,7 +94,7 @@ ThemeController themeController = Get.find<ThemeController>();
                                                   .audioDataDownloaded[index]
                                                   .image ??
                                               "",
-                                          width: Dimens.d156,
+                                          width: Dimens.d170,
                                           height: Dimens.d113,
                                         ),
                                         Align(
@@ -101,6 +105,13 @@ ThemeController themeController = Get.find<ThemeController>();
                                             child: SvgPicture.asset(
                                                 ImageConstant.play),
                                           ),
+                                        ),
+                                        Positioned( bottom: 6.0,
+                                          right: 6.0,
+                                          child: Container(padding:  EdgeInsets.only(top:Platform.isIOS?0: 1),
+                                            height: 12,width: 30,decoration: BoxDecoration(color: Colors.black.withOpacity(0.5),
+                                                borderRadius: BorderRadius.circular(13)),
+                                            child: Center(child: Text(controller.audioListDurationD.length > index ? _formatDuration( controller.audioListDurationD[index]) : 'Loading...',style: Style.nunRegular(fontSize: 6,color: Colors.white),),) ,),
                                         )
                                       ],
                                     ),
@@ -110,15 +121,15 @@ ThemeController themeController = Get.find<ThemeController>();
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         SizedBox(
-                                          width: 90,
+                                          width: 72,
                                           child: Text(
                                             controller
                                                 .audioDataDownloaded[index]
                                                 .name
                                                 .toString(),
                                             // "Motivational",
-                                            style: Style.montserratMedium(
-                                              fontSize: Dimens.d12,
+                                            style: Style.nunitoBold(
+                                              fontSize: Dimens.d10,
                                             ),
                                             overflow: TextOverflow.ellipsis,
                                             maxLines: 1,
@@ -129,6 +140,7 @@ ThemeController themeController = Get.find<ThemeController>();
                                           backgroundColor:
                                               ColorConstant.colorD9D9D9,
                                         ),
+                                        Dimens.d10.spaceWidth,
                                         Row(
                                           children: [
                                             SvgPicture.asset(
@@ -138,15 +150,18 @@ ThemeController themeController = Get.find<ThemeController>();
                                               height: 10,
                                               width: 10,
                                             ),
+                                            Dimens.d3.spaceWidth,
+
                                             Text(
-                                              "${controller.audioDataDownloaded[index].rating.toString()}.0" ??
-                                                  '',
-                                              style: Style.montserratMedium(
+                                              "${controller.audioDataDownloaded[index].rating.toString()}.0",
+                                              style: Style.nunMedium(
                                                 fontSize: Dimens.d12,
                                               ),
                                             ),
                                           ],
                                         ),
+                                        Dimens.d4.spaceWidth,
+
                                         controller.audioDataDownloaded[index].download == true
                                             ? GestureDetector(
                                                 onTap: () async {
@@ -161,11 +176,11 @@ ThemeController themeController = Get.find<ThemeController>();
                                                   decoration: BoxDecoration(
                                                       shape: BoxShape.circle,
                                                       border: Border.all(
-                                                          color: Colors.black,
+                                                          color: themeController.isDarkMode.isTrue?Colors.white:Colors.black,
                                                           width: 1.5)),
-                                                  child: const Icon(
+                                                  child:  Icon(
                                                     Icons.close,
-                                                    color: Colors.black,
+                                                    color: themeController.isDarkMode.isTrue?Colors.white:Colors.black,
                                                     size: 18,
                                                   ),
                                                 ),
@@ -179,7 +194,7 @@ ThemeController themeController = Get.find<ThemeController>();
                                           .description
                                           .toString(),
                                       maxLines: Dimens.d2.toInt(),
-                                      style: Style.montserratMedium(
+                                      style: Style.nunMedium(
                                           fontSize: Dimens.d14),
                                       overflow: TextOverflow.ellipsis,
                                     ),

@@ -9,6 +9,7 @@ import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
+import 'package:transform_your_mind/core/service/http_service.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -170,7 +171,10 @@ class _AddPositivePageState extends State<AddPositivePage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    final isKeyboardOpen = bottomInset > 0;
+
+    return Scaffold(resizeToAvoidBottomInset: false,
       backgroundColor: themeController.isDarkMode.value
           ? ColorConstant.darkBackground
           : ColorConstant.backGround,
@@ -181,6 +185,24 @@ class _AddPositivePageState extends State<AddPositivePage>
       ),
       body: Stack(
         children: [
+        Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.only(top: Dimens.d100),
+                child: SvgPicture.asset(
+                    themeController.isDarkMode.isTrue
+                        ? ImageConstant.profile1Dark
+                        : ImageConstant.profile1),
+              )),
+       Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: Dimens.d120),
+                child: SvgPicture.asset(
+                    themeController.isDarkMode.isTrue
+                        ? ImageConstant.profile2Dark
+                        : ImageConstant.profile2),
+              )),
           LayoutBuilder(
             builder: (context, constraints) {
               return Form(
@@ -195,9 +217,12 @@ class _AddPositivePageState extends State<AddPositivePage>
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "addImage".tr,
-                                style: Style.montserratRegular(fontSize: 14),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                child: Text(
+                                  "addImage".tr,
+                                  style: Style.nunitoSemiBold(fontSize: 14),
+                                ),
                               ),
                               ValueListenableBuilder(
                                 valueListenable: imageFile,
@@ -226,12 +251,15 @@ class _AddPositivePageState extends State<AddPositivePage>
                                 },
                               ),
                               imageValid == true
-                                  ? Text(
-                                      "imageRequired".tr,
-                                      style: Style.montserratRegular(
-                                          color: ColorConstant.colorFF0000,
-                                          fontSize: Dimens.d12),
-                                    )
+                                  ? Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                                    child: Text(
+                                        "imageRequired".tr,
+                                        style: Style.nunRegular(
+                                            color: ColorConstant.colorFF0000,
+                                            fontSize: Dimens.d12),
+                                      ),
+                                  )
                                   : const SizedBox(),
                               Dimens.d20.spaceHeight,
                               CommonTextField(
@@ -240,12 +268,9 @@ class _AddPositivePageState extends State<AddPositivePage>
                                 controller: titleController,
                                 focusNode: titleFocus,
                                 prefixLottieIcon: ImageConstant.lottieTitle,
-                                maxLength: maxLength,
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(maxLength),
-                                ],
+
                                 validator: (value) {
-                                  if (value == "") {
+                                  if (value!.trim() == "") {
                                     return "pleaseEnterTitle".tr;
                                   }
                                   return null;
@@ -267,7 +292,7 @@ class _AddPositivePageState extends State<AddPositivePage>
                                     maxLength: maxLengthDesc,
 
                                     validator: (value) {
-                                      if (value == "") {
+                                      if (value!.trim() == "") {
                                         return "pleaseEnterDescription".tr;
                                       }
                                       return null;
@@ -286,9 +311,7 @@ class _AddPositivePageState extends State<AddPositivePage>
                                       child: CommonElevatedButton(
                                         title: "cancel".tr,
                                         outLined: true,
-                                        textStyle: Style.montserratRegular(
-                                            color:
-                                                ColorConstant.textDarkBlue),
+                                        textStyle: Style.nunRegular(),
                                         onTap: () {
                                           if (_formKey.currentState!
                                               .validate()) {
@@ -301,8 +324,8 @@ class _AddPositivePageState extends State<AddPositivePage>
                                   Dimens.d20.spaceWidth,
                                   Expanded(
                                     child: CommonElevatedButton(
-                                      textStyle: Style.montserratRegular(
-                                          fontSize: Dimens.d20,
+                                      textStyle: Style.nunRegular(
+                                          fontSize: widget.isEdit!?Dimens.d14:Dimens.d20,
                                           color: ColorConstant.white),
                                       title: widget.isEdit!
                                           ? "update".tr
@@ -318,11 +341,22 @@ class _AddPositivePageState extends State<AddPositivePage>
                                             imageValid = false;
                                           });
                                           if (widget.isEdit!) {
-                                            await updatePositiveMoments(
-                                                widget.id);
+                                            if (await isConnected()) {
+                                              await updatePositiveMoments(
+                                                  widget.id);
+                                            } else {
+                                              showSnackBarError(Get.context!,
+                                                  "noInternet".tr);
+                                            }
+
                                             /* _showAlertDialog(context);*/
                                           } else {
-                                            await createPositiveMoment();
+                                            if (await isConnected()) {
+                                              await createPositiveMoment();
+                                            } else {
+                                              showSnackBarError(Get.context!,
+                                                  "noInternet".tr);
+                                            }
                                           }
                                         } else {
                                           setState(() {
@@ -358,7 +392,7 @@ class _AddPositivePageState extends State<AddPositivePage>
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          //backgroundColor: Colors.white,
+          backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.textfieldFillColor:Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(11.0), // Set border radius
           ),
@@ -384,7 +418,7 @@ class _AddPositivePageState extends State<AddPositivePage>
               child: Text(
                   textAlign: TextAlign.center,
                   "areYouSureYouWantToDeletePo".tr,
-                  style: Style.montserratRegular(
+                  style: Style.nunRegular(
                     fontSize: Dimens.d12,
                   )),
             ),
@@ -392,7 +426,7 @@ class _AddPositivePageState extends State<AddPositivePage>
             Padding(
               padding: EdgeInsets.symmetric(horizontal: Dimens.d70.h),
               child: CommonElevatedButton(
-                textStyle: Style.montserratRegular(
+                textStyle: Style.nunRegular(
                     fontSize: Dimens.d12, color: ColorConstant.white),
                 title: "ok".tr,
                 onTap: () {

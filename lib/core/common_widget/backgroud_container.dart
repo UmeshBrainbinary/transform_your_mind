@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:get/get.dart';
-import 'package:transform_your_mind/core/utils/color_constant.dart';
-import 'package:transform_your_mind/theme/theme_controller.dart';
+
 
 class BackGroundContainer extends StatelessWidget {
   final String image;
@@ -12,13 +9,13 @@ class BackGroundContainer extends StatelessWidget {
   final double height;
 
   const BackGroundContainer({
-    Key? key,
+    super.key,
     required this.image,
     required this.isLeft,
     required this.height,
     this.top,
     this.bottom,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

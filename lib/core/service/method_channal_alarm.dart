@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
 class AlarmService {
@@ -11,7 +12,7 @@ class AlarmService {
         'title': title,
       });
     } on PlatformException catch (e) {
-      print("Failed to set alarm: '${e.message}'.");
+      debugPrint("Failed to set alarm: '${e.message}'.");
     }
   }
 }

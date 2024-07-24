@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -66,9 +64,11 @@ class _PositiveScreenState extends State<PositiveScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //statusBarSet(themeController);
-    return Scaffold(backgroundColor: themeController.isDarkMode.isTrue?
-    ColorConstant.darkBackground:ColorConstant.backGround,
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: themeController.isDarkMode.isTrue
+          ? ColorConstant.darkBackground
+          : ColorConstant.white,
       appBar: CustomAppBar(
         title: "positiveMoments".tr,
         showBack: true,
@@ -100,9 +100,12 @@ class _PositiveScreenState extends State<PositiveScreen> {
                       decoration: BoxDecoration(
                         boxShadow: [
                           BoxShadow(
-                            color: ColorConstant.themeColor.withOpacity(0.1),
-                            blurRadius: Dimens.d8,
-                          )
+                            color: themeController.isDarkMode.isTrue?Colors.transparent:ColorConstant.colorBFD0D4.withOpacity(0.34),
+                            spreadRadius: 0,
+                            blurRadius: 13,
+                            offset:
+                                const Offset(0, 3), // Shadow position (x, y)
+                          ),
                         ],
                       ),
                       child:  CommonTextField(
@@ -128,8 +131,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
                                 },child: SvgPicture.asset(ImageConstant.close)),
                           ),
                           hintText: "search".tr,
-                          textStyle:
-                          Style.montserratRegular(fontSize: 12),
+                          textStyle: Style.nunRegular(fontSize: 12),
                           controller: searchController,
                           focusNode: searchFocusNode),
 
@@ -203,25 +205,25 @@ class _PositiveScreenState extends State<PositiveScreen> {
                                             width: Dimens.d139,
                                             height: Dimens.d101),
                                       ),
-                                      Dimens.d15.spaceHeight,
                                       Row(
                                         children: [
                                           const Spacer(),
                                           PopupMenuButton(
-                                            shape:
-                                                const RoundedRectangleBorder(
+                                            shape: const RoundedRectangleBorder(
                                               borderRadius: BorderRadius.all(
                                                 Radius.circular(10.0),
                                               ),
                                             ),
                                             color: themeController
                                                     .isDarkMode.isTrue
-                                                ? ColorConstant
-                                                    .textfieldFillColor
+                                                ? const Color(0xffE8F4F8)
                                                 : ColorConstant.white,
-                                            child: SvgPicture.asset(
-                                              ImageConstant.moreVert,
-                                              height: 5,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 10, right: 2),
+                                              child: SvgPicture.asset(
+                                                ImageConstant.moreVert,
+                                              ),
                                             ),
                                             itemBuilder: (context) {
                                               return List.generate(
@@ -229,130 +231,129 @@ class _PositiveScreenState extends State<PositiveScreen> {
                                                 (indexPop) {
                                                   return PopupMenuItem(
                                                       child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
                                                     children: [
-                                                    InkWell(
-                                                      onTap: () {
-                                                        Get.back();
+                                                      InkWell(
+                                                        onTap: () {
+                                                          Get.back();
                                                           _onAddClick1(
                                                               image: controller
-                                                                          .filteredBookmarks?[
-                                                                      index]
-                                                                  ["img"],
+                                                                      .filteredBookmarks?[
+                                                                  index]["img"],
                                                               title: controller
                                                                           .filteredBookmarks?[
                                                                       index]
                                                                   ["title"],
-                                                              description:
-                                                                  controller
-                                                                          .filteredBookmarks?[index]
-                                                                      ["des"],
+                                                              description: controller
+                                                                      .filteredBookmarks?[
+                                                                  index]["des"],
                                                               context,
                                                               controller.filteredBookmarks?[
                                                                           index]
-                                                                      [
-                                                                      "id"] ??
+                                                                      ["id"] ??
                                                                   "");
-                                                      },
-                                                      child: Container(
-                                                        height: 28,
-                                                        width: 86,
-                                                        decoration: BoxDecoration(
-                                                            borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5),
-                                                              color: ColorConstant
-                                                                .color5B93FF
-                                                                .withOpacity(
-                                                                      0.05)),
-                                                          child: Row(
-                                                            children: [
-                                                              Dimens.d5.spaceWidth,
-
-                                                              SvgPicture.asset(
-                                                              ImageConstant
-                                                                  .editTools,
-                                                              color: ColorConstant
-                                                                  .color5B93FF,
-                                                            ),
-                                                              Dimens.d5.spaceWidth,
-
-
-                                                              Text(
-                                                              'edit'.tr,
-                                                              style: Style
-                                                                  .montserratRegular(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color: ColorConstant
-                                                                    .color5B93FF,
-                                                              ),
-                                                            ),
-                                                              const Spacer(),
-
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Dimens.d15.spaceHeight,
-                                                    InkWell(
-                                                      onTap: () {
-                                                        Get.back();
-
-                                                        _showAlertDialogDelete(
-                                                            context,
-                                                            index,
-                                                              controller.filteredBookmarks?[
-                                                                      index]
-                                                                  ["id"]);
                                                         },
-                                                      child: Container(
-                                                        height: 28,
-                                                        width: 86,
-                                                        decoration: BoxDecoration(
-                                                            borderRadius:
+                                                        child: Container(
+                                                          height: 28,
+                                                          width: 86,
+                                                          decoration: BoxDecoration(
+                                                              borderRadius:
                                                                   BorderRadius
                                                                       .circular(
                                                                           5),
                                                               color: ColorConstant
-                                                                .colorE71D36
-                                                                .withOpacity(
+                                                                  .color5B93FF
+                                                                  .withOpacity(
                                                                       0.05)),
                                                           child: Row(
                                                             children: [
-                                                             Dimens.d5.spaceWidth,
-
-                                                            SvgPicture.asset(
-                                                              ImageConstant
-                                                                  .delete,
-                                                              color: ColorConstant
-                                                                  .colorE71D36,
-                                                            ),
-                                                              Dimens.d5.spaceWidth,
-
-
+                                                              Dimens.d5
+                                                                  .spaceWidth,
+                                                              SvgPicture
+                                                                      .asset(
+                                                                    ImageConstant
+                                                                        .editTools,
+                                                                    color: ColorConstant
+                                                                        .color5B93FF,
+                                                                  ),
+                                                                  Dimens.d5
+                                                                      .spaceWidth,
                                                               Text(
-                                                              'delete'.tr,
-                                                              style: Style
-                                                                  .montserratRegular(
-                                                                fontSize: 14,
-                                                                fontWeight:
+                                                                'edit'.tr,
+                                                                style: Style
+                                                                    .nunRegular(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
                                                                       FontWeight
                                                                           .w500,
                                                                   color: ColorConstant
-                                                                    .colorE71D36,
+                                                                      .color5B93FF,
+                                                                ),
+                                                              ),
+                                                              const Spacer(),
+                                                            ],
                                                               ),
                                                             ),
-                                                              const Spacer(),
+                                                          ),
+                                                          Dimens.d10
+                                                              .spaceHeight,
+                                                          InkWell(
+                                                            onTap: () {
+                                                              Get.back();
 
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ));
+                                                          _showAlertDialogDelete(
+                                                              context,
+                                                              index,
+                                                              controller
+                                                                      .filteredBookmarks?[
+                                                                  index]["id"]);
+                                                        },
+                                                        child: Container(
+                                                          height: 28,
+                                                          width: 86,
+                                                          decoration: BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          5),
+                                                              color: ColorConstant
+                                                                  .colorE71D36
+                                                                  .withOpacity(
+                                                                      0.05)),
+                                                          child: Row(
+                                                            children: [
+                                                              Dimens.d5
+                                                                  .spaceWidth,
+                                                              SvgPicture
+                                                                      .asset(
+                                                                    ImageConstant
+                                                                        .trashFull,
+                                                                    color: ColorConstant
+                                                                        .colorE71D36,
+                                                                  ),
+                                                                  Dimens.d5
+                                                                      .spaceWidth,
+                                                              Text(
+                                                                'delete'.tr,
+                                                                style: Style
+                                                                    .nunRegular(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: ColorConstant
+                                                                      .colorE71D36,
+                                                                ),
+                                                              ),
+                                                              const Spacer(),
+                                                            ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ));
                                                 },
                                               );
                                             },
@@ -365,7 +366,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
                                                 ['title'] ??
                                             "",
                                         maxLines: 1,
-                                        style: Style.montserratMedium(
+                                        style: Style.nunMedium(
                                             fontSize: Dimens.d14),
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -380,9 +381,11 @@ class _PositiveScreenState extends State<PositiveScreen> {
                                   CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-
-                                SvgPicture.asset(ImageConstant.noSearch,),
-                                Text("dataNotFound".tr,style: Style.gothamMedium(
+                                  SvgPicture.asset(
+                                      themeController.isDarkMode.isTrue
+                                          ? ImageConstant.darkData
+                                          : ImageConstant.noData),
+                                  Text("dataNotFound".tr,style: Style.gothamMedium(
                                     fontSize: 24,fontWeight: FontWeight.w700),),
 
                               ],
@@ -406,86 +409,108 @@ class _PositiveScreenState extends State<PositiveScreen> {
   }
 
   void _showAlertDialogDelete(BuildContext context, int index, id) {
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          //backgroundColor: Colors.white,
+        return AlertDialog(contentPadding: EdgeInsets.zero,
+          backgroundColor:themeController.isDarkMode.isTrue?ColorConstant.textfieldFillColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(11.0), // Set border radius
           ),
-          actions: <Widget>[
-            Dimens.d18.spaceHeight,
-            Align(
-                alignment: Alignment.topRight,
-                child: GestureDetector(
+          content: Column(mainAxisSize: MainAxisSize.min,
+            children: [
+              Dimens.d18.spaceHeight,
+              Align(
+                  alignment: Alignment.topRight,
+                  child: GestureDetector(
+                      onTap: () {
+                        Get.back();
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 10.0),
+                        child: SvgPicture.asset(
+                          ImageConstant.close,
+                          color: themeController.isDarkMode.isTrue
+                              ? ColorConstant.white
+                              : ColorConstant.black,
+                        ),
+                      ))),
+              Dimens.d23.spaceHeight,
+              Center(
+                  child: SvgPicture.asset(
+                    ImageConstant.deleteAffirmation,
+                    height:  Dimens.d96,
+                    width:  Dimens.d96,
+                  )),
+              Dimens.d20.spaceHeight,
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                  child: Text(
+                      textAlign: TextAlign.center,
+                      "areYouSureYouWantToDeletePo".tr,
+                      style: Style.nunRegular(
+                        fontSize: Dimens.d14,
+                      )),
+                ),
+              ),
+              Dimens.d24.spaceHeight,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Spacer(),
+                  CommonElevatedButton(
+                    height: 33,width: 94,
+
+                    contentPadding:
+                    const EdgeInsets.symmetric(horizontal: Dimens.d28),
+                    textStyle: Style.nunRegular(
+                        fontSize: Dimens.d12, color: ColorConstant.white),
+                    title: "delete".tr,
+                    onTap: () async {
+                      Get.back();
+                      await positiveController.deletePositiveMoment(id,context);
+                      Future.delayed(const Duration(seconds: 1)).then(
+                            (value) async {
+                          await positiveController.getPositiveMoments();
+                          setState(() {});
+                        },
+                      );
+                      setState(() {});
+                    },
+                  ),
+                  Dimens.d20.spaceWidth,
+                  GestureDetector(
                     onTap: () {
                       Get.back();
                     },
-                    child: SvgPicture.asset(
-                      ImageConstant.close,
-                    ))),
-            Center(
-                child: SvgPicture.asset(
-              ImageConstant.deleteAffirmation,
-              height:  Dimens.d96,
-              width:  Dimens.d96,
-            )),
-            Dimens.d20.spaceHeight,
-            Center(
-              child: Text(
-                  textAlign: TextAlign.center,
-                  "areYouSureYouWantToDeletePo".tr,
-                  style: Style.montserratRegular(
-                    fontSize: Dimens.d14,
-                  )),
-            ),
-            Dimens.d24.spaceHeight,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                CommonElevatedButton(
-                  height: 33,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 25),
-                  textStyle: Style.montserratRegular(
-                      fontSize: Dimens.d12, color: ColorConstant.white),
-                  title: "delete".tr,
-                  onTap: () async {
-                    Get.back();
-                    await positiveController.deletePositiveMoment(id,context);
-                    Future.delayed(const Duration(seconds: 1)).then(
-                      (value) async {
-                        await positiveController.getPositiveMoments();
-                        setState(() {});
-                      },
-                    );
-                    setState(() {});
-                  },
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Get.back();
-                  },
-                  child: Container(
-                    height: 33,
-                    margin: const EdgeInsets.symmetric(horizontal: 5),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 21,
-                    ),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(80),
-                        border: Border.all(color: ColorConstant.themeColor)),
-                    child: Center(
-                      child: Text(
-                        "cancel".tr,
-                        style: Style.montserratRegular(fontSize: 14),
+                    child: Container(
+                      height: 33,width: 93,
+
+                      margin: const EdgeInsets.symmetric(horizontal: 5),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 21,
+                      ),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(80),
+                          border: Border.all(color: ColorConstant.themeColor)),
+                      child: Center(
+                        child: Text(
+                          "cancel".tr,
+                          style: Style.nunRegular(fontSize: 14),
+                        ),
                       ),
                     ),
                   ),
-                )
-              ],
-            )
-          ],
+
+                  Spacer(),
+
+                ],
+              ),
+              Dimens.d20.spaceHeight,
+
+            ],),
         );
       },
     );
@@ -498,14 +523,35 @@ class _PositiveScreenState extends State<PositiveScreen> {
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
+            // Calculate the height of the text widget
+            double calculateTextHeight(
+                String text, TextStyle style, double maxWidth) {
+              final TextPainter textPainter = TextPainter(
+                text: TextSpan(text: text, style: style),
+                maxLines: 2,
+                textDirection: TextDirection.ltr,
+              )..layout(maxWidth: maxWidth);
+
+              return textPainter.size.height;
+            }
+
+            final double textHeight = calculateTextHeight(
+              desc ?? '',
+              Style.nunRegular(fontSize: 12).copyWith(height: 2),
+              MediaQuery.of(context).size.width - 34, // Padding adjustment
+            );
+
+            final double containerHeight = textHeight > 30 ? 80 : 20;
             return SimpleDialog(backgroundColor: Colors.transparent,
               children: [Stack(clipBehavior: Clip.none,
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 17),
                 decoration: BoxDecoration(
-                    color: Colors.white,
-                borderRadius: BorderRadius.circular(11)),
+                          color: themeController.isDarkMode.isTrue
+                              ? ColorConstant.textfieldFillColor
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(11)),
                     child: Column(
                       children: [
                         Dimens.d21.spaceHeight,
@@ -522,16 +568,21 @@ class _PositiveScreenState extends State<PositiveScreen> {
                             style: Style.gothamLight(fontSize: 22),
                           ),
                         ),
-                        Dimens.d20.spaceHeight,
-                        Padding(
+                          Dimens.d11.spaceHeight,
+                          Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 11),
                           child: Center(
-                            child: Text(
-                              desc ?? "",
-                              textAlign: TextAlign.center,
-                              maxLines: 7,
-                              style: Style.montserratRegular(fontSize: 12).copyWith(height: 2),
-                            ),
+                              child: SizedBox(
+                                height: containerHeight,
+                                child: SingleChildScrollView(
+                                  child: Text(
+                                    desc ?? "",
+                                    textAlign: TextAlign.center,
+                                    style: Style.nunRegular(fontSize: 12)
+                                        .copyWith(height: 2),
+                                  ),
+                                ),
+                              ),
                           ),
                         ),
                         Dimens.d22.spaceHeight,
@@ -591,7 +642,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
                   children: [
                     Text(
                       "Filter".tr,
-                      style: Style.montserratRegular(
+                      style: Style.nunRegular(
                         fontSize: 20,
                         fontWeight: FontWeight.w400,
                       ),
@@ -625,8 +676,8 @@ class _PositiveScreenState extends State<PositiveScreen> {
                             border:
                                 Border.all(color: ColorConstant.colorAFAFAF)),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
+                            Dimens.d10.spaceWidth,
                             Obx(
                               () => Container(
                                 height: 18,
@@ -634,7 +685,11 @@ class _PositiveScreenState extends State<PositiveScreen> {
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(50),
                                     border: Border.all(
-                                        color: ColorConstant.colorAFAFAF),
+                                        color:
+                                            positiveController.conTap.value ==
+                                                    'isLastWeek'
+                                                ? Colors.transparent
+                                                : ColorConstant.colorAFAFAF),
                                     color: positiveController.conTap.value ==
                                             'isLastWeek'
                                         ? ColorConstant.themeColor
@@ -651,9 +706,10 @@ class _PositiveScreenState extends State<PositiveScreen> {
                                         : const SizedBox(),
                               ),
                             ),
+                            Dimens.d10.spaceWidth,
                             Text(
                               "Weekly".tr,
-                              style: Style.montserratMedium(
+                              style: Style.nunMedium(
                                   fontSize: Dimens.d18, fontWeight: FontWeight.w500),
                             )
                           ],
@@ -672,8 +728,8 @@ class _PositiveScreenState extends State<PositiveScreen> {
                             border:
                                 Border.all(color: ColorConstant.colorAFAFAF)),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
+                            Dimens.d10.spaceWidth,
                             Obx(
                               () => Container(
                                 height: 18,
@@ -681,7 +737,11 @@ class _PositiveScreenState extends State<PositiveScreen> {
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(50),
                                     border: Border.all(
-                                        color: ColorConstant.colorAFAFAF),
+                                        color:
+                                            positiveController.conTap.value ==
+                                                    'isLastMonth'
+                                                ? Colors.transparent
+                                                : ColorConstant.colorAFAFAF),
                                     color: positiveController.conTap.value ==
                                             'isLastMonth'
                                         ? ColorConstant.themeColor
@@ -698,9 +758,10 @@ class _PositiveScreenState extends State<PositiveScreen> {
                                         : const SizedBox(),
                               ),
                             ),
+                            Dimens.d10.spaceWidth,
                             Text(
                               "Monthly".tr,
-                              style: Style.montserratMedium(
+                              style: Style.nunMedium(
                                   fontSize: 18, fontWeight: FontWeight.w500),
                             )
                           ],
@@ -721,16 +782,19 @@ class _PositiveScreenState extends State<PositiveScreen> {
                       border: Border.all(color: ColorConstant.colorAFAFAF),
                     ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
+                        Dimens.d10.spaceWidth,
                         Obx(
                           () => Container(
                             height: 18,
                             width: 18,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(50),
-                              border:
-                                  Border.all(color: ColorConstant.colorAFAFAF),
+                              border: Border.all(
+                                  color: positiveController.conTap.value ==
+                                          'isLastYear'
+                                      ? Colors.transparent
+                                      : ColorConstant.colorAFAFAF),
                               color: positiveController.conTap.value ==
                                       'isLastYear'
                                   ? ColorConstant.themeColor
@@ -748,9 +812,10 @@ class _PositiveScreenState extends State<PositiveScreen> {
                                 : const SizedBox(),
                           ),
                         ),
+                        Dimens.d10.spaceWidth,
                         Text(
                           "Yearly".tr,
-                          style: Style.montserratMedium(
+                          style: Style.nunMedium(
                               fontSize: 18, fontWeight: FontWeight.w500),
                         )
                       ],
@@ -772,8 +837,8 @@ class _PositiveScreenState extends State<PositiveScreen> {
                             border:
                                 Border.all(color: ColorConstant.colorAFAFAF)),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
+                            Dimens.d10.spaceWidth,
                             Obx(
                               () => Container(
                                   height: 18,
@@ -781,7 +846,11 @@ class _PositiveScreenState extends State<PositiveScreen> {
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(50),
                                       border: Border.all(
-                                          color: ColorConstant.colorAFAFAF),
+                                          color:
+                                              positiveController.conTap.value ==
+                                                      'isLastThreeMonths'
+                                                  ? Colors.transparent
+                                                  : ColorConstant.colorAFAFAF),
                                       color: positiveController.conTap.value ==
                                               'isLastThreeMonths'
                                           ? ColorConstant.themeColor
@@ -797,9 +866,10 @@ class _PositiveScreenState extends State<PositiveScreen> {
                                             )
                                           : const SizedBox()),
                             ),
+                            Dimens.d10.spaceWidth,
                             Text(
                               "3 Months ".tr,
-                              style: Style.montserratMedium(
+                              style: Style.nunMedium(
                                   fontSize: 18, fontWeight: FontWeight.w500),
                             )
                           ],
@@ -818,8 +888,8 @@ class _PositiveScreenState extends State<PositiveScreen> {
                             border:
                                 Border.all(color: ColorConstant.colorAFAFAF)),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
+                            Dimens.d10.spaceWidth,
                             Obx(
                               () => Container(
                                   height: 18,
@@ -827,7 +897,11 @@ class _PositiveScreenState extends State<PositiveScreen> {
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(50),
                                       border: Border.all(
-                                          color: ColorConstant.colorAFAFAF),
+                                          color:
+                                              positiveController.conTap.value ==
+                                                      'isLastSixMonths'
+                                                  ? Colors.transparent
+                                                  : ColorConstant.colorAFAFAF),
                                       color: positiveController.conTap.value ==
                                               'isLastSixMonths'
                                           ? ColorConstant.themeColor
@@ -843,9 +917,10 @@ class _PositiveScreenState extends State<PositiveScreen> {
                                         )
                                       : const SizedBox()),
                             ),
+                            Dimens.d10.spaceWidth,
                             Text(
                               "6 Months".tr,
-                              style: Style.montserratMedium(
+                              style: Style.nunMedium(
                                   fontSize: 18, fontWeight: FontWeight.w500),
                             )
                           ],
@@ -870,7 +945,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
                     child: Center(
                         child: Text(
                       "apply".tr,
-                      style: Style.montserratRegular(
+                      style: Style.nunRegular(
                           color: ColorConstant.white,
                           fontSize: 18,
                           fontWeight: FontWeight.w400),

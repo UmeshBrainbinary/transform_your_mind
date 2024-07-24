@@ -44,11 +44,11 @@ class CommonDialogWithCloseIcon {
 
 class DialogTransition extends StatelessWidget {
   const DialogTransition({
-    Key? key,
+    super.key,
     required this.curvedValue,
     required this.opacity,
     required this.child,
-  }) : super(key: key);
+  });
 
   final double curvedValue;
   final double opacity;

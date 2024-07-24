@@ -235,7 +235,7 @@ class NowPlayingController extends GetxController {
       'isRating': 'true',
       'podId': id ?? "",
       'star': "$star",
-      'note': ratingController.text ?? ""
+      'note': ratingController.text
     });
 
     request.headers.addAll(headers);

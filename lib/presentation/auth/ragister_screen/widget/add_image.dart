@@ -75,24 +75,17 @@ class _AddImageWidgetState extends State<AddImageWidget> {
                               )
                             : (widget.imageURL?.isNotEmpty ?? false)
                                 ? const SizedBox()
-                                : Material(
-                                    color: ColorConstant.transparent,
-                                    child: InkWell(
-                                      onTap: widget.onTap,
-                                      borderRadius: Dimens.d16.radiusAll,
-                                      child: Container(
-                                        height: Dimens.d100,
-                                        width: Dimens.d100,
-                                        decoration: BoxDecoration(
-                                          borderRadius: Dimens.d16.radiusAll,
-                                        ),
-                                        child: SvgPicture.asset(
-                                          ImageConstant.nonPlaceHolder,
-                                          fit: BoxFit.cover,
-                                          color: themeController.isDarkMode.value ? ColorConstant.textfieldFillColor : ColorConstant.white,
-                                        ),
-                                      ),
-                                    ),
+                                : InkWell(
+                                    onTap: widget.onTap,
+                                    child: themeController.isDarkMode.isTrue
+                                        ? SvgPicture.asset(ImageConstant
+                                            .nonPlaceHolderProfileDark)
+                                        : Image.asset(
+                                            ImageConstant.nonPlaceHolderProfile,
+                                            fit: BoxFit.cover,
+                                            height: Dimens.d100,
+                                            width: Dimens.d100,
+                                          ),
                                   ),
                   ),
                 ),
@@ -104,8 +97,9 @@ class _AddImageWidgetState extends State<AddImageWidget> {
           CommonElevatedButton(height: Dimens.d26,
             title: widget.title??'addProfileImage'.tr,
             onTap: widget.onTap,
-            width: Dimens.d180,
-            textStyle: Style.montserratMedium(color: ColorConstant.white, fontSize: Dimens.d12),
+            width: Dimens.d141,
+            textStyle: Style.nunMedium(
+                color: ColorConstant.white, fontSize: Dimens.d12),
           ),
         ],
       ),

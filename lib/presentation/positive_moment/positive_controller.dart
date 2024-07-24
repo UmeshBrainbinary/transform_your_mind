@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
+import 'package:transform_your_mind/core/service/http_service.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
@@ -13,8 +14,16 @@ class PositiveController extends GetxController {
 
   @override
   void onInit() {
-    getPositiveMoments();
+    checkInternet();
     super.onInit();
+  }
+
+  checkInternet() async {
+    if (await isConnected()) {
+      getPositiveMoments();
+    } else {
+      showSnackBarError(Get.context!, "noInternet".tr);
+    }
   }
 
   var isMenuVisible = false.obs;

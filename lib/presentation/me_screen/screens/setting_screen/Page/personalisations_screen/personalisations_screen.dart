@@ -52,7 +52,7 @@ class _PersonalizationScreenScreenState
 
         Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: CustomAppBar(centerTitle: true,
+          appBar: CustomAppBar(centerTitle: widget.intro!,
             title: "chooseLanguage".tr,
             showBack: widget.intro! ? false : true,
           ),
@@ -97,22 +97,27 @@ class _PersonalizationScreenScreenState
                         padding: const EdgeInsets.symmetric(horizontal: 22),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(80),
-                            color: ColorConstant.white),
+                            color: themeController.isDarkMode.isTrue?ColorConstant.textfieldFillColor:ColorConstant.white),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
                               "English",
-                              style: Style.montserratRegular(
+                              style: Style.nunRegular(
                                   fontSize: Dimens.d16,
                                   fontWeight: FontWeight.w500),
                             ),
-                            SvgPicture.asset(
-                              personalizationController.english.isTrue
-                                  ? ImageConstant.select
-                                  : ImageConstant.unSelect,
+                            personalizationController.english.isTrue ?SvgPicture.asset(
+                              ImageConstant.select,
+
                               height: 16,
                               width: 16,
+
+                            ):SvgPicture.asset(
+                              ImageConstant.unSelect,
+                              height: 16,
+                              width: 16,color:themeController.isDarkMode.isTrue?ColorConstant.white:Colors.black,
+
                             )
                           ],
                         ),
@@ -145,22 +150,27 @@ class _PersonalizationScreenScreenState
                         padding: const EdgeInsets.symmetric(horizontal: 22),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(80),
-                            color: ColorConstant.white),
+                            color:  themeController.isDarkMode.isTrue?ColorConstant.textfieldFillColor:ColorConstant.white),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
                               "German",
-                              style: Style.montserratRegular(
+                              style: Style.nunRegular(
                                   fontSize: Dimens.d16,
                                   fontWeight: FontWeight.w500),
                             ),
-                            SvgPicture.asset(
-                              personalizationController.german.isTrue
-                                  ? ImageConstant.select
-                                  : ImageConstant.unSelect,
+                            personalizationController.german.isTrue ?SvgPicture.asset(
+                              ImageConstant.select,
+
                               height: 16,
                               width: 16,
+
+                            ):SvgPicture.asset(
+                             ImageConstant.unSelect,
+                              height: 16,
+                              width: 16,color: themeController.isDarkMode.isTrue?ColorConstant.white:Colors.black,
+
                             )
                           ],
                         ),
@@ -237,7 +247,7 @@ class _AccountListItemState extends State<AccountListItem> {
             Dimens.d12.spaceWidth,
             Text(
               widget.title,
-              style: Style.montserratMedium(fontSize: 14).copyWith(
+              style: Style.nunMedium(fontSize: 14).copyWith(
                 letterSpacing: Dimens.d0_16,
               ),
             ),

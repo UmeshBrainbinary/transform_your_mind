@@ -112,7 +112,7 @@ class JournalListHorizontalShimmer extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
           child: Text(
             "Drafts",
-            style: Style.montserratRegular(
+            style: Style.nunRegular(
               fontSize: Dimens.d16,
             ),
           ),
@@ -129,7 +129,7 @@ class JournalListHorizontalShimmer extends StatelessWidget {
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
                   return Container(
-                    margin: EdgeInsets.only(left: Dimens.d20),
+                    margin: const EdgeInsets.only(left: Dimens.d20),
                     height: Dimens.d92,
                     width: Dimens.d325,
                     decoration: BoxDecoration(
@@ -148,7 +148,7 @@ class JournalListHorizontalShimmer extends StatelessWidget {
                         Dimens.d16.spaceWidth,
                         Padding(
                           padding: EdgeInsets.symmetric(vertical: Dimens.d20.h),
-                          child: Column(
+                          child: const Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -175,7 +175,7 @@ class JournalListHorizontalShimmer extends StatelessWidget {
 }
 
 class JournalListAffirmationShimmer extends StatelessWidget {
-  const JournalListAffirmationShimmer({Key? key}) : super(key: key);
+  const JournalListAffirmationShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -59,7 +59,6 @@ import 'package:transform_your_mind/presentation/splash_screen/intro_screen.dart
 import 'package:transform_your_mind/presentation/splash_screen/splash_screen.dart';
 import 'package:transform_your_mind/presentation/subscription_screen/binding/subscription_binding.dart';
 import 'package:transform_your_mind/presentation/subscription_screen/subscription_screen.dart';
-import 'package:transform_your_mind/presentation/today_gratitude_screen/binding/gratitude_binding.dart';
 import 'package:transform_your_mind/presentation/tools_screen/binding/tools_binding.dart';
 import 'package:transform_your_mind/presentation/tools_screen/tools_screen.dart';
 
@@ -137,7 +136,7 @@ class AppRoutes {
     GetPage(
       transition: Transition.rightToLeft,
       name: loginScreen,
-      page: () => LoginScreen(),
+      page: () => const LoginScreen(),
       bindings: [
         LoginBinding(),
       ],
@@ -152,7 +151,7 @@ class AppRoutes {
     GetPage(
       transition: Transition.rightToLeft,
       name: initialRoute,
-      page: () => LoginScreen(),
+      page: () => const LoginScreen(),
       bindings: [
         LoginBinding(),
       ],
@@ -178,7 +177,7 @@ class AppRoutes {
     GetPage(
       transition: Transition.rightToLeft,
       name: forgotScreen,
-      page: () => ForgotPasswordScreen(),
+      page: () => const ForgotPasswordScreen(),
       bindings: [
         ForgotBinding(),
       ],
@@ -358,7 +357,7 @@ class AppRoutes {
     GetPage(
       transition: Transition.rightToLeft,
       name: motivationalMessageScreen,
-      page: () =>  const MotivationalMessageScreen(),
+      page: () =>   MotivationalMessageScreen(),
       bindings: [MotivationalBinding()],
     ),
     GetPage(

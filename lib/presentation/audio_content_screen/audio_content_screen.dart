@@ -1,7 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
+import 'package:transform_your_mind/core/service/http_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
@@ -38,6 +44,14 @@ class _AudioContentScreenState extends State<AudioContentScreen>
   ThemeController themeController = Get.find<ThemeController>();
   final nowPlayController = Get.put(NowPlayingController());
 
+
+  String _formatDuration(Duration? duration) {
+    if (duration == null) return "00:00";
+    final minutes = duration.inMinutes.remainder(60).toString().padLeft(2, '0');
+    final seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+    return "$minutes:$seconds";
+  }
+
   @override
   void initState() {
     audioContentController.searchController.clear();
@@ -52,9 +66,19 @@ class _AudioContentScreenState extends State<AudioContentScreen>
         showScrollTop.value = false;
       }
     });
-    getData();
+
+    checkInternet();
 
     super.initState();
+  }
+
+
+  checkInternet() async {
+    if (await isConnected()) {
+      getData();
+    } else {
+      showSnackBarError(Get.context!, "noInternet".tr);
+    }
   }
 getData() async {
  await audioContentController.getRate();
@@ -70,10 +94,21 @@ getData() async {
 
   @override
   Widget build(BuildContext context) {
-  /*  statusBarSet(themeController);*/
+    if (themeController.isDarkMode.isTrue) {
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        statusBarBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.light,
+      ));
+    } else {
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        statusBarBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.dark,
+      ));
+    }
     return Stack(
       children: [
-        Scaffold(resizeToAvoidBottomInset: true,
+        Scaffold(
+          resizeToAvoidBottomInset: false,
           backgroundColor:
         themeController.isDarkMode.isTrue?
         ColorConstant.darkBackground:ColorConstant.white,
@@ -90,7 +125,6 @@ getData() async {
                     shape: BoxShape.circle,
                     color: ColorConstant.colorBFD0D4,
                   ),
-                  padding: const EdgeInsets.all(4.0),
                   child: InkWell(
                     onTap: () {
                       scrollController.animateTo(
@@ -106,7 +140,7 @@ getData() async {
                         shape: BoxShape.circle,
                         color: ColorConstant.colorBFD0D4,
                       ),
-                      padding: const EdgeInsets.all(4.0),
+                      padding: const EdgeInsets.all(3.0),
                       child: Container(
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
@@ -131,7 +165,10 @@ getData() async {
             children: [
               Align(
                 alignment: const Alignment(1, 0),
-                child: SvgPicture.asset(themeController.isDarkMode.isTrue?ImageConstant.profile1Dark:ImageConstant.profile1,
+                child: SvgPicture.asset(
+                    themeController.isDarkMode.isTrue
+                        ? ImageConstant.profile1Dark
+                        : ImageConstant.profile1,
                     height: Dimens.d230.h),
               ),
               Padding(
@@ -172,8 +209,10 @@ getData() async {
                               decoration: BoxDecoration(
                                 boxShadow: [
                                   BoxShadow(
-                                    color:
-                                        ColorConstant.themeColor.withOpacity(0.1),
+                                    color: themeController.isDarkMode.isTrue
+                                        ? Colors.transparent
+                                        : ColorConstant.themeColor
+                                            .withOpacity(0.12),
                                     blurRadius: Dimens.d8,
                                   )
                                 ],
@@ -188,7 +227,11 @@ getData() async {
                                   },
                                   prefixIcon: Padding(
                                     padding: const EdgeInsets.all(16.0),
-                                    child: SvgPicture.asset(ImageConstant.search),
+                                    child: SvgPicture.asset(
+                                        ImageConstant.search,
+                                        color: themeController.isDarkMode.isTrue
+                                            ? ColorConstant.colorBFBFBF
+                                            : ColorConstant.color545454),
                                   ),
                                   suffixIcon: audioContentController
                                           .searchController.text.isEmpty
@@ -208,7 +251,13 @@ getData() async {
                                                 });
                                               },
                                               child: SvgPicture.asset(
-                                                  ImageConstant.close)),
+                                                  ImageConstant.close,
+                                                  color: themeController
+                                                          .isDarkMode.isTrue
+                                                      ? ColorConstant
+                                                          .colorBFBFBF
+                                                      : ColorConstant
+                                                          .color545454)),
                                         ),
                                   hintText: "search".tr,
                                   textStyle:
@@ -228,17 +277,14 @@ getData() async {
                                       ? GridView.builder(
                                           controller: scrollController,
                                           padding: const EdgeInsets.only(
-                                              bottom: Dimens.d20),
+                                              bottom: Dimens.d100),
                                           physics: const BouncingScrollPhysics(),
                                           gridDelegate:
                                               const SliverGridDelegateWithFixedCrossAxisCount(
                                             childAspectRatio: 0.78,
                                             crossAxisCount: 2,
-                                            // Number of columns
-                                            crossAxisSpacing: 20,
-                                            // Spacing between columns
-                                            mainAxisSpacing:
-                                                20, // Spacing between rows
+                                            crossAxisSpacing: 22,
+                                            mainAxisSpacing: 20,
                                           ),
                                           itemCount: controller.audioData.length,
                                           itemBuilder: (context, index) {
@@ -276,7 +322,7 @@ getData() async {
                                                                     .audioData[index]
                                                                     .image ??
                                                                 "",
-                                                            width: Dimens.d156,
+                                                            width: Dimens.d170,
                                                             height: Dimens.d113,
                                                           ),
                                                           Align(
@@ -291,6 +337,37 @@ getData() async {
                                                               child: SvgPicture.asset(
                                                                   ImageConstant.play),
                                                             ),
+                                                          ),
+                                                          Positioned(
+                                                            bottom: 6.0,
+                                                            right: 6.0,
+                                                            child: Container(
+                                                              padding:
+                                                                   EdgeInsets
+                                                                      .only(
+                                                                      top:Platform.isIOS?0: 1),
+                                                              height: 12,
+                                                              width: 30,
+                                                              decoration: BoxDecoration(
+                                                                  color: Colors
+                                                                      .black
+                                                                      .withOpacity(
+                                                                          0.5),
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              13)),
+                                                              child: Center(
+                                                                child: Text(
+                                                                  controller.audioListDuration.length > index ? _formatDuration( controller.audioListDuration[index]) : 'Loading...',
+                                                                  style: Style.nunRegular(
+                                                                      fontSize:
+                                                                          6,
+                                                                      color: Colors
+                                                                          .white),
+                                                                ),
+                                                              ),
+                                                            ),
                                                           )
                                                         ],
                                                       ),
@@ -301,7 +378,7 @@ getData() async {
                                                                 .spaceBetween,
                                                         children: [
                                                           SizedBox(
-                                                            width: 90,
+                                                            width: 72,
                                                             child: Text(
                                                               controller
                                                                   .audioData[index]
@@ -310,7 +387,8 @@ getData() async {
                                                               // "Motivational",
                                                               style: Style
                                                                   .nunitoBold(
-                                                                fontSize: Dimens.d12,
+                                                                fontSize:
+                                                                    Dimens.d10,
                                                               ),
                                                               overflow: TextOverflow
                                                                   .ellipsis,
@@ -323,6 +401,7 @@ getData() async {
                                                                 ColorConstant
                                                                     .colorD9D9D9,
                                                           ),
+                                                          Dimens.d10.spaceWidth,
                                                           Row(
                                                             children: [
                                                               SvgPicture.asset(
@@ -332,9 +411,10 @@ getData() async {
                                                                 height: 10,
                                                                 width: 10,
                                                               ),
+                                                              Dimens.d3
+                                                                  .spaceWidth,
                                                               Text(
-                                                                "${controller.audioData[index].rating.toString()}.0" ??
-                                                                    '',
+                                                                "${controller.audioData[index].rating.toString()}.0",
                                                                 style: Style
                                                                     .nunLight(
                                                                   fontSize:
@@ -395,12 +475,33 @@ getData() async {
                                                       ),
                                                     ],
                                                   ),
-                                                  !controller.audioData[index].isPaid!?Container(
-                                                    margin: const EdgeInsets.all(7.0),
-                                                    height: 14,width: 14,
-                                                    decoration: const BoxDecoration(color: Colors.black,shape: BoxShape.circle),
-                                                    child: Center(child: Image.asset(ImageConstant.lockHome,height: 7,width: 7,)),
-                                                  ):const SizedBox()
+                                                  !controller.audioData[index]
+                                                          .isPaid!
+                                                      ? Align(
+                                                          alignment:
+                                                              Alignment.topLeft,
+                                                          child: Container(
+                                                            margin:
+                                                                const EdgeInsets
+                                                                    .all(7.0),
+                                                            height: 14,
+                                                            width: 14,
+                                                            decoration:
+                                                                const BoxDecoration(
+                                                                    color: Colors
+                                                                        .black,
+                                                                    shape: BoxShape
+                                                                        .circle),
+                                                            child: Center(
+                                                                child:
+                                                                    Image.asset(
+                                                              ImageConstant
+                                                                  .lockHome,
+                                                              height: 7,
+                                                              width: 7,
+                                                            )),
+                                                          ),
+                                                        ):const SizedBox()
                                                 ],
                                               ),
                                             );
@@ -409,8 +510,9 @@ getData() async {
                                         padding: const EdgeInsets.only(top: Dimens.d50),
                                         child: Column(
                                           children: [
-                                            SvgPicture.asset(ImageConstant.noSearch,),
-                                            Text("dataNotFound".tr,style: Style.nunMedium(
+                                              SvgPicture.asset(
+                                                  ImageConstant.noData),
+                                              Text("dataNotFound".tr,style: Style.nunMedium(
                                                 fontSize: 24,fontWeight: FontWeight.w700),),
                                             Dimens.d11.spaceHeight,
                                             Padding(
@@ -468,9 +570,10 @@ getData() async {
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(
-                      height: 87,
+                      height: 72,
                       width: Get.width,
-                      padding: const EdgeInsets.only(top: 8.0, left: 8, right: 8),
+                      padding:
+                          const EdgeInsets.only(top: 8.0, left: 8, right: 8),
                       margin: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 50),
                       decoration: BoxDecoration(
@@ -486,13 +589,16 @@ getData() async {
                           color: ColorConstant.themeColor,
                           borderRadius: BorderRadius.circular(6)),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Row(
                             children: [
-                              CommonLoadImage(borderRadius: 6.0,
-                                  url:audioDataStore!.image!,
+                              CommonLoadImage(
+                                  borderRadius: 6.0,
+                                  url: audioDataStore!.image!,
                                   width: 47,
-                                     height: 47),
+                                  height: 47),
                               Dimens.d12.spaceWidth,
                               GestureDetector(
                                   onTap: () async {
@@ -515,7 +621,7 @@ getData() async {
                                   audioDataStore!.name!,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: Style.montserratRegular(
+                                  style: Style.nunRegular(
                                       fontSize: 12, color: ColorConstant.white),
                                 ),
                               ),
@@ -533,6 +639,7 @@ getData() async {
                               Dimens.d10.spaceWidth,
                             ],
                           ),
+                          Dimens.d8.spaceHeight,
                           SliderTheme(
                             data: SliderTheme.of(context).copyWith(
                               activeTrackColor:
@@ -540,28 +647,30 @@ getData() async {
                               inactiveTrackColor: ColorConstant.color6E949D,
                               trackHeight: 1.5,
                               thumbColor: ColorConstant.transparent,
-                              // Color of the thumb
                               thumbShape: SliderComponentShape.noThumb,
-                              // Customize the thumb shape and size
                               overlayColor:
                                   ColorConstant.backGround.withAlpha(32),
-                              // Color when thumb is pressed
                               overlayShape: const RoundSliderOverlayShape(
                                   overlayRadius:
                                       16.0), // Customize the overlay shape and size
                             ),
-                            child: Slider(
-                              thumbColor: Colors.transparent,
-                              activeColor: ColorConstant.backGround,
-                              value: currentPosition.inMilliseconds.toDouble(),
-                              max: duration.inMilliseconds.toDouble(),
-                              onChanged: (value) {
-                                audioPlayerController.seekForMeditationAudio(
-                                    position:
-                                        Duration(milliseconds: value.toInt()));
-                              },
+                            child: SizedBox(
+                              height: 2,
+                              child: Slider(
+                                thumbColor: Colors.transparent,
+                                activeColor: ColorConstant.backGround,
+                                value:
+                                    currentPosition.inMilliseconds.toDouble(),
+                                max: duration.inMilliseconds.toDouble(),
+                                onChanged: (value) {
+                                  audioPlayerController.seekForMeditationAudio(
+                                      position: Duration(
+                                          milliseconds: value.toInt()));
+                                },
+                              ),
                             ),
                           ),
+                          Dimens.d5.spaceHeight,
                         ],
                       ),
                     ),
@@ -571,7 +680,11 @@ getData() async {
             ],
           ),
         ),
-     Obx(() =>   audioContentController.loaderD.isTrue?commonLoader():const SizedBox(),)
+        Obx(
+          () => audioContentController.loaderD.isTrue
+              ? commonLoader()
+              : const SizedBox(),
+        )
       ],
     );
   }
@@ -596,7 +709,17 @@ getData() async {
       (value) async {
         await audioContentController.getRate();
         await audioContentController.getPodsData();
-
+        if (themeController.isDarkMode.isTrue) {
+          SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+            statusBarBrightness: Brightness.dark,
+            statusBarIconBrightness: Brightness.light,
+          ));
+        } else {
+          SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+            statusBarBrightness: Brightness.light,
+            statusBarIconBrightness: Brightness.dark,
+          ));
+        }
 
         setState(() {});
       },

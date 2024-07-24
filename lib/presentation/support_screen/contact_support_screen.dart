@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:transform_your_mind/core/app_export.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
+import 'package:transform_your_mind/core/service/http_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
@@ -38,7 +39,7 @@ class _ContactSupportScreenState extends State<ContactSupportScreen> {
 
     return Stack(
       children: [
-        Scaffold(
+        Scaffold(resizeToAvoidBottomInset: false,
           backgroundColor: themeController.isDarkMode.isTrue
               ? ColorConstant.darkBackground
               : ColorConstant.backGround,
@@ -75,7 +76,7 @@ class _ContactSupportScreenState extends State<ContactSupportScreen> {
                             focusNode: supportController.nameFocus,
                             controller: supportController.name,
                             validator: (value) {
-                              if (value == "") {
+                              if (value!.trim() == "") {
                                 return "theNameFieldIsRequired".tr;
                               }
                               return null;
@@ -85,11 +86,10 @@ class _ContactSupportScreenState extends State<ContactSupportScreen> {
                           labelText: "email".tr,
                           hintText: "enterEmail".tr,
                           focusNode: supportController.emailFocus,
-                          prefixIcon: Image.asset(ImageConstant.email,
-                              scale: Dimens.d4),
+
                           keyboardType: TextInputType.emailAddress,
                           validator: (value) {
-                            if (value == "") {
+                            if (value!.trim() == "") {
                               return "theEmailFieldIsRequired".tr;
                             } else if (!isValidEmail(value, isRequired: true)) {
                               return "pleaseEnterValidEmail".tr;
@@ -106,7 +106,7 @@ class _ContactSupportScreenState extends State<ContactSupportScreen> {
                             focusNode: supportController.commentFocus,
                             maxLines: 7,
                             validator: (value) {
-                              if (value == "") {
+                              if (value!.trim() == "") {
                                 return "theCommentFiledRequired".tr;
                               }
                               return null;
@@ -118,12 +118,17 @@ class _ContactSupportScreenState extends State<ContactSupportScreen> {
                             FocusScope.of(context).unfocus();
 
                             if (_formKey.currentState!.validate()) {
+                              if (await isConnected()) {
+                                await supportController.addSupport(
+                                    context: context);
+                                _formKey = GlobalKey<FormState>();
+                                supportController.name.clear();
+                                supportController.email.clear();
+                                supportController.comment.clear();
+                              } else {
+                                showSnackBarError(context, "noInternet".tr);
+                              }
 
-                              await supportController.addSupport(context: context);
-                              _formKey = GlobalKey<FormState>();
-                              supportController.name.clear();
-                              supportController.email.clear();
-                              supportController.comment.clear();
                               setState(() {
 
                               });

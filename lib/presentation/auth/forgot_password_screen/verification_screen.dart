@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pinput/pinput.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
+import 'package:transform_your_mind/core/service/http_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
@@ -44,13 +46,19 @@ class _VerificationsScreenState extends State<VerificationsScreen> {
     super.initState();
   }
 
-  void resendOtp(BuildContext context) {
+  Future<void> resendOtp(BuildContext context) async {
     setState(() {
       _start = 60;
     });
     startTimer();
+    if (await isConnected()) {
+      forgotController.resendApi(
+          widget.token, widget.forgot, widget.email, context);
+    } else {
+      showSnackBarError(context, "noInternet".tr);
+    }
+
     // Add your OTP resend logic here
-    forgotController.resendApi(widget.token,widget.forgot,widget.email,context);
 
   }
 
@@ -118,7 +126,7 @@ class _VerificationsScreenState extends State<VerificationsScreen> {
                                     style: Style.nunLight(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w400,
-                                        color: ColorConstant.color716B6B)),
+                                        color: themeController.isDarkMode.isTrue?ColorConstant.colorBFBFBF:ColorConstant.color716B6B)),
                               ),
                               Dimens.d61.spaceHeight,
                               Pinput(
@@ -134,7 +142,7 @@ class _VerificationsScreenState extends State<VerificationsScreen> {
                                   textStyle: Style.nunRegular(
                                       fontSize: Dimens.d23,
                                       fontWeight: FontWeight.w400,
-                                      color: ColorConstant.color716B6B),
+                                      color: themeController.isDarkMode.isTrue?ColorConstant.colorBFBFBF:ColorConstant.color716B6B),
                                   decoration: BoxDecoration(
                                     color: themeController.isDarkMode.value
                                         ? ColorConstant.textfieldFillColor
@@ -172,7 +180,7 @@ class _VerificationsScreenState extends State<VerificationsScreen> {
                                             fontSize: 14,
                                             fontWeight: FontWeight.w400,
                                             color:
-                                                ColorConstant.color716B6B)),
+                                            themeController.isDarkMode.isTrue?ColorConstant.colorBFBFBF:ColorConstant.color716B6B)),
                                     Dimens.d5.spaceWidth,
                                     GestureDetector(
                                       onTap: () {

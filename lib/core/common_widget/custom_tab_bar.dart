@@ -19,7 +19,7 @@ class CustomTabBar extends StatefulWidget {
   final bool isScrollable;
 
   const CustomTabBar({
-    Key? key,
+    super.key,
     required this.listOfItems,
     required this.tabController,
     this.bgColor = Colors.white,
@@ -33,7 +33,7 @@ class CustomTabBar extends StatefulWidget {
     this.labelPadding,
     this.padding,
     this.isScrollable = false,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomTabBar> createState() => _CustomTabBarState();

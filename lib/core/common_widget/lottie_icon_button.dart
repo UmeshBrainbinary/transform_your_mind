@@ -14,15 +14,14 @@ class LottieIconButton extends StatelessWidget {
   final bool repeat;
 
   const LottieIconButton(
-      {Key? key,
+      {super.key,
       required this.icon,
       required this.onTap,
       this.height = Dimens.d56,
       this.width = Dimens.d56,
       this.iconHeight = Dimens.d24,
       this.iconWidth = Dimens.d24,
-      this.repeat = false})
-      : super(key: key);
+      this.repeat = false});
 
   @override
   Widget build(BuildContext context) {

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
+import 'package:transform_your_mind/core/service/http_service.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
-import 'package:transform_your_mind/model_class/faq_model.dart';
 import 'package:transform_your_mind/model_class/get_user_model.dart';
 import 'package:transform_your_mind/model_class/guide_model.dart';
 import 'package:transform_your_mind/model_class/privacy_model.dart';
@@ -17,10 +18,18 @@ class ProfileController extends GetxController {
 
   @override
   void onInit() {
-    getUserDetail();
-    getUser();
-
+    checkInternet();
     super.onInit();
+  }
+
+  checkInternet() async {
+    if (await isConnected()) {
+      getUserDetail();
+      getUser();
+
+    } else {
+      showSnackBarError(Get.context!, "noInternet".tr);
+    }
   }
 
   GetUserModel getUserModel = GetUserModel();
@@ -32,6 +41,7 @@ class ProfileController extends GetxController {
     mail?.value = PrefService.getString(PrefKey.email).toString();
     image.value = PrefService.getString(PrefKey.userImage).toString();
     name?.value = PrefService.getString(PrefKey.name).toString();
+    update();
   }
 
   getUser() async {

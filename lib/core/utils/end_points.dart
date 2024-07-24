@@ -16,6 +16,7 @@ class EndPoints {
   static String getCategory = "get-category?type=";
   static String getAffirmation = "get-affirmation?isDefault=true";
   static String getYourAffirmation = "get-affirmation?created_by=";
+  static String getAffirmationUser = "get-affirmation?userId=";
   static String updateAffirmation = "update-affirmation?id=";
   static String categoryAffirmation = "get-affirmation?category=";
   static String getUser = "${baseUrl}user-details?id=";
@@ -34,4 +35,6 @@ class EndPoints {
   static String userProgress = "${baseUrl}user-progress?userId=";
   static String todayGratitude = "${baseUrl}today-gratitude?created_by=";
   static String todayAffirmation = "${baseUrl}today-affirmation?created_by=";
+  static String weeklyGratitude = "${baseUrl}weekly-gratitude?created_by=";
+  static String weeklyAffirmation = "${baseUrl}weekly-affirmation?created_by=";
 }

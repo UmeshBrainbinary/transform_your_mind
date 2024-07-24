@@ -1,24 +1,26 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
+import 'package:transform_your_mind/core/service/http_service.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/model_class/common_model.dart';
 import 'package:transform_your_mind/model_class/get_user_model.dart';
 import 'package:transform_your_mind/model_class/login_model.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/how_feeling_today_screen.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/how_feelings_evening.dart';
 import 'package:transform_your_mind/presentation/intro_screen/select_your_affirmation_focus_page.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 
 class LoginController extends GetxController {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
- FocusNode emailFocus = FocusNode();
- FocusNode passwordFocus = FocusNode();
+  FocusNode emailFocus = FocusNode();
+  FocusNode passwordFocus = FocusNode();
   ValueNotifier<bool> securePass = ValueNotifier(true);
   ValueNotifier<bool> rememberMe = ValueNotifier(false);
 
@@ -43,15 +45,19 @@ class LoginController extends GetxController {
     super.dispose();
   }
 
-  onTapLogin(BuildContext context) async {
-    loader.value = true;
-    await loginApi(context);
+  onTapLogin(BuildContext context, greeting) async {
+    if (await isConnected()) {
+      loader.value = true;
+      await loginApi(context, greeting);
+    } else {
+      showSnackBarError(context, "noInternet".tr);
+    }
   }
 
   LoginModel loginModel = LoginModel();
   CommonModel commonModel = CommonModel();
 
-  loginApi(BuildContext context) async {
+  loginApi(BuildContext context, greeting) async {
     try {
       var headers = {'Content-Type': 'application/json'};
       var request = http.Request(
@@ -87,7 +93,7 @@ class LoginController extends GetxController {
         PrefService.setValue(PrefKey.userId, loginModel.data!.id);
         PrefService.setValue(PrefKey.name,loginModel.data?.name??"");
         PrefService.setValue(PrefKey.userImage,loginModel.data?.userProfile??"");
-        await getUSer(context);
+        await getUSer(context, greeting);
       } else if (response.statusCode == 400) {
         loader.value = false;
         final responseBody = await response.stream.bytesToString();
@@ -108,7 +114,7 @@ class LoginController extends GetxController {
 
   GetUserModel getUserModel = GetUserModel();
 
-  getUSer(BuildContext context) async {
+  getUSer(BuildContext context, greeting) async {
     try {
       var headers = {
         'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
@@ -134,7 +140,13 @@ class LoginController extends GetxController {
           return  SelectYourAffirmationFocusPage(isFromMe: false,setting: false,);
         },));
         } else {
-          Get.offAllNamed(AppRoutes.dashBoardScreen);
+          PrefService.getBool(PrefKey.morningQuestion) == false &&
+                  greeting == "goodMorning"
+              ? Get.to(() => const HowFeelingTodayScreen())
+              : PrefService.getBool(PrefKey.eveningQuestion) == false &&
+                      greeting == "goodEvening"
+                  ? Get.to(() => HowFeelingsEvening())
+                  : Get.offAllNamed(AppRoutes.dashBoardScreen);
         }
         update();
         await PrefService.setValue(

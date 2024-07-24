@@ -24,30 +24,42 @@ class _AudioListState extends State<AudioList> {
   ThemeController themeController = Get.find<ThemeController>();
   List audioList = [
     {
+      "img":
+      "https://i.pinimg.com/736x/45/ce/29/45ce2986d79fc7cd05014bd522a88834.jpg",
       "name": "Remedy",
       "des": "Remedy",
       "url":
           "https://commondatastorage.googleapis.com/codeskulptor-demos/riceracer_assets/music/menu.ogg"
     },
     {
+      "img":
+      "https://images.unsplash.com/photo-1547483238-2cbf881a559f?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXw1MDI3OTF8fGVufDB8fHx8fA%3D%3D",
+
       "name": "Giant",
       "des": "Remedy",
       "url":
           "https://commondatastorage.googleapis.com/codeskulptor-demos/riceracer_assets/music/win.ogg"
     },
     {
+      "img":
+      "https://w0.peakpx.com/wallpaper/233/89/HD-wallpaper-blue-sky-beautiful-clouds-life-love-nature-stars-sunset.jpg",
+
       "name": "Safe House",
       "des": "Remedy",
       "url":
           "https://commondatastorage.googleapis.com/codeskulptor-demos/riceracer_assets/music/menu.ogg"
     },
     {
+      "img":
+      "https://1.bp.blogspot.com/-4iulinQP-Bo/YOBwMdwSlII/AAAAAAAAQmk/wfv9P_KGa7MKzC-7MEc7TGHhqD6jg0mtgCLcBGAsYHQ/s0/V1-SIMPLE-LANDSCAPE-HD.png",
       "name": "Can’t Sleep",
       "des": "Remedy",
       "url":
           "https://commondatastorage.googleapis.com/codeskulptor-assets/sounddogs/thrust.ogg"
     },
     {
+      "img":
+      "https://i.pinimg.com/736x/45/ce/29/45ce2986d79fc7cd05014bd522a88834.jpg",
       "name": "Remedy",
       "des": "Remedy",
       "url":
@@ -57,7 +69,7 @@ class _AudioListState extends State<AudioList> {
   List playPause = [];
   int currentIndex = -1;
   final AudioPlayer player = AudioPlayer();
-
+  int currentIndexSelected = 0;
   @override
   void initState() {
     List.generate(
@@ -87,7 +99,7 @@ class _AudioListState extends State<AudioList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorConstant.backGround,
+      backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.backGround,
       appBar: CustomAppBar(title: "AudioList".tr),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -101,85 +113,92 @@ class _AudioListState extends State<AudioList> {
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: audioList.length,
                 itemBuilder: (context, index) {
-                  return Container(
-                    height: Dimens.d70,
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 6),
-                    margin: const EdgeInsets.symmetric(vertical: 10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: themeController.isDarkMode.value
-                          ? ColorConstant.textfieldFillColor
-                          : Colors.white,
-                    ),
-                    child: Row(children: [
-                      CachedNetworkImage(
-                        height: 58,
-                        width: 75,
-                        imageUrl: audioList[index]["name"] ?? "",
-                        imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.circular(
-                              10.0,
-                            ),
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
+                  return GestureDetector(onTap: () {
+                    setState(() {
+                      currentIndexSelected =index;
+                    });
+                  },
+                    child: Container(
+                      height: Dimens.d70,
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(horizontal: 6),
+                      margin: const EdgeInsets.symmetric(vertical: 10),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: currentIndexSelected==index?ColorConstant.themeColor:ColorConstant.transparent,width: 1),
+                        borderRadius: BorderRadius.circular(15),
+                        color: themeController.isDarkMode.value
+                            ? ColorConstant.textfieldFillColor
+                            : Colors.white,
+                      ),
+                      child: Row(children: [
+                        CachedNetworkImage(
+                          height: 58,
+                          width: 75,
+                          imageUrl: audioList[index]["img"] ?? "",
+                          imageBuilder: (context, imageProvider) => Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.circular(
+                                10.0,
+                              ),
+                              image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
+                          placeholder: (context, url) => PlaceHolderCNI(
+                            height: Dimens.d80.h,
+                            width: Dimens.d80,
+                            borderRadius: 10.0,
+                          ),
+                          errorWidget: (context, url, error) => PlaceHolderCNI(
+                            height: Dimens.d80.h,
+                            width: Dimens.d80,
+                            isShowLoader: false,
+                            borderRadius: 8.0,
+                          ),
                         ),
-                        placeholder: (context, url) => PlaceHolderCNI(
-                          height: Dimens.d80.h,
-                          width: Dimens.d80,
-                          borderRadius: 10.0,
-                        ),
-                        errorWidget: (context, url, error) => PlaceHolderCNI(
-                          height: Dimens.d80.h,
-                          width: Dimens.d80,
-                          isShowLoader: false,
-                          borderRadius: 8.0,
-                        ),
-                      ),
-                      Dimens.d25.spaceWidth,
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Spacer(),
-                            Text(
-                              audioList[index]["name"] ?? "",
-                              style: Style.cormorantGaramondBold(
-                                fontSize: 20,
-                              ),
-                            ),
-                            const Spacer(),
-                            SizedBox(
-                              width: Dimens.d200,
-                              child: Text(
-                                audioList[index]["des"] ?? "",
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                style: Style.gothamLight(
-                                  fontSize: 12,
+                        Dimens.d20.spaceWidth,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Spacer(),
+                              Text(
+                                audioList[index]["name"] ?? "",
+                                style: Style.nunMedium(
+                                  fontSize: 20,
                                 ),
                               ),
-                            ),
-                            const Spacer(),
-                          ],
+                              const Spacer(),
+                              SizedBox(
+                                width: Dimens.d200,
+                                child: Text(
+                                  audioList[index]["des"] ?? "",
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: Style.gothamLight(
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                              const Spacer(),
+                            ],
+                          ),
                         ),
-                      ),
-                      GestureDetector(
-                        onTap: () => _playPause(index),
-                        child: SvgPicture.asset(
-                          playPause[index]
-                              ? ImageConstant.breathPause
-                              : ImageConstant.breathPlay,
+                        GestureDetector(
+                          onTap: () => _playPause(index),
+                          child: SvgPicture.asset(
+                            playPause[index]
+                                ? ImageConstant.breathPause
+                                : ImageConstant.breathPlay,
+                          ),
                         ),
-                      ),
-                      Dimens.d9.spaceWidth,
-                    ]),
+                        Dimens.d9.spaceWidth,
+                      ]),
+                    ),
                   );
                 },
               ),

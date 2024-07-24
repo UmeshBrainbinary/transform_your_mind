@@ -98,8 +98,8 @@ class _CustomAppBarState extends State<CustomAppBar>
                   FocusScope.of(context).unfocus();
                 },
       child: Container(
-        height: Dimens.d50,
-        width: Dimens.d40,
+        height: 42,
+        width: 42,
         margin: EdgeInsets.only(left: 21.h,top: 15.h,bottom: 10.h),
         alignment: Alignment.center,
         decoration: BoxDecoration(

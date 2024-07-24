@@ -1,6 +1,5 @@
 
 import 'package:get/get.dart';
-import 'package:transform_your_mind/presentation/splash_screen/splash_controller.dart';
 import 'package:transform_your_mind/presentation/subscription_screen/subscription_controller.dart';
 
 /// A binding class for the SplashScreen.

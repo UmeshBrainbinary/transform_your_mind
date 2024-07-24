@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
@@ -87,9 +86,9 @@ class SupportController extends GetxController {
         Uri.parse(
             '${EndPoints.baseUrl}add-support'));
     request.body = json.encode({
-      "name": name.text,
-      "email": email.text,
-      "comment": comment.text,
+      "name": name.text.trim(),
+      "email": email.text.trim(),
+      "comment": comment.text.trim(),
       "created_by": PrefService.getString(PrefKey.userId)
     });
     request.headers.addAll(headers);

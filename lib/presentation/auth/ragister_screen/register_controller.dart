@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
+import 'package:transform_your_mind/core/service/http_service.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
@@ -47,18 +48,16 @@ class RegisterController extends GetxController {
 
   RxList genderList = ["male".tr, "female".tr, "other".tr].obs;
 
-  @override
-  void onInit() {
-
-    super.onInit();
-  }
 
 
   onTapRegister(BuildContext context, ValueNotifier<XFile?> imageFile, ) async {
-    loader.value = true;
-
-    debugPrint("loader ${loader.value}");
-    await registerApi(context, imageFile);
+    if (await isConnected()) {
+      loader.value = true;
+      debugPrint("loader ${loader.value}");
+      await registerApi(context, imageFile);
+    } else {
+      showSnackBarError(context, "noInternet".tr);
+    }
 
     update();
   }

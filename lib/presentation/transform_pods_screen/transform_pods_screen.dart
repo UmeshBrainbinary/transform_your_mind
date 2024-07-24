@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -32,7 +34,6 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
   final AudioContentController audioContentController = Get.put(AudioContentController());
   TextEditingController searchController = TextEditingController();
   FocusNode searchFocusNode = FocusNode();
-  List? _filteredBookmarks;
   ValueNotifier selectedCategory = ValueNotifier(null);
   ValueNotifier<bool> showScrollTop = ValueNotifier(false);
   ThemeController themeController = Get.find<ThemeController>();
@@ -71,12 +72,19 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
         .toList();
   }
 
+  String _formatDuration(Duration? duration) {
+    if (duration == null) return "00:00";
+    final minutes = duration.inMinutes.remainder(60).toString().padLeft(2, '0');
+    final seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+    return "$minutes:$seconds";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
         appBar: CustomAppBar(
-          title: "transformPods".tr,
+          title: "transformAudios".tr,
           showBack: true,
         ),
         body: Padding(
@@ -89,8 +97,9 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
                 decoration: BoxDecoration(
                   boxShadow: [
                     BoxShadow(
-                      color:
-                      ColorConstant.themeColor.withOpacity(0.1),
+                      color: themeController.isDarkMode.isTrue
+                          ? Colors.transparent
+                          : ColorConstant.themeColor.withOpacity(0.1),
                       blurRadius: Dimens.d8,
                     )
                   ],
@@ -105,7 +114,12 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
                     },
                     prefixIcon: Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: SvgPicture.asset(ImageConstant.search),
+                      child: SvgPicture.asset(
+                        ImageConstant.search,
+                        color: themeController.isDarkMode.isTrue
+                            ? ColorConstant.colorBFBFBF
+                            : ColorConstant.color545454,
+                      ),
                     ),
                     suffixIcon: searchController.text.isEmpty?const SizedBox(): Padding(
                       padding: const EdgeInsets.all(14.0),
@@ -115,8 +129,12 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
                         setState(() {
                           audioContentController.getPodApi();
                         });
-                      },child: SvgPicture.asset(ImageConstant.close)),
-                    ),
+                                },
+                                child: SvgPicture.asset(ImageConstant.close,
+                                    color: themeController.isDarkMode.isTrue
+                                        ? ColorConstant.colorBFBFBF
+                                        : ColorConstant.color545454)),
+                          ),
                     hintText: "search".tr,
                     textStyle:
                     Style.nunRegular(fontSize: 12),
@@ -124,42 +142,36 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
                     focusNode: searchFocusNode),
               ),
               Dimens.d20.h.spaceHeight,
-              Expanded(
-                  child: GetBuilder<AudioContentController>(
-                    id: 'update',
-                    builder: (controller) {
-                      return Expanded(
-                        child: controller.audioData.isNotEmpty
-                            ? GridView.builder(
+              GetBuilder<AudioContentController>(
+                id: 'update',
+                builder: (controller) {
+                  return Expanded(
+                    child: controller.audioData.isNotEmpty
+                        ? GridView.builder(
                             controller: scrollController,
-                            padding: const EdgeInsets.only(
-                                bottom: Dimens.d20),
+                            padding: const EdgeInsets.only(bottom: Dimens.d20),
                             physics: const BouncingScrollPhysics(),
                             gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                const SliverGridDelegateWithFixedCrossAxisCount(
                               childAspectRatio: 0.78,
                               crossAxisCount: 2,
-                              // Number of columns
                               crossAxisSpacing: 20,
-                              // Spacing between columns
-                              mainAxisSpacing:
-                              20, // Spacing between rows
+                              mainAxisSpacing: 20,
                             ),
                             itemCount: controller.audioData.length,
                             itemBuilder: (context, index) {
                               return GestureDetector(
                                 onTap: () {
                                   searchFocusNode.unfocus();
-                                  if(!controller.audioData[index].isPaid!){
-                                  }else{
+                                  if (!controller.audioData[index].isPaid!) {
+                                  } else {
                                     _onTileClick(
                                       context: context,
                                       index: index,
-                                      audioContent:
-                                      controller.audioData[index],
+                                      audioContent: controller.audioData[index],
                                     );
                                   }
-                                  },
+                                },
                                 child: Stack(
                                   children: [
                                     Column(
@@ -170,126 +182,126 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
                                             CommonLoadImage(
                                               borderRadius: 10,
                                               url: controller
-                                                  .audioData[index]
-                                                  .image ??
+                                                      .audioData[index].image ??
                                                   "",
-                                              width: Dimens.d156,
+                                              width: Dimens.d177,
                                               height: Dimens.d113,
                                             ),
                                             Align(
-                                              alignment:
-                                              Alignment.topRight,
+                                              alignment: Alignment.topRight,
                                               child: Padding(
-                                                padding:
-                                                const EdgeInsets
-                                                    .only(
-                                                    right: 10,
-                                                    top: 10),
+                                                padding: const EdgeInsets.only(
+                                                    right: 10, top: 10),
                                                 child: SvgPicture.asset(
                                                     ImageConstant.play),
                                               ),
+                                            ),
+                                            Positioned( bottom: 6.0,
+                                              right: 6.0,
+                                              child: Container(padding:  EdgeInsets.only(  top:Platform.isIOS?0: 1),
+                                                height: 12,width: 30,decoration: BoxDecoration(color: Colors.black.withOpacity(0.5),
+                                                    borderRadius: BorderRadius.circular(13)),
+                                                child: Center(child: Text(controller.audioListDuration.length > index ? _formatDuration( controller.audioListDuration[index]) : 'Loading...',style: Style.nunRegular(fontSize: 6,color: Colors.white),),) ,),
                                             )
                                           ],
                                         ),
                                         Dimens.d10.spaceHeight,
                                         Row(
                                           mainAxisAlignment:
-                                          MainAxisAlignment
-                                              .spaceBetween,
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             SizedBox(
                                               width: 90,
                                               child: Text(
-                                                controller
-                                                    .audioData[index]
-                                                    .name
+                                                controller.audioData[index].name
                                                     .toString(),
-                                                // "Motivational",
-                                                style: Style
-                                                    .nunitoBold(
+                                                style: Style.nunitoBold(
                                                   fontSize: Dimens.d12,
                                                 ),
-                                                overflow: TextOverflow
-                                                    .ellipsis,
+                                                overflow: TextOverflow.ellipsis,
                                                 maxLines: 1,
                                               ),
                                             ),
                                             const CircleAvatar(
                                               radius: 2,
                                               backgroundColor:
-                                              ColorConstant
-                                                  .colorD9D9D9,
+                                                  ColorConstant.colorD9D9D9,
                                             ),
                                             Row(
                                               children: [
                                                 SvgPicture.asset(
                                                   ImageConstant.rating,
-                                                  color: ColorConstant
-                                                      .colorFFC700,
+                                                  color:
+                                                      ColorConstant.colorFFC700,
                                                   height: 10,
                                                   width: 10,
                                                 ),
                                                 Dimens.d5.spaceWidth,
                                                 Text(
-                                                  "${controller
-                                                      .audioData[index].rating
-                                                      .toString()}.0" ?? '',
-                                                  style: Style
-                                                      .nunMedium(
-                                                    fontSize:
-                                                    Dimens.d12,
+                                                  "${controller.audioData[index].rating.toString()}.0",
+                                                  style: Style.nunitoBold(
+                                                    fontSize: Dimens.d12,
                                                   ),
                                                 ),
                                               ],
                                             ),
-
                                           ],
-                                        ),
-                                        Dimens.d7.spaceHeight,
-                                        Text(
-                                          controller.audioData[index]
-                                              .description
-                                              .toString(),
-                                          maxLines: Dimens.d2.toInt(),
-                                          style: Style.montserratMedium(
-                                              fontSize: Dimens.d14),
-                                          overflow:
-                                          TextOverflow.ellipsis,
-                                        ),
-                                      ],
                                     ),
-                                    !controller.audioData[index].isPaid!?Container(
-                                      margin: const EdgeInsets.all(7.0),
-                                      height: 14,width: 14,
-                                      decoration: const BoxDecoration(color: Colors.black,shape: BoxShape.circle),
-                                      child: Center(child: Image.asset(ImageConstant.lockHome,height: 7,width: 7,)),
-                                    ):const SizedBox()
+                                    Dimens.d7.spaceHeight,
+                                    Text(
+                                      controller.audioData[index]
+                                          .description
+                                          .toString(),
+                                      maxLines: Dimens.d2.toInt(),
+                                      style: Style.nunRegular(
+                                          fontSize: Dimens.d14),
+                                      overflow:
+                                      TextOverflow.ellipsis,
+                                    ),
                                   ],
                                 ),
-                              );
-                            })
-                            : Padding(
-                          padding: const EdgeInsets.only(top: Dimens.d50),
-                          child: Column(
-                            children: [
-                              SvgPicture.asset(ImageConstant.noSearch,),
-                              Text("dataNotFound".tr,style: Style.gothamMedium(
-                                  fontSize: 24,fontWeight: FontWeight.w700),),
-                              Dimens.d11.spaceHeight,
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 35),
-                                child: Text("noSearchAgain".tr,
-                                  textAlign: TextAlign.center,
-                                  style: Style.montserratRegular(fontSize: 14,fontWeight: FontWeight.w400),),
-                              ),
-
-                            ],
+                                !controller.audioData[index].isPaid! ? Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    height: 14, width: 14,
+                                    decoration: const BoxDecoration(
+                                        color: Colors.black,
+                                        shape: BoxShape.circle),
+                                    child: Center(child: Image.asset(
+                                      ImageConstant.lockHome, height: 7,
+                                      width: 7,)),
+                                  ),
+                                ) : const SizedBox()
+                              ],
+                            ),
+                          );
+                        })
+                        : Padding(
+                      padding: const EdgeInsets.only(top: Dimens.d50),
+                      child: Column(
+                        children: [
+                          SvgPicture.asset(themeController.isDarkMode.isTrue
+                              ? ImageConstant.darkData
+                              : ImageConstant
+                              .noData),
+                          Text("dataNotFound".tr, style: Style.gothamMedium(
+                              fontSize: 24, fontWeight: FontWeight.w700),),
+                          Dimens.d11.spaceHeight,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 35),
+                            child: Text("noSearchAgain".tr,
+                              textAlign: TextAlign.center,
+                              style: Style.nunRegular(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400),
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  )),
-
+                              ],
+                            ),
+                          ),
+                  );
+                },
+              ),
             ],
           ),
         ));

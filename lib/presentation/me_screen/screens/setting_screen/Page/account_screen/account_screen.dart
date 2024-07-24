@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:transform_your_mind/core/common_widget/backgroud_container.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
@@ -28,8 +26,6 @@ class _AccountScreenState extends State<AccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //statusBarSet(themeController);
-
     return Scaffold(
       backgroundColor: themeController.isDarkMode.value
           ? ColorConstant.darkBackground
@@ -137,7 +133,7 @@ class AccountListItem extends StatelessWidget {
             Expanded(
               child: Text(
                 title,
-                style: Style.montserratMedium().copyWith(
+                style: Style.nunMedium().copyWith(
                   letterSpacing: Dimens.d0_16,
                 ),
               ),
