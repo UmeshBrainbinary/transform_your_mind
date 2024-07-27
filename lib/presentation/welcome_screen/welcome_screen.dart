@@ -12,6 +12,8 @@ import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/motivational_message/motivational_message.dart';
+import 'package:transform_your_mind/presentation/welcome_screen/welcome_home_controller.dart';
+import 'package:vibration/vibration.dart';
 
 class WelcomeHomeScreen extends StatefulWidget {
   const WelcomeHomeScreen({super.key});
@@ -23,7 +25,7 @@ class WelcomeHomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeHomeScreen>
     with TickerProviderStateMixin {
   late final AnimationController _lottieController;
-
+  WelcomeHomeController welcomeHomeController = Get.put(WelcomeHomeController());
   String greeting = "";
 
   void _setGreetingBasedOnTime() {
@@ -68,11 +70,23 @@ class _WelcomeScreenState extends State<WelcomeHomeScreen>
       duration: const Duration(seconds: 4),
     );
 
+    setAudioFile();
+
     _setGreetingBasedOnTime();
     super.initState();
   }
 
-  void _onTap() {
+  setAudioFile() async {
+
+    await welcomeHomeController.setUrl(
+      "assets/audio/breathing_music.mp3"
+       // "https://media.shoorah.io/admins/shoorah_pods/audio/1682951517-7059.mp3"
+    );
+    await welcomeHomeController.play();
+  }
+
+  Future<void> _onTap() async {
+
     setState(() {
     });
   }
@@ -82,6 +96,10 @@ class _WelcomeScreenState extends State<WelcomeHomeScreen>
   int startTimer = 0;
 
   void _onLongPress() {
+    Vibration.vibrate(
+      pattern: [80, 80, 0, 0, 0, 0, 0, 0],
+      intensities: [20, 20, 0, 0, 0, 0, 0, 0],
+    );
     _lottieController.repeat();
     _isLongPressed = true;
     setState(() {
@@ -105,7 +123,10 @@ class _WelcomeScreenState extends State<WelcomeHomeScreen>
     );
   }
 
-  void _onLongPressEnd(LongPressEndDetails details) {
+  Future<void> _onLongPressEnd(LongPressEndDetails details) async {
+    await welcomeHomeController.pause();
+    await welcomeHomeController.audioPlayer.stop();
+
     _lottieController.stop();
     if (_isLongPressed) {
       setState(() {
@@ -137,6 +158,8 @@ class _WelcomeScreenState extends State<WelcomeHomeScreen>
                     padding: const EdgeInsets.only(top: 40, right: 27),
                     child: GestureDetector(
                         onTap: () async {
+                          await welcomeHomeController.pause();
+
                           Get.offAll(() => MotivationalMessageScreen(
                             skip: true,
                             date: DateFormat('d MMMM yyyy').format(DateTime.now()),

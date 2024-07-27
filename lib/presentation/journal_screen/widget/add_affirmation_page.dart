@@ -58,6 +58,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
 
   final TextEditingController descController = TextEditingController();
   ThemeController themeController = Get.find<ThemeController>();
+  String recordedText   = "";
 
   final FocusNode titleFocus = FocusNode();
   final FocusNode descFocus = FocusNode();
@@ -280,8 +281,11 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                                         maxLines: 15,
                                         maxLength: maxLengthDesc,
                                         validator: (value) {
-                                          if (value!.trim() == "") {
+                                          if (value!.trim().isEmpty) {
                                             return "pleaseEnterDescription".tr;
+                                          }
+                                          if (countWords(value) > 2000) {
+                                            return "Please enter no more than 200 words".tr;
                                           }
                                           return null;
                                           },
@@ -339,8 +343,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                                                   _isListening = true;
                                                   _speech!.listen(
                                                     onResult: (val) => setState(() {
-                                                      descController.text = val.recognizedWords;
-
+                                                      recordedText = val.recognizedWords;
                                                     }),
                                                   );
                                                 } else {
@@ -353,8 +356,16 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                                               });
                                             },
                                             onLongPressEnd: (details) {
+                                              _speechDataList.add(recordedText);
+                                              _onLongPressEnd();
+                                              setState(() {
+                                                debugPrint("speech all data store ${_speechDataList.join(' ')}");
+                                                Future.delayed(const Duration(milliseconds:500)).then((value) {
+                                                  descController.text = _speechDataList.join(' ');
+                                                  recordedText = "";
+                                                },);
 
-                                              _speechDataList.add(descController.text);
+                                              });
                                               Vibration.vibrate(
                                                 pattern: [80, 80, 0, 0, 0, 0, 0, 0],
                                                 intensities: [
@@ -368,13 +379,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                                                   0
                                                 ],
                                               );
-                                              _onLongPressEnd();
-                                              setState(() {
-                                                debugPrint("speech all data store ${_speechDataList.join(' ')}");
-                                               Future.delayed(const Duration(seconds: 1)).then((value) {
-                                                 descController.text = _speechDataList.join(' ');
-                                               },);
-                                              });
+
                                             },
                                             child: _isPressed
                                                 ? Lottie.asset(
@@ -466,6 +471,10 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
         ],
       ),
     );
+  }
+
+  int countWords(String text) {
+    return text.trim().split(RegExp(r'\s+')).length;
   }
 
 }

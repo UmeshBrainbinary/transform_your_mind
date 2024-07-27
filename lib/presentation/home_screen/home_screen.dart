@@ -1,18 +1,16 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/http_service.dart';
-import 'package:transform_your_mind/core/service/method_channal_alarm.dart';
-import 'package:transform_your_mind/core/service/notification_service.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
-import 'package:transform_your_mind/core/utils/date_time.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
@@ -20,19 +18,19 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
-import 'package:transform_your_mind/model_class/affirmation_model.dart';
 import 'package:transform_your_mind/model_class/get_pods_model.dart';
 import 'package:transform_your_mind/model_class/gratitude_model.dart';
+import 'package:transform_your_mind/presentation/affirmation_alarm_screen/affirmation_controller.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_controller.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_screen.dart';
 import 'package:transform_your_mind/presentation/breath_screen/breath_screen.dart';
 import 'package:transform_your_mind/presentation/home_screen/home_controller.dart';
-import 'package:transform_your_mind/presentation/home_screen/home_message_page.dart';
 import 'package:transform_your_mind/presentation/home_screen/widgets/home_widget.dart';
 import 'package:transform_your_mind/presentation/how_feeling_today/how_feeling_today_screen.dart';
-import 'package:transform_your_mind/presentation/how_feeling_today/how_feelings_evening.dart';
+import 'package:transform_your_mind/presentation/journal_screen/widget/add_affirmation_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_gratitude_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/my_affirmation_page.dart';
+import 'package:transform_your_mind/presentation/journal_screen/widget/my_gratitude_page.dart';
 import 'package:transform_your_mind/presentation/motivational_message/motivational_controller.dart';
 import 'package:transform_your_mind/presentation/motivational_message/motivational_message.dart';
 import 'package:transform_your_mind/presentation/positive_moment/positive_controller.dart';
@@ -65,6 +63,7 @@ class _HomeScreenState extends State<HomeScreen>
   HomeController g = Get.put(HomeController());
   ThemeController themeController = Get.find<ThemeController>();
   GratitudeModel gratitudeModel = GratitudeModel();
+  AffirmationController affirmationController = Get.put(AffirmationController());
 
   @override
   void initState() {
@@ -84,6 +83,9 @@ class _HomeScreenState extends State<HomeScreen>
     setState(() {});
     super.initState();
   }
+
+
+
   getGratitude() async {
 
     var headers = {
@@ -177,10 +179,6 @@ class _HomeScreenState extends State<HomeScreen>
     }
   }
 
-  void _setAlarm() {
-    AlarmService.setAlarm(
-        selectedTime.hour, selectedTime.minute+1, "Flutter Alarm");
-  }
 
   Future<void> _refresh() async {
     checkInternet();
@@ -425,7 +423,7 @@ class _HomeScreenState extends State<HomeScreen>
                                           "motivational") {
                                         Get.to(()=>MotivationalMessageScreen(skip: false,))!
                                             .then((value) async {
-                                          MotivationalController moti = Get.put(MotivationalController());
+                                          MotivationalController moti = Get.find<MotivationalController>();
                                           await moti.audioPlayer.dispose();
                                           await moti.audioPlayer.pause();
                                           setState(() {});
@@ -703,10 +701,12 @@ class _HomeScreenState extends State<HomeScreen>
   Widget topView(String? motivationalMessage) {
     return GestureDetector(
         onTap: () async {
-          /*await NotificationService.showNotification();*/
-          /* _setAlarm();*/
-            Get.to(()=>  const HowFeelingsEvening());
-          /*    Navigator.push(context, MaterialPageRoute(
+
+            //await NotificationService.scheduleNotification(DateTime.now());
+
+           /* Get.to(()=>  const HowFeelingsEvening());*/
+            Get.to(()=>  const WelcomeHomeScreen());
+            /*    Navigator.push(context, MaterialPageRoute(
             builder: (context) {
               return HomeMessagePage(
                   motivationalMessage: motivationalMessage ??
@@ -1085,12 +1085,14 @@ class _HomeScreenState extends State<HomeScreen>
                         fontSize: Dimens.d17, color: ColorConstant.white),
                     title: "addTodayAffirmation".tr,
                     onTap: () {
-                      Get.toNamed(AppRoutes.myAffirmationPage)!.then(
-                        (value) async {
-                          await g.getTodayAffirmation();
-                          setState(() {});
-                        },
-                      );
+                     Get.to(const AddAffirmationPage(
+                       isFromMyAffirmation: true,
+                       isEdit: false,))!.then(
+                           (value) async {
+                         await g.getTodayAffirmation();
+                         setState(() {});
+                       },
+                     );
                     },
                   )
                 : Column(
@@ -1151,7 +1153,8 @@ class _HomeScreenState extends State<HomeScreen>
                         onTap: () {
                           Navigator.push(context, MaterialPageRoute(
                             builder: (context) {
-                              return  StartPracticeAffirmation(id:  g.todayAList?[0].id ,
+                              return  StartPracticeAffirmation(
+                                id:  g.todayAList?[0].id ,
                               data: g.todayAList!,);
                             },
                           )).then(
@@ -1232,12 +1235,17 @@ class _HomeScreenState extends State<HomeScreen>
                     textStyle: Style.nunRegular(
                         fontSize: Dimens.d17, color: ColorConstant.white),
                     onTap: () {
-                      Get.toNamed(AppRoutes.myGratitudePage)!.then(
-                        (value) async {
-                          await g.getTodayGratitude();
-                          setState(() {});
-                        },
-                      );
+                      Navigator.push(context,   MaterialPageRoute(builder: (context) {
+                        return  AddGratitudePage( isFromMyGratitude: true,
+                          registerUser: false,
+                          edit: false,);
+                      },)).then((value) async {
+                        await getGratitude();
+                        setState(() {
+
+                        });
+                      },);
+
                     },
                   )
                 : Column(
@@ -1266,6 +1274,8 @@ class _HomeScreenState extends State<HomeScreen>
                               return  StartPracticeScreen(gratitudeList: gratitudeModel.data,);
                             },
                           )).then((value) {
+
+
                             if (themeController.isDarkMode.isTrue) {
                               SystemChrome.setSystemUIOverlayStyle(
                                   const SystemUiOverlayStyle(
@@ -1458,7 +1468,7 @@ class _HomeScreenState extends State<HomeScreen>
                 ? ColorConstant.textfieldFillColor
                 : ColorConstant.backGround,
             borderRadius: BorderRadius.circular(18)),
-        child: Row(crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
               height: 63,

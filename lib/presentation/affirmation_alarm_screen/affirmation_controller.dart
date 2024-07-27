@@ -1,7 +1,18 @@
+import 'dart:async';
+
+import 'package:alarm/alarm.dart';
+import 'package:alarm/model/alarm_settings.dart';
+import 'package:flutter/foundation.dart';
+
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:transform_your_mind/presentation/home_screen/AlarmNotification.dart';
 
 class AffirmationController extends GetxController{
+  late List<AlarmSettings> alarms;
+
+  static StreamSubscription<AlarmSettings>? subscription;
   ///___________________ audio service Common File ________-
   final AudioPlayer _audioPlayer = AudioPlayer();
   final Rx<Duration?> _position = Duration.zero.obs;
@@ -33,6 +44,10 @@ class AffirmationController extends GetxController{
 
   @override
   void onInit() {
+    checkAndroidNotificationPermission();
+    checkAndroidScheduleExactAlarmPermission();
+    loadAlarms();
+    subscription ??= Alarm.ringStream.stream.listen(navigateToRingScreen);
     _audioPlayer.positionStream.listen((event) {
       _position.value = event;
     });
@@ -48,6 +63,42 @@ class AffirmationController extends GetxController{
       }
     });
     super.onInit();
+  }
+
+  Future<void> navigateToRingScreen(AlarmSettings alarmSettings) async {
+    Get.to( AlarmNotificationScreen(alarmSettings: alarmSettings));
+    loadAlarms();
+  }
+  void loadAlarms() {
+    alarms = Alarm.getAlarms();
+    alarms.sort((a, b) => a.dateTime.isBefore(b.dateTime) ? 0 : 1);
+    update();
+  }
+  Future<void> checkAndroidNotificationPermission() async {
+    final status = await Permission.notification.status;
+    if (status.isDenied) {
+      alarmPrint('Requesting notification permission...');
+      final res = await Permission.notification.request();
+      alarmPrint(
+        'Notification permission ${res.isGranted ? '' : 'not '}granted',
+      );
+    }
+  }
+  Future<void> checkAndroidScheduleExactAlarmPermission() async {
+    final status = await Permission.scheduleExactAlarm.status;
+    if (kDebugMode) {
+      print('Schedule exact alarm permission: $status.');
+    }
+    if (status.isDenied) {
+      if (kDebugMode) {
+        print('Requesting schedule exact alarm permission...');
+      }
+      final res = await Permission.scheduleExactAlarm.request();
+      if (kDebugMode) {
+        print(
+            'Schedule exact alarm permission ${res.isGranted ? '' : 'not'} granted.');
+      }
+    }
   }
   void _onAudioFinished() async {
     await _audioPlayer.seek(Duration.zero);
@@ -65,7 +116,6 @@ class AffirmationController extends GetxController{
         String? img}) async {
 
 
-    update();
     if (_isPlaying.value) {
       // Option 1: Do nothing if the same URL is playing
       if (currentUrl == url) return;
@@ -73,6 +123,8 @@ class AffirmationController extends GetxController{
     }
     if (currentUrl == url) return;
     currentUrl = url;
-    await _audioPlayer.setUrl(url);
+    await _audioPlayer.setAsset(url);
+    update();
+
   }
 }

@@ -23,8 +23,10 @@ class HowFeelingsController extends GetxController{
 
   FocusNode  whatIsYourMindFocus = FocusNode();
   int howDoYouIndex = -1;
+  int whatDoYouWantToAchieve = -1;
   int howDoYouIndexSleep = -1;
   int whatHelped = -1;
+  int whatStep = -1;
   int whatHelpedStress = -1;
   int feelPhysically = -1;
   int selectedIndex = -1;
@@ -39,9 +41,9 @@ class HowFeelingsController extends GetxController{
     {"title":"C. ${"Bad".tr}","check":false},
   ].obs;
   RxList whatHelpedYou = [
-    {"title":"A. ${"GoodNews".tr}","check":false},
-    {"title":"B. ${"RestfulSleep".tr}","check":false},
-    {"title":"C. ${"PositiveThoughts".tr}","check":false},
+    {"title":"A. ${"Planning".tr}","check":false},
+    {"title":"B. ${"seekingHelp".tr}","check":false},
+    {"title":"C. ${"timeManagement".tr}","check":false},
     {"title":"D. ${"Other".tr}","check":false},
   ].obs;
 
@@ -56,7 +58,8 @@ class HowFeelingsController extends GetxController{
     {"title":"A. ${"ListenAudio".tr}","check":false},
     {"title":"B. ${"BreathingTechnique".tr}","check":false},
     {"title":"C. ${"SpendOutdoors".tr}","check":false},
-    {"title":"D. ${"Other".tr}","check":false},
+    {"title":"D. ${"TalkFrd".tr}","check":false},
+    {"title":"E. ${"Other".tr}","check":false},
   ].obs;
   RxList whatHelpsYouStart = [
     {"title":"A. ${"StructuredPlan".tr}","check":false},

@@ -1,7 +1,5 @@
 
 import 'package:get/get.dart';
-import 'package:transform_your_mind/presentation/affirmation_alarm_screen/affirmation_alarm_screen.dart';
-import 'package:transform_your_mind/presentation/affirmation_alarm_screen/binding/affirmation_alarm_binding.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/audio_content_screen.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/binding/audio_binding.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/binding/now_playing_binding.dart';
@@ -360,12 +358,7 @@ class AppRoutes {
       page: () =>   MotivationalMessageScreen(),
       bindings: [MotivationalBinding()],
     ),
-    GetPage(
-      transition: Transition.rightToLeft,
-      name: affirmationAlarmScreen,
-      page: () =>  const AffirmationAlarmScreen(),
-      bindings: [AffirmationAlarmBinding()],
-    ),
+
     GetPage(
       transition: Transition.rightToLeft,
       name: positiveScreen,

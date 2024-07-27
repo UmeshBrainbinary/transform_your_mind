@@ -10,6 +10,7 @@ import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/presentation/breath_screen/breath_controller.dart';
 import 'package:transform_your_mind/presentation/breath_screen/notice_how_you_feel_screen.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
@@ -35,14 +36,23 @@ class _BreathScreenState extends State<BreathScreen>
   Timer? _timer;
   int _remainingSeconds = 16;
   ThemeController themeController = Get.find<ThemeController>();
-
+  BreathController breathController = Get.put(BreathController());
   @override
   void initState() {
+    setAudioFile();
     _lottieController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 4),
     );
     super.initState();
+  }
+  setAudioFile() async {
+
+    await breathController.setUrl(
+        "assets/audio/breathing_music.mp3"
+      // "https://media.shoorah.io/admins/shoorah_pods/audio/1682951517-7059.mp3"
+    );
+
   }
 
   @override
@@ -59,7 +69,7 @@ class _BreathScreenState extends State<BreathScreen>
     });
     _lottieController.forward();
 
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
       if (!_isPaused) {
         setState(() {
           _remainingSeconds--;
@@ -76,6 +86,8 @@ class _BreathScreenState extends State<BreathScreen>
         if (playCount < 3) {
           _startAnimationSequence();
         } else {
+          await breathController.pause();
+
           Navigator.push(context, MaterialPageRoute(builder: (context) {
             return NoticeHowYouFeelScreen(
                 notice: widget.skip, setting: widget.setting);
@@ -105,7 +117,7 @@ class _BreathScreenState extends State<BreathScreen>
     setState(() {
       _isPaused = false;
       _lottieController.forward();
-      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
         setState(() {
           _remainingSeconds--;
         });
@@ -120,6 +132,8 @@ class _BreathScreenState extends State<BreathScreen>
           if (playCount < 3) {
             _startAnimationSequence();
           } else {
+            await breathController.pause();
+
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return NoticeHowYouFeelScreen(
                   notice: widget.skip, setting: widget.setting);
@@ -154,12 +168,18 @@ class _BreathScreenState extends State<BreathScreen>
           ? ColorConstant.darkBackground
           : ColorConstant.backGround,
       appBar: CustomAppBar(
+        onTap: () async {
+          await breathController.pause();
+          Get.back();
+          },
         centerTitle: widget.skip!?true:false,
         showBack:widget.skip!?false:true,
         title: "breathTraining".tr,
         action: widget.skip!
             ? GestureDetector(
                 onTap: () async {
+                  await breathController.pause();
+
                   Get.toNamed(AppRoutes.selectYourFocusPage);
                 },
                 child: Padding(
@@ -218,13 +238,20 @@ class _BreathScreenState extends State<BreathScreen>
 
                 Dimens.d280.spaceHeight,
                 GestureDetector(
-                  onTap: () {
+                  onTap: () async {
                     if (isPlaying && !_isPaused) {
                       _pauseAnimation();
+                      await breathController.pause();
+
                     } else if (isPlaying && _isPaused) {
                       _resumeAnimation();
+                      await breathController.play();
+
                     } else {
+
                       _startAnimationSequence();
+                      await breathController.play();
+
                     }
                   },
                   child: SvgPicture.asset(isPlaying && !_isPaused

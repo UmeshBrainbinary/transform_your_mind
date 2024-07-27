@@ -127,7 +127,7 @@ class _HomeMessagePageState extends State<HomeMessagePage> {
                     horizontal: Dimens.d20, vertical: Dimens.d36),
                 child: Row(
                   children: [
-                    Expanded(
+                 /*   Expanded(
                       child: CommonElevatedButton(
                           title: _isBookmarked ? "remove".tr : "save".tr,
                           outLined: true,
@@ -145,7 +145,7 @@ class _HomeMessagePageState extends State<HomeMessagePage> {
                             }
                           }),
                     ),
-                    Dimens.d20.spaceWidth,
+                    Dimens.d20.spaceWidth,*/
                     Expanded(
                       child: CommonElevatedButton(
                         title: "share".tr,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
@@ -44,6 +45,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        statusBarBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.light,
+        statusBarColor: Colors.transparent));
     _setGreetingBasedOnTime();
     Future.delayed(
       const Duration(seconds: 3),
@@ -51,10 +56,10 @@ class _SplashScreenState extends State<SplashScreen> {
         PrefService.getBool(PrefKey.isLoginOrRegister) == true
             ? PrefService.getBool(PrefKey.morningQuestion) == false &&
                     greeting == "goodMorning"
-                ? Get.to(() => const HowFeelingTodayScreen())
+                ? Get.offAll(() => const HowFeelingTodayScreen())
                 : PrefService.getBool(PrefKey.eveningQuestion) == false &&
                         greeting == "goodEvening"
-                    ? Get.to(() => const HowFeelingsEvening())
+                    ? Get.offAll(() => const HowFeelingsEvening())
                     : Get.offAllNamed(AppRoutes.dashBoardScreen)
             : PrefService.getBool(PrefKey.introSkip) == true
                 ? Get.offAllNamed(AppRoutes.loginScreen)
@@ -68,6 +73,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         body: Stack(
       alignment: Alignment.center,

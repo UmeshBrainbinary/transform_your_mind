@@ -41,8 +41,7 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
   Timer? _timer;
   int selectedTime = 3;
   bool showBottom = false;
-  List<String> quotes = [
-  ];
+
   @override
   void initState() {
     super.initState();
@@ -132,7 +131,6 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
 
   }
 
-
   int speedChange() {
     switch (startC.selectedSpeedIndex) {
       case 0:
@@ -156,350 +154,355 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
         statusBarBrightness: Brightness.light,
         statusBarIconBrightness: Brightness.light,
         statusBarColor: Colors.transparent));
-    return Scaffold(
-      backgroundColor: Colors.black.withOpacity(0.5),
-      body: GestureDetector(
-        onTap: () {
-          setState(() {
-            startC.setSpeed.value = false;
-          });
-        },
-        child: Stack(
-          children: [
-            //_________________________________ background Image _______________________
-            Stack(
-              children: [
-                CachedNetworkImage(
-                  height: Get.height,
-                  width: Get.width,
-                  imageUrl: startC.themeList[chooseImage],
-                  imageBuilder: (context, imageProvider) => Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      borderRadius: BorderRadius.circular(
-                        10.0,
-                      ),
-                      image: DecorationImage(
-                        image: imageProvider,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  placeholder: (context, url) => PlaceHolderCNI(
-                    height: Get.height,
-                    width: Get.width,
-                    borderRadius: 10.0,
-                  ),
-                  errorWidget: (context, url, error) => PlaceHolderCNI(
-                    height: Get.height,
-                    width: Get.width,
-                    isShowLoader: false,
-                    borderRadius: 8.0,
-                  ),
-                ),
-                BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
-                  child: Container(
-                    height: Get.height,
-                    width: Get.width,
-                    color: Colors.black.withOpacity(
-                        0.5), // Adjust the opacity to your preference
-                  ),
-                ),
-              ],
-            ),
-            //_________________________________ story Progress indicators _______________________
-            Positioned(
-              top: 40,
-              left: 10,
-              right: 10,
-              child: Row(
-                children: List.generate(widget.gratitudeList!.length, (index) {
-                  return Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                      child: LinearProgressIndicator(
-                        value: index == _currentIndex
-                            ? _progress
-                            : (index < _currentIndex ? 1.0 : 0.0),
-                        backgroundColor: Colors.grey,
-                        valueColor: const AlwaysStoppedAnimation<Color>(
-                          Colors.white,
-                        ),
-                      ),
-                    ),
-                  );
-                }),
-              ),
-            ),
-
-            //_________________________________ story list  _______________________
-            PageView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: widget.gratitudeList!.length,
-              controller: _pageController,
-              onPageChanged: (value) async {
-                await updateGratitude([widget.gratitudeList![value].id]);
-
-                setState(() {
-                  _currentIndex = value;
-                  _progress = 0.0;
-                });
-                  if (_currentIndex == (widget.gratitudeList!.length - 1)) {
-                  Future.delayed(Duration(seconds: speedChange())).then(
-                    (value) async {
-                      for(int i = 0;i<widget.gratitudeList!.length;i++){
-                        await updateGratitude(widget.gratitudeList![i].id);
-                      }
-                      await startC.pause();
-                      Get.to( GreatWork(theme:  startC.themeList[chooseImage],));
-                    },
-                  );
-                }
-              },
-              itemBuilder: (context, index) {
-                return Stack(
-                  children: [
-                    Center(
-                      child: Padding(
-                        padding:  const EdgeInsets.symmetric(horizontal: 40),
-                        child: Text("“ ${widget.gratitudeList?[index].description} ”",maxLines: 7,
-                            textAlign: TextAlign.center,
-                            style: Style.gothamLight(
-                                fontSize: 23,
-                                color: ColorConstant.white,
-                                fontWeight: FontWeight.w600)),
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
-            //_________________________________ close button  _______________________
-
-            Positioned(
-              top: Dimens.d70,
-              left: 16,
-              child: GestureDetector(
-                onTap: () async {
-                  await startC.pause();
-
-                  Get.back();
-                },
-                child: Container(
-                  height: 42,
-                  width: 42,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(9),
-                      color: ColorConstant.white.withOpacity(0.15)),
-                  child: const Icon(Icons.close, color: Colors.white),
-                ),
-              ),
-            ),
-            //_________________________________ theme Change button  _______________________
-
-            Positioned(
-              top: Dimens.d70,
-              right: 16,
-              child: Row(
+    return WillPopScope( onWillPop: () async {
+      await startC.pause();
+      return true;
+    },
+      child: Scaffold(
+        backgroundColor: Colors.black.withOpacity(0.5),
+        body: GestureDetector(
+          onTap: () {
+            setState(() {
+              startC.setSpeed.value = false;
+            });
+          },
+          child: Stack(
+            children: [
+              //_________________________________ background Image _______________________
+              Stack(
                 children: [
-                  Column(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            showBottom = true;
-                          });
-                          sheetSound();
-                        },
-                        child: Container(
-                          height: 42,
-                          width: 42,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(9),
-                              color: ColorConstant.white.withOpacity(0.15)),
-                          child: Center(
-                            child: SvgPicture.asset(
-                              ImageConstant.music,
-                              height: Dimens.d28,
-                              width: Dimens.d28,
-                            ),
-                          ),
+                  CachedNetworkImage(
+                    height: Get.height,
+                    width: Get.width,
+                    imageUrl: startC.themeList[chooseImage],
+                    imageBuilder: (context, imageProvider) => Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.circular(
+                          10.0,
+                        ),
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.cover,
                         ),
                       ),
-                      Dimens.d5.spaceHeight,
-                      Text(
-                        "music".tr,
-                        style: Style.gothamLight(
-                            fontSize: 10, color: Colors.white),
-                      )
-                    ],
+                    ),
+                    placeholder: (context, url) => PlaceHolderCNI(
+                      height: Get.height,
+                      width: Get.width,
+                      borderRadius: 10.0,
+                    ),
+                    errorWidget: (context, url, error) => PlaceHolderCNI(
+                      height: Get.height,
+                      width: Get.width,
+                      isShowLoader: false,
+                      borderRadius: 8.0,
+                    ),
                   ),
-                  Dimens.d10.spaceWidth,
-                  Column(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            showBottom = true;
-                          });
-                          sheetTheme();
-                        },
-                        child: Container(
-                          height: 42,
-                          width: 42,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(9),
-                              color: ColorConstant.white.withOpacity(0.15)),
-                          child: Center(
-                            child: Image.asset(
-                              ImageConstant.themeChange,
-                              height: Dimens.d28,
-                              width: Dimens.d28,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Dimens.d5.spaceHeight,
-                      Text(
-                        "theme".tr,
-                        style: Style.gothamLight(
-                            fontSize: 10, color: Colors.white),
-                      )
-                    ],
+                  BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
+                    child: Container(
+                      height: Get.height,
+                      width: Get.width,
+                      color: Colors.black.withOpacity(
+                          0.5), // Adjust the opacity to your preference
+                    ),
                   ),
                 ],
               ),
-            ),
-
-            //_________________________________ Skip Method  _______________________
-
-            startC.setSpeed.isTrue
-                ? Positioned(
-                    bottom: Dimens.d170,
-                    left: MediaQuery.of(context).size.width / 2.5,
-                    child: Container(
-                      width: 82,
-                      padding: const EdgeInsets.only(bottom: 10),
-                      decoration: BoxDecoration(
-                          color: ColorConstant.black,
-                          borderRadius: BorderRadius.circular(10)),
-                      child: ListView.builder(
-                          shrinkWrap: true,
-                          padding: EdgeInsets.zero,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: startC.speedList.length,
-                          itemBuilder: (context, index) {
-                            bool isChecked = startC.selectedSpeedIndex == index;
-                            return GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  startC.setSelectedSpeedIndex(index);
-                                  speedChange();
-                                  _progress = 0.0; // Reset the progress.
-                                  _startProgress();
-                                });
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 10, right: 10, top: 10),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      isChecked ? Icons.check : null,
-                                      color: isChecked
-                                          ? ColorConstant.themeColor
-                                          : ColorConstant.transparent,
-                                      size: 10,
-                                    ),
-                                    Dimens.d5.spaceWidth,
-                                    Text(
-                                      startC.speedList[index],
-                                      style: Style.nunRegular(
-                                          fontSize: 10,
-                                          color: isChecked
-                                              ? ColorConstant.themeColor
-                                              : ColorConstant.white),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            );
-                          }),
-                    ),
-                  )
-                : const SizedBox(),
-            //_________________________________ bottom View sound  _______________________
-
-            showBottom
-                ? const SizedBox()
-                : Positioned(
-                    bottom: Dimens.d85,
-              left: MediaQuery.of(context).size.width / 5,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                          horizontal: 27, vertical: 10),
-                      decoration: BoxDecoration(
-                    color: ColorConstant.white.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(20)),
+              //_________________________________ story Progress indicators _______________________
+              Positioned(
+                top: 40,
+                left: 10,
+                right: 10,
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          startC.soundMute = !startC.soundMute;
-                        });
-                        if (startC.soundMute) {
-                          startC.audioPlayer.setVolume(0);
-                        } else {
-                          startC.audioPlayer.setVolume(1);
-                        }
-                        setState(() {
-
-                        });
-                      },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                            startC.soundMute
-                                ? ImageConstant.soundMute
-                                : ImageConstant.soundMax,
-                            color: ColorConstant.white,
+                  children: List.generate(widget.gratitudeList!.length, (index) {
+                    return Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                        child: LinearProgressIndicator(
+                          value: index == _currentIndex
+                              ? _progress
+                              : (index < _currentIndex ? 1.0 : 0.0),
+                          backgroundColor: Colors.grey,
+                          valueColor: const AlwaysStoppedAnimation<Color>(
+                            Colors.white,
                           ),
-                          commonText("sound".tr),
-                        ],
+                        ),
                       ),
-                    ),
-                    Dimens.d32.spaceWidth,
-                    Container(
-                      width: 1,
-                      height: 47,
-                      color: ColorConstant.white,
-                    ),
-                    Dimens.d32.spaceWidth,
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          startC.setSpeed.value = !startC.setSpeed.value;
-                        });
+                    );
+                  }),
+                ),
+              ),
+
+              //_________________________________ story list  _______________________
+              PageView.builder(
+                scrollDirection: Axis.vertical,
+                itemCount: widget.gratitudeList!.length,
+                controller: _pageController,
+                onPageChanged: (value) async {
+                  await updateGratitude([widget.gratitudeList![value].id]);
+
+                  setState(() {
+                    _currentIndex = value;
+                    _progress = 0.0;
+                  });
+                    if (_currentIndex == (widget.gratitudeList!.length - 1)) {
+                    Future.delayed(Duration(seconds: speedChange())).then(
+                      (value) async {
+                        for(int i = 0;i<widget.gratitudeList!.length;i++){
+                          await updateGratitude(widget.gratitudeList![i].id);
+                        }
+                        await startC.pause();
+                        Get.to( GreatWork(theme:  startC.themeList[chooseImage],));
                       },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          commonTextTitle("auto".tr),
-                          Dimens.d6.spaceHeight,
-                          commonText("forEach".tr),
-                        ],
+                    );
+                  }
+                },
+                itemBuilder: (context, index) {
+                  return Stack(
+                    children: [
+                      Center(
+                        child: Padding(
+                          padding:  const EdgeInsets.symmetric(horizontal: 40),
+                          child: Text("“ ${widget.gratitudeList?[index].description} ”",maxLines: 7,
+                              textAlign: TextAlign.center,
+                              style: Style.gothamLight(
+                                  fontSize: 23,
+                                  color: ColorConstant.white,
+                                  fontWeight: FontWeight.w600)),
+                        ),
                       ),
+                    ],
+                  );
+                },
+              ),
+              //_________________________________ close button  _______________________
+
+              Positioned(
+                top: Dimens.d70,
+                left: 16,
+                child: GestureDetector(
+                  onTap: () async {
+                    await startC.pause();
+
+                    Get.back();
+                  },
+                  child: Container(
+                    height: 42,
+                    width: 42,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(9),
+                        color: ColorConstant.white.withOpacity(0.15)),
+                    child: const Icon(Icons.close, color: Colors.white),
+                  ),
+                ),
+              ),
+              //_________________________________ theme Change button  _______________________
+
+              Positioned(
+                top: Dimens.d70,
+                right: 16,
+                child: Row(
+                  children: [
+                    Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              showBottom = true;
+                            });
+                            sheetSound();
+                          },
+                          child: Container(
+                            height: 42,
+                            width: 42,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(9),
+                                color: ColorConstant.white.withOpacity(0.15)),
+                            child: Center(
+                              child: SvgPicture.asset(
+                                ImageConstant.music,
+                                height: Dimens.d28,
+                                width: Dimens.d28,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Dimens.d5.spaceHeight,
+                        Text(
+                          "music".tr,
+                          style: Style.gothamLight(
+                              fontSize: 10, color: Colors.white),
+                        )
+                      ],
+                    ),
+                    Dimens.d10.spaceWidth,
+                    Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              showBottom = true;
+                            });
+                            sheetTheme();
+                          },
+                          child: Container(
+                            height: 42,
+                            width: 42,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(9),
+                                color: ColorConstant.white.withOpacity(0.15)),
+                            child: Center(
+                              child: Image.asset(
+                                ImageConstant.themeChange,
+                                height: Dimens.d28,
+                                width: Dimens.d28,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Dimens.d5.spaceHeight,
+                        Text(
+                          "theme".tr,
+                          style: Style.gothamLight(
+                              fontSize: 10, color: Colors.white),
+                        )
+                      ],
                     ),
                   ],
                 ),
               ),
-            ),
-          ],
+
+              //_________________________________ Skip Method  _______________________
+
+              startC.setSpeed.isTrue
+                  ? Positioned(
+                      bottom: Dimens.d170,
+                      left: MediaQuery.of(context).size.width / 2.5,
+                      child: Container(
+                        width: 82,
+                        padding: const EdgeInsets.only(bottom: 10),
+                        decoration: BoxDecoration(
+                            color: ColorConstant.black,
+                            borderRadius: BorderRadius.circular(10)),
+                        child: ListView.builder(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.zero,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: startC.speedList.length,
+                            itemBuilder: (context, index) {
+                              bool isChecked = startC.selectedSpeedIndex == index;
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    startC.setSelectedSpeedIndex(index);
+                                    speedChange();
+                                    _progress = 0.0; // Reset the progress.
+                                    _startProgress();
+                                  });
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 10, right: 10, top: 10),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        isChecked ? Icons.check : null,
+                                        color: isChecked
+                                            ? ColorConstant.themeColor
+                                            : ColorConstant.transparent,
+                                        size: 10,
+                                      ),
+                                      Dimens.d5.spaceWidth,
+                                      Text(
+                                        startC.speedList[index],
+                                        style: Style.nunRegular(
+                                            fontSize: 10,
+                                            color: isChecked
+                                                ? ColorConstant.themeColor
+                                                : ColorConstant.white),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }),
+                      ),
+                    )
+                  : const SizedBox(),
+              //_________________________________ bottom View sound  _______________________
+
+              showBottom
+                  ? const SizedBox()
+                  : Positioned(
+                      bottom: Dimens.d85,
+                left: MediaQuery.of(context).size.width / 5,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                            horizontal: 27, vertical: 10),
+                        decoration: BoxDecoration(
+                      color: ColorConstant.white.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(20)),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            startC.soundMute = !startC.soundMute;
+                          });
+                          if (startC.soundMute) {
+                            startC.audioPlayer.setVolume(0);
+                          } else {
+                            startC.audioPlayer.setVolume(1);
+                          }
+                          setState(() {
+
+                          });
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              startC.soundMute
+                                  ? ImageConstant.soundMute
+                                  : ImageConstant.soundMax,
+                              color: ColorConstant.white,
+                            ),
+                            commonText("sound".tr),
+                          ],
+                        ),
+                      ),
+                      Dimens.d32.spaceWidth,
+                      Container(
+                        width: 1,
+                        height: 47,
+                        color: ColorConstant.white,
+                      ),
+                      Dimens.d32.spaceWidth,
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            startC.setSpeed.value = !startC.setSpeed.value;
+                          });
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            commonTextTitle("auto".tr),
+                            Dimens.d6.spaceHeight,
+                            commonText("forEach".tr),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -576,12 +579,13 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: () async {
-                              await startC.audioPlayer
-                                  .setUrl(startC.soundList[index]["audio"]);
-                              await startC.play();
                               setState.call(() {
                                 currentIndex = index;
                               });
+                              await startC.audioPlayer
+                                  .setUrl(startC.soundList[index]["audio"]);
+                              await startC.play();
+
                             },
                             child: startC.soundList[index]["title"] == "None"
                                 ? Container(

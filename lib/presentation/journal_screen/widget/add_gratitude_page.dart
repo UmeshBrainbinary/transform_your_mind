@@ -211,6 +211,7 @@ class _AddGratitudePageState extends State<AddGratitudePage>
   }
 
   TextEditingController addGratitudeText = TextEditingController();
+  String recordedText   = "";
   FocusNode gratitudeFocus = FocusNode();
   int totalIndex = 0;
 
@@ -441,7 +442,7 @@ class _AddGratitudePageState extends State<AddGratitudePage>
                               _isListening = true;
                               _speech!.listen(
                                 onResult: (val) => setState(() {
-                                  addGratitudeText.text = val.recognizedWords;
+                                  recordedText = val.recognizedWords;
                                 }),
                               );
                             } else {
@@ -453,7 +454,7 @@ class _AddGratitudePageState extends State<AddGratitudePage>
                         },
                         onLongPressEnd: (details) {
 
-                          _speechDataList.add(addGratitudeText.text);
+                          _speechDataList.add(recordedText);
                           Vibration.vibrate(
                             pattern: [80, 80, 0, 0, 0, 0, 0, 0],
                             intensities: [
@@ -473,18 +474,20 @@ class _AddGratitudePageState extends State<AddGratitudePage>
                             Future.delayed(const Duration(seconds: 1)).then((value) {
                               addGratitudeText.text = _speechDataList.join(' ');
                             },);
+                            recordedText = "";
                           });
                         },
 
                         child: _isPressed
                             ? Lottie.asset(
                                 ImageConstant.micAnimation,
-                                height: Dimens.d50,
-                                width: Dimens.d50,
+                          height: Dimens.d100,
+                          width: Dimens.d100,
                                 fit: BoxFit.fill,
                                 repeat: true,
                               )
-                            : SvgPicture.asset(ImageConstant.mic)),
+                            : SvgPicture.asset(ImageConstant.mic, height: Dimens.d34,
+                          width: Dimens.d34,)),
                     Dimens.d15.spaceHeight,
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: Dimens.d70.h),
@@ -616,7 +619,11 @@ class _AddGratitudePageState extends State<AddGratitudePage>
                               InkWell(
                                 onTap: () {
                                   Get.back();
-                                  addGratitudeText.text = des!;
+
+                                  setState(() {
+                                    addGratitudeText.text = des!;
+                                    recordedText = des;
+                                  });
                                   _showAlertDialog(
                                       context: context,
                                       value: true,

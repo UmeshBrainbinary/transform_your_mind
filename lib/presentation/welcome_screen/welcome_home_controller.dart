@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 
-class BreathController extends GetxController{
+class WelcomeHomeController extends GetxController{
   ///___________________ audio service Common File ________-
   final AudioPlayer _audioPlayer = AudioPlayer();
   final Rx<Duration?> _position = Duration.zero.obs;
@@ -18,8 +18,6 @@ class BreathController extends GetxController{
   RxBool get isPlaying => _isPlaying;
 
   RxBool get isVisible => _isVisible;
-  final RxList<String> feel = ["veryRelaxed".tr, "relaxed".tr, "tense".tr, "veryTense".tr].obs;
-  var selectedIndices = <int>{}.obs;
   void seekForMeditationAudio({required Duration position, int? index}) {
     _audioPlayer.seek(position, index: index);
   }
@@ -32,24 +30,16 @@ class BreathController extends GetxController{
     await _audioPlayer.pause();
   }
 
-  void toggleSelection(int index) {
-    if (selectedIndices.contains(index)) {
-      selectedIndices.remove(index);
-    } else {
-      selectedIndices.add(index);
-    }
-    update(["update"]);
-  }
-
   @override
   void onInit() {
+
     _audioPlayer.processingStateStream.listen((state) {
       if (state == ProcessingState.completed) {
         _onAudioFinished();
       }
-    });    super.onInit();
+    });
+    super.onInit();
   }
-
 
   void _onAudioFinished() async {
     await _audioPlayer.seek(Duration.zero);
@@ -57,6 +47,8 @@ class BreathController extends GetxController{
     isPlaying.value = false;
     update();
   }
+  String? currentUrl;
+
 
   Future<void> setUrl(String url,
       {String? name,

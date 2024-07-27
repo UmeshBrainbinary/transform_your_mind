@@ -1,8 +1,13 @@
+import 'dart:async';
+import 'dart:io';
+import 'package:alarm/alarm.dart';
+import 'package:alarm/model/alarm_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:just_audio/just_audio.dart';
+import 'package:http/http.dart' as http;
 import 'package:numberpicker/numberpicker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/http_service.dart';
@@ -32,7 +37,6 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
   bool pm = false;
   Duration selectedDuration = const Duration(hours: 0, minutes: 0, seconds: 0);
   int selectedHour = 0;
-  int selectedHourIndex = 0;
   int selectedMinute = 0;
   int selectedSeconds = 0;
   bool soundMute = false;
@@ -43,14 +47,33 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
   NotificationSettingController notificationSettingController =
       Get.put(NotificationSettingController());
 
+  AffirmationController affirmationController = Get.put(AffirmationController());
 
+  void _setAlarm(id, String filePath) async {
+    DateTime alarmTime = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day,
+      selectedHour,selectedMinute,selectedSeconds);
+    final alarmSettings = AlarmSettings(
+        id: id,
+        dateTime: alarmTime,
+        assetAudioPath: filePath,
+        loopAudio: true,
+        vibrate: true,
+        volume: 0.2,
+        androidFullScreenIntent: true,
+        fadeDuration: 3.0,
+        notificationTitle: 'TransformYourMind',
+        notificationBody: 'TransformYourMind Alarm ringing.....',
+        enableNotificationOnKill: Platform.isAndroid?Platform.isAndroid:Platform.isIOS);
+    await Alarm.set(
+      alarmSettings: alarmSettings,
+    );
+  }
 
-
-
- AffirmationController affirmationController = Get.put(AffirmationController());
   @override
   void initState() {
     checkInternet();
+
+
     super.initState();
   }
 
@@ -154,29 +177,39 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                                       Dimens.d10.spaceWidth,
                                       GestureDetector(
                                         onTap: () {
+                                          selectedHour = controller.alarmModel
+                                              .data![index].hours ??
+                                              0;
+                                          selectedMinute = controller
+                                              .alarmModel
+                                              .data![index]
+                                              .minutes ??
+                                              0;
+                                          selectedSeconds = controller
+                                              .alarmModel
+                                              .data![index]
+                                              .seconds ??
+                                              0;
+                                          if (controller.alarmModel
+                                              .data![index].time ==
+                                              "AM") {
+                                            am = true;
+                                            pm = false;
+                                          } else {
+                                            pm = true;
+                                            am = false;
+                                          }
                                           setState(() {
-                                            selectedHour = controller.alarmModel
-                                                    .data![index].hours ??
-                                                0;
-                                            selectedMinute = controller
-                                                    .alarmModel
-                                                    .data![index]
-                                                    .minutes ??
-                                                0;
-                                            selectedSeconds = controller
-                                                    .alarmModel
-                                                    .data![index]
-                                                    .seconds ??
-                                                0;
-                                            if (controller.alarmModel
-                                                    .data![index].time ==
-                                                "AM") {
-                                              am = true;
-                                            } else {
-                                              pm = true;
-                                            }
-                                          });
+                                            debugPrint("selectedSeconds $selectedSeconds");
+                                            debugPrint("selectedMinute $selectedMinute");
+                                            debugPrint("selectedHour $selectedHour");
 
+
+                                          });
+                                          setState.call(() {
+
+
+                                          });
                                           _showAlertDialog(context, controller
                                               .alarmModel.data![index].id
                                             /*
@@ -382,169 +415,176 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            final isPlaying = affirmationController.isPlaying.value;
+        return GetBuilder<AffirmationController>(builder: (controller) {
+          return StatefulBuilder(
+            builder: (context, setState) {
 
-            return AlertDialog(
-              contentPadding: EdgeInsets.zero,
-              insetPadding: const EdgeInsets.symmetric(horizontal: 20.0),
-              backgroundColor: themeController.isDarkMode.isTrue
-                  ? ColorConstant.textfieldFillColor
-                  : ColorConstant.backGround,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(11.0), // Set border radius
-              ),
-              content: SizedBox(
-                height: Dimens.d120,
-                width: Get.width,
-                child: Column(
-                  children: [
-                    Dimens.d14.spaceHeight,
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: Row(
-                        children: [
-                          Dimens.d20.spaceWidth,
-                          Text(
-                            "Audio".tr,
-                            style: Style.cormorantGaramondBold(fontSize: 20),
-                          ),
-                          const Spacer(),
-                          GestureDetector(
-                              onTap: () {
-                                affirmationController = Get.put(AffirmationController());
-                                Get.back();
-                                setState.call((){});
+              return AlertDialog(
+                contentPadding: EdgeInsets.zero,
+                insetPadding: const EdgeInsets.symmetric(horizontal: 20.0),
+                backgroundColor: themeController.isDarkMode.isTrue
+                    ? ColorConstant.textfieldFillColor
+                    : ColorConstant.backGround,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(11.0), // Set border radius
+                ),
+                content: SizedBox(
+                  height: Dimens.d120,
+                  width: Get.width,
+                  child: Column(
+                    children: [
+                      Dimens.d14.spaceHeight,
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Row(
+                          children: [
+                            Dimens.d20.spaceWidth,
+                            Text(
+                              "Audio".tr,
+                              style: Style.cormorantGaramondBold(fontSize: 20),
+                            ),
+                            const Spacer(),
+                            GestureDetector(
+                                onTap: () {
+                                  controller = Get.put(AffirmationController());
+                                  Get.back();
+                                  setState.call((){});
 
-                              },
-                              child: SvgPicture.asset(
-                                ImageConstant.close,
-                                color: themeController.isDarkMode.isTrue
-                                    ? ColorConstant.white
-                                    : ColorConstant.black,
-                              )),
-                          Dimens.d20.spaceWidth,
-                        ],
-                      ),
-                    ),
-                    Dimens.d15.spaceHeight,
-                    Container(
-                      height: Dimens.d46,
-                      margin: const EdgeInsets.symmetric(horizontal: 20.0),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: themeController.isDarkMode.isTrue?ColorConstant.color394750:ColorConstant.white),
-                      child: Row(
-                        children: [
-                          Dimens.d10.spaceWidth,
-                          Container(
-                            height: 28,
-                            width: 28,
-                            decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: ColorConstant.themeColor),
-                            child: Center(
-                              child: GestureDetector(
-                                onTap: () async {
-                                  affirmationController.setUrl("https://media.shoorah.io/admins/shoorah_pods/audio/1682951517-7059.mp3");
-                                  if (isPlaying) {
-                                    await affirmationController
-                                        .pause();
-                                  } else {
-                                    await affirmationController
-                                        .play();
-                                  }
-                                  setState((){
-
-                                  });
-                                  setState.call((){
-
-                                  });
                                 },
                                 child: SvgPicture.asset(
-                                  isPlaying
-                                      ? ImageConstant.pauseAudio
-                                      : ImageConstant.play,
-                                  height: 10,
-                                  width: 10,
-                                  color:  themeController.isDarkMode.isTrue?Colors.white:ColorConstant.black,
+                                  ImageConstant.close,
+                                  color: themeController.isDarkMode.isTrue
+                                      ? ColorConstant.white
+                                      : ColorConstant.black,
+                                )),
+                            Dimens.d20.spaceWidth,
+                          ],
+                        ),
+                      ),
+                      Dimens.d15.spaceHeight,
+                      Container(
+                        height: Dimens.d46,
+                        margin: const EdgeInsets.symmetric(horizontal: 20.0),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: themeController.isDarkMode.isTrue?ColorConstant.color394750:ColorConstant.white),
+                        child: Row(
+                          children: [
+                            Dimens.d10.spaceWidth,
+                            Container(
+                              height: 28,
+                              width: 28,
+                              decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: ColorConstant.themeColor),
+                              child: Center(
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    await controller.setUrl(
+                                        "assets/audio/audio.mp3"
+                                      //"https://media.shoorah.io/admins/shoorah_pods/audio/1682951517-7059.mp3"
+                                    );
+                                    if (controller.isPlaying.value) {
+                                      await controller
+                                          .pause();
+                                      controller.update();
+                                    } else {
+                                      await controller
+                                          .play();
+                                      controller.update();
+
+                                    }
+                                    setState((){
+
+                                    });
+                                    setState.call((){
+
+                                    });
+                                  },
+                                  child: SvgPicture.asset(
+                                    controller.isPlaying.value
+                                        ? ImageConstant.pauseAudio
+                                        : ImageConstant.play,
+                                    height: 10,
+                                    width: 10,
+                                    color:  themeController.isDarkMode.isTrue?Colors.white:ColorConstant.black,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                     GetBuilder<AffirmationController>(builder: (controller) {
-                       final currentPosition =
-                           controller.positionStream.value ??
-                               Duration.zero;
-                       final duration =
-                           controller.durationStream.value ??
-                               Duration.zero;
-                       return   Expanded(
-                         child: SliderTheme(
-                           data: SliderTheme.of(context).copyWith(
-                             activeTrackColor:
-                             ColorConstant.white.withOpacity(0.2),
-                             inactiveTrackColor:
-                             ColorConstant.colorADADAD,
-                             trackHeight: 1.5,
-                             thumbColor: ColorConstant.themeColor,
-                             thumbShape: const RoundSliderThumbShape(
-                               enabledThumbRadius: 8.0, // Decrease thumb height by adjusting the radius
-                             ),
-                           // Customize the overlay shape and size
-                           ),
-                           child: Slider(
-                             thumbColor: ColorConstant.themeColor,
-                             min: 0,
-                             activeColor: ColorConstant.themeColor,
-                             onChanged: (double value) {
-                               setState.call(() {
-                                 controller
-                                     .seekForMeditationAudio(
-                                     position: Duration(
-                                         milliseconds:
-                                         value.toInt()));
-                               });
-                               setState(() {});
-                             },
-                             value: currentPosition.inMilliseconds
-                                 .toDouble(),
-                             max: duration.inMilliseconds.toDouble(),
-                           ),
-                         ),
-                       );
-                     },),
-                          GestureDetector(
-                              onTap: () {
-                                setState.call(() {
-                                  soundMute = !soundMute;
-                                  if (soundMute) {
-                                    affirmationController.audioPlayer.setVolume(0);
-                                  } else {
-                                    affirmationController.audioPlayer.setVolume(1);
-                                  }
-                                });
-                              },
-                              child: SvgPicture.asset(
-                                soundMute
-                                    ? ImageConstant.soundMute
-                                    : ImageConstant.soundMax,
-                                height: Dimens.d22,
-                                width: Dimens.d22,
-                                color:  themeController.isDarkMode.isTrue?Colors.white:Colors.black,
-                              )),
-                          Dimens.d10.spaceWidth,
-                        ],
+                            GetBuilder<AffirmationController>(builder: (controller) {
+                              final currentPosition =
+                                  controller.positionStream.value ??
+                                      Duration.zero;
+                              final duration =
+                                  controller.durationStream.value ??
+                                      Duration.zero;
+                              return   Expanded(
+                                child: SliderTheme(
+                                  data: SliderTheme.of(context).copyWith(
+                                    activeTrackColor:
+                                    ColorConstant.white.withOpacity(0.2),
+                                    inactiveTrackColor:
+                                    ColorConstant.colorADADAD,
+                                    trackHeight: 1.5,
+                                    thumbColor: ColorConstant.themeColor,
+                                    thumbShape: const RoundSliderThumbShape(
+                                      enabledThumbRadius: 8.0, // Decrease thumb height by adjusting the radius
+                                    ),
+                                    // Customize the overlay shape and size
+                                  ),
+                                  child: Slider(
+                                    thumbColor: ColorConstant.themeColor,
+                                    min: 0,
+                                    activeColor: ColorConstant.themeColor,
+                                    onChanged: (double value) {
+                                      setState.call(() {
+                                        controller
+                                            .seekForMeditationAudio(
+                                            position: Duration(
+                                                milliseconds:
+                                                value.toInt()));
+                                      });
+                                      setState(() {});
+                                    },
+                                    value: currentPosition.inMilliseconds
+                                        .toDouble(),
+                                    max: duration.inMilliseconds.toDouble(),
+                                  ),
+                                ),
+                              );
+                            },),
+                            GestureDetector(
+                                onTap: () {
+                                  setState.call(() {
+                                    soundMute = !soundMute;
+                                    if (soundMute) {
+                                      controller.audioPlayer.setVolume(0);
+                                    } else {
+                                      controller.audioPlayer.setVolume(1);
+                                    }
+                                  });
+                                },
+                                child: SvgPicture.asset(
+                                  soundMute
+                                      ? ImageConstant.soundMute
+                                      : ImageConstant.soundMax,
+                                  height: Dimens.d22,
+                                  width: Dimens.d22,
+                                  color:  themeController.isDarkMode.isTrue?Colors.white:Colors.black,
+                                )),
+                            Dimens.d10.spaceWidth,
+                          ],
+                        ),
                       ),
-                    ),
-                    Dimens.d10.spaceHeight,
-                  ],
+                      Dimens.d10.spaceHeight,
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
-        );
+              );
+            },
+          );
+        },);
       },
     ).whenComplete(() {
       setState(() {
@@ -585,7 +625,11 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                         children: [
                           GestureDetector(
                             onTap: () {
+
                               setState.call(() {
+                                selectedHour = 1;
+                                selectedMinute = 1;
+                                selectedSeconds = 1;
                                 am = true;
                                 pm = false;
                               });
@@ -611,6 +655,9 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                           GestureDetector(
                             onTap: () {
                               setState.call(() {
+                                selectedHour = 1;
+                                selectedMinute = 1;
+                                selectedSeconds = 1;
                                 am = false;
                                 pm = true;
                               });
@@ -673,10 +720,14 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                         value: selectedHour,
                         minValue: 0,
                         textStyle: Style.nunRegular(
-                            fontSize: 14, color: ColorConstant.colorCACACA),
+                          fontSize: 14,
+                          color: ColorConstant.colorCACACA,
+                        ),
                         selectedTextStyle: Style.montserratBold(
-                            fontSize: 22, color: ColorConstant.themeColor),
-                        maxValue: am == true ? 11 : 23,
+                          fontSize: 22,
+                          color: ColorConstant.themeColor,
+                        ),
+                        maxValue: am?11:23,
                         itemHeight: 50,
                         itemWidth: 50,
                         onChanged: (value) =>
@@ -692,9 +743,13 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                         itemHeight: 50,
                         itemWidth: 50,
                         textStyle: Style.nunRegular(
-                            fontSize: 14, color: ColorConstant.colorCACACA),
+                          fontSize: 14,
+                          color: ColorConstant.colorCACACA,
+                        ),
                         selectedTextStyle: Style.montserratBold(
-                            fontSize: 22, color: ColorConstant.themeColor),
+                          fontSize: 22,
+                          color: ColorConstant.themeColor,
+                        ),
                         maxValue: 59,
                         onChanged: (value) =>
                             setState(() => selectedMinute = value),
@@ -709,15 +764,20 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                         itemHeight: 50,
                         itemWidth: 50,
                         textStyle: Style.nunRegular(
-                            fontSize: 14, color: ColorConstant.colorCACACA),
+                          fontSize: 14,
+                          color: ColorConstant.colorCACACA,
+                        ),
                         selectedTextStyle: Style.montserratBold(
-                            fontSize: 22, color: ColorConstant.themeColor),
+                          fontSize: 22,
+                          color: ColorConstant.themeColor,
+                        ),
                         maxValue: 59,
                         onChanged: (value) =>
                             setState(() => selectedSeconds = value),
                       ),
                     ],
                   ),
+
                 ),
 
                 GestureDetector(onTap: () {
@@ -750,7 +810,6 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                           height: 25,
                         ),
                         Dimens.d14.spaceWidth,
-
                       ],
                     ),
                   ),
@@ -763,6 +822,15 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                         fontSize: Dimens.d14, color: ColorConstant.white),
                     title: "update".tr,
                     onTap: () async {
+                    if(Platform.isIOS){
+                    _setAlarm(1, "assets/audio/audio.mp3");
+                    }else{
+                      _setAlarm(1, "assets/audio/audio.mp3");
+
+                      //downloadAudioFile("https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/theme_01.mp3");
+
+                    }
+
                       await notificationSettingController.editAffirmation(
                           context: context,
                           id: id,
@@ -787,5 +855,25 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
     return Text(":",
         style: Style.montserratBold(
             fontSize: 22, color: ColorConstant.themeColor));
+  }
+  Future<void> downloadAudioFile(String url) async {
+    // Get the download path
+    final directory = await getApplicationDocumentsDirectory();
+    final filePath = '${directory.path}/audio_file.mp3';
+
+    // Download the file
+    final response = await http.get(Uri.parse(url));
+
+    // Check if the file was downloaded successfully
+    if (response.statusCode == 200) {
+      // Save the file to the download path
+      response.bodyBytes.first;
+      final file = File(filePath);
+      await file.writeAsBytes(response.bodyBytes);
+      _setAlarm(1,filePath);
+      print('Audio file downloaded and saved to $filePath');
+    } else {
+      print('Failed to download audio file');
+    }
   }
 }

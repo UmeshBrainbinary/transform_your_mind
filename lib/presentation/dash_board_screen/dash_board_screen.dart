@@ -1,19 +1,19 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:alarm/alarm.dart';
+import 'package:alarm/model/alarm_settings.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
-import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/audio_content_screen.dart';
 import 'package:transform_your_mind/presentation/dash_board_screen/dash_board_controller.dart';
 import 'package:transform_your_mind/presentation/home_screen/home_screen.dart';
-import 'package:transform_your_mind/presentation/how_feeling_today/how_feeling_today_screen.dart';
-import 'package:transform_your_mind/presentation/how_feeling_today/how_feelings_evening.dart';
 import 'package:transform_your_mind/presentation/profile_screen/profile_screen.dart';
 import 'package:transform_your_mind/presentation/search_screen/search_screen.dart';
 import 'package:transform_your_mind/presentation/tools_screen/tools_screen.dart';
@@ -48,11 +48,15 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     const AudioContentScreen(),
     const ProfileScreen(),
   ];
+  late List<AlarmSettings> alarms;
+
+  static StreamSubscription<AlarmSettings>? subscription;
   @override
   void initState() {
 
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(

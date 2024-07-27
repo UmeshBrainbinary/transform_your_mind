@@ -263,11 +263,14 @@ class _AffirmationGreatWorkState extends State<AffirmationGreatWork> {
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: weekList!.length,
                             itemBuilder: (context, index) {
+                              bool isToday = startController.currentDayIndex == index + 1;
+                              bool isPast = index < startController.currentDayIndex - 1;
+                              bool isFuture = index > startController.currentDayIndex - 1;
                               return Padding(
                                 padding: const EdgeInsets.only(left: 15),
                                 child: Column(
                                   children: [
-                                    startController.currentDayIndex == index + 1
+                                    isToday
                                         ? Container(
                                       height: 30,
                                       width: 30,
@@ -282,19 +285,32 @@ class _AffirmationGreatWorkState extends State<AffirmationGreatWork> {
                                         ),
                                       ),
                                     )
-                                        : !weekList![index].isCompleted!?Container(
+                                        : isPast&&weekList![index].isCompleted!? Container(
                                       height: 30,
                                       width: 30,
                                       decoration: const BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: ColorConstant.themeColor),
-                                    ):Container(
+                                          color: Colors.white),
+                                      child: const Center(
+                                        child: Icon(
+                                          Icons.check,
+                                          color: Colors.black,
+                                          size: 20,
+                                        ),
+                                      ),
+                                    ):isFuture?Container(
                                       height: 30,
                                       width: 30,
                                       decoration: BoxDecoration(
                                           shape: BoxShape.circle,
                                           border: Border.all(
                                               color: Colors.white)),
+                                    ):Container(
+                                      height: 30,
+                                      width: 30,
+                                      decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: ColorConstant.themeColor),
                                     ),
                                     Dimens.d6.spaceHeight,
                                     Text(

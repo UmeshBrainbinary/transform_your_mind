@@ -68,7 +68,6 @@ dependencies:
   alarm: ^3.1.4
   numberpicker: ^2.1.2
   voice_message_package:
-  android_alarm_manager_plus: ^4.0.3
   flutter_calendar_carousel:
   flutter_html:
   flutter_local_notifications: ^17.1.2

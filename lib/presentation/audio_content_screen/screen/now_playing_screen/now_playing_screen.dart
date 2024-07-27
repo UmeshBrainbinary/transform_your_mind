@@ -323,10 +323,10 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                   child: Stack(
                     children: [
                       GestureDetector(
-                          onTap: () async {
-                            await audioContentController.getPodsData();
+                          onTap: ()  {
+                             audioContentController.getPodsData();
                             Get.back();
-                            setState(() {});
+
                           },
                           child: Container(
                             margin: const EdgeInsets.only(left: 20),

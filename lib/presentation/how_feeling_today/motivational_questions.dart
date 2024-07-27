@@ -58,7 +58,7 @@ class MotivationalQuestions extends StatelessWidget {
                     var data = controller.whatDoYouWant[index];
                     return GestureDetector(
                       onTap: () {
-                        controller.howDoYouIndex = index;
+                        controller.whatDoYouWantToAchieve = index;
                         controller.update();
                       },
                       child: Container(
@@ -68,7 +68,7 @@ class MotivationalQuestions extends StatelessWidget {
                             horizontal: 13, vertical: 10),
                         decoration: BoxDecoration(
                             border: Border.all(
-                                color: controller.howDoYouIndex == index
+                                color: controller.whatDoYouWantToAchieve == index
                                     ? ColorConstant.themeColor
                                     : Colors.transparent),
                             color: themeController.isDarkMode.isTrue
@@ -79,7 +79,7 @@ class MotivationalQuestions extends StatelessWidget {
                           children: [
                             commonText(data["title"]),
                             const Spacer(),
-                            controller.howDoYouIndex == index
+                            controller.whatDoYouWantToAchieve == index
                                 ? SvgPicture.asset(ImageConstant.check)
                                 : Container(
                                     height: 18,
@@ -117,7 +117,7 @@ class MotivationalQuestions extends StatelessWidget {
                     var data = controller.whatHelpedYou[index];
                     return GestureDetector(
                       onTap: () {
-                        controller.whatHelped = index;
+                        controller.whatStep = index;
 
                         controller.update();
                       },
@@ -128,7 +128,7 @@ class MotivationalQuestions extends StatelessWidget {
                             horizontal: 13, vertical: 10),
                         decoration: BoxDecoration(
                             border: Border.all(
-                                color: controller.whatHelped == index
+                                color: controller.whatStep == index
                                     ? ColorConstant.themeColor
                                     : Colors.transparent),
                             color: themeController.isDarkMode.isTrue
@@ -139,7 +139,7 @@ class MotivationalQuestions extends StatelessWidget {
                           children: [
                             commonText(data["title"]),
                             const Spacer(),
-                            controller.whatHelped == index
+                            controller.whatStep == index
                                 ? SvgPicture.asset(ImageConstant.check)
                                 : Container(
                                     height: 18,

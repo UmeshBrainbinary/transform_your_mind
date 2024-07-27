@@ -15,7 +15,6 @@ import 'package:transform_your_mind/model_class/common_model.dart';
 import 'package:transform_your_mind/model_class/get_pods_model.dart';
 import 'package:transform_your_mind/model_class/get_user_model.dart';
 import 'package:transform_your_mind/model_class/recently_model.dart';
-import 'package:transform_your_mind/model_class/today_affirmation.dart';
 import 'package:transform_your_mind/model_class/today_gratitude.dart';
 
 class HomeController extends GetxController {
@@ -61,7 +60,7 @@ class HomeController extends GetxController {
 
       var request = http.Request(
           'GET',
-          Uri.parse('${EndPoints.getPod}?isRecommended=true'));
+          Uri.parse('${EndPoints.getPod}?userId=${PrefService.getString(PrefKey.userId)}'));
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();
 

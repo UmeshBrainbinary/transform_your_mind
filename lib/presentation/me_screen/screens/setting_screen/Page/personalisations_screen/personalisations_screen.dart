@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
@@ -31,25 +34,28 @@ class _PersonalizationScreenScreenState
 
   ThemeController themeController = Get.find<ThemeController>();
   String currentLanguage = 'en-US';
-
+  double height  = Get.height;
+  double width   = Get.width;
   @override
   void initState() {
+    debugPrint("height ^^^^^^^^^^^^^^^^^^^^^ $height");
+    debugPrint("width ^^^^^^^^^^^^^^^^^^^^^^ $width");
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        statusBarBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.light,
+        statusBarColor: Colors.transparent));
     return Stack(
       children: [
-        Image.asset(
-         /* currentLanguage != 'en-US'
-              ? ImageConstant.chooseBack
-              :*/ ImageConstant.chooseBack,
+        Image.asset(ImageConstant.chooseBack,
           height: Get.height,
           width: Get.width,
           fit: BoxFit.cover,
         ),
-
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: CustomAppBar(centerTitle: widget.intro!,
@@ -64,14 +70,14 @@ class _PersonalizationScreenScreenState
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
 
-                  Dimens.d140.spaceHeight,
+                   height>820?Dimens.d200.spaceHeight:Platform.isIOS?Dimens.d155.spaceHeight:Dimens.d120.spaceHeight,
                   Text("changeYour".tr,textAlign: TextAlign.center,
                     style: Style.nunitoSemiBold(fontSize: 24,color: ColorConstant.white),),
-                  Dimens.d20.spaceHeight,
+                  Dimens.d40.spaceHeight,
                   Align(alignment: Alignment.topRight,
                       child: Padding(
                         padding: const EdgeInsets.only(right: 30),
-                        child: Text(" Norman Vincent Peale",style: Style.nunRegular(fontSize: 12,color: ColorConstant.white),),
+                        child: Text("Norman Vincent Peale",style: Style.nunRegular(fontSize: 12,color: ColorConstant.white),),
                       )),
                   Dimens.d100.spaceHeight,
 
@@ -124,7 +130,7 @@ class _PersonalizationScreenScreenState
                       ),
                     ),
                   ),
-                  Dimens.d14.spaceHeight,
+                  Dimens.d25.spaceHeight,
                   Obx(
                     () => GestureDetector(
                       onTap: () async {
@@ -177,7 +183,7 @@ class _PersonalizationScreenScreenState
                       ),
                     ),
                   ),
-                  Dimens.d50.spaceHeight,
+                  Dimens.d70.spaceHeight,
                   widget.intro!
                       ? Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -252,30 +258,7 @@ class _AccountListItemState extends State<AccountListItem> {
               ),
             ),
             const Spacer(),
-            /*   index == 0
-                ? CustomSwitch(
-                    value: themeController.isDarkMode.value,
-                    onChanged: (value) async {
-                      themeController.switchTheme();
-                      Get.forceAppUpdate();
-                    },
-                    width: 50.0,
-                    height: 25.0,
-                    activeColor: ColorConstant.themeColor,
-                    inactiveColor: ColorConstant.backGround,
-                  )
-                : CustomSwitch(
-                    value: pController.language.value,
-                    onChanged: (value) async {
 
-                      pController.language.value = value;
-                      pController.onTapChangeLan();
-                    },
-                    width: 50.0,
-                    height: 25.0,
-                    activeColor: ColorConstant.themeColor,
-                    inactiveColor: ColorConstant.backGround,
-                  ),*/
             Dimens.d6.spaceWidth,
           ],
         ),

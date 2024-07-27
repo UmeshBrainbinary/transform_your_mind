@@ -10,6 +10,7 @@ import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/positive_moment/add_positive_page.dart';
 import 'package:transform_your_mind/presentation/positive_moment/positive_controller.dart';
+import 'package:transform_your_mind/presentation/positive_moment/positive_story_moment.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
@@ -33,6 +34,8 @@ class _PositiveScreenState extends State<PositiveScreen> {
 
   @override
   void initState() {
+    positiveController.checkInternet();
+
 
     scrollController.addListener(() {
       double showOffset = 10.0;
@@ -118,7 +121,8 @@ class _PositiveScreenState extends State<PositiveScreen> {
                           },
                           prefixIcon: Padding(
                             padding: const EdgeInsets.all(16.0),
-                            child: SvgPicture.asset(ImageConstant.search),
+                            child: SvgPicture.asset(ImageConstant.search,color:  themeController.isDarkMode.isTrue?
+                            ColorConstant.colorBFBFBF:ColorConstant.color777575,),
                           ),
                           suffixIcon: searchController.text.isEmpty?const SizedBox(): Padding(
                             padding: const EdgeInsets.all(14.0),
@@ -128,7 +132,8 @@ class _PositiveScreenState extends State<PositiveScreen> {
                                   setState(() {
                                     positiveController.filteredBookmarks = positiveController.positiveMomentList;
                                   });
-                                },child: SvgPicture.asset(ImageConstant.close)),
+                                },child: SvgPicture.asset(ImageConstant.close,color:  themeController.isDarkMode.isTrue?
+                            ColorConstant.color777575:ColorConstant.colorBFBFBF,)),
                           ),
                           hintText: "search".tr,
                           textStyle: Style.nunRegular(fontSize: 12),
@@ -139,6 +144,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
                     Dimens.d10.spaceWidth,
                     GestureDetector(
                         onTap: () {
+                          //Get.to(() => const PositiveStoryMoment());
                           _showAlertDialogFilter(context, themeController);
                         },
                         child: SvgPicture.asset(ImageConstant.filterPositive))
@@ -376,19 +382,26 @@ class _PositiveScreenState extends State<PositiveScreen> {
                               })
                           : Padding(
                             padding: const EdgeInsets.only(bottom: 130),
-                            child: Column(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                  SvgPicture.asset(
-                                      themeController.isDarkMode.isTrue
-                                          ? ImageConstant.darkData
-                                          : ImageConstant.noData),
-                                  Text("dataNotFound".tr,style: Style.gothamMedium(
-                                    fontSize: 24,fontWeight: FontWeight.w700),),
+                              child: GestureDetector(
+                                onTap: () {
 
-                              ],
+                                },
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SvgPicture.asset(
+                                        themeController.isDarkMode.isTrue
+                                            ? ImageConstant.darkData
+                                            : ImageConstant.noData),
+                                    Text(
+                                      "dataNotFound".tr,
+                                      style: Style.gothamMedium(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                  ],
+                          ),
                             ),
                           ),
 

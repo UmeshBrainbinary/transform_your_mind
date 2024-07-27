@@ -266,7 +266,7 @@ class EveningStress extends StatelessWidget {
                                 var data = controller.whatCanDoMinimize[index];
                                 return GestureDetector(
                                   onTap: () {
-                                    controller.whatHelpedStress = index;
+                                    controller.whatCausedYourStress = index;
                                     controller.update();
                                   },
                                   child: Container(
@@ -277,7 +277,7 @@ class EveningStress extends StatelessWidget {
                                     decoration: BoxDecoration(
                                         border: Border.all(
                                             color:
-                                                controller.whatHelpedStress ==
+                                                controller.whatCausedYourStress ==
                                                         index
                                                     ? ColorConstant.themeColor
                                                     : Colors.transparent),
@@ -289,7 +289,7 @@ class EveningStress extends StatelessWidget {
                                       children: [
                                         commonText(data["title"]),
                                         const Spacer(),
-                                        controller.whatHelpedStress == index
+                                        controller.whatCausedYourStress == index
                                             ? SvgPicture.asset(
                                                 ImageConstant.check)
                                             : Container(

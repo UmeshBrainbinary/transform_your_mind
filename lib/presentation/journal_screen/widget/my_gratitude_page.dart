@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -233,7 +234,21 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                   },child:  Icon(Icons.clear,color: themeController.isDarkMode.isTrue?Colors.white:Colors.black,))
                                 ],
                               )
-                              : const SizedBox(),
+                              : Center(
+                                child: Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SvgPicture.asset(themeController.isDarkMode.isTrue
+                                        ? ImageConstant.darkData
+                                        : ImageConstant.noData),
+                                    Text("dataNotFound".tr,style: Style.gothamMedium(
+                                        fontSize: 24,fontWeight: FontWeight.w700),),
+
+                                  ],
+                                ),
+                              ),
                           Dimens.d20.spaceHeight,
                           (gratitudeModel.data ?? []).isNotEmpty
                               ? ListView.builder(
@@ -265,6 +280,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                           .format(DateTime.now())
                                   ? GestureDetector(
                             onTap: () {
+
                               Navigator.push(context, MaterialPageRoute(
                                 builder: (context) {
                                             return StartPracticeScreen(
@@ -400,7 +416,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                 : ColorConstant.white,
             borderRadius: BorderRadius.circular(18)),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
               height: 63,

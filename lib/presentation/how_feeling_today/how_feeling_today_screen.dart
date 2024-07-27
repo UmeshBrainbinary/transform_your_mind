@@ -23,7 +23,7 @@ class HowFeelingTodayScreen extends StatefulWidget {
 }
 
 class _HowFeelingTodayScreenState extends State<HowFeelingTodayScreen> {
-  HowFeelingsController feelController = Get.put(HowFeelingsController());
+  HowFeelingsController f = Get.put(HowFeelingsController());
   ThemeController themeController = Get.find<ThemeController>();
 
   @override
@@ -36,7 +36,8 @@ class _HowFeelingTodayScreenState extends State<HowFeelingTodayScreen> {
         title: "MorningQuestions".tr,
         showBack: true,
       ),
-      body: Padding(
+      body: GetBuilder<HowFeelingsController>(builder: (controller) {
+        return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 22),
         child: SingleChildScrollView(
           child: Column(
@@ -49,7 +50,7 @@ class _HowFeelingTodayScreenState extends State<HowFeelingTodayScreen> {
                 style: Style.nunitoBold(fontSize: 22),
               ),
               Dimens.d20.spaceHeight,
-              //___________________________________ 1. _________________________________
+              //___________________________________ 1. _________________________
               commonTextTitle("howDoYouFeel".tr, count: "1"),
 
               Dimens.d20.spaceHeight,
@@ -89,17 +90,17 @@ class _HowFeelingTodayScreenState extends State<HowFeelingTodayScreen> {
                             controller.howDoYouIndex == index
                                 ? SvgPicture.asset(ImageConstant.check)
                                 : Container(
-                                    height: 18,
-                                    width: 18,
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                            color: themeController
-                                                    .isDarkMode.isTrue
-                                                ? ColorConstant.white
-                                                : ColorConstant.black,
-                                            width: 1)),
-                                  )
+                              height: 18,
+                              width: 18,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                      color: themeController
+                                          .isDarkMode.isTrue
+                                          ? ColorConstant.white
+                                          : ColorConstant.black,
+                                      width: 1)),
+                            )
                           ],
                         ),
                       ),
@@ -109,10 +110,10 @@ class _HowFeelingTodayScreenState extends State<HowFeelingTodayScreen> {
               ),
               Dimens.d15.spaceHeight,
 
-              //___________________________________ 2. _________________________________
+              //___________________________________  2. ________________________
 
               commonTextTitle(
-                  feelController.howDoYouIndex != 0 && feelController.howDoYouIndex==-1
+                  controller.howDoYouIndex != 0 || controller.howDoYouIndex==-1
                       ? "whatCanYouToday".tr
                       : "whatHelpedYOu".tr,
                   count: "2"),
@@ -121,13 +122,13 @@ class _HowFeelingTodayScreenState extends State<HowFeelingTodayScreen> {
               GetBuilder<HowFeelingsController>(
                 builder: (controller) => ListView.builder(
                   padding: EdgeInsets.zero,
-                  itemCount: feelController.howDoYouIndex != 0
+                  itemCount: controller.howDoYouIndex != 0
                       ? controller.whatCanYouToday.length
                       : controller.whatHelpedYou.length,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
-                    var data = feelController.howDoYouIndex != 0
+                    var data = controller.howDoYouIndex != 0
                         ? controller.whatCanYouToday[index]
                         : controller.whatHelpedYou[index];
                     return GestureDetector(
@@ -157,17 +158,17 @@ class _HowFeelingTodayScreenState extends State<HowFeelingTodayScreen> {
                             controller.whatHelped == index
                                 ? SvgPicture.asset(ImageConstant.check)
                                 : Container(
-                                    height: 18,
-                                    width: 18,
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                            color: themeController
-                                                    .isDarkMode.isTrue
-                                                ? ColorConstant.white
-                                                : ColorConstant.black,
-                                            width: 1)),
-                                  )
+                              height: 18,
+                              width: 18,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                      color: themeController
+                                          .isDarkMode.isTrue
+                                          ? ColorConstant.white
+                                          : ColorConstant.black,
+                                      width: 1)),
+                            )
                           ],
                         ),
                       ),
@@ -176,17 +177,17 @@ class _HowFeelingTodayScreenState extends State<HowFeelingTodayScreen> {
                 ),
               ),
               Dimens.d15.spaceHeight,
-              commonTextSubtitle(feelController.howDoYouIndex!=0 && feelController.howDoYouIndex==-1?"whatPositive".tr:"howCanYouMaintain".tr),
+              commonTextSubtitle(controller.howDoYouIndex!=0 ||controller.howDoYouIndex==-1?"whatPositive".tr:"howCanYouMaintain".tr),
               Dimens.d20.spaceHeight,
-              commonTextFiled("", feelController.whatPositive),
+              commonTextFiled("", controller.whatPositive),
               Dimens.d20.spaceHeight,
-              commonTextSubtitle(feelController.howDoYouIndex!=0 && feelController.howDoYouIndex==-1?"whatAreYouLooking".tr:"isThereASpecific".tr),
+              commonTextSubtitle(controller.howDoYouIndex!=0 || controller.howDoYouIndex==-1?"whatAreYouLooking".tr:"isThereASpecific".tr),
               Dimens.d20.spaceHeight,
-              commonTextFiled("", feelController.whatAreYouLooking),
+              commonTextFiled("", controller.whatAreYouLooking),
               Dimens.d20.spaceHeight,
-              commonTextSubtitle(feelController.howDoYouIndex!=0 && feelController.howDoYouIndex==-1?"whatSmallSteps".tr:"howCanYouSpread".tr),
+              commonTextSubtitle(controller.howDoYouIndex!=0 || controller.howDoYouIndex==-1?"whatSmallSteps".tr:"howCanYouSpread".tr),
               Dimens.d20.spaceHeight,
-              commonTextFiled("", feelController.whatSmallSteps),
+              commonTextFiled("", controller.whatSmallSteps),
               Dimens.d40.spaceHeight,
 
               CommonElevatedButton(
@@ -226,7 +227,7 @@ class _HowFeelingTodayScreenState extends State<HowFeelingTodayScreen> {
             ],
           ),
         ),
-      ),
+      );},),
     );
   }
 

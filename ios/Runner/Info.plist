@@ -40,6 +40,10 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+    	<array>
+    		<string>com.gdelataillade.fetch</string>
+    	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>We need access to your camera to take pictures.</string>
 	<key>NSDocumentsFolderUsageDescription</key>
@@ -50,6 +54,10 @@
 	<string>We need access to your location to show your current position.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Need permission to access the microphone</string>
+	<key>NSLibraryDirectory</key>
+    <string>audio_file.mp3</string>
+	<key>NSAudioAndRecordingUsageDescription</key>
+    <string>This app needs access to audio to play alarm sounds.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Need permission to access photo library</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

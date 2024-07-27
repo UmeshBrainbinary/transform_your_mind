@@ -73,15 +73,14 @@ class NotificationService {
     );
   }
 
-  static Future<void> scheduleNotification(DateTime scheduledDate,
+  static Future<void> scheduleNotification(DateTime dateTime,
       {String? title, String? description}) async {
     await flutterLocalNotificationsPlugin.zonedSchedule(
       0,
       title ?? 'Scheduled Notification',
       description ?? 'This is the body of the scheduled notification',
-      tz.TZDateTime.from(scheduledDate, tz.local),
+      tz.TZDateTime.from(DateTime.now().add(const Duration(seconds: 10)), tz.local),
       const NotificationDetails(
-        // Android details
         android: AndroidNotificationDetails('main_channel', 'Main Channel',
             channelDescription: "Notification Channel",
             importance: Importance.max,
@@ -100,4 +99,7 @@ class NotificationService {
       androidAllowWhileIdle: true,
     );
   }
+
+
+
 }

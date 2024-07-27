@@ -26,6 +26,7 @@ class HowFeelingEveningController extends GetxController{
   int howDoYouIndexSleep = -1;
   int whatHelped = -1;
   int whatHelpedStress = -1;
+  int whatCausedYourStress = -1;
   int whatHelpedStressEvening = -1;
   int feelPhysically = -1;
   int selectedIndex = -1;

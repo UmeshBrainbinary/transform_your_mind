@@ -6,6 +6,7 @@ import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/presentation/motivational_message/motivational_controller.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
@@ -165,7 +166,10 @@ class _JournalScreenState extends State<JournalScreen>
                                                 journalList[index].route ??
                                                     "",
                                               ).then(
-                                                (value) {
+                                                (value) async {
+                                                  MotivationalController moti = Get.put(MotivationalController());
+                                                  await moti.audioPlayer.dispose();
+                                                  await moti.audioPlayer.pause();
                                                   setState(() {
                                                     getStatusBar();
                                                   });

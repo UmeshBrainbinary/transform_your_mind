@@ -142,10 +142,10 @@ class LoginController extends GetxController {
         } else {
           PrefService.getBool(PrefKey.morningQuestion) == false &&
                   greeting == "goodMorning"
-              ? Get.to(() => const HowFeelingTodayScreen())
+              ? Get.offAll(() => const HowFeelingTodayScreen())
               : PrefService.getBool(PrefKey.eveningQuestion) == false &&
                       greeting == "goodEvening"
-                  ? Get.to(() => HowFeelingsEvening())
+                  ? Get.offAll(() => HowFeelingsEvening())
                   : Get.offAllNamed(AppRoutes.dashBoardScreen);
         }
         update();

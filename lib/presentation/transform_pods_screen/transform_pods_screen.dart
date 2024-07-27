@@ -201,7 +201,21 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
                                               child: Container(padding:  EdgeInsets.only(  top:Platform.isIOS?0: 1),
                                                 height: 12,width: 30,decoration: BoxDecoration(color: Colors.black.withOpacity(0.5),
                                                     borderRadius: BorderRadius.circular(13)),
-                                                child: Center(child: Text(controller.audioListDuration.length > index ? _formatDuration( controller.audioListDuration[index]) : 'Loading...',style: Style.nunRegular(fontSize: 6,color: Colors.white),),) ,),
+                                                child: Center(
+                                                  child: Text(
+                                                    controller.audioListDuration
+                                                                .length >
+                                                            index
+                                                        ? _formatDuration(controller
+                                                                .audioListDuration[
+                                                            index])
+                                                        : 'Loading...',
+                                                    style: Style.nunRegular(
+                                                        fontSize: 6,
+                                                        color: Colors.white),
+                                                  ),
+                                                ),
+                                              ),
                                             )
                                           ],
                                         ),
