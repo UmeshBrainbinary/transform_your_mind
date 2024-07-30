@@ -37,4 +37,7 @@ class EndPoints {
   static String todayAffirmation = "${baseUrl}today-affirmation?created_by=";
   static String weeklyGratitude = "${baseUrl}weekly-gratitude?created_by=";
   static String weeklyAffirmation = "${baseUrl}weekly-affirmation?created_by=";
+  static String morningQuestions = "${baseUrl}morning-questions";
+  static String eveningQuestions = "${baseUrl}evening-questions";
+  static String getScreen = "${baseUrl}get-screen";
 }

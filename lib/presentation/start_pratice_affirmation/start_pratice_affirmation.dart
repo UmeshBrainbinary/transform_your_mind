@@ -1183,11 +1183,11 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Dimens.d10.spaceWidth,
+
                                 commonTextA("hours".tr),
                                 commonTextA("minutes".tr),
                                 commonTextA("seconds".tr),
-                                Dimens.d10.spaceWidth,
+
 
                               ],
                             ),
@@ -1197,6 +1197,7 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
                             padding: const EdgeInsets.symmetric(horizontal: 70),
                             child: Row(
                               children: [
+
                                 NumberPicker(
                                   zeroPad: true,
                                   value: selectedHour,

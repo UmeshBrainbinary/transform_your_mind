@@ -14,6 +14,7 @@ import 'package:transform_your_mind/model_class/login_model.dart';
 import 'package:transform_your_mind/presentation/how_feeling_today/how_feeling_today_screen.dart';
 import 'package:transform_your_mind/presentation/how_feeling_today/how_feelings_evening.dart';
 import 'package:transform_your_mind/presentation/intro_screen/select_your_affirmation_focus_page.dart';
+import 'package:transform_your_mind/presentation/welcome_screen/welcome_screen.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 
 class LoginController extends GetxController {
@@ -140,13 +141,14 @@ class LoginController extends GetxController {
           return  SelectYourAffirmationFocusPage(isFromMe: false,setting: false,);
         },));
         } else {
-          PrefService.getBool(PrefKey.morningQuestion) == false &&
+          /*PrefService.getBool(PrefKey.morningQuestion) == false &&
                   greeting == "goodMorning"
               ? Get.offAll(() => const HowFeelingTodayScreen())
               : PrefService.getBool(PrefKey.eveningQuestion) == false &&
                       greeting == "goodEvening"
-                  ? Get.offAll(() => HowFeelingsEvening())
-                  : Get.offAllNamed(AppRoutes.dashBoardScreen);
+                  ? Get.offAll(() => const HowFeelingsEvening())
+                  :*/   PrefService.getBool(PrefKey.welcomeScreen)==false?
+          Get.offAll(const WelcomeHomeScreen()): Get.offAllNamed(AppRoutes.dashBoardScreen);
         }
         update();
         await PrefService.setValue(

@@ -23,10 +23,11 @@ import 'package:transform_your_mind/presentation/intro_screen/select_your_affirm
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 class Tag {
-  final String name;
+  final String englishName;
+  final String germanName;
   bool isSelected;
 
-  Tag(this.name, this.isSelected);
+  Tag(this.englishName, this.germanName, this.isSelected);
 }
 
 class SelectYourFocusPage extends StatefulWidget {
@@ -49,6 +50,7 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
 
   ThemeController themeController = Get.find<ThemeController>();
   FocusesModel focusesModel = FocusesModel();
+  String currentLanguage = PrefService.getString(PrefKey.language);
 
   getFocuses() async {
     setState(() {
@@ -59,8 +61,7 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
     };
     var request = http.Request(
       'GET',
-      Uri.parse(
-          '${EndPoints.baseUrl}${EndPoints.getCategory}0'),
+      Uri.parse('${EndPoints.baseUrl}${EndPoints.getCategory}0'),
     );
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
@@ -71,17 +72,18 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
       focusesModel = focusesModelFromJson(responseBody);
 
       for (int i = 0; i < focusesModel.data!.length; i++) {
-        if(tempData.contains(focusesModel.data![i].name)){
-          listOfTags.add(Tag(focusesModel.data![i].name.toString(), true));
-        }else{
-          listOfTags.add(Tag(focusesModel.data![i].name.toString(), false));
+        String englishName = focusesModel.data![i].name.toString();
+        String germanName = focusesModel.data![i].gName.toString();
+        bool isSelected = tempData.contains(englishName);
+        listOfTags.add(Tag(englishName, germanName, isSelected));
+      }
+
+      for (int y = 0; y < listOfTags.length; y++) {
+        if (listOfTags[y].isSelected == true) {
+          selectedTagNames.add(listOfTags[y].englishName);
         }
       }
-      for(int y=0;y<listOfTags.length;y++){
-        if(listOfTags[y].isSelected==true){
-          selectedTagNames.add(listOfTags[y].name);
-        }
-      }
+
       setState(() {
         loader = false;
       });
@@ -156,9 +158,7 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
       };
       var request = http.Request(
         'GET',
-        Uri.parse(
-          "${EndPoints.getUser}${PrefService.getString(PrefKey.userId)}",
-        ),
+        Uri.parse("${EndPoints.getUser}${PrefService.getString(PrefKey.userId)}"),
       );
 
       request.headers.addAll(headers);
@@ -208,9 +208,9 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
     setState(() {
       tag.isSelected = !tag.isSelected;
       if (tag.isSelected) {
-        selectedTagNames.add(tag.name);
+        selectedTagNames.add(tag.englishName);
       } else {
-        selectedTagNames.remove(tag.name);
+        selectedTagNames.remove(tag.englishName);
       }
     });
   }
@@ -223,29 +223,32 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
           backgroundColor: themeController.isDarkMode.isTrue
               ? ColorConstant.darkBackground
               : ColorConstant.white,
-          appBar:  CustomAppBar(showBack: widget.setting,
+          appBar: CustomAppBar(
+            showBack: widget.setting,
             title: "selectYourFocus".tr,
-             centerTitle: widget.setting!?false:true,
+            centerTitle: widget.setting! ? false : true,
           ),
           body: Stack(
             alignment: Alignment.bottomCenter,
             children: [
               Align(
-                  alignment: Alignment.topRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: Dimens.d100),
-                    child: SvgPicture.asset(themeController.isDarkMode.isTrue
-                        ? ImageConstant.profile1Dark
-                        : ImageConstant.profile1),
-                  )),
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: Dimens.d100),
+                  child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                      ? ImageConstant.profile1Dark
+                      : ImageConstant.profile1),
+                ),
+              ),
               Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: Dimens.d120),
-                    child: SvgPicture.asset(themeController.isDarkMode.isTrue
-                        ? ImageConstant.profile2Dark
-                        : ImageConstant.profile2),
-                  )),
+                alignment: Alignment.bottomLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: Dimens.d120),
+                  child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                      ? ImageConstant.profile2Dark
+                      : ImageConstant.profile2),
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
                 child: Column(
@@ -254,13 +257,15 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Text(
-                        "chooseMinInterest".tr,textAlign: TextAlign.center,
+                        "chooseMinInterest".tr,
+                        textAlign: TextAlign.center,
                         style: Style.nunRegular(
-                            color: themeController.isDarkMode.value
-                                ? ColorConstant.white
-                                : ColorConstant.black,
-                            fontSize: Dimens.d16,
-                            fontWeight: FontWeight.w400),
+                          color: themeController.isDarkMode.value
+                              ? ColorConstant.white
+                              : ColorConstant.black,
+                          fontSize: Dimens.d16,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                     ),
                     Dimens.d30.spaceHeight,
@@ -274,7 +279,7 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
                               return GestureDetector(
                                 onTap: () => _onTagTap(tag),
                                 child: CustomChip(
-                                  label: tag.name,
+                                  label: tag.germanName,
                                   isChipSelected: tag.isSelected,
                                 ),
                               );
@@ -284,11 +289,12 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
                       ),
                     ),
                     FocusSelectButton(
-                      primaryBtnText: widget.isFromMe ? "save".tr : widget.setting!?"save".tr:"next".tr,
+                      primaryBtnText: widget.isFromMe
+                          ? "save".tr
+                          : widget.setting! ? "save".tr : "next".tr,
                       secondaryBtnText: widget.isFromMe ? '' : "Skip",
                       isLoading: false,
                       primaryBtnCallBack: () {
-                       // getFocuses();
                         if (selectedTagNames.isNotEmpty) {
                           setFocuses(widget.setting);
                         } else {
@@ -303,7 +309,7 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
             ],
           ),
         ),
-        loader == true ? commonLoader() : const SizedBox()
+        loader == true ? commonLoader() : const SizedBox(),
       ],
     );
   }

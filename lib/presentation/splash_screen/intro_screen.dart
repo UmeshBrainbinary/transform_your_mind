@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:transform_your_mind/core/app_export.dart';
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
+import 'package:transform_your_mind/core/service/http_service.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/auth/login_screen/login_preview_view.dart';
+import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/personalisations_screen/personalisations_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 
 class IntroScreen extends StatefulWidget {
@@ -18,7 +21,8 @@ class IntroScreen extends StatefulWidget {
 class _IntroScreenState extends State<IntroScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
-
+  PersonalizationController personalizationController =
+      Get.find<PersonalizationController>();
   List _images = [];
   String currentLanguage = PrefService.getString(PrefKey.language);
 
@@ -45,15 +49,80 @@ class _IntroScreenState extends State<IntroScreen> {
     ));
   }
 
+  bool checkInternetCheck = false;
   @override
   void initState() {
-    _images = [
-      {"title": "toBeSuccessful", "img": 'assets/images/intro1.png'},
-      {"title": "theSecret", "img": 'assets/images/intro2.png'},
-      {"title": "peopleWithGoals", "img": 'assets/images/intro3.png'},
-    ];
-
+    checkInternet();
     super.initState();
+  }
+
+
+
+  checkInternet() async {
+    if (await isConnected()) {
+      setState(() {
+        checkInternetCheck = true;
+      });
+
+      setState(() {
+        if(currentLanguage == "en-US"|| currentLanguage == ""){
+          _images = [
+            {
+              "title":  personalizationController.getScreenModel.data![1].quote
+                  .toString(),
+              "img": personalizationController.getScreenModel.data?[1].image ?? "",
+              "authName":  personalizationController
+                  .getScreenModel.data?[1].authorName ?? "",
+            },
+            {
+              "title": personalizationController.getScreenModel.data?[2].quote,
+              "img": personalizationController.getScreenModel.data?[2].image ?? "",
+              "authName":  personalizationController
+                  .getScreenModel.data?[2].authorName ?? "",
+            },
+            {
+              "title": personalizationController.getScreenModel.data?[3].quote,
+              "img": personalizationController.getScreenModel.data?[3].image ?? "",
+              "authName":  personalizationController
+                  .getScreenModel.data?[3].authorName ?? "",
+            },
+          ];
+        }else{
+          _images = [
+            {
+              "title":  personalizationController.getScreenModel.data![1].gQuote
+                  .toString(),
+              "img": personalizationController.getScreenModel.data?[1].image ?? "",
+              "authName":  personalizationController
+                  .getScreenModel.data?[1].gAuthorName ?? "",
+            },
+            {
+              "title": personalizationController.getScreenModel.data?[2].gQuote,
+              "img": personalizationController.getScreenModel.data?[2].image ?? "",
+              "authName":  personalizationController
+                  .getScreenModel.data?[2].gAuthorName ?? "",
+            },
+            {
+              "title": personalizationController.getScreenModel.data?[3].gQuote,
+              "img": personalizationController.getScreenModel.data?[3].image ?? "",
+              "authName":  personalizationController
+                  .getScreenModel.data?[3].gAuthorName ?? "",
+            },
+          ];
+        }
+
+      });
+    } else {
+      setState(() {
+        checkInternetCheck = false;
+        _images = [
+          {"title": "toBeSuccessful", "img": 'assets/images/intro1.png'},
+          {"title": "theSecret", "img": 'assets/images/intro2.png'},
+          {"title": "peopleWithGoals", "img": 'assets/images/intro3.png'},
+        ];
+      });
+      showSnackBarError(Get.context!, "noInternet".tr);
+    }
   }
 
   @override
@@ -62,7 +131,6 @@ class _IntroScreenState extends State<IntroScreen> {
       body: Stack(
         children: [
           PageView.builder(physics: const NeverScrollableScrollPhysics(),
-
             controller: _pageController,
             itemCount: _images.length,
             onPageChanged: (index) {
@@ -75,9 +143,16 @@ class _IntroScreenState extends State<IntroScreen> {
               return Stack(
                 alignment: Alignment.center,
                 children: [
-                  Image.asset(
-                    _images[index]["img"],
-                    fit: BoxFit.fill,
+                  checkInternetCheck
+                      ? Image.network(
+                          _images[index]["img"],
+                          fit: BoxFit.fill,
+                          width: double.infinity,
+                          height: double.infinity,
+                        )
+                      : Image.asset(
+                          _images[index]["img"],
+                          fit: BoxFit.fill,
                     width: double.infinity,
                     height: double.infinity,
                   ),
@@ -96,7 +171,8 @@ class _IntroScreenState extends State<IntroScreen> {
                         Align(
                           alignment: Alignment.topRight,
                           child: Text(
-                            "Bob Proctor",
+                           _images[index]["authName"] ??
+                                "",
                             textAlign: TextAlign.center,
                             style: Style.nunitoSemiBold(
                                 fontSize: 13, color: ColorConstant.white),

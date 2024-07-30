@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -227,7 +228,11 @@ class StressQuestions extends StatelessWidget {
                   onTap: () async {
                     FocusScope.of(context).unfocus();
                     PrefService.setValue(PrefKey.morningQuestion, true);
-                    Get.to(() => SleepQuestions());
+                    if(controller.selectedOptionStress!.isNotEmpty){
+                      controller.setQuestions("stress");
+                    }else{
+                      showSnackBarError(context, "pleaseSelectDoYouFeel".tr);
+                    }
                     /*  if (feelController.howDoYouIndex == -1) {
                     showSnackBarError(
                         context, "Please select how do you feel right now?");

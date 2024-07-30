@@ -9,12 +9,14 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
+import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/audio_manager/audio_player_manager.dart';
 import 'package:transform_your_mind/core/utils/audio_manager/seek_bar.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/model_class/get_pods_model.dart';
@@ -53,6 +55,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
   Random randomNumberGenerator = Random();
   late int randomNumberForSelectingLottie;
   double _opacityOfSpeedText = 1.0;
+  String currentLanguage = PrefService.getString(PrefKey.language);
 
 
   ThemeController themeController = Get.find<ThemeController>();
@@ -100,16 +103,16 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
       if (widget.d == true) {
         nowPlayingController.setUrlFile(
             img: widget.audioData?.image ?? "",
-            description: widget.audioData?.description ?? "",
-            expertName: widget.audioData?.expertName ?? "",
-            name: widget.audioData?.name ?? "",
+            description: currentLanguage=="en-US"?widget.audioData?.description ?? "":widget.audioData?.gDescription??"",
+            expertName:currentLanguage=="en-US"? widget.audioData?.expertName ?? "":widget.audioData?.gExpertName ?? "",
+            name: currentLanguage=="en-US"?widget.audioData?.name ?? "":widget.audioData?.gName ?? "",
             widget.audioData?.downloadedPath ?? "");
       } else {
         nowPlayingController.setUrl(
             img: widget.audioData?.image ?? "",
-            description: widget.audioData?.description ?? "",
-            expertName: widget.audioData?.expertName ?? "",
-            name: widget.audioData?.name ?? "",
+            description: currentLanguage=="en-US"?widget.audioData?.description ?? "":widget.audioData?.gDescription??"",
+            expertName:currentLanguage=="en-US"? widget.audioData?.expertName ?? "":widget.audioData?.gExpertName ?? "",
+            name: currentLanguage=="en-US"?widget.audioData?.name ?? "":widget.audioData?.gName ?? "",
             widget.audioData?.audioFile ?? "");
       }
 
@@ -142,16 +145,16 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
     if (widget.d == true) {
       nowPlayingController.setUrlFile(
           img: widget.audioData?.image ?? "",
-          description: widget.audioData?.description ?? "",
-          expertName: widget.audioData?.expertName ?? "",
-          name: widget.audioData?.name ?? "",
+          description: currentLanguage=="en-US"?widget.audioData?.description ?? "":widget.audioData?.gDescription??"",
+          expertName:currentLanguage=="en-US"? widget.audioData?.expertName ?? "":widget.audioData?.gExpertName ?? "",
+          name: currentLanguage=="en-US"?widget.audioData?.name ?? "":widget.audioData?.gName ?? "",
           widget.audioData?.downloadedPath ?? "");
     } else {
       nowPlayingController.afterPlayingMusic(
           img: widget.audioData?.image ?? "",
-          description: widget.audioData?.description ?? "",
-          expertName: widget.audioData?.expertName ?? "",
-          name: widget.audioData?.name ?? "",
+          description: currentLanguage=="en-US"?widget.audioData?.description ?? "":widget.audioData?.gDescription??"",
+          expertName:currentLanguage=="en-US"? widget.audioData?.expertName ?? "":widget.audioData?.gExpertName ?? "",
+          name: currentLanguage=="en-US"?widget.audioData?.name ?? "":widget.audioData?.gName ?? "",
           widget.audioData?.audioFile ?? "");
     }
 
@@ -213,7 +216,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                     padding: const EdgeInsets.symmetric(horizontal: 35),
                     child: Text(
 
-                      widget.audioData?.description ??
+                      currentLanguage=="en-US"?widget.audioData?.description ??
+                          "":widget.audioData?.gDescription ??
                           "",
                       textAlign: TextAlign.center,
                           maxLines: 2,
@@ -225,7 +229,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                   Dimens.d14.spaceHeight,
                   Text(
                     /*widget.audioData?.expertName ??*/
-                        "Chris hill",
+                    currentLanguage=="en-US"?widget.audioData?.expertName??"Chris hill": widget.audioData?.gExpertName?? "Chris hill",
                     textAlign: TextAlign.center,
                     style: Style.nunMedium(
                         fontSize: 15, color: ColorConstant.white),
@@ -234,8 +238,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 35),
                     child: Text(
-                      widget.audioData?.name ??
-                          "",
+                      currentLanguage=="en-US"?widget.audioData?.name??"Chris hill": widget.audioData?.gName?? "Chris hill",
+
                       textAlign: TextAlign.center,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

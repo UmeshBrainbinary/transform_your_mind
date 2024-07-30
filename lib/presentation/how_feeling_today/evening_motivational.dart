@@ -330,7 +330,7 @@ class EveningMotivational extends StatelessWidget {
                   onTap: () async {
                     FocusScope.of(context).unfocus();
                     PrefService.setValue(PrefKey.morningQuestion, true);
-                    Get.offAll(() => const DashBoardScreen());
+                    feelController.setQuestions("motivational");
                     /*  if (feelController.howDoYouIndex == -1) {
                     showSnackBarError(
                         context, "Please select how do you feel right now?");

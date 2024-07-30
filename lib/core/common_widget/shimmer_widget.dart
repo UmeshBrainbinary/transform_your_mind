@@ -40,12 +40,15 @@ class ShimmerWidget extends StatelessWidget {
     return Shimmer.fromColors(
       baseColor: baseColor ?? Colors.grey,
       highlightColor: highlightColor ??  ColorConstant.themeColor.withOpacity(0.1),
-      child: Container(
-        width: width,
-        height: height,
-        decoration: ShapeDecoration(
-          color: baseColor ?? Colors.grey,
-          shape: shapeBorder,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          width: width,
+          height: height,
+          decoration: ShapeDecoration(
+            color: baseColor ?? Colors.grey,
+            shape: shapeBorder,
+          ),
         ),
       ),
     );

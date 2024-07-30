@@ -232,6 +232,7 @@ class ImageConstant {
   static String noticeImage = "$imagePath/notice_how_you_feel.png";
   static String gratitudeBackground = "$imagePath/gratitude_back.png";
   static String container = "$imagePath/container.png";
+  static String gratitudeContainer = "$imagePath/gratitude_container.png";
   static String chooseLanguages = "$imagePath/choose_langauge.png";
   static String homeBack = "$imagePath/home_back.png";
   static String splashBack = "$imagePath/share_background.png";

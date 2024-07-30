@@ -20,6 +20,7 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/model_class/common_model.dart';
+import 'package:transform_your_mind/model_class/gratitude_all_data.dart';
 import 'package:transform_your_mind/model_class/gratitude_model.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
@@ -40,6 +41,8 @@ class AddGratitudePage extends StatefulWidget {
       this.description,
       this.id,
       this.categoryList,
+      this.categoryListAll,
+        this.previous = false,
       this.date});
 
   final bool? isFromMyGratitude;
@@ -50,7 +53,9 @@ class AddGratitudePage extends StatefulWidget {
   String? description;
   String? date;
   String? id;
+  bool? previous;
   List<GratitudeData>? categoryList;
+  List<GratitudeAllData>? categoryListAll;
   @override
   State<AddGratitudePage> createState() => _AddGratitudePageState();
 }
@@ -175,7 +180,6 @@ class _AddGratitudePageState extends State<AddGratitudePage>
       commonModel = commonModelFromJson(responseBody);
 
       showSnackBarSuccess(context, "gratitudeAdded".tr);
-      Get.back();
     } else {
       setState(() {
         loader = false;
@@ -261,7 +265,7 @@ class _AddGratitudePageState extends State<AddGratitudePage>
           appBar: CustomAppBar(
             showBack: widget.registerUser! ? false : true,
               title:
-                  widget.edit == true ? "editGratitude".tr : "myGratitude".tr,
+                 /* widget.edit == true ? "editGratitude".tr : */"myGratitude".tr,
               action: !(widget.isFromMyGratitude!)
                   ? Row(children: [
                       GestureDetector(
@@ -320,7 +324,7 @@ class _AddGratitudePageState extends State<AddGratitudePage>
                           return Column(
                             children: [
                               Dimens.d32.spaceHeight,
-                              GestureDetector(
+                              widget.previous!?const SizedBox():GestureDetector(
                                   onTap: () {
                                     if (totalIndex != 10) {
                                       addGratitudeText.clear();
@@ -442,6 +446,7 @@ class _AddGratitudePageState extends State<AddGratitudePage>
                               _isListening = true;
                               _speech!.listen(
                                 onResult: (val) => setState(() {
+
                                   recordedText = val.recognizedWords;
                                 }),
                               );
@@ -591,10 +596,10 @@ class _AddGratitudePageState extends State<AddGratitudePage>
             ),
           ),
           Dimens.d13.spaceWidth,
-          Expanded(
+        Expanded(
             child: Stack(
               children: [
-                Align(
+                widget.previous!?const SizedBox():Align(
                   alignment: Alignment.topRight,
                   child: PopupMenuButton(
                     shape: const RoundedRectangleBorder(
@@ -622,7 +627,7 @@ class _AddGratitudePageState extends State<AddGratitudePage>
 
                                   setState(() {
                                     addGratitudeText.text = des!;
-                                    recordedText = des;
+                                    _speechDataList.add(addGratitudeText.text);
                                   });
                                   _showAlertDialog(
                                       context: context,
@@ -740,7 +745,7 @@ class _AddGratitudePageState extends State<AddGratitudePage>
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Dimens.d18.spaceHeight,
+              Dimens.d8.spaceHeight,
               Align(
                   alignment: Alignment.topRight,
                   child: GestureDetector(

@@ -286,6 +286,12 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
           audioData: audioContent,
         );
       },
-    );
+    ).then((value) {
+
+      getData();
+      setState(() {
+
+      });
+    },);
   }
 }

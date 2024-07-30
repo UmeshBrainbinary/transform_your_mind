@@ -206,7 +206,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       backgroundColor: themeController.isDarkMode.value
           ? ColorConstant.darkBackground
           : ColorConstant.backGround,
@@ -279,13 +279,12 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                                         prefixLottieIcon:
                                             ImageConstant.lottieDescription,
                                         maxLines: 15,
-                                        maxLength: maxLengthDesc,
+                                        maxLength: 2000,
                                         validator: (value) {
                                           if (value!.trim().isEmpty) {
                                             return "pleaseEnterDescription".tr;
-                                          }
-                                          if (countWords(value) > 2000) {
-                                            return "Please enter no more than 200 words".tr;
+                                          }else if (value.length > 2000) {
+                                            return "youCantMoreThan".tr;
                                           }
                                           return null;
                                           },

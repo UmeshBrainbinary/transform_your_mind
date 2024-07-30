@@ -8,10 +8,12 @@ import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/http_service.dart';
+import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/model_class/get_pods_model.dart';
@@ -51,6 +53,7 @@ class _AudioContentScreenState extends State<AudioContentScreen>
     final seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
     return "$minutes:$seconds";
   }
+  String currentLanguage = PrefService.getString(PrefKey.language);
 
   @override
   void initState() {
@@ -380,7 +383,10 @@ getData() async {
                                                           SizedBox(
                                                             width: 72,
                                                             child: Text(
-                                                              controller
+                                                              currentLanguage!="en-US"?controller
+                                                                  .audioData[index]
+                                                                  .gName
+                                                                  .toString():controller
                                                                   .audioData[index]
                                                                   .name
                                                                   .toString(),
@@ -464,7 +470,9 @@ getData() async {
                                                       ),
                                                       Dimens.d7.spaceHeight,
                                                       Text(
-                                                        controller.audioData[index]
+                                                        currentLanguage!="en-US"?controller.audioData[index]
+                                                            .gDescription
+                                                            .toString():controller.audioData[index]
                                                             .description
                                                             .toString(),
                                                         maxLines: Dimens.d2.toInt(),

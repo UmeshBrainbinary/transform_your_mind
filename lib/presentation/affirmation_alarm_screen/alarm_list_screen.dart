@@ -823,11 +823,13 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                     title: "update".tr,
                     onTap: () async {
                     if(Platform.isIOS){
-                    _setAlarm(1, "assets/audio/audio.mp3");
-                    }else{
-                      _setAlarm(1, "assets/audio/audio.mp3");
+                      downloadAudioFile("https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/theme_01.mp3");
 
-                      //downloadAudioFile("https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/theme_01.mp3");
+                  //  _setAlarm(1, "assets/audio/audio.mp3");
+                    }else{
+                     // _setAlarm(1, "assets/audio/audio.mp3");
+
+                      downloadAudioFile("https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/theme_01.mp3");
 
                     }
 

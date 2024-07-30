@@ -133,7 +133,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
                                     positiveController.filteredBookmarks = positiveController.positiveMomentList;
                                   });
                                 },child: SvgPicture.asset(ImageConstant.close,color:  themeController.isDarkMode.isTrue?
-                            ColorConstant.color777575:ColorConstant.colorBFBFBF,)),
+                            ColorConstant.color777575:ColorConstant.black,)),
                           ),
                           hintText: "search".tr,
                           textStyle: Style.nunRegular(fontSize: 12),
@@ -433,7 +433,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
           ),
           content: Column(mainAxisSize: MainAxisSize.min,
             children: [
-              Dimens.d18.spaceHeight,
+              Dimens.d8.spaceHeight,
               Align(
                   alignment: Alignment.topRight,
                   child: GestureDetector(

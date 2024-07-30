@@ -405,8 +405,8 @@ class EveningStress extends StatelessWidget {
                     FocusScope.of(context).unfocus();
                     PrefService.setValue(PrefKey.eveningQuestion, true);
                     FocusScope.of(context).unfocus();
+                    controller.setQuestions("sleep");
 
-                    Get.to(() =>  EveningMotivational());
                     /*  if (feelController.howDoYouIndex == -1) {
                     showSnackBarError(
                         context, "Please select how do you feel right now?");

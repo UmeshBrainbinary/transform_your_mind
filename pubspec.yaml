@@ -85,6 +85,7 @@ dependencies:
   speech_to_text:
   vibration: ^1.9.0
   syncfusion_flutter_charts:
+  dotted_border: ^2.1.0
 
 
 dev_dependencies:

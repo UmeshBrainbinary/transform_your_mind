@@ -25,4 +25,5 @@ class PrefKey{
   static const String morningQuestion = "morningQuestion";
   static const String eveningQuestion = "eveningQuestion";
   static const String myGratitude = "myGratitude";
+  static const String welcomeScreen = "welcomeScreen";
 }

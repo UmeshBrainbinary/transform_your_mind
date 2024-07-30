@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/model_class/get_pods_model.dart';
@@ -28,6 +30,8 @@ class _DownloadedPodsScreenState extends State<DownloadedPodsScreen> {
   AudioContentController audioContentController =
       Get.put(AudioContentController());
    ThemeController themeController = Get.find<ThemeController>();
+  String currentLanguage = PrefService.getString(PrefKey.language);
+
   @override
   void initState() {
     audioContentController.getDownloadedList();
@@ -111,7 +115,7 @@ class _DownloadedPodsScreenState extends State<DownloadedPodsScreen> {
                                           child: Container(padding:  EdgeInsets.only(top:Platform.isIOS?0: 1),
                                             height: 12,width: 30,decoration: BoxDecoration(color: Colors.black.withOpacity(0.5),
                                                 borderRadius: BorderRadius.circular(13)),
-                                            child: Center(child: Text(controller.audioListDurationD.length > index ? _formatDuration( controller.audioListDurationD[index]) : 'Loading...',style: Style.nunRegular(fontSize: 6,color: Colors.white),),) ,),
+                                            child: Center(child: Text(controller.audioListDurationD.length > index ? _formatDuration( controller.audioListDurationD[index]) : '8:00',style: Style.nunRegular(fontSize: 6,color: Colors.white),),) ,),
                                         )
                                       ],
                                     ),
@@ -123,9 +127,12 @@ class _DownloadedPodsScreenState extends State<DownloadedPodsScreen> {
                                         SizedBox(
                                           width: 72,
                                           child: Text(
-                                            controller
+                                            currentLanguage=="en-US"?controller
                                                 .audioDataDownloaded[index]
                                                 .name
+                                                .toString():controller
+                                                .audioDataDownloaded[index]
+                                                .gName
                                                 .toString(),
                                             // "Motivational",
                                             style: Style.nunitoBold(
@@ -190,8 +197,10 @@ class _DownloadedPodsScreenState extends State<DownloadedPodsScreen> {
                                     ),
                                     Dimens.d7.spaceHeight,
                                     Text(
-                                      controller.audioDataDownloaded[index]
+                                      currentLanguage=="en-US"?controller.audioDataDownloaded[index]
                                           .description
+                                          .toString():controller.audioDataDownloaded[index]
+                                          .gDescription
                                           .toString(),
                                       maxLines: Dimens.d2.toInt(),
                                       style: Style.nunMedium(

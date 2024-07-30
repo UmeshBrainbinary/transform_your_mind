@@ -1,24 +1,24 @@
 // To parse this JSON data, do
 //
-//     final affirmationDataModel = affirmationDataModelFromJson(jsonString);
+//     final AffirmationAllModel = AffirmationAllModelFromJson(jsonString);
 
 import 'dart:convert';
 
-AffirmationDataModel affirmationDataModelFromJson(String str) => AffirmationDataModel.fromJson(json.decode(str));
+AffirmationAllModel affirmationAllModelFromJson(String str) => AffirmationAllModel.fromJson(json.decode(str));
 
-String affirmationDataModelToJson(AffirmationDataModel data) => json.encode(data.toJson());
+String affirmationAllModelToJson(AffirmationAllModel data) => json.encode(data.toJson());
 
-class AffirmationDataModel {
-  List<Datum>? data;
+class AffirmationAllModel {
+  List<AffirmationDataAll>? data;
   int? total;
 
-  AffirmationDataModel({
+  AffirmationAllModel({
     this.data,
     this.total,
   });
 
-  factory AffirmationDataModel.fromJson(Map<String, dynamic> json) => AffirmationDataModel(
-    data: json["data"] == null ? [] : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
+  factory AffirmationAllModel.fromJson(Map<String, dynamic> json) => AffirmationAllModel(
+    data: json["data"] == null ? [] : List<AffirmationDataAll>.from(json["data"]!.map((x) => AffirmationDataAll.fromJson(x))),
     total: json["total"],
   );
 
@@ -28,7 +28,7 @@ class AffirmationDataModel {
   };
 }
 
-class Datum {
+class AffirmationDataAll {
   bool? userLiked;
   String? id;
   String? name;
@@ -44,9 +44,7 @@ class Datum {
   int? v;
   String? gName;
   String? gDescription;
-
-
-  Datum({
+  AffirmationDataAll({
     this.userLiked,
     this.id,
     this.name,
@@ -60,26 +58,26 @@ class Datum {
     this.createdAt,
     this.updatedAt,
     this.v,
-    this.gName,
-    this.gDescription
+    this.gDescription,
+    this.gName
   });
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory AffirmationDataAll.fromJson(Map<String, dynamic> json) => AffirmationDataAll(
     userLiked: json["userLiked"],
     id: json["_id"],
     name: json["name"],
     description: json["description"],
     category: json["category"],
     status: json["status"],
-    createdBy:json["created_by"],
+    createdBy: json["created_by"],
     isDefault: json["isDefault"],
     isLiked: json["isLiked"],
     audioFile: json["audioFile"],
     createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
     updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
     v: json["__v"],
-    gName: json["g_name"],
     gDescription: json["g_description"],
+    gName: json["g_name"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -89,7 +87,7 @@ class Datum {
     "description": description,
     "category": category,
     "status": status,
-    "created_by": createdBy,
+    "created_by":createdBy,
     "isDefault": isDefault,
     "isLiked": isLiked,
     "audioFile": audioFile,
@@ -98,7 +96,6 @@ class Datum {
     "__v": v,
     "g_name": gName,
     "g_description": gDescription,
-
   };
 }
 

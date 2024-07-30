@@ -3,15 +3,18 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/model_class/get_pods_model.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/audio_content_controller.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_screen.dart';
+import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
@@ -38,6 +41,7 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
   ValueNotifier<bool> showScrollTop = ValueNotifier(false);
   ThemeController themeController = Get.find<ThemeController>();
 
+  String currentLanguage = PrefService.getString(PrefKey.language);
 
   @override
   void initState() {
@@ -164,6 +168,8 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
                                 onTap: () {
                                   searchFocusNode.unfocus();
                                   if (!controller.audioData[index].isPaid!) {
+                                    Get.toNamed(AppRoutes.subscriptionScreen);
+
                                   } else {
                                     _onTileClick(
                                       context: context,
@@ -209,7 +215,7 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
                                                         ? _formatDuration(controller
                                                                 .audioListDuration[
                                                             index])
-                                                        : 'Loading...',
+                                                        : '8:00.',
                                                     style: Style.nunRegular(
                                                         fontSize: 6,
                                                         color: Colors.white),
@@ -227,7 +233,8 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
                                             SizedBox(
                                               width: 90,
                                               child: Text(
-                                                controller.audioData[index].name
+                                                currentLanguage=="en-US"?controller.audioData[index].name
+                                                    .toString():controller.audioData[index].gName
                                                     .toString(),
                                                 style: Style.nunitoBold(
                                                   fontSize: Dimens.d12,
@@ -263,8 +270,10 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
                                     ),
                                     Dimens.d7.spaceHeight,
                                     Text(
-                                      controller.audioData[index]
+                                      currentLanguage=="en-US"?controller.audioData[index]
                                           .description
+                                          .toString():controller.audioData[index]
+                                          .gDescription
                                           .toString(),
                                       maxLines: Dimens.d2.toInt(),
                                       style: Style.nunRegular(

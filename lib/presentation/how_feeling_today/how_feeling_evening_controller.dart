@@ -1,6 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:transform_your_mind/core/service/pref_service.dart';
+import 'package:transform_your_mind/core/utils/end_points.dart';
+import 'package:transform_your_mind/core/utils/prefKeys.dart';
+import 'package:transform_your_mind/presentation/dash_board_screen/dash_board_screen.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/evening_motivational.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/evening_stress.dart';
 
 class HowFeelingEveningController extends GetxController{
   TextEditingController whatCanYouDo = TextEditingController();
@@ -111,5 +120,83 @@ class HowFeelingEveningController extends GetxController{
     {"title":"C. ${"timeManagement".tr}","check":false},
     {"title":"D. ${"other".tr}","check":false},
   ].obs;
+
+  setQuestions(setting) async {
+    try {
+      var moodData = {};
+       if (setting == "mood") {
+       moodData = {
+         "type": "mood",
+         "created_by": PrefService.getString(PrefKey.userId),
+         "eveningFeeling":howDoYouIndex==0?"good":howDoYouIndex==1?"neutral":"bad",
+         "positivelyEffected": selectedDidYouSleepWell!.isEmpty?null:selectedDidYouSleepWell,
+         "describeThoughts":canYouDescribe.text.trim(),
+         "react": howDidYouReactToIt.text.trim(),
+         "positiveExperiences": whatCouldHelp.text.trim(),
+         "improvedMood": "",
+         "maintainMood": "",
+         "feelBetter": "",
+         "affectedMood": "",
+         "strategies": "",
+       };
+      } else if (setting == "stress") {
+         moodData = {
+           "type": "stress",
+           "created_by": PrefService.getString(PrefKey.userId),
+           "eveningStress": "required when type stress",
+           "causedStress": "",
+           "respondStress": "",
+           "manaageStress": "",
+           "futureStress": "",
+           "handleStress": "",
+           "stressfulSituations": "",
+           "handleSituation": "",
+           "stayCalm": "",
+         };
+      } else {
+         moodData = {
+           "type": "motivation",
+           "created_by": PrefService.getString(PrefKey.userId),
+           "achieveGoal": "required when type motivation",
+           "helpedAchieve": "",
+           "particularlyMotivated": "",
+           "rewardyourself": "",
+           "preventedGoal": "",
+           "differentlyAchieve": "",
+           "support": ""
+         };
+
+      }
+
+      var headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+      };
+
+      var request = http.Request(
+          'POST', Uri.parse(EndPoints.eveningQuestions));
+      request.body = json.encode(moodData);
+      request.headers.addAll(headers);
+
+
+      http.StreamedResponse response = await request.send();
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        if(setting == "stress"){
+          Get.to(() =>  EveningStress());
+        }else if(setting == "sleep"){
+          Get.to(() =>  EveningMotivational());
+        }else{
+          Get.offAll(() => const DashBoardScreen());
+
+        }
+      }
+      else {
+        debugPrint(response.reasonPhrase);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
 
 }

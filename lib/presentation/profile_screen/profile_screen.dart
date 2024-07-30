@@ -39,6 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   String? selectedMonth = "monthly".tr;
   final audioPlayerController = Get.find<NowPlayingController>();
   int _selectedIndex = 0;
+  String currentLanguage = PrefService.getString(PrefKey.language);
 
   final List<String> _tabs = ['Progress Tracking', 'Mood', 'Sleep', 'Stress'];
 
@@ -390,7 +391,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                 Text(
                                                   "completedGratitude".tr,
                                                   style: Style.nunRegular(
-                                                    fontSize: Dimens.d9,
+                                                    fontSize: currentLanguage=="en-US"?Dimens.d9:Dimens.d8,
                                                   ),
                                                 )
                                               ],
@@ -412,7 +413,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                 Text(
                                                   "positiveMoment".tr,
                                                   style: Style.nunRegular(
-                                                    fontSize: Dimens.d9,
+                                                    fontSize: currentLanguage=="en-US"?Dimens.d9:Dimens.d8,
                                                   ),
                                                 )
                                               ],
@@ -434,7 +435,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                 Text(
                                                   "completedAffirmations".tr,
                                                   style: Style.nunRegular(
-                                                    fontSize: Dimens.d9,
+                                                    fontSize: currentLanguage=="en-US"?Dimens.d9:Dimens.d8,
                                                   ),
                                                 )
                                               ],
@@ -456,7 +457,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                 Text(
                                                   "goodFeel".tr,
                                                   style: Style.nunRegular(
-                                                    fontSize: Dimens.d9,
+                                                    fontSize: currentLanguage=="en-US"?Dimens.d9:Dimens.d8,
                                                   ),
                                                 )
                                               ],

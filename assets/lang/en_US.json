@@ -239,7 +239,7 @@
   "totalJournalsInput": "Total journals input",
   "currentStreak": "Current streak",
     "setReminders": "Set reminders",
-    "chooseMinInterest": "What areas in your life do you want to focus on and to receive daily doses of positivity? Select minimum 1",
+    "chooseMinInterest": "What areas in your life do you want to focus 0on and to receive daily doses of positivity? Select minimum 1",
     "myAffirmation": "My affirmation",
     "editAffirmation": "Edit affirmation",
     "addAffirmation": "Add affirmation",
@@ -596,6 +596,11 @@
     "howDidYuRespond": "How did you respond to this stress?",
     "whatCanYouDo": "What can you do differently tomorrow to achieve your goal?",
     "whatSupport": "What support might you need? ",
+    "youCantMoreThan": "You Can't enter more than 2000 words",
+    "pleaseSelectHowAreYouFelling": "Please select how are you feeling today..",
+    "pleaseSelectDoYouFeel": "Please select do you feel stress?",
+    "pleaseSelectWhatDoYouAchieve": "Please select what do you want to achieve today?",
+    "pleaseSelectDidYouSleep": "Please select did you sleep well last night.",
   "StartWithExercise": "So, let`s start with a little exercise: Breath - then enjoy your daily routine to transform to your best life"
 
 

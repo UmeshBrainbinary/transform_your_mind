@@ -5,10 +5,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/http_service.dart';
+import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/model_class/get_pods_model.dart';
@@ -36,6 +38,8 @@ class _SearchScreenState extends State<SearchScreen> {
   late ScrollController scrollController = ScrollController();
   ValueNotifier<bool> showScrollTop = ValueNotifier(false);
   ThemeController themeController = Get.find<ThemeController>();
+  String currentLanguage = PrefService.getString(PrefKey.language);
+
   @override
   void initState() {
     checkInternet();
@@ -244,7 +248,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                                         child: Container(padding:  EdgeInsets.only(  top:Platform.isIOS?0: 1),
                                                           height: 12,width: 30,decoration: BoxDecoration(color: Colors.black.withOpacity(0.5),
                                                               borderRadius: BorderRadius.circular(13)),
-                                                          child: Center(child: Text( controller.audioListDuration.length > index ? _formatDuration( controller.audioListDuration[index]) : 'Loading...',style: Style.nunRegular(fontSize: 6,color: Colors.white),),) ,),
+                                                          child: Center(child: Text( controller.audioListDuration.length > index ? _formatDuration( controller.audioListDuration[index]) : '8:00',style: Style.nunRegular(fontSize: 6,color: Colors.white),),) ,),
                                                       )
                                                     ],
                                                   ),
@@ -257,9 +261,12 @@ class _SearchScreenState extends State<SearchScreen> {
                                                       SizedBox(
                                                         width: 90,
                                                         child: Text(
-                                                          controller
+                                                          currentLanguage=="en-US"?controller
                                                               .audioData[index]
                                                               .name
+                                                              .toString():controller
+                                                              .audioData[index]
+                                                              .gName
                                                               .toString(),
                                                           // "Motivational",
                                                           style:
@@ -303,8 +310,10 @@ class _SearchScreenState extends State<SearchScreen> {
                                                   ),
                                                   Dimens.d7.spaceHeight,
                                                   Text(
-                                                    controller.audioData[index]
+                                                    currentLanguage=="en-US"? controller.audioData[index]
                                                         .description
+                                                        .toString():controller.audioData[index]
+                                                        .gDescription
                                                         .toString(),
                                                     maxLines: Dimens.d2.toInt(),
                                                     style: Style.nunMedium(

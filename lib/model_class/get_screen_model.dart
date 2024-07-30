@@ -1,21 +1,21 @@
 // To parse this JSON data, do
 //
-//     final focusesModel = focusesModelFromJson(jsonString);
+//     final getScreenModel = getScreenModelFromJson(jsonString);
 
 import 'dart:convert';
 
-FocusesModel focusesModelFromJson(String str) => FocusesModel.fromJson(json.decode(str));
+GetScreenModel getScreenModelFromJson(String str) => GetScreenModel.fromJson(json.decode(str));
 
-String focusesModelToJson(FocusesModel data) => json.encode(data.toJson());
+String getScreenModelToJson(GetScreenModel data) => json.encode(data.toJson());
 
-class FocusesModel {
+class GetScreenModel {
   List<Datum>? data;
 
-  FocusesModel({
+  GetScreenModel({
     this.data,
   });
 
-  factory FocusesModel.fromJson(Map<String, dynamic> json) => FocusesModel(
+  factory GetScreenModel.fromJson(Map<String, dynamic> json) => GetScreenModel(
     data: json["data"] == null ? [] : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
   );
 
@@ -26,44 +26,52 @@ class FocusesModel {
 
 class Datum {
   String? id;
-  String? name;
-  int? status;
-  int? type;
+  String? authorName;
+  String? image;
+  String? quote;
+  String? createdBy;
   DateTime? createdAt;
   DateTime? updatedAt;
   int? v;
-  String? gName;
+  String? gAuthorName;
+  String? gQuote;
 
   Datum({
     this.id,
-    this.name,
-    this.status,
-    this.type,
+    this.authorName,
+    this.image,
+    this.quote,
+    this.createdBy,
     this.createdAt,
     this.updatedAt,
     this.v,
-    this.gName,
+    this.gAuthorName,
+    this.gQuote,
   });
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
     id: json["_id"],
-    name: json["name"],
-    status: json["status"],
-    type: json["type"],
+    authorName: json["authorName"],
+    image: json["image"],
+    quote: json["quote"],
+    createdBy: json["created_by"],
     createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
     updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
     v: json["__v"],
-    gName: json["g_name"],
+    gAuthorName: json["g_authorName"],
+    gQuote: json["g_quote"],
   );
 
   Map<String, dynamic> toJson() => {
     "_id": id,
-    "name": name,
-    "status": status,
-    "type": type,
+    "authorName": authorName,
+    "image": image,
+    "quote": quote,
+    "created_by": createdBy,
     "createdAt": createdAt?.toIso8601String(),
     "updatedAt": updatedAt?.toIso8601String(),
     "__v": v,
-    "g_name": gName,
+    "g_authorName": gAuthorName,
+    "g_quote": gQuote,
   };
 }

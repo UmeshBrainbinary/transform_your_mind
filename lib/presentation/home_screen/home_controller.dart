@@ -79,11 +79,16 @@ class HomeController extends GetxController {
 
         debugPrint("filter Data $audioData");
         update(["home"]);
+        update();
+
+
       } else {
         loader.value = false;
 
         debugPrint(response.reasonPhrase);
         update(["home"]);
+        update();
+
       }
     } catch (e) {
       loader.value = false;
@@ -93,6 +98,8 @@ class HomeController extends GetxController {
     loader.value = false;
 
     update();
+    update(["home"]);
+
   }
 
   getUSer() async {
@@ -135,6 +142,8 @@ class HomeController extends GetxController {
   }
 
   getBookMarkedList() async {
+    loader.value = true;
+
     var headers = {
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
@@ -148,6 +157,8 @@ class HomeController extends GetxController {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
+      loader.value = false;
+
       final responseBody = await response.stream.bytesToString();
       bookmarkedModel = bookmarkedModelFromJson(responseBody);
       for(int i = 0;i<bookmarkedModel.data!.length;i++){
@@ -157,9 +168,15 @@ class HomeController extends GetxController {
       }
 
       update(["home"]);
+      loader.value = false;
+
     } else {
+      loader.value = false;
+
       debugPrint(response.reasonPhrase);
     }
+    loader.value = false;
+
     update(["home"]);
   }
 

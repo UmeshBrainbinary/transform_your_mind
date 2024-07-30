@@ -261,7 +261,7 @@ class _AddPositivePageState extends State<AddPositivePage>
                                       ),
                                   )
                                   : const SizedBox(),
-                              Dimens.d20.spaceHeight,
+                              Dimens.d15.spaceHeight,
                               CommonTextField(
                                 hintText: "enterTitle".tr,
                                 labelText: "title".tr,

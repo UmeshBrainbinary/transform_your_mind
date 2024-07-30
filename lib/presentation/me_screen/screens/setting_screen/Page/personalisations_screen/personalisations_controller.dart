@@ -1,7 +1,13 @@
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
+import 'package:http/http.dart' as http;
+import 'package:transform_your_mind/model_class/get_screen_model.dart';
+import '../../../../../../core/utils/end_points.dart';
 
 class PersonalizationController extends GetxController {
   RxList accountData = [].obs;
@@ -54,6 +60,36 @@ class PersonalizationController extends GetxController {
     debugPrint(
         "Language changed to ${newLocale.languageCode}_${newLocale.countryCode}");
   }
+  RxBool loader = false.obs;
+  GetScreenModel getScreenModel = GetScreenModel();
+  getScreen() async {
+    loader.value = true;
+    var request = http.Request('GET', Uri.parse('https://transformyourmind-server.onrender.com/api/v1/get-screen'));
+
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      loader.value = false;
+
+      final responseBody = await response.stream.bytesToString();
+
+      getScreenModel = getScreenModelFromJson(responseBody);
+      debugPrint("getScreenModel get data $getScreenModel");
+      update(["u"]);
+      update();
+    }
+    else {
+      loader.value = false;
+
+      debugPrint(response.reasonPhrase);
+    }
+    loader.value = false;
+
+   update(["u"]);
+   update();
+  }
+
 }
 
 class _AccountData {

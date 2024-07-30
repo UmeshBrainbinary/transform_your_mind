@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -300,8 +301,12 @@ class SleepQuestions extends StatelessWidget {
                   onTap: () async {
                     PrefService.setValue(PrefKey.morningQuestion, true);
                     FocusScope.of(context).unfocus();
+                   if(controller.selectedDidYouSleepWell!.isNotEmpty){
+                      controller.setQuestions("sleep");
+                   }else{
+                     showSnackBarError(context, "pleaseSelectDidYouSleep".tr);
+                   }
 
-                    Get.to(() =>  MotivationalQuestions());
                     /*  if (feelController.howDoYouIndex == -1) {
                     showSnackBarError(
                         context, "Please select how do you feel right now?");

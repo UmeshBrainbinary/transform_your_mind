@@ -27,6 +27,7 @@ import 'package:transform_your_mind/presentation/breath_screen/breath_screen.dar
 import 'package:transform_your_mind/presentation/home_screen/home_controller.dart';
 import 'package:transform_your_mind/presentation/home_screen/widgets/home_widget.dart';
 import 'package:transform_your_mind/presentation/how_feeling_today/how_feeling_today_screen.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/how_feelings_evening.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_affirmation_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_gratitude_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/my_affirmation_page.dart';
@@ -64,6 +65,7 @@ class _HomeScreenState extends State<HomeScreen>
   ThemeController themeController = Get.find<ThemeController>();
   GratitudeModel gratitudeModel = GratitudeModel();
   AffirmationController affirmationController = Get.put(AffirmationController());
+  String currentLanguage = PrefService.getString(PrefKey.language);
 
   @override
   void initState() {
@@ -125,11 +127,12 @@ class _HomeScreenState extends State<HomeScreen>
   getData() async {
     await g.getMotivationalMessage();
     await g.getUSer();
-    g.getPodApi();
-    g.getBookMarkedList();
-    g.getTodayGratitude();
-    g.getTodayAffirmation();
-    g.getRecentlyList();
+    await g.getPodApi();
+    await g.getBookMarkedList();
+    await g.getTodayGratitude();
+    await g.getTodayAffirmation();
+    await g.getRecentlyList();
+    await positiveController.getPositiveMoments();
     await getGratitude();
   }
 
@@ -705,7 +708,7 @@ class _HomeScreenState extends State<HomeScreen>
             //await NotificationService.scheduleNotification(DateTime.now());
 
            /* Get.to(()=>  const HowFeelingsEvening());*/
-            Get.to(()=>  const WelcomeHomeScreen());
+            Get.to(()=>  const HowFeelingsEvening());
             /*    Navigator.push(context, MaterialPageRoute(
             builder: (context) {
               return HomeMessagePage(
@@ -757,7 +760,7 @@ class _HomeScreenState extends State<HomeScreen>
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: List.generate(controller.audioData.length ?? 0, (index) {
+            children: List.generate(controller.audioData.length ?? 0, ( index) {
               return GestureDetector(
                   onTap: () {
                     if (controller.audioData[index].isPaid!) {
@@ -834,7 +837,7 @@ class _HomeScreenState extends State<HomeScreen>
                   child: Padding(
                     padding: const EdgeInsets.only(right: 20.0),
                     child: FeelGood(
-                      audioTime: controller.audioListDuration.length > index ? _formatDuration( controller.audioListDuration[index]) : 'Loading...',
+                      audioTime: controller.audioListDuration.length > index ? _formatDuration( controller.audioListDuration[index]) : '8:00',
                       dataList: controller.audioData[index],
                     ),
                   ));
@@ -1082,7 +1085,7 @@ class _HomeScreenState extends State<HomeScreen>
                 ? CommonElevatedButton(
                     height: Dimens.d46,
                     textStyle: Style.nunRegular(
-                        fontSize: Dimens.d17, color: ColorConstant.white),
+                        fontSize: currentLanguage=="en-US"?Dimens.d17:Dimens.d15, color: ColorConstant.white),
                     title: "addTodayAffirmation".tr,
                     onTap: () {
                      Get.to(const AddAffirmationPage(
@@ -1233,11 +1236,12 @@ class _HomeScreenState extends State<HomeScreen>
                     height: Dimens.d46,
                     title: "addTodayGratitude".tr,
                     textStyle: Style.nunRegular(
-                        fontSize: Dimens.d17, color: ColorConstant.white),
+                        fontSize: currentLanguage=="en-US"?Dimens.d17:Dimens.d15, color: ColorConstant.white),
                     onTap: () {
                       Navigator.push(context,   MaterialPageRoute(builder: (context) {
                         return  AddGratitudePage( isFromMyGratitude: true,
-                          registerUser: false,
+                          registerUser: false, categoryListAll: [],
+                          previous:false,
                           edit: false,);
                       },)).then((value) async {
                         await getGratitude();
@@ -1449,7 +1453,9 @@ class _HomeScreenState extends State<HomeScreen>
           builder: (context) {
             return AddGratitudePage(date:  DateFormat("dd/MM/yyyy").format(DateTime.now()),
               categoryList: gratitudeList,
-              isFromMyGratitude: true,
+              previous:false,
+
+              isFromMyGratitude: true, categoryListAll: [],
               registerUser: false,
               edit: true,
             );

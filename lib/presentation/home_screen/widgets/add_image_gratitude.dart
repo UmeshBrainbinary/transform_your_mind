@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
@@ -44,27 +45,41 @@ class _AddGratitudeImageWidgetState extends State<AddGratitudeImageWidget> {
         children: [
           Dimens.d10.spaceHeight,
           SizedBox(
-            height: Dimens.d110,
-            width: Dimens.d110,
+            height: 82,
+            width: 90,
             child: Stack(
               children: [
-                widget.image != null
-                    ? ClipRRect(
+                if (widget.image != null)
+                  DottedBorder(
+                      borderType: BorderType.RRect,
+                      radius: const Radius.circular(12),
+                      color: ColorConstant.themeColor,
+                      child: ClipRRect(
                         borderRadius: BorderRadius.circular(15),
                         child: Image.file(
                           File(widget.image?.path ?? ""),
                           fit: BoxFit.cover,
-                          height: Dimens.d100,
-                          width: Dimens.d100,
+                          height: 82,
+                          width: 82,
                         ),
-                    )
-                    : (widget.imageURL != null)
-                        ? CommonLoadImage(borderRadius: 10,
-                            url: widget.imageURL ?? '',
-                            height: Dimens.d100,
-                            width: Dimens.d100,
-                          )
-                        : (widget.imageURL?.isNotEmpty ?? false)
+                      ))
+                else
+                  (widget.imageURL != null)
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: DottedBorder(
+                            strokeWidth: 1,
+                            radius: const Radius.circular(12),
+                            color: ColorConstant.themeColor,
+                            child: CommonLoadImage(
+                              borderRadius: 10,
+                              url: widget.imageURL ?? '',
+                              height: 82,
+                              width: 82,
+                            ),
+                          ),
+                        )
+                      : (widget.imageURL?.isNotEmpty ?? false)
                             ? const SizedBox()
                             : InkWell(
                               onTap: widget.onTap,
@@ -84,14 +99,19 @@ class _AddGratitudeImageWidgetState extends State<AddGratitudeImageWidget> {
                     child: GestureDetector(
                       onTap: widget.onDeleteTap,
                       child: Container(height: 20,width: 20,
-                        margin: const EdgeInsets.only(bottom: 10),
-                        padding: const EdgeInsets.all(Dimens.d5),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(24),
-                          color: Colors.white,
-                        ),
-                        child:Center(child: SvgPicture.asset(ImageConstant.deleteProfile,color: Colors.red,height: 12,width: 12,))
-                      ),
+                          margin: const EdgeInsets.only(left: 10),
+                          padding: const EdgeInsets.all(Dimens.d5),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(24),
+                            color: Colors.white,
+                          ),
+                          child: Center(
+                              child: SvgPicture.asset(
+                            ImageConstant.deleteProfile,
+                            color: Colors.red,
+                            height: 12,
+                            width: 12,
+                          ))),
                     ),
                   ),
               ],

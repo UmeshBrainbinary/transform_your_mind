@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:transform_your_mind/core/app_export.dart';
+import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/model_class/bookmarked_model.dart';
 import 'package:transform_your_mind/model_class/get_pods_model.dart';
@@ -232,6 +234,8 @@ class FeelGood extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String currentLanguage = PrefService.getString(PrefKey.language);
+
     return SizedBox(
       width: Dimens.d156,
       child: Stack(alignment: Alignment.topRight,
@@ -279,8 +283,8 @@ class FeelGood extends StatelessWidget {
                   SizedBox(
                     width: 72,
                     child: Text(
-                      dataList?.name
-                          .toString()??"",
+                      currentLanguage=="en-Us"?dataList?.name
+                          .toString()??"":dataList?.gName??"",
                       // "Motivational",
                       style: Style
                           .nunitoBold(
@@ -324,8 +328,8 @@ class FeelGood extends StatelessWidget {
               ),
               Dimens.d7.spaceHeight,
               Text(
-                dataList?.description
-                    .toString()??"",
+                currentLanguage=="en-Us"?dataList?.description
+                    .toString()??"":dataList?.gDescription??"",
                 maxLines: Dimens.d2.toInt(),
                 style: Style.nunMedium(
                     fontSize: Dimens.d14),

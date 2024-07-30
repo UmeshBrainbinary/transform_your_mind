@@ -11,6 +11,7 @@ import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/how_feeling_today/how_feeling_today_screen.dart';
 import 'package:transform_your_mind/presentation/how_feeling_today/how_feelings_evening.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/personalisations_screen/personalisations_screen.dart';
+import 'package:transform_your_mind/presentation/welcome_screen/welcome_screen.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -54,7 +55,10 @@ class _SplashScreenState extends State<SplashScreen> {
       const Duration(seconds: 3),
       () {
         PrefService.getBool(PrefKey.isLoginOrRegister) == true
-            ? PrefService.getBool(PrefKey.morningQuestion) == false &&
+            ?     PrefService.getBool(PrefKey.welcomeScreen)==false?
+            Get.offAll(const WelcomeHomeScreen())
+            :
+        PrefService.getBool(PrefKey.morningQuestion) == false &&
                     greeting == "goodMorning"
                 ? Get.offAll(() => const HowFeelingTodayScreen())
                 : PrefService.getBool(PrefKey.eveningQuestion) == false &&

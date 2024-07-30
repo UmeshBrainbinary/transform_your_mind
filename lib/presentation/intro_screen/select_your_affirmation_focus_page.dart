@@ -27,15 +27,24 @@ import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 import '../me_screen/screens/setting_screen/Page/notification_setting_screen/widget/reminder_time_utils.dart';
+
+class Tag {
+  final String nameEn;
+  final String nameDe;
+  bool isSelected;
+
+  Tag(this.nameEn, this.nameDe, this.isSelected);
+}
+
 class SelectYourAffirmationFocusPage extends StatefulWidget {
-   SelectYourAffirmationFocusPage({
+  SelectYourAffirmationFocusPage({
     super.key,
     required this.isFromMe,
-    this.setting
+    this.setting,
   });
 
   final bool isFromMe;
-   bool? setting;
+  bool? setting;
 
   @override
   State<SelectYourAffirmationFocusPage> createState() =>
@@ -44,8 +53,7 @@ class SelectYourAffirmationFocusPage extends StatefulWidget {
 
 class _SelectYourAffirmationFocusPageState
     extends State<SelectYourAffirmationFocusPage> {
-  List<Tag> listOfTags = [
-  ];
+  List<Tag> listOfTags = [];
   List<String> tempData = [];
 
   List<String> selectedTagNames = [];
@@ -56,7 +64,7 @@ class _SelectYourAffirmationFocusPageState
 
   ReminderTime? affirmationReminderTime;
   ReminderPeriod? affirmationReminderPeriod;
-  AffirmationModel  affirmationModel  = AffirmationModel();
+  AffirmationModel affirmationModel = AffirmationModel();
   bool loader = false;
 
   getAffirmation() async {
@@ -67,9 +75,7 @@ class _SelectYourAffirmationFocusPageState
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
     var request = http.Request(
-        'GET',
-        Uri.parse(
-            '${EndPoints.baseUrl}${EndPoints.getAffirmation}'));
+        'GET', Uri.parse('${EndPoints.baseUrl}${EndPoints.getAffirmation}'));
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
@@ -80,14 +86,20 @@ class _SelectYourAffirmationFocusPageState
       affirmationModel = affirmationModelFromJson(responseBody);
       for (int i = 0; i < affirmationModel.data!.length; i++) {
         if (tempData.contains(affirmationModel.data![i].name)) {
-          listOfTags.add(Tag(affirmationModel.data![i].name.toString(), true));
+          listOfTags.add(Tag(
+              affirmationModel.data![i].name.toString(),
+              affirmationModel.data![i].gName.toString(),
+              true));
         } else {
-          listOfTags.add(Tag(affirmationModel.data![i].name.toString(), false));
+          listOfTags.add(Tag(
+              affirmationModel.data![i].name.toString(),
+              affirmationModel.data![i].gName.toString(),
+              false));
         }
       }
       for (int y = 0; y < listOfTags.length; y++) {
         if (listOfTags[y].isSelected == true) {
-          selectedTagNames.add(listOfTags[y].name);
+          selectedTagNames.add(listOfTags[y].nameEn);
         }
       }
       setState(() {
@@ -103,7 +115,6 @@ class _SelectYourAffirmationFocusPageState
       loader = false;
     });
   }
-
 
   GetUserModel getUserModel = GetUserModel();
 
@@ -149,31 +160,35 @@ class _SelectYourAffirmationFocusPageState
       loader = false;
     });
   }
+
   @override
   void initState() {
     getData();
     super.initState();
   }
- getData() async {
-   await getUSer();
-   setState(() {
-   });
- }
+
+  getData() async {
+    await getUSer();
+    setState(() {});
+  }
+
   void _onTagTap(Tag tag) {
     setState(() {
       tag.isSelected = !tag.isSelected;
       if (tag.isSelected) {
-        selectedTagNames.add(tag.name);
+        selectedTagNames.add(tag.nameEn);
       } else {
-        selectedTagNames.remove(tag.name);
+        selectedTagNames.remove(tag.nameEn);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-
-    return Scaffold(backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
+    return Scaffold(
+      backgroundColor: themeController.isDarkMode.isTrue
+          ? ColorConstant.darkBackground
+          : ColorConstant.white,
       appBar: CustomAppBar(
         title: "selectYourAffirmationFocus".tr,
       ),
@@ -227,7 +242,7 @@ class _SelectYourAffirmationFocusPageState
                               return GestureDetector(
                                 onTap: () => _onTagTap(tag),
                                 child: CustomChip(
-                                  label: tag.name,
+                                  label: tag.nameDe,
                                   isChipSelected: tag.isSelected,
                                 ),
                               );
@@ -239,7 +254,11 @@ class _SelectYourAffirmationFocusPageState
                   ),
                   Dimens.d20.spaceHeight,
                   FocusSelectButton(
-                    primaryBtnText: widget.isFromMe ? "save".tr :widget.setting!?"save".tr: "next".tr,
+                    primaryBtnText: widget.isFromMe
+                        ? "save".tr
+                        : widget.setting!
+                        ? "save".tr
+                        : "next".tr,
                     secondaryBtnText: widget.isFromMe ? '' : "skip".tr,
                     isLoading: false,
                     primaryBtnCallBack: () {
@@ -260,7 +279,9 @@ class _SelectYourAffirmationFocusPageState
       ),
     );
   }
+
   CommonModel commonModel = CommonModel();
+
   setFocuses(bool? setting) async {
     setState(() {
       loader = true;
@@ -269,11 +290,11 @@ class _SelectYourAffirmationFocusPageState
       var headers = {
         'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
       };
-      var request = http.MultipartRequest('POST',
-          Uri.parse('${EndPoints.baseUrl}${EndPoints.updateUser}${PrefService.getString(PrefKey.userId)}'));
-      request.fields.addAll({
-        'affirmations': jsonEncode(selectedTagNames)
-      });
+      var request = http.MultipartRequest(
+          'POST',
+          Uri.parse(
+              '${EndPoints.baseUrl}${EndPoints.updateUser}${PrefService.getString(PrefKey.userId)}'));
+      request.fields.addAll({'affirmations': jsonEncode(selectedTagNames)});
       request.headers.addAll(headers);
 
       http.StreamedResponse response = await request.send();
@@ -283,17 +304,16 @@ class _SelectYourAffirmationFocusPageState
         setState(() {
           loader = false;
         });
-        if(setting==true){
+        if (setting == true) {
           showSnackBarSuccess(context, "yourAffirmationHasBeenSelected".tr);
           Get.back();
-        }else{
+        } else {
           Navigator.push(context, MaterialPageRoute(
             builder: (context) {
               return const FreeTrialPage();
             },
           ));
         }
-
       } else {
         final responseBody = await response.stream.bytesToString();
         commonModel = commonModelFromJson(responseBody);
@@ -303,12 +323,10 @@ class _SelectYourAffirmationFocusPageState
         debugPrint(response.reasonPhrase);
       }
     } catch (e) {
-
       setState(() {
         loader = false;
       });
       debugPrint(e.toString());
     }
   }
-
 }

@@ -95,7 +95,9 @@ class _WelcomeScreenState extends State<WelcomeHomeScreen>
 
   int startTimer = 0;
 
-  void _onLongPress() {
+  Future<void> _onLongPress() async {
+    await welcomeHomeController.pause();
+    await welcomeHomeController.audioPlayer.stop();
     Vibration.vibrate(
       pattern: [80, 80, 0, 0, 0, 0, 0, 0],
       intensities: [20, 20, 0, 0, 0, 0, 0, 0],
@@ -107,9 +109,11 @@ class _WelcomeScreenState extends State<WelcomeHomeScreen>
       _stopE = false;
     });
     Future.delayed(const Duration(seconds: 2)).then(
-      (value) {
+      (value) async {
         if (_isLongPressed) {
           _controller.forward();
+          await PrefService.setValue(PrefKey.welcomeScreen, true);
+
           Future.delayed(const Duration(seconds: 1)).then((value) {
             return Get.offAll(() => MotivationalMessageScreen(
                   skip: true,

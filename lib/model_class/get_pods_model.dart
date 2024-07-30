@@ -49,6 +49,9 @@ class AudioData {
   int? v;
   int? rating;
   bool? isPaid;
+  String? gName;
+  String? gDescription;
+  String? gExpertName;
 
   AudioData({
     this.isBookmarked,
@@ -70,7 +73,9 @@ class AudioData {
     this.updatedAt,
     this.v,
     this.rating,
-    this.isPaid
+    this.isPaid,
+    this.gDescription,
+    this.gExpertName,this.gName
   });
 
   factory AudioData.fromJson(Map<String, dynamic> json) => AudioData(
@@ -94,6 +99,9 @@ class AudioData {
     v: json["__v"],
     rating: json["rating"],
     isPaid: json["isPaid"],
+    gExpertName: json["g_expertName"],
+    gDescription: json["g_description"],
+    gName: json["g_name"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -117,6 +125,9 @@ class AudioData {
     "__v": v,
     "rating": rating,
     "isPaid": isPaid,
+    "g_name": gName,
+    "g_description": gDescription,
+    "g_expertName": gExpertName,
   };
 }
 

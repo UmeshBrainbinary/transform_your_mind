@@ -42,6 +42,8 @@ class AffirmationData {
   DateTime? createdAt;
   DateTime? updatedAt;
   int? v;
+  String? gName;
+  String? gDescription;
 
   AffirmationData({
     this.userLiked,
@@ -57,6 +59,8 @@ class AffirmationData {
     this.createdAt,
     this.updatedAt,
     this.v,
+    this.gName,
+    this.gDescription
   });
 
   factory AffirmationData.fromJson(Map<String, dynamic> json) => AffirmationData(
@@ -73,6 +77,8 @@ class AffirmationData {
     createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
     updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
     v: json["__v"],
+    gName: json["g_name"],
+    gDescription: json["g_description"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -88,7 +94,8 @@ class AffirmationData {
     "audioFile": audioFile,
     "createdAt": createdAt?.toIso8601String(),
     "updatedAt": updatedAt?.toIso8601String(),
-    "__v": v,
+    "g_name": gName,
+    "g_description": gDescription,
   };
 }
 

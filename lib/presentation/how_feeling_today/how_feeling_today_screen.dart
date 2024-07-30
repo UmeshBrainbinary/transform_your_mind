@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:transform_your_mind/core/app_export.dart';
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -195,31 +196,13 @@ class _HowFeelingTodayScreenState extends State<HowFeelingTodayScreen> {
                 onTap: () async {
                   FocusScope.of(context).unfocus();
                   PrefService.setValue(PrefKey.morningQuestion, true);
-                  Get.to(() => StressQuestions());
-                  /*  if (feelController.howDoYouIndex == -1) {
-                    showSnackBarError(
-                        context, "Please select how do you feel right now?");
-                  } else if (feelController.whatIsYourMind.text.isEmpty) {
-                    showSnackBarError(context,
-                        "Please write what is on your mind at a moment?");
-                  } else if (feelController.particularChallenge.text.isEmpty) {
-                    showSnackBarError(
-                        context, "Please write particular challenge");
-                  } else if (feelController.feelPhysically == -1) {
-                    showSnackBarError(
-                        context, "Please select how do you feel Physically?");
-                  } else if (feelController.notFeelGood.text.isEmpty) {
-                    showSnackBarError(
-                        context, "Please write why doesn't feel good?");
-                  } else if (feelController.whatThought.text.isEmpty) {
-                    showSnackBarError(context,
-                        "Please write what thought id going your mind?");
-                  } else if (feelController.personalGoal.text.isEmpty) {
-                    showSnackBarError(
-                        context, "Please write your personal goals today?");
-                  } else {
+                  if(controller.howDoYouIndex!=-1){
+                    await controller.setQuestions("mood");
 
-                  }*/
+                  }else{
+                    showSnackBarError(context, "pleaseSelectHowAreYouFelling".tr);
+                  }
+
                 },
               ),
 
