@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
-import 'package:http/http.dart' as http;
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart' as http;
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
@@ -291,10 +292,16 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
                   child: Container(
                     height: 42,
                     width: 42,
+                    padding: const EdgeInsets.only(left: 8),
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(9),
-                        color: ColorConstant.white.withOpacity(0.15)),
-                    child: const Icon(Icons.close, color: Colors.white),
+                        borderRadius: BorderRadius.circular(5),
+                        color: ColorConstant.white),
+                    child: const Center(
+                        child: Icon(
+                      Icons.arrow_back_ios,
+                      color: Colors.black,
+                      size: 20,
+                    )),
                   ),
                 ),
               ),

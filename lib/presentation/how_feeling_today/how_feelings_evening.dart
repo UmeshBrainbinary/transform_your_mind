@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:syncfusion_flutter_core/theme.dart';
-import 'package:transform_your_mind/core/common_widget/mood_slider/src/slider.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
-import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -12,10 +9,7 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
-import 'package:transform_your_mind/presentation/how_feeling_today/evening_stress.dart';
 import 'package:transform_your_mind/presentation/how_feeling_today/how_feeling_evening_controller.dart';
-import 'package:transform_your_mind/presentation/how_feeling_today/how_feelings_controller.dart';
-import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
@@ -238,8 +232,13 @@ class _HowFeelingsEveningState extends State<HowFeelingsEvening> {
                   onTap: () async {
                     FocusScope.of(context).unfocus();
                     PrefService.setValue(PrefKey.morningQuestion, true);
-                 howFeelingsController.setQuestions("stress");
-                    /*  if (feelController.howDoYouIndex == -1) {
+                        if (howFeelingsController.howDoYouIndex != -1) {
+                          howFeelingsController.setQuestions("mood");
+                        } else {
+                          showSnackBarError(
+                              context, "pleaseAddHowAreYouFeeling".tr);
+                        }
+                        /*  if (feelController.howDoYouIndex == -1) {
                     showSnackBarError(
                         context, "Please select how do you feel right now?");
                   } else if (feelController.whatIsYourMind.text.isEmpty) {

@@ -8,8 +8,11 @@ import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/model_class/get_user_model.dart';
 import 'package:transform_your_mind/model_class/guide_model.dart';
+import 'package:transform_your_mind/model_class/mood_chart_model.dart';
 import 'package:transform_your_mind/model_class/privacy_model.dart';
 import 'package:transform_your_mind/model_class/progress_model.dart';
+import 'package:transform_your_mind/model_class/sleep_chart_model.dart';
+import 'package:transform_your_mind/model_class/stress_chart_model.dart';
 
 class ProfileController extends GetxController {
   RxString? mail = "".obs;
@@ -82,7 +85,7 @@ class ProfileController extends GetxController {
       var request = http.Request(
         'GET',
         Uri.parse(
-          EndPoints.getGuideApi,
+          "${EndPoints.getGuideApi}?lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}",
         ),
       );
 
@@ -149,6 +152,95 @@ class ProfileController extends GetxController {
         final responseBody = await response.stream.bytesToString();
 
         privacyModel = privacyModelFromJson(responseBody);
+        update();
+      } else {
+        debugPrint(response.reasonPhrase);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  MoodChartModel moodChartModel = MoodChartModel();
+  SleepChartModel sleepChartModel = SleepChartModel();
+  StressChartModel stressChartModel = StressChartModel();
+
+  getMoodChart() async {
+    try {
+      var headers = {
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+      };
+      var request = http.Request(
+        'GET',
+        Uri.parse(
+          "${EndPoints.moodChart}${PrefService.getString(PrefKey.userId)}?lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}",
+        ),
+      );
+
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        final responseBody = await response.stream.bytesToString();
+
+        moodChartModel = moodChartModelFromJson(responseBody);
+        debugPrint("moodChartModel get mood data $moodChartModel");
+      } else {
+        debugPrint(response.reasonPhrase);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  getSleepChart() async {
+    try {
+      var headers = {
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+      };
+      var request = http.Request(
+        'GET',
+        Uri.parse(
+          "${EndPoints.sleepChart}${PrefService.getString(PrefKey.userId)}?lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}",
+        ),
+      );
+
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        final responseBody = await response.stream.bytesToString();
+
+        sleepChartModel = sleepChartModelFromJson(responseBody);
+        debugPrint("moodChartModel get mood data $sleepChartModel");
+      } else {
+        debugPrint(response.reasonPhrase);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  getStressChart() async {
+    try {
+      var headers = {
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+      };
+      var request = http.Request(
+        'GET',
+        Uri.parse(
+          "${EndPoints.stressChart}${PrefService.getString(PrefKey.userId)}?lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}",
+        ),
+      );
+
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        final responseBody = await response.stream.bytesToString();
+
+        stressChartModel = stressChartModelFromJson(responseBody);
+        debugPrint("moodChartModel get mood data $stressChartModel");
       } else {
         debugPrint(response.reasonPhrase);
       }

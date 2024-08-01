@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:http/http.dart' as http;
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
@@ -10,6 +11,7 @@ import 'package:transform_your_mind/core/service/http_service.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
+import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
@@ -33,10 +35,10 @@ class PersonalizationScreenScreen extends StatefulWidget {
 class _PersonalizationScreenScreenState
     extends State<PersonalizationScreenScreen> {
   PersonalizationController personalizationController =
-      Get.put(PersonalizationController());
+      Get.find<PersonalizationController>();
 
   ThemeController themeController = Get.find<ThemeController>();
-  String currentLanguage = 'en-US';
+  String currentLanguage = '';
   double height  = Get.height;
   double width   = Get.width;
   bool checkInternetCheck = false;
@@ -47,20 +49,54 @@ class _PersonalizationScreenScreenState
     debugPrint("width ^^^^^^^^^^^^^^^^^^^^^^ $width");
     super.initState();
   }
-
   checkInternet() async {
     if (await isConnected()) {
       setState(() {
         checkInternetCheck = true;
       });
 
-      await personalizationController.getScreen();
+      currentLanguage = PrefService.getString(PrefKey.language).isEmpty
+          ? "en-US"
+          : PrefService.getString(PrefKey.language);
       setState(() {});
     } else {
       setState(() {
         checkInternetCheck = false;
       });
       showSnackBarError(Get.context!, "noInternet".tr);
+    }
+  }
+
+
+  updateUser(
+    BuildContext context,
+  ) async {
+    try {
+      var headers = {
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+      };
+      var request = http.MultipartRequest(
+          'POST',
+          Uri.parse(
+              '${EndPoints.updateUser}${PrefService.getString(PrefKey.userId)}'));
+      request.fields.addAll({
+        'language': PrefService.getString(PrefKey.language).isEmpty
+            ? "english"
+            : PrefService.getString(PrefKey.language) != "en-US"
+                ? "german"
+                : "english"
+      });
+
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+      } else {
+        debugPrint(response.reasonPhrase);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 
@@ -111,12 +147,13 @@ class _PersonalizationScreenScreenState
                                   : Dimens.d120.spaceHeight,
                           Text(
                             checkInternetCheck
-                                ? currentLanguage == 'en-US'
+                                ? currentLanguage == 'en-US' ||
+                                        currentLanguage == ""
                                     ? controller
                                         .getScreenModel.data?.first.quote??""
                                     : controller
                                         .getScreenModel.data?.first.gQuote??""
-                                : "changeYour".tr,
+                                : "".tr,
                             textAlign: TextAlign.center,
                             style: Style.nunitoSemiBold(
                                 fontSize: 24, color: ColorConstant.white),
@@ -128,8 +165,10 @@ class _PersonalizationScreenScreenState
                                 padding: const EdgeInsets.only(right: 30),
                                 child: Text(
                                   checkInternetCheck
-                                      ? currentLanguage == 'en-US'?controller.getScreenModel.data?.first
-                                              .authorName ??
+                                      ? currentLanguage == 'en-US' ||
+                                              currentLanguage == ""
+                                          ? controller.getScreenModel.data
+                                                  ?.first.authorName ??
                                           "":controller.getScreenModel.data?.first
                                       .gAuthorName??""
                                       : "Norman Vincent Peale",
@@ -155,7 +194,9 @@ class _PersonalizationScreenScreenState
                                           PrefService.getString(
                                               PrefKey.language);
                                     });
-                                  },
+
+                                await updateUser(context);
+                              },
                                   child: Container(
                                     height: 46,
                                     margin: const EdgeInsets.symmetric(
@@ -221,7 +262,8 @@ class _PersonalizationScreenScreenState
                                           PrefService.getString(
                                               PrefKey.language);
                                     });
-                                  },
+                                await updateUser(context);
+                              },
                                   child: Container(
                                     height: 46,
                                     margin: const EdgeInsets.symmetric(

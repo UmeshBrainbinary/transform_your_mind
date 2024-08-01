@@ -50,13 +50,6 @@ class _PositiveScreenState extends State<PositiveScreen> {
     super.initState();
   }
 
-  List positiveMoment = [
-    "weekly",
-    "monthly",
-    "3 months ",
-    "6 months",
-    "yearly"
-  ];
 
   searchBookmarks(String query, List bookmarks) {
     return bookmarks

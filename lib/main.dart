@@ -28,7 +28,6 @@ Future<void> main() async {
 
   var detroit = tz.getLocation('Asia/Kolkata');
   tz.setLocalLocation(detroit);
-/*  ConnectivityService().initialize();*/
 
   await PrefService.init();
   SystemChrome.setPreferredOrientations([
@@ -37,9 +36,6 @@ Future<void> main() async {
     Logger.init(kReleaseMode ? LogMode.live : LogMode.debug);
     runApp(const MyApp());
   });
-/*
-  await AndroidAlarmManager.cancel(42);
-*/
 
   await Alarm.init();
 
@@ -71,7 +67,7 @@ class _MyAppState extends State<MyApp> {
     themeController = Get.put(ThemeController(), permanent: true);
     debugPrint("isDarkTheme:- ${PrefService.getBool(PrefKey.isDarkTheme)}");
     themeController.isDarkMode.value = PrefService.getBool(PrefKey.isDarkTheme);
-    setAlarm();
+
     getLanguages();
 
     if (themeController.isDarkMode.isTrue) {
@@ -103,21 +99,6 @@ class _MyAppState extends State<MyApp> {
       badge: true,
       sound: true,
     );
-  }
-  void setAlarm() async {
-/*    DateTime alarmTime = DateTime.now().add(const Duration(minutes: 1)); // Example: Set alarm after 1 minute
-    final alarmSettings = AlarmSettings(
-      id: 42,
-      dateTime: alarmTime,
-      assetAudioPath: 'assets/audio/audio.mp3',
-      loopAudio: true,
-      vibrate: true,
-      volume: 0.8,androidFullScreenIntent: true,
-      fadeDuration: 3.0,
-      notificationTitle: 'This is the title',
-      notificationBody: 'This is the body',
-      enableNotificationOnKill: Platform.isAndroid);
-    await Alarm.set(alarmSettings: alarmSettings,);*/
   }
 
   getLanguages() {

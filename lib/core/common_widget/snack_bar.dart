@@ -1,11 +1,9 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
-import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 
 void showSnackBarError(
@@ -55,10 +53,7 @@ void showSnackBarSuccess(
       Overlay.of(context),
       CustomSnackBar.success(
         backgroundColor: ColorConstant.themeColor,
-        message: msg,icon:Padding(
-          padding: const EdgeInsets.only(top: 20),
-          child: SvgPicture.asset(ImageConstant.popupCheck),
-        ) ,
+        message: msg,
         textStyle:  TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: Dimens.d14,

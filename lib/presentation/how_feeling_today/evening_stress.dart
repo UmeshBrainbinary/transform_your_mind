@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -405,8 +406,12 @@ class EveningStress extends StatelessWidget {
                     FocusScope.of(context).unfocus();
                     PrefService.setValue(PrefKey.eveningQuestion, true);
                     FocusScope.of(context).unfocus();
-                    controller.setQuestions("sleep");
-
+                    if (controller.selectedOptionStress!.isNotEmpty) {
+                      controller.setQuestions("sleep");
+                    } else {
+                      showSnackBarError(
+                          context, "pleaseSetDidYouFeelStressed".tr);
+                    }
                     /*  if (feelController.howDoYouIndex == -1) {
                     showSnackBarError(
                         context, "Please select how do you feel right now?");

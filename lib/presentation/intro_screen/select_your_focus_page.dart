@@ -61,7 +61,8 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
     };
     var request = http.Request(
       'GET',
-      Uri.parse('${EndPoints.baseUrl}${EndPoints.getCategory}0'),
+      Uri.parse(
+          '${EndPoints.baseUrl}${EndPoints.getCategory}0&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}'),
     );
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
@@ -208,9 +209,11 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
     setState(() {
       tag.isSelected = !tag.isSelected;
       if (tag.isSelected) {
-        selectedTagNames.add(tag.englishName);
+        selectedTagNames
+            .add(currentLanguage == "en-US" ? tag.englishName : tag.germanName);
       } else {
-        selectedTagNames.remove(tag.englishName);
+        selectedTagNames.remove(
+            currentLanguage == "en-US" ? tag.englishName : tag.germanName);
       }
     });
   }
@@ -279,7 +282,9 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
                               return GestureDetector(
                                 onTap: () => _onTagTap(tag),
                                 child: CustomChip(
-                                  label: tag.germanName,
+                                  label: currentLanguage == "en-US"
+                                      ? tag.englishName
+                                      : tag.germanName,
                                   isChipSelected: tag.isSelected,
                                 ),
                               );

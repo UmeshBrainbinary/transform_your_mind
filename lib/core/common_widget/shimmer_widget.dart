@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 
@@ -53,4 +54,12 @@ class ShimmerWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+
+Widget shimmerCommon({double? h,double? w}){
+  return ShimmerWidget.rectangular(
+    height: h??76,baseColor: Colors.grey.withOpacity(0.5),
+    width: w??Get.width,
+  );
 }

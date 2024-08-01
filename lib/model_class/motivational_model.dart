@@ -39,6 +39,7 @@ class MotivationalData {
   DateTime? createdAt;
   DateTime? updatedAt;
   int? v;
+  String? gMessage;
 
   MotivationalData({
     this.userLiked,
@@ -51,6 +52,7 @@ class MotivationalData {
     this.createdAt,
     this.updatedAt,
     this.v,
+    this.gMessage,
   });
 
   factory MotivationalData.fromJson(Map<String, dynamic> json) => MotivationalData(
@@ -64,7 +66,8 @@ class MotivationalData {
     createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
     updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
     v: json["__v"],
-  );
+        gMessage: json["g_message"],
+      );
 
   Map<String, dynamic> toJson() => {
     "userLiked": userLiked,
@@ -77,5 +80,6 @@ class MotivationalData {
     "createdAt": createdAt?.toIso8601String(),
     "updatedAt": updatedAt?.toIso8601String(),
     "__v": v,
-  };
+        "g_message": gMessage,
+      };
 }

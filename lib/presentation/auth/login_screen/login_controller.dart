@@ -11,8 +11,6 @@ import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/model_class/common_model.dart';
 import 'package:transform_your_mind/model_class/get_user_model.dart';
 import 'package:transform_your_mind/model_class/login_model.dart';
-import 'package:transform_your_mind/presentation/how_feeling_today/how_feeling_today_screen.dart';
-import 'package:transform_your_mind/presentation/how_feeling_today/how_feelings_evening.dart';
 import 'package:transform_your_mind/presentation/intro_screen/select_your_affirmation_focus_page.dart';
 import 'package:transform_your_mind/presentation/welcome_screen/welcome_screen.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
@@ -79,12 +77,9 @@ class LoginController extends GetxController {
         await PrefService.setValue(PrefKey.password, passwordController.text);
         loader.value = false;
 
-        // Get.toNamed(AppRoutes.dashBoardScreen);
-
         final responseBody = await response.stream.bytesToString();
 
         loginModel = loginModelFromJson(responseBody);
-        // if(loginModel.data.)
 
         debugPrint("loginModel $loginModel");
         debugPrint("token ${loginModel.meta!.token}");
@@ -94,6 +89,7 @@ class LoginController extends GetxController {
         PrefService.setValue(PrefKey.userId, loginModel.data!.id);
         PrefService.setValue(PrefKey.name,loginModel.data?.name??"");
         PrefService.setValue(PrefKey.userImage,loginModel.data?.userProfile??"");
+        await updateUser(context);
         await getUSer(context, greeting);
       } else if (response.statusCode == 400) {
         loader.value = false;
@@ -141,18 +137,52 @@ class LoginController extends GetxController {
           return  SelectYourAffirmationFocusPage(isFromMe: false,setting: false,);
         },));
         } else {
-          /*PrefService.getBool(PrefKey.morningQuestion) == false &&
-                  greeting == "goodMorning"
-              ? Get.offAll(() => const HowFeelingTodayScreen())
-              : PrefService.getBool(PrefKey.eveningQuestion) == false &&
-                      greeting == "goodEvening"
-                  ? Get.offAll(() => const HowFeelingsEvening())
-                  :*/   PrefService.getBool(PrefKey.welcomeScreen)==false?
-          Get.offAll(const WelcomeHomeScreen()): Get.offAllNamed(AppRoutes.dashBoardScreen);
+          getUserModel.data?.welcomeScreen ?? false == false
+              ? Get.offAll(const WelcomeHomeScreen())
+              : Get.offAllNamed(AppRoutes.dashBoardScreen);
         }
+        await PrefService.setValue(PrefKey.language,
+            getUserModel.data!.language == "english" ? "en-US" : "de-DE");
+
         update();
         await PrefService.setValue(
             PrefKey.userImage, getUserModel.data?.userProfile ?? "");
+      } else {
+        debugPrint(response.reasonPhrase);
+      }
+    } catch (e) {
+      loader.value = false;
+
+      debugPrint(e.toString());
+    }
+    update(["home"]);
+  }
+
+  updateUser(
+    BuildContext context,
+  ) async {
+    try {
+      var headers = {
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+      };
+      var request = http.MultipartRequest(
+          'POST',
+          Uri.parse(
+              '${EndPoints.updateUser}${PrefService.getString(PrefKey.userId)}'));
+      request.fields.addAll({
+        'language': PrefService.getString(PrefKey.language).isEmpty
+            ? "english"
+            : PrefService.getString(PrefKey.language) != "en-US"
+                ? "german"
+                : "english"
+      });
+
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        update();
       } else {
         debugPrint(response.reasonPhrase);
       }

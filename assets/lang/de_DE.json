@@ -291,6 +291,9 @@
   "howYourRate": "Wie würden Sie Ihre Erfahrung bewerten?",
   "yourGratitude": "Ihre Dankbarkeit",
   "pleaseEnterDate": "Das Datumsfeld ist erforderlich.",
+  "chooseAOne": "Wählen Sie mindestens ein Interesse",
+  "yourAffirmationsSelected": "Ihre Affirmationen wurden ausgewählt",
+
   "pleaseEnterTitle": "Das Titelfeld ist erforderlich.",
   "pleaseEnterDescription": "Das Feld Beschreibung ist erforderlich.",
   "today'sAffirmation": "heute  Affirmationen",
@@ -602,6 +605,12 @@
   "pleaseSelectWhatDoYouAchieve": "Bitte wählen Sie aus, was Sie heute erreichen möchten.",
   "pleaseSelectDidYouSleep": "Bitte wählen Sie Haben Sie letzte Nacht gut geschlafen?",
   "pleaseSelectDoYouFeel": "Bitte auswählen: Fühlen Sie Stress?",
+  "pleaseAddHowAreYouFeeling": "Bitte fügen Sie hinzu, wie es Ihnen heute Abend geht.",
+  "pleaseSetDidYouFeelStressed": "Bitte stellen Sie ein: Fühlten Sie sich heute gestresst?",
+  "pleaseAddDoYou": "Bitte fügen Sie hinzu: Erreichen Sie Ihr heutiges Ziel?",
+  "mood": "Stimmung",
+  "stress": "Stress",
+  "pleaseAddYourGratitude": "Bitte fügen Sie Ihre Dankbarkeit hinzu",
 
   "StartWithExercise": "Also, lass uns mit einer kleinen Übung beginnen: Atme - dann genieße deine tägliche Routine, um dein bestes Leben zu führen"
 

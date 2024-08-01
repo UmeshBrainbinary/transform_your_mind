@@ -23,7 +23,6 @@ class HomeController extends GetxController {
   RxList<AudioData> audioData = <AudioData>[].obs;
   GetPodsModel getPodsModel = GetPodsModel();
   RxBool loader = false.obs;
-  List<String> bookmarkedList = [];
 
   DateTime todayDate = DateTime.now();
   List<bool> affirmationCheckList = [];
@@ -45,7 +44,6 @@ class HomeController extends GetxController {
   AffirmationModel todayAffirmation = AffirmationModel();
   List<AffirmationData>? todayAList = [];
   List<TodayGData>? todayGList = [];
-  TodayGratitude todayGratitude = TodayGratitude();
 
   final AudioPlayer _audioPlayer = AudioPlayer();
 
@@ -60,7 +58,8 @@ class HomeController extends GetxController {
 
       var request = http.Request(
           'GET',
-          Uri.parse('${EndPoints.getPod}?userId=${PrefService.getString(PrefKey.userId)}'));
+          Uri.parse(
+              '${EndPoints.getPod}?userId=${PrefService.getString(PrefKey.userId)}&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}'));
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();
 
@@ -103,7 +102,6 @@ class HomeController extends GetxController {
   }
 
   getUSer() async {
-    bookmarkedList = [];
     try {
       var headers = {
         'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
@@ -122,14 +120,11 @@ class HomeController extends GetxController {
         final responseBody = await response.stream.bytesToString();
 
         getUserModel = getUserModelFromJson(responseBody);
-        for (int i = 0; i < getUserModel.data!.bookmarkedPods!.length; i++) {
-          bookmarkedList.add(getUserModel.data!.bookmarkedPods![i].toString());
-        }
+
         await PrefService.setValue(
             PrefKey.userImage, getUserModel.data?.userProfile ?? "");
 
         update(["home"]);
-        debugPrint("Bookmark List $bookmarkedList");
       } else {
         debugPrint(response.reasonPhrase);
       }
@@ -150,7 +145,7 @@ class HomeController extends GetxController {
     var request = http.Request(
         'GET',
         Uri.parse(
-            '${EndPoints.baseUrl}get-pod?isBookmarked=true&userId=${PrefService.getString(PrefKey.userId)}'));
+            '${EndPoints.baseUrl}get-pod?isBookmarked=true&userId=${PrefService.getString(PrefKey.userId)}&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}'));
 
     request.headers.addAll(headers);
 
@@ -187,7 +182,7 @@ class HomeController extends GetxController {
     var request = http.Request(
         'GET',
         Uri.parse(
-            '${EndPoints.getPod}?isRecentlyPlayed=true&userId=${PrefService.getString(PrefKey.userId)}'));
+            '${EndPoints.getPod}?isRecentlyPlayed=true&userId=${PrefService.getString(PrefKey.userId)}&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}'));
 
     request.headers.addAll(headers);
 
@@ -214,7 +209,7 @@ class HomeController extends GetxController {
     var request = http.Request(
         'GET',
         Uri.parse(
-            '${EndPoints.todayAffirmation}${PrefService.getString(PrefKey.userId)}'));
+            '${EndPoints.todayAffirmation}${PrefService.getString(PrefKey.userId)}&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}'));
 
     request.headers.addAll(headers);
 
@@ -247,7 +242,7 @@ class HomeController extends GetxController {
     var request = http.Request(
         'GET',
         Uri.parse(
-            '${EndPoints.randomFeedback}${PrefService.getString(PrefKey.userId)}'));
+            '${EndPoints.randomFeedback}${PrefService.getString(PrefKey.userId)}&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}'));
 
     request.headers.addAll(headers);
 
@@ -264,47 +259,7 @@ class HomeController extends GetxController {
     update(["home"]);
   }
 
-  getTodayGratitude() async {
 
-    gratitudeCheckList = [];
-    update(["home"]);
-
-    var headers = {
-      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
-    };
-    var request = http.Request(
-        'GET',
-        Uri.parse(
-            '${EndPoints.todayGratitude}${PrefService.getString(PrefKey.userId)}'));
-
-    request.headers.addAll(headers);
-
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      loader.value = false;
-
-      final responseBody = await response.stream.bytesToString();
-      todayGratitude = todayGratitudeFromJson(responseBody);
-      todayGList = todayGratitude.data;
-      if (todayGratitude.data != null) {
-        List.generate(
-          todayGratitude.data!.length,
-          (index) => gratitudeCheckList.add(false),
-        );
-      }
-
-      update(["home"]);
-      loader.value = false;
-    } else {
-      loader.value = false;
-
-      debugPrint(response.reasonPhrase);
-    }
-    loader.value = false;
-
-    update(["home"]);
-  }
 
   updateTodayData(id, url) async {
     loader.value=true;

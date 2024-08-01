@@ -53,7 +53,6 @@ class AddAffirmationPage extends StatefulWidget {
 
 class _AddAffirmationPageState extends State<AddAffirmationPage>
     with SingleTickerProviderStateMixin {
-  final TextEditingController titleController = TextEditingController();
   ValueNotifier<int> currentLength = ValueNotifier(0);
 
   final TextEditingController descController = TextEditingController();
@@ -67,7 +66,6 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
   int maxLengthDesc = 2000;
   String? urlImage;
   File? selectedImage;
-  late final AnimationController _lottieIconsController;
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool loader = false;
   List<String> _speechDataList = [];
@@ -77,17 +75,12 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
     _requestMicrophonePermission();
     _speech = stt.SpeechToText();
 
-    if (widget.title != null) {
-      setState(() {
-        titleController.text = widget.title.toString();
-      });
-    }
+
     if (widget.des != null) {
       setState(() {
         descController.text = widget.des.toString();
       });
     }
-    _lottieIconsController = AnimationController(vsync: this);
 
     super.initState();
   }
@@ -121,8 +114,12 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
     var request = http.MultipartRequest('POST', Uri.parse(EndPoints.addAffirmation));
     request.fields.addAll({
       'created_by':PrefService.getString(PrefKey.userId),
-      'name': titleController.text.trim(),
-      'description': descController.text.trim()
+      'description': descController.text.trim(),
+      'lang': PrefService.getString(PrefKey.language).isEmpty
+          ? "english"
+          : PrefService.getString(PrefKey.language) != "en-US"
+              ? "german"
+              : "english"
     });
 
     request.headers.addAll(headers);
@@ -158,9 +155,13 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
     };
     var request = http.MultipartRequest('POST', Uri.parse('${EndPoints.baseUrl}${EndPoints.updateAffirmation}${widget.id}'));
     request.fields.addAll({
-      "name": titleController.text,
       "description": descController.text,
-      "created_by": PrefService.getString(PrefKey.userId)
+      "created_by": PrefService.getString(PrefKey.userId),
+      'lang': PrefService.getString(PrefKey.language).isEmpty
+          ? "english"
+          : PrefService.getString(PrefKey.language) != "en-US"
+              ? "german"
+              : "english"
     });
 
     request.headers.addAll(headers);
@@ -252,19 +253,6 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Dimens.d20.spaceHeight,
-                              CommonTextField(
-                                  hintText: "enterTitle".tr,
-                                  labelText: "title".tr,
-                                  controller: titleController,
-                                  focusNode: titleFocus,
-                                  prefixLottieIcon: ImageConstant.lottieTitle,
-                                  validator: (value) {
-                                    if (value!.trim() == "") {
-                                      return "pleaseEnterTitle".tr;
-                                    }
-                                    return null;
-                                  }),
-                              Dimens.d16.spaceHeight,
                               Stack(
                                 children: [
                                   Stack(alignment: Alignment.topRight,

@@ -13,6 +13,7 @@ import 'package:transform_your_mind/presentation/how_feeling_today/evening_stres
 
 class HowFeelingEveningController extends GetxController{
   TextEditingController whatCanYouDo = TextEditingController();
+  TextEditingController sleep = TextEditingController();
   TextEditingController isThereSomethingThat = TextEditingController();
   TextEditingController whatCouldHelpMaintain = TextEditingController();
   TextEditingController canYouDescribe = TextEditingController();
@@ -35,12 +36,14 @@ class HowFeelingEveningController extends GetxController{
   int howDoYouIndexSleep = -1;
   int whatHelped = -1;
   int whatHelpedStress = -1;
+  int whatHelpedStressAchieve = -1;
   int whatCausedYourStress = -1;
   int whatHelpedStressEvening = -1;
   int feelPhysically = -1;
   int selectedIndex = -1;
   String? selectedOption = '';
   String? selectedOptionStress = '';
+  String? selectedOptionStressAchieve = '';
   String? selectedOptionStressEvening = '';
   String? selectedDidYouSleepWell = '';
   String? selectedOptionForSleep = '';
@@ -129,43 +132,76 @@ class HowFeelingEveningController extends GetxController{
          "type": "mood",
          "created_by": PrefService.getString(PrefKey.userId),
          "eveningFeeling":howDoYouIndex==0?"good":howDoYouIndex==1?"neutral":"bad",
-         "positivelyEffected": selectedDidYouSleepWell!.isEmpty?null:selectedDidYouSleepWell,
-         "describeThoughts":canYouDescribe.text.trim(),
+          "positivelyEffected": selectedDidYouSleepWell!.isEmpty
+              ? null
+              : selectedDidYouSleepWell!.toLowerCase(),
+          "describeThoughts":canYouDescribe.text.trim(),
          "react": howDidYouReactToIt.text.trim(),
          "positiveExperiences": whatCouldHelp.text.trim(),
-         "improvedMood": "",
-         "maintainMood": "",
-         "feelBetter": "",
-         "affectedMood": "",
-         "strategies": "",
-       };
-      } else if (setting == "stress") {
-         moodData = {
+          "improvedMood": isThereSomethingThat.text.trim(),
+          "maintainMood": whatCouldHelpMaintain.text.trim(),
+          "feelBetter": whatCouldHelp.text.trim(),
+          "affectedMood": isThereSomethingThat.text.trim(),
+          "strategies": whatCouldHelp.text.trim(),
+        };
+      } else if (setting == "sleep") {
+        moodData = {
            "type": "stress",
            "created_by": PrefService.getString(PrefKey.userId),
-           "eveningStress": "required when type stress",
-           "causedStress": "",
-           "respondStress": "",
-           "manaageStress": "",
-           "futureStress": "",
-           "handleStress": "",
-           "stressfulSituations": "",
-           "handleSituation": "",
-           "stayCalm": "",
-         };
+          "eveningStress": selectedOptionStress!.isEmpty
+              ? null
+              : selectedOptionStress!.toLowerCase(),
+          "causedStress": whatCausedYourStress == -1
+              ? null
+              : whatCausedYourStress == 0
+                  ? "work"
+                  : whatCausedYourStress == 1
+                      ? "family"
+                      : whatCausedYourStress == 2
+                          ? "relationship"
+                          : whatCausedYourStress == 3
+                              ? "health"
+                              : whatCausedYourStress == 4
+                                  ? "finances"
+                                  : "other",
+          "respondStress": whatHelpedStress == -1
+              ? null
+              : whatHelpedStress == 0
+                  ? "well"
+                  : whatHelpedStress == 1
+                      ? "moderately"
+                      : "poorly",
+          "manaageStress": whatHelpedManage.text.trim(),
+          "futureStress": areThere.text.trim(),
+          "handleStress": canYouDescribeHow.text.trim(),
+          "stressfulSituations": selectedOptionStress!.isEmpty
+              ? null
+              : selectedOptionStress!.toLowerCase(),
+          "handleSituation": canYouDescribeHow.text.trim(),
+          "stayCalm": whatHelpedStay.text.trim(),
+        };
       } else {
          moodData = {
            "type": "motivation",
            "created_by": PrefService.getString(PrefKey.userId),
-           "achieveGoal": "required when type motivation",
-           "helpedAchieve": "",
-           "particularlyMotivated": "",
-           "rewardyourself": "",
-           "preventedGoal": "",
-           "differentlyAchieve": "",
-           "support": ""
-         };
-
+          "achieveToday": selectedOptionStressAchieve!.isEmpty
+              ? null
+              : selectedOptionStressAchieve!.toLowerCase(),
+          "helpedAchieve": whatHelped == -1
+              ? null
+              : whatHelped == 0
+                  ? "planning"
+                  : whatHelped == 1
+                      ? "support"
+                      : whatHelped == 2
+                          ? "motivation"
+                          : "other",
+          "particularlyMotivated": whatParticularly.text.trim(),
+          "rewardyourself": howWill.text.trim(),
+          "preventedGoal": null,
+          "differentlyAchieve": whatCanYouDo.text.trim(),
+          "support": sleep.text.trim()
+        };
       }
 
       var headers = {
@@ -181,7 +217,7 @@ class HowFeelingEveningController extends GetxController{
 
       http.StreamedResponse response = await request.send();
       if (response.statusCode == 200 || response.statusCode == 201) {
-        if(setting == "stress"){
+        if (setting == "mood") {
           Get.to(() =>  EveningStress());
         }else if(setting == "sleep"){
           Get.to(() =>  EveningMotivational());

@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:transform_your_mind/core/app_export.dart';
+import 'package:transform_your_mind/core/common_api/common_api.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/shimmer_widget.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
@@ -14,6 +15,7 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/model_class/common_model.dart';
+import 'package:transform_your_mind/model_class/get_user_model.dart';
 import 'package:transform_your_mind/model_class/gratitude_all_data.dart';
 import 'package:transform_your_mind/model_class/gratitude_model.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_gratitude_page.dart';
@@ -51,8 +53,10 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
   bool loader = false;
   @override
   void initState() {
-    DateFormat formatter = DateFormat('MMMM yyyy');
-    lastMonthName = formatter.format(now.subtract(const Duration(days: 30)));
+    setGetApi();
+    DateTime lastMonth = DateTime(now.year, now.month - 1, 1);
+    lastMonthName = DateFormat('MMMM yyyy').format(lastMonth);
+
     _setGreetingBasedOnTime();
     getGratitude(DateFormat('dd/MM/yyyy').format(now));
     getGratitudeAll();
@@ -72,7 +76,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
     var request = http.Request(
         'GET',
         Uri.parse(
-            '${EndPoints.baseUrl}get-gratitude?created_by=${PrefService.getString(PrefKey.userId)}&date=$date'));
+            '${EndPoints.baseUrl}get-gratitude?created_by=${PrefService.getString(PrefKey.userId)}&date=$date&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}'));
 
     request.headers.addAll(headers);
 
@@ -105,10 +109,10 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
     String url = "";
     if (dateGratitude != null) {
       url =
-          '${EndPoints.baseUrl}get-gratitude?created_by=${PrefService.getString(PrefKey.userId)}&date=$dateGratitude';
+          '${EndPoints.baseUrl}get-gratitude?created_by=${PrefService.getString(PrefKey.userId)}&date=$dateGratitude&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}';
     } else {
       url =
-          '${EndPoints.baseUrl}get-gratitude?created_by=${PrefService.getString(PrefKey.userId)}';
+          '${EndPoints.baseUrl}get-gratitude?created_by=${PrefService.getString(PrefKey.userId)}&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}';
     }
     var request = http.Request('GET', Uri.parse(url));
 
@@ -124,13 +128,27 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
         lastMonthData = gratitudeAllData.data!;
       } else {
         final now = DateTime.now();
+        final firstDayOfCurrentMonth = DateTime(now.year, now.month, 1);
+        final lastDayOfPreviousMonth =
+            firstDayOfCurrentMonth.subtract(const Duration(days: 1));
+        final firstDayOfPreviousMonth = DateTime(
+            lastDayOfPreviousMonth.year, lastDayOfPreviousMonth.month, 1);
+
+        lastMonthData = gratitudeAllData.data
+                ?.where((element) =>
+                    element.createdAt != null &&
+                    element.createdAt!.isAfter(firstDayOfPreviousMonth) &&
+                    element.createdAt!.isBefore(firstDayOfCurrentMonth))
+                .toList() ??
+            [];
+        /* final now = DateTime.now();
         final lastMonth = now.subtract(const Duration(days: 30));
         lastMonthData = gratitudeAllData.data
                 ?.where((element) =>
                     element.createdAt != null &&
                     element.createdAt!.isAfter(lastMonth))
                 .toList() ??
-            [];
+            [];*/
       }
 
       debugPrint("gratitude Model ${gratitudeModel.data} $lastMonthData");
@@ -173,6 +191,42 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
     }
   }
 
+  setGetApi() async {
+    await getUSer(context);
+  }
+  GetUserModel getUserModel = GetUserModel();
+  getUSer(BuildContext context) async {
+    try {
+      var headers = {
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+      };
+      var request = http.Request(
+        'GET',
+        Uri.parse(
+          "${EndPoints.getUser}${PrefService.getString(PrefKey.userId)}",
+        ),
+      );
+
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        final responseBody = await response.stream.bytesToString();
+
+        getUserModel = getUserModelFromJson(responseBody);
+      setState(() {
+
+      });
+
+      } else {
+        debugPrint(response.reasonPhrase);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -181,7 +235,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
           select = false;
         });
       },
-      child: PrefService.getBool(PrefKey.myGratitude) == true
+      child: (getUserModel.data?.myGratitude??false) == true
           ? Stack(
             children: [
               Scaffold(
@@ -265,31 +319,20 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                               )
                             ],
                           ),
-                          Dimens.d35.spaceHeight,
+                       Dimens.d35.spaceHeight,
                             commonText("today'sGratitude".tr),
                             if ((gratitudeModel.data ?? []).isEmpty)
-                              /*loader != true
+                              loader == true
                                   ?  Padding(
-                                    padding: const EdgeInsets.only(left: 10,right: 10,top: 10),
-                                    child: ShimmerWidget.rectangular(
-                                        height: 76,
-                                        width:Get.width,
-                                      ),
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child:  shimmerCommon(),
                                   )
-                                  :*/ Center(
-                                      child: Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SvgPicture.asset(themeController.isDarkMode.isTrue
-                                        ? ImageConstant.darkData
-                                        : ImageConstant.noData),
-                                    Text("dataNotFound".tr,style: Style.gothamMedium(
-                                        fontSize: 24,fontWeight: FontWeight.w700),),
-
-                                  ],
-                                ),
+                                  : Center(
+                                      child:   Padding(
+                                        padding: const EdgeInsets.only(top: 10),
+                                        child: Text("dataNotFound".tr,style: Style.gothamMedium(
+                                            fontSize: 24,fontWeight: FontWeight.w700),),
+                                      ),
                               ),
                           Dimens.d20.spaceHeight,
                           (gratitudeModel.data ?? []).isNotEmpty
@@ -352,7 +395,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                             ),
                                     )
                                 : const SizedBox(),
-                            Dimens.d30.spaceHeight,
+                          (gratitudeModel.data ?? []).isEmpty?const SizedBox(): Dimens.d30.spaceHeight,
                             Row(
                               children: [
                                 commonText(
@@ -409,29 +452,14 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                                       );
                                     },
                                   )
-                                : /*loader == true
-                                    ? const ShimmerWidget.rectangular(
-                                        height: 16,
-                                        width: Dimens.d150,
-                                      )
-                                    :*/ Center(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            SvgPicture.asset(themeController
-                                                    .isDarkMode.isTrue
-                                                ? ImageConstant.darkData
-                                                : ImageConstant.noData),
-                                            Text(
-                                              "dataNotFound".tr,
-                                              style: Style.gothamMedium(
-                                                  fontSize: 24,
-                                                  fontWeight: FontWeight.w700),
-                                            ),
-                                          ],
+                                : loader == true
+                                    ? shimmerCommon()
+                                    : Center(
+                                        child:  Text(
+                                          "dataNotFound".tr,
+                                          style: Style.gothamMedium(
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.w700),
                                         ),
                                       ),
                             Dimens.d50.spaceHeight,
@@ -667,7 +695,8 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
         AppConstants.subscriptionMessage: i10n.journalNoSubscriptionMessage,
       });*/
     } else {
-      await PrefService.setValue(PrefKey.myGratitude, true);
+     await updateApi(context,pKey: "myGratitude");
+     setGetApi();
       dateController.clear();
       Navigator.push(context, MaterialPageRoute(
         builder: (context) {

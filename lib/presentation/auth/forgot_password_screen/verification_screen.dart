@@ -157,8 +157,8 @@ class _VerificationsScreenState extends State<VerificationsScreen> {
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(5),
                                     border: Border.all(
-                                        color: Colors
-                                            .black), // Set border color to black when focused
+                                        color: ColorConstant
+                                            .themeColor), // Set border color to black when focused
                                   ),
                                   textStyle: Style.nunRegular(
                                       fontSize: Dimens.d23,

@@ -229,18 +229,17 @@ class RecentlyPlayed extends StatelessWidget {
 
 class FeelGood extends StatelessWidget {
   AudioData? dataList;
-  String? audioTime;
-  FeelGood({super.key, this.dataList,this.audioTime});
+  String? audioTime,currentLanguage;
+  FeelGood({super.key, this.dataList,this.audioTime,this.currentLanguage});
 
   @override
   Widget build(BuildContext context) {
-    String currentLanguage = PrefService.getString(PrefKey.language);
 
     return SizedBox(
       width: Dimens.d156,
       child: Stack(alignment: Alignment.topRight,
         children: [
-          Column(
+          Column(crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Stack(
                 alignment: Alignment.topRight,
@@ -283,8 +282,8 @@ class FeelGood extends StatelessWidget {
                   SizedBox(
                     width: 72,
                     child: Text(
-                      currentLanguage=="en-Us"?dataList?.name
-                          .toString()??"":dataList?.gName??"",
+                      dataList?.name
+                          .toString()??"",
                       // "Motivational",
                       style: Style
                           .nunitoBold(
@@ -328,8 +327,7 @@ class FeelGood extends StatelessWidget {
               ),
               Dimens.d7.spaceHeight,
               Text(
-                currentLanguage=="en-Us"?dataList?.description
-                    .toString()??"":dataList?.gDescription??"",
+               dataList?.description??"",
                 maxLines: Dimens.d2.toInt(),
                 style: Style.nunMedium(
                     fontSize: Dimens.d14),

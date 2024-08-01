@@ -1,9 +1,5 @@
-import 'dart:async';
 import 'dart:io';
 
-import 'package:alarm/alarm.dart';
-import 'package:alarm/model/alarm_settings.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -11,6 +7,7 @@ import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/presentation/affirmation_alarm_screen/affirmation_controller.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/audio_content_screen.dart';
 import 'package:transform_your_mind/presentation/dash_board_screen/dash_board_controller.dart';
 import 'package:transform_your_mind/presentation/home_screen/home_screen.dart';
@@ -30,7 +27,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   DashBoardController dashBoardController = Get.put(DashBoardController());
   ThemeController themeController = Get.put(ThemeController());
   int _selectedIndex = 0;
-
+  AffirmationController affirmationController =
+      Get.put(AffirmationController());
   void _onItemTapped(int index) {
     if(index != 2) {
       setState(() {
@@ -48,12 +46,10 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     const AudioContentScreen(),
     const ProfileScreen(),
   ];
-  late List<AlarmSettings> alarms;
 
-  static StreamSubscription<AlarmSettings>? subscription;
   @override
   void initState() {
-
+    affirmationController.setAlarmView();
     super.initState();
   }
 

@@ -22,7 +22,7 @@ class _IntroScreenState extends State<IntroScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   PersonalizationController personalizationController =
-      Get.find<PersonalizationController>();
+      Get.put(PersonalizationController());
   List _images = [];
   String currentLanguage = PrefService.getString(PrefKey.language);
 
@@ -60,6 +60,8 @@ class _IntroScreenState extends State<IntroScreen> {
 
   checkInternet() async {
     if (await isConnected()) {
+      await personalizationController.getScreen();
+
       setState(() {
         checkInternetCheck = true;
       });
@@ -68,8 +70,8 @@ class _IntroScreenState extends State<IntroScreen> {
         if(currentLanguage == "en-US"|| currentLanguage == ""){
           _images = [
             {
-              "title":  personalizationController.getScreenModel.data![1].quote
-                  .toString(),
+              "title":  personalizationController.getScreenModel.data?[1].quote
+                  .toString()??"",
               "img": personalizationController.getScreenModel.data?[1].image ?? "",
               "authName":  personalizationController
                   .getScreenModel.data?[1].authorName ?? "",

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -21,21 +22,32 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/presentation/auth/login_screen/login_controller.dart';
 import 'package:transform_your_mind/presentation/dash_board_screen/dash_board_screen.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/evening_motivational.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/evening_stress.dart';
 import 'package:transform_your_mind/presentation/how_feeling_today/how_feeling_today_screen.dart';
 import 'package:transform_your_mind/presentation/how_feeling_today/how_feelings_evening.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/motivational_questions.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/sleep_questions.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/stress_questions.dart';
 import 'package:transform_your_mind/presentation/motivational_message/motivational_controller.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:volume_controller/volume_controller.dart';
-import 'dart:math' as math;
 
 class MotivationalMessageScreen extends StatefulWidget {
-  bool? skip;
-  String? userName, date;
+  bool? skip, back, like;
+  String? userName, date, data, id;
 
-  MotivationalMessageScreen(
-      {super.key, this.skip = false, this.userName = "", this.date = ""});
+  MotivationalMessageScreen({super.key,
+    this.skip = false,
+    this.userName = "",
+    this.date = "",
+    this.data = "",
+    this.id = "",
+    this.back = false,
+    this.like = false});
 
   @override
   State<MotivationalMessageScreen> createState() => _MotivationalMessageScreenState();
@@ -43,11 +55,11 @@ class MotivationalMessageScreen extends StatefulWidget {
 
 class _MotivationalMessageScreenState extends State<MotivationalMessageScreen> {
   ThemeController themeController = Get.find<ThemeController>();
+  LoginController loginController = Get.put(LoginController());
   MotivationalController motivationalController =
   Get.put(MotivationalController());
   double _setVolumeValue = 0;
   Timer? _timer;
-
   ScreenshotController screenshotController = ScreenshotController();
   int chooseImage = 0;
   bool showBottom = false;
@@ -61,21 +73,15 @@ class _MotivationalMessageScreenState extends State<MotivationalMessageScreen> {
   @override
   void initState() {
     super.initState();
-    setBackSounds();
+    motivationalController.setBackSounds();
     _setGreetingBasedOnTime();
     _startProgress();
     VolumeController().listener((volume) {});
     VolumeController().getVolume().then((volume) => _setVolumeValue = volume);
-  }
-
-  setBackSounds() async {
-    motivationalController.soundMute = false;
-    try {
-      await motivationalController
-          .setUrl(motivationalController.soundList[1]["audio"]);
-      await motivationalController.play();
-    } catch (e) {
-      debugPrint("Error playing audio: $e");
+    if (widget.data!.isNotEmpty) {
+      setState(() {
+        motivationalController.like.add(widget.like!);
+      });
     }
   }
 
@@ -98,6 +104,8 @@ class _MotivationalMessageScreenState extends State<MotivationalMessageScreen> {
       return 'goodNight';
     }
   }
+
+  String currentLanguage = PrefService.getString(PrefKey.language);
 
   addLike({String? id, bool? isLiked}) async {
     setState(() {
@@ -193,9 +201,10 @@ class _MotivationalMessageScreenState extends State<MotivationalMessageScreen> {
           Scaffold(
             floatingActionButton: GetBuilder<MotivationalController>(
               builder: (controller) {
-                return GestureDetector(
-                  onTap: () async {
-                    controller.allFavList.value = !controller.allFavList.value;
+                return widget.data!.isEmpty
+                    ? GestureDetector(
+                        onTap: () async {
+                          controller.allFavList.value = !controller.allFavList.value;
                     controller.update();
                     if (controller.allFavList.isTrue) {
                       _pageController = PageController();
@@ -227,7 +236,8 @@ class _MotivationalMessageScreenState extends State<MotivationalMessageScreen> {
                       ),
                     ),
                   ),
-                );
+                      )
+                    : const SizedBox();
               },
             ),
             body: Stack(
@@ -282,8 +292,10 @@ class _MotivationalMessageScreenState extends State<MotivationalMessageScreen> {
                 //_________________________________ story list  _______________________
                 PageView.builder(
                   scrollDirection: Axis.vertical,
-                  itemCount:
-                      motivationalController.motivationalModel.data?.length ?? 0,
+                  itemCount: widget.data!.isEmpty
+                      ? motivationalController.motivationalModel.data?.length ??
+                          0
+                      : 1,
                   controller: _pageController,
                   onPageChanged: (value) {
                     setState(() {
@@ -294,22 +306,44 @@ class _MotivationalMessageScreenState extends State<MotivationalMessageScreen> {
                   },
                   itemBuilder: (context, index) {
                     return Center(
-                      child: Padding(
-                        padding:
-                            const EdgeInsets.only(left: 48, right: 48, top: 40),
-                        child: Text(
-                            "“${motivationalController.motivationalModel.data![index].message}”" ??
-                                "",
-                            textAlign: TextAlign.center,
-                            maxLines: 5,
+                      child: widget.data!.isEmpty
+                          ? Padding(
+                              padding: const EdgeInsets.only(left: 48, right: 48, top: 40),
+                              child: currentLanguage != "en-US"
+                                  ? Text(
+                                      "“${motivationalController.motivationalModel.data![index].gMessage}”" ??
+                                          "",
+                                      textAlign: TextAlign.center,
+                                      maxLines: 5,
+                                      style: Style.gothamLight(
+                                          fontSize: 23,
+                                          color: ColorConstant.white,
+                                          fontWeight: FontWeight.w600))
+                                  : Text(
+                                      "“${motivationalController.motivationalModel.data![index].message}”" ??
+                                          "",
+                                      textAlign: TextAlign.center,
+                                      maxLines: 5,
                             style: Style.gothamLight(
                                 fontSize: 23,
                                 color: ColorConstant.white,
                                 fontWeight: FontWeight.w600)),
-                      ),
+                            )
+                          : Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 48, right: 48, top: 40),
+                              child: Text("“${widget.data ?? ""}”",
+                                  textAlign: TextAlign.center,
+                                  maxLines: 5,
+                                  style: Style.gothamLight(
+                                      fontSize: 23,
+                                      color: ColorConstant.white,
+                                      fontWeight: FontWeight.w600)),
+                            ),
                     );
                   },
                 ),
+                //_________________________________ like motivational message _____________________
                 Positioned(
                     bottom: Dimens.d220.h,
                     child: Row(
@@ -337,18 +371,24 @@ class _MotivationalMessageScreenState extends State<MotivationalMessageScreen> {
                               onTap: () async {
 
                                 setState(() {
-                                  likeAnimation = true;
-                                  Future.delayed(const Duration(seconds: 2)).then((value) {
-                                  setState(() {
-                                    likeAnimation = false;
-                                  });
+                                        controller.like[controller.likeIndex] =
+                                            !controller
+                                                .like[controller.likeIndex];
+                                        likeAnimation = controller
+                                            .like[controller.likeIndex];
+                                        Future.delayed(
+                                                const Duration(seconds: 2))
+                                            .then(
+                                          (value) {
+                                            setState(() {
+                                              likeAnimation = false;
+                                            });
                                   },);
-                                  controller.like[controller.likeIndex] =
-                                      !controller.like[controller.likeIndex];
-                                });
-                                await addLike(
-                                    id: motivationalController.motivationalModel
-                                        .data?[controller.likeIndex].id,
+                                      });
+                                      await addLike(
+                                          id: motivationalController
+                                              .motivationalModel
+                                              .data?[controller.likeIndex].id,
                                     isLiked:
                                         controller.like[controller.likeIndex]);
                               },
@@ -363,6 +403,7 @@ class _MotivationalMessageScreenState extends State<MotivationalMessageScreen> {
                         )
                       ],
                     )),
+                //_______________________________ skip method _____________________
                 Positioned(
                   top: Dimens.d48,
                   left: 21,
@@ -393,16 +434,42 @@ class _MotivationalMessageScreenState extends State<MotivationalMessageScreen> {
                             GestureDetector(
                                 onTap: () async {
                                   await motivationalController.pause();
-                                  if (PrefService.getBool(
-                                              PrefKey.morningQuestion) ==
-                                          false &&
-                                      greeting == "goodMorning") {
+
+                                  if (loginController.getUserModel.data
+                                          ?.morningMoodQuestions ??
+                                      false == false &&
+                                          greeting == "goodMorning") {
                                     Get.offAll(() => const HowFeelingTodayScreen());
-                                  } else if (PrefService.getBool(
-                                              PrefKey.eveningQuestion) ==
-                                          false &&
-                                      greeting == "goodEvening") {
+                                  } else if (loginController.getUserModel.data
+                                          ?.morningSleepQuestions ??
+                                      false == false &&
+                                          greeting == "goodMorning") {
+                                    Get.offAll(() => StressQuestions());
+                                  } else if (loginController.getUserModel.data
+                                          ?.morningStressQuestions ??
+                                      false == false &&
+                                          greeting == "goodMorning") {
+                                    Get.offAll(() => SleepQuestions());
+                                  } else if (loginController.getUserModel.data
+                                          ?.morningMotivationQuestions ??
+                                      false == false &&
+                                          greeting == "goodMorning") {
+                                    Get.offAll(() => MotivationalQuestions());
+                                  } else if (loginController.getUserModel.data
+                                          ?.eveningMoodQuestions ??
+                                      false == false &&
+                                          greeting == "goodEvening") {
                                     Get.offAll(() => const HowFeelingsEvening());
+                                  } else if (loginController.getUserModel.data
+                                          ?.eveningStressQuestions ??
+                                      false == false &&
+                                          greeting == "goodEvening") {
+                                    Get.offAll(() => EveningStress());
+                                  } else if (loginController.getUserModel.data
+                                          ?.eveningMotivationQuestions ??
+                                      false == false &&
+                                          greeting == "goodEvening") {
+                                    Get.offAll(() => EveningMotivational());
                                   } else {
                                     await motivationalController.pause();
 

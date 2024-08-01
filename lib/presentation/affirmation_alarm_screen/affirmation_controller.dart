@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:alarm/alarm.dart';
 import 'package:alarm/model/alarm_settings.dart';
 import 'package:flutter/foundation.dart';
-
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -44,9 +43,6 @@ class AffirmationController extends GetxController{
 
   @override
   void onInit() {
-    checkAndroidNotificationPermission();
-    checkAndroidScheduleExactAlarmPermission();
-    loadAlarms();
     subscription ??= Alarm.ringStream.stream.listen(navigateToRingScreen);
     _audioPlayer.positionStream.listen((event) {
       _position.value = event;
@@ -63,6 +59,12 @@ class AffirmationController extends GetxController{
       }
     });
     super.onInit();
+  }
+
+  setAlarmView() {
+    checkAndroidNotificationPermission();
+    checkAndroidScheduleExactAlarmPermission();
+    loadAlarms();
   }
 
   Future<void> navigateToRingScreen(AlarmSettings alarmSettings) async {

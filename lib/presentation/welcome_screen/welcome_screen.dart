@@ -3,9 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
+import 'package:transform_your_mind/core/common_api/common_api.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
+import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
@@ -14,7 +16,6 @@ import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/motivational_message/motivational_message.dart';
 import 'package:transform_your_mind/presentation/welcome_screen/welcome_home_controller.dart';
 import 'package:vibration/vibration.dart';
-
 class WelcomeHomeScreen extends StatefulWidget {
   const WelcomeHomeScreen({super.key});
 
@@ -113,19 +114,22 @@ class _WelcomeScreenState extends State<WelcomeHomeScreen>
         if (_isLongPressed) {
           _controller.forward();
           await PrefService.setValue(PrefKey.welcomeScreen, true);
-
-          Future.delayed(const Duration(seconds: 1)).then((value) {
-            return Get.offAll(() => MotivationalMessageScreen(
-                  skip: true,
-                  date: DateFormat('d MMMM yyyy').format(DateTime.now()),
-                  userName:
-                      "${greeting.tr}, ${PrefService.getString(PrefKey.name).toString()}",
-                ));
+          await welcomeHomeController.pause();
+          await welcomeHomeController.audioPlayer.stop();
+          await updateApi(context,pKey: "welcomeScreen");
+           Future.delayed(const Duration(seconds: 1)).then((value) {
+            return Get.offAll(MotivationalMessageScreen(
+              skip: true,
+              date: DateFormat('d MMMM yyyy').format(DateTime.now()),
+              userName:
+                  "${greeting.tr}, ${PrefService.getString(PrefKey.name).toString()}",
+            ));
           });
         }
       },
     );
   }
+
 
   Future<void> _onLongPressEnd(LongPressEndDetails details) async {
     await welcomeHomeController.pause();
@@ -163,12 +167,15 @@ class _WelcomeScreenState extends State<WelcomeHomeScreen>
                     child: GestureDetector(
                         onTap: () async {
                           await welcomeHomeController.pause();
+                          await welcomeHomeController.audioPlayer.stop();
+                          await updateApi(context,pKey: "welcomeScreen");
 
-                          Get.offAll(() => MotivationalMessageScreen(
+                          Get.offAll(MotivationalMessageScreen(
                             skip: true,
-                            date: DateFormat('d MMMM yyyy').format(DateTime.now()),
+                            date: DateFormat('d MMMM yyyy')
+                                .format(DateTime.now()),
                             userName:
-                            "${greeting.tr}, ${PrefService.getString(PrefKey.name).toString()}",
+                                "${greeting.tr}, ${PrefService.getString(PrefKey.name).toString()}",
                           ));
                         },
                         child: Text(

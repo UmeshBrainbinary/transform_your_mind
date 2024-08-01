@@ -4,10 +4,12 @@ import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/http_service.dart';
+import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/support_screen/support_controller.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
@@ -22,6 +24,7 @@ class FaqScreen extends StatefulWidget {
 
 class _FaqScreenState extends State<FaqScreen> {
   SupportController supportController = Get.put(SupportController());
+  String currentLanguage = PrefService.getString(PrefKey.language);
 
   ThemeController themeController = Get.find<ThemeController>();
   @override
@@ -100,8 +103,10 @@ class _FaqScreenState extends State<FaqScreen> {
                                         SizedBox(
                                             width: 260,
                                             child: Text(
-                                              data?.question ?? "",
-                                              style: Style.nunitoSemiBold(fontSize: 14),
+                                            currentLanguage == "en-US"
+                                                ? data?.question ?? ""
+                                                : data?.gQuestion ?? "",
+                                            style: Style.nunitoSemiBold(fontSize: 14),
                                             )),
                                         SvgPicture.asset(
                                           controller.faq[index]
@@ -122,8 +127,10 @@ class _FaqScreenState extends State<FaqScreen> {
                                           thickness: 0.7,
                                         ),
                                         Text(
-                                          data?.answer ?? "",
-                                          textAlign: TextAlign.start,
+                                              currentLanguage == "en-US"
+                                                  ? data?.answer ?? ""
+                                                  : data?.gAnswer ?? "",
+                                              textAlign: TextAlign.start,
                                           style: Style.nunRegular(fontSize: 10)
                                               .copyWith(height: 1.5),
                                         )

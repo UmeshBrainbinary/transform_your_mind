@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
@@ -110,7 +109,12 @@ class _AddPositivePageState extends State<AddPositivePage>
       request.fields.addAll({
         'title': titleController.text.trim(),
         'description': descController.text.trim(),
-        'created_by':PrefService.getString(PrefKey.userId)
+        'created_by': PrefService.getString(PrefKey.userId),
+        'lang': PrefService.getString(PrefKey.language).isEmpty
+            ? "english"
+            : PrefService.getString(PrefKey.language) != "en-US"
+                ? "german"
+                : "english"
       });
       if (imageFile.value != null) {
         request.files.add(
@@ -148,6 +152,11 @@ class _AddPositivePageState extends State<AddPositivePage>
       request.fields.addAll({
         'title': titleController.text.trim(),
         'description': descController.text.trim(),
+        'lang': PrefService.getString(PrefKey.language).isEmpty
+            ? "english"
+            : PrefService.getString(PrefKey.language) != "en-US"
+                ? "german"
+                : "english"
       });
       if (imageFile.value != null) {
         request.files.add(

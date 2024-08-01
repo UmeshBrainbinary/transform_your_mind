@@ -97,7 +97,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     var request = http.Request(
         'GET',
         Uri.parse(
-            "${EndPoints.getFeedback}${PrefService.getString(PrefKey.userId)}"));
+            "${EndPoints.getFeedback}${PrefService.getString(PrefKey.userId)}&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}"));
 
     request.headers.addAll(headers);
 

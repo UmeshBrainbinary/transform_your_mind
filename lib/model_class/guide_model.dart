@@ -28,6 +28,7 @@ class GuideModel {
 class Data {
   String? id;
   String? description;
+  String? gDescription;
   String? createdBy;
   DateTime? createdAt;
   DateTime? updatedAt;
@@ -40,6 +41,7 @@ class Data {
     this.createdAt,
     this.updatedAt,
     this.v,
+    this.gDescription,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -53,6 +55,7 @@ class Data {
             ? null
             : DateTime.parse(json["updatedAt"]),
         v: json["__v"],
+        gDescription: json["g_description"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -62,5 +65,6 @@ class Data {
         "createdAt": createdAt?.toIso8601String(),
         "updatedAt": updatedAt?.toIso8601String(),
         "__v": v,
+        "g_description": gDescription,
       };
 }

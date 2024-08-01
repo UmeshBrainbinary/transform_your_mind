@@ -50,7 +50,7 @@ class SupportController extends GetxController {
       var request = http.Request(
         'GET',
         Uri.parse(
-          EndPoints.getFaqApi,
+          "${EndPoints.getFaqApi}?lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}",
         ),
       );
 

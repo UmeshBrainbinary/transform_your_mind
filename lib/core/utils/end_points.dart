@@ -16,7 +16,6 @@ class EndPoints {
   static String getCategory = "get-category?type=";
   static String getAffirmation = "get-affirmation?isDefault=true";
   static String getYourAffirmation = "get-affirmation?created_by=";
-  static String getAffirmationUser = "get-affirmation?userId=";
   static String updateAffirmation = "update-affirmation?id=";
   static String categoryAffirmation = "get-affirmation?category=";
   static String getUser = "${baseUrl}user-details?id=";
@@ -39,5 +38,7 @@ class EndPoints {
   static String weeklyAffirmation = "${baseUrl}weekly-affirmation?created_by=";
   static String morningQuestions = "${baseUrl}morning-questions";
   static String eveningQuestions = "${baseUrl}evening-questions";
-  static String getScreen = "${baseUrl}get-screen";
+  static String moodChart = "${baseUrl}mood-chart?created_by=";
+  static String sleepChart = "${baseUrl}sleep-chart?created_by=";
+  static String stressChart = "${baseUrl}stress-chart?created_by=";
 }

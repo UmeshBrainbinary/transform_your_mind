@@ -31,7 +31,9 @@ class FaqModel {
 class FaqData {
   String? id;
   String? question;
+  String? gQuestion;
   String? answer;
+  String? gAnswer;
   String? createdBy;
   DateTime? createdAt;
   DateTime? updatedAt;
@@ -45,7 +47,8 @@ class FaqData {
     this.createdAt,
     this.updatedAt,
     this.v,
-  });
+      this.gAnswer,
+      this.gQuestion});
 
   factory FaqData.fromJson(Map<String, dynamic> json) => FaqData(
         id: json["_id"],
@@ -59,6 +62,8 @@ class FaqData {
             ? null
             : DateTime.parse(json["updatedAt"]),
         v: json["__v"],
+        gAnswer: json["g_answer"],
+        gQuestion: json["g_question"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -69,5 +74,7 @@ class FaqData {
         "createdAt": createdAt?.toIso8601String(),
         "updatedAt": updatedAt?.toIso8601String(),
         "__v": v,
+        "g_answer": gAnswer,
+        "g_question": gQuestion,
       };
 }

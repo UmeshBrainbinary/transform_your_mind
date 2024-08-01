@@ -63,7 +63,7 @@ class _JournalScreenState extends State<JournalScreen>
 
       title: "motivational".tr,
       lottie: ImageConstant.motivationalIcon,
-      route: AppRoutes.motivationalMessageScreen,
+      route: AppRoutes.motivationScreen,
     ),
     JournalData(
       img: ImageConstant.positiveMoment,
@@ -167,7 +167,7 @@ class _JournalScreenState extends State<JournalScreen>
                                                     "",
                                               ).then(
                                                 (value) async {
-                                                  MotivationalController moti = Get.put(MotivationalController());
+                                                  MotivationalController moti = Get.find<MotivationalController>();
                                                   await moti.audioPlayer.dispose();
                                                   await moti.audioPlayer.pause();
                                                   setState(() {

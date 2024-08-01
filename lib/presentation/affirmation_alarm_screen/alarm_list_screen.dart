@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:alarm/alarm.dart';
 import 'package:alarm/model/alarm_settings.dart';
 import 'package:flutter/material.dart';
@@ -716,6 +717,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                   child: Row(
                     children: [
                       NumberPicker(
+                        infiniteLoop: true,
                         zeroPad: true,
                         value: selectedHour,
                         minValue: 0,
@@ -727,7 +729,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                           fontSize: 22,
                           color: ColorConstant.themeColor,
                         ),
-                        maxValue: am?11:23,
+                        maxValue: am ? 12 : 24,
                         itemHeight: 50,
                         itemWidth: 50,
                         onChanged: (value) =>
@@ -737,6 +739,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                       numericSymbol(),
                       const Spacer(),
                       NumberPicker(
+                        infiniteLoop: true,
                         zeroPad: true,
                         value: selectedMinute,
                         minValue: 0,
@@ -758,6 +761,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                       numericSymbol(),
                       const Spacer(),
                       NumberPicker(
+                        infiniteLoop: true,
                         zeroPad: true,
                         value: selectedSeconds,
                         minValue: 0,
@@ -825,11 +829,11 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                     if(Platform.isIOS){
                       downloadAudioFile("https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/theme_01.mp3");
 
-                  //  _setAlarm(1, "assets/audio/audio.mp3");
-                    }else{
-                     // _setAlarm(1, "assets/audio/audio.mp3");
+                        //_setAlarm(1, "assets/audio/audio.mp3");
+                      }else{
+                        _setAlarm(1, "assets/audio/audio.mp3");
 
-                      downloadAudioFile("https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/theme_01.mp3");
+                        //downloadAudioFile("https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/theme_01.mp3");
 
                     }
 

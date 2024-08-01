@@ -40,9 +40,10 @@ import '../../core/utils/end_points.dart';
 class StartPracticeAffirmation extends StatefulWidget {
   List<AffirmationData>? data;
   String? id;
+  String? alarmId;
 
 
-  StartPracticeAffirmation({super.key, this.id,this.data,});
+  StartPracticeAffirmation({super.key, this.id,this.data,this.alarmId});
 
   @override
   State<StartPracticeAffirmation> createState() =>
@@ -55,6 +56,8 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
       Get.put(StartPracticeAffirmationController());
   double _setVolumeValue = 0;
   int currentIndex = 1;
+  CommonModel commonModel = CommonModel();
+
   int chooseImage = 0;
   final PageController _pageController = PageController();
   int _currentIndex = 0;
@@ -65,9 +68,9 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
   bool am = true;
   bool pm = false;
   Duration selectedDuration = const Duration(hours: 0, minutes: 0, seconds: 0);
-  int selectedHour = 1;
-  int selectedMinute = 1;
-  int selectedSeconds = 1;
+  int selectedHour = 0;
+  int selectedMinute = 0;
+  int selectedSeconds = 0;
   List<bool> like = [];
   bool _isScrolling = true;
   AffirmationController affirmationController = Get.put(AffirmationController());
@@ -75,23 +78,31 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
   @override
   void initState() {
     super.initState();
-    List.generate(widget.data!.length, (index) => like.add(false),);
+    getLikeData();
     setBackSounds();
     startC.selectedSpeedIndex = 0;
     startC.setSpeed = false.obs;
 
-    startC.storyCompleted = List.generate(widget.data!.length,
-        (index) => false); // Initialize all stories as not completed
+    startC.storyCompleted = List.generate(widget.data!.length, (index) => false);
 
     _startProgress();
     VolumeController().listener((volume) {
     });
 
     VolumeController().getVolume().then((volume) => _setVolumeValue = volume);
-    checkAndroidNotificationPermission();
-    checkAndroidScheduleExactAlarmPermission();
-    loadAlarms();
   }
+
+  getLikeData() {
+    if ((widget.data ?? []).isNotEmpty) {
+      for (int i = 0; i < widget.data!.length; i++) {
+        like.add(widget.data?[i].isLiked ?? false);
+      }
+    }
+    setState(() {
+
+    });
+  }
+
   setBackSounds() async {
     startC.soundMute = false;
     startC.player.setVolume(1);
@@ -117,13 +128,13 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
   }
 
   void _startProgress() {
-    _timer?.cancel(); // Cancel any existing timer
+    _timer?.cancel();
     int durationInSeconds = speedChange();
     int durationInMilliseconds = durationInSeconds * 1000;
     int intervalInMilliseconds = 50;
 
     _timer = Timer.periodic(Duration(milliseconds: intervalInMilliseconds), (timer) {
-      if (!_isScrolling) { // Check the flag
+      if (!_isScrolling) {
         timer.cancel();
         return;
       }
@@ -152,7 +163,6 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
   }
 
 
-  CommonModel commonModel = CommonModel();
   int speedChange() {
     switch (startC.selectedSpeedIndex) {
       case 0:
@@ -288,6 +298,42 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
       }
     }
   }
+
+  updateAffirmationLike({String? id, bool? isLiked}) async {
+    setState(() {
+      loader = true;
+    });
+    debugPrint("User Id ${PrefService.getString(PrefKey.userId)}");
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.MultipartRequest(
+        'POST',
+        Uri.parse(
+            '${EndPoints.baseUrl}${EndPoints.updateAffirmation}$id'));
+
+    request.fields.addAll({'isLiked': "$isLiked"});
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      setState(() {
+        loader = false;
+      });
+      setState(() {});
+    } else {
+      setState(() {
+        loader = false;
+      });
+      debugPrint(response.reasonPhrase);
+    }
+    setState(() {
+      loader = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -440,10 +486,16 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
                   child: Container(
                     height: 42,
                     width: 42,
+                    padding: const EdgeInsets.only(left: 8),
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(9),
-                        color: ColorConstant.white.withOpacity(0.15)),
-                    child: const Icon(Icons.close, color: Colors.white),
+                        borderRadius: BorderRadius.circular(5),
+                        color: ColorConstant.white),
+                    child: const Center(
+                        child: Icon(
+                      Icons.arrow_back_ios,
+                      color: Colors.black,
+                      size: 20,
+                    )),
                   ),
                 ),
               ),
@@ -554,15 +606,21 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
                       ),
                       Dimens.d40.spaceWidth,
                       GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            likeAnimation = true;
-                            Future.delayed(const Duration(seconds: 2)).then((value) {
+                            onTap: () async {
+                              like[likeIndex] = !like[likeIndex];
+
+                              await updateAffirmationLike(
+                                  isLiked: like[likeIndex],
+                                  id: widget.data![likeIndex].id);
+
                               setState(() {
-                                likeAnimation = false;
+                                likeAnimation = like[likeIndex];
+                                Future.delayed(const Duration(seconds: 2)).then(
+                                  (value) {
+                                    setState(() {
+                                      likeAnimation = false;
                               });
                             },);
-                            like[likeIndex] = !like[likeIndex];
                           });
                         },
                         child:  SvgPicture.asset(
@@ -1199,6 +1257,7 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
                               children: [
 
                                 NumberPicker(
+                                  infiniteLoop: true,
                                   zeroPad: true,
                                   value: selectedHour,
                                   minValue: 0,
@@ -1210,7 +1269,7 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
                                     fontSize: 22,
                                     color: ColorConstant.themeColor,
                                   ),
-                                  maxValue: am ? 11 : 23,
+                                  maxValue: am ? 12 : 24,
                                   itemHeight: 50,
                                   itemWidth: 50,
                                   onChanged: (value) =>
@@ -1220,6 +1279,7 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
                                 numericSymbol(),
                                 const Spacer(),
                                 NumberPicker(
+                                  infiniteLoop: true,
                                   zeroPad: true,
                                   value: selectedMinute,
                                   minValue: 0,
@@ -1241,6 +1301,7 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
                                 numericSymbol(),
                                 const Spacer(),
                                 NumberPicker(
+                                  infiniteLoop: true,
                                   zeroPad: true,
                                   value: selectedSeconds,
                                   minValue: 0,
@@ -1314,7 +1375,7 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
                               ),
                               title: "save".tr,
                               onTap: () async {
-                                _setAlarm(1);
+                                _setAlarm(widget.data?[_currentIndex].alarmId??0);
                                 await createAlarm(widget.id);
                               },
                             ),

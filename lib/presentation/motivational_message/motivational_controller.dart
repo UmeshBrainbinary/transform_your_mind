@@ -31,21 +31,19 @@ class MotivationalController extends GetxController {
   @override
   void onInit() {
   List.generate(1,(index) => like.add(false),);
-
     checkInternet();
-    _audioPlayer.positionStream.listen((event) {
-      _position.value = event;
-    });
-    _audioPlayer.durationStream.listen((event) {
-      _duration.value = event;
-    });
-    _audioPlayer.playerStateStream.listen((state) {
-      _isPlaying.value = state.playing;
-    });
-    _audioPlayer.processingStateStream.listen((state) {
-      if (state == ProcessingState.completed) {}
-    });
+
     super.onInit();
+  }
+  setBackSounds() async {
+    soundMute = false;
+    try {
+      await setUrl(soundList[1]["audio"]);
+      await play();
+    } catch (e) {
+      debugPrint("Error playing audio: $e");
+    }
+    update();
   }
 
   checkInternet() async {
@@ -63,8 +61,10 @@ class MotivationalController extends GetxController {
     var headers = {
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
-    var request =
-        http.Request('GET', Uri.parse('${EndPoints.baseUrl}get-message?userId=${PrefService.getString(PrefKey.userId)}'));
+    var request = http.Request(
+        'GET',
+        Uri.parse(
+            '${EndPoints.baseUrl}get-message?userId=${PrefService.getString(PrefKey.userId)}&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}'));
 
     request.headers.addAll(headers);
 

@@ -264,7 +264,6 @@ class NowPlayingController extends GetxController {
     loader.value = false;
   }
 
-  List<RatedPod>? ratedPods = [];
 
   getUser(
     String? id,
@@ -292,7 +291,6 @@ class NowPlayingController extends GetxController {
         final responseBody = await response.stream.bytesToString();
 
         getUserModel = getUserModelFromJson(responseBody);
-        ratedPods = getUserModel.data?.ratedPods ?? [];
         for (int i = 0; i < getUserModel.data!.bookmarkedPods!.length; i++) {
           bookmarkedList.add(getUserModel.data!.bookmarkedPods![i]);
         }

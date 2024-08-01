@@ -41,14 +41,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   int _selectedIndex = 0;
   String currentLanguage = PrefService.getString(PrefKey.language);
 
-  final List<String> _tabs = ['Progress Tracking', 'Mood', 'Sleep', 'Stress'];
-
-  final List<Widget> _tabContents = [
-    const Center(child: Text('Progress Tracking Content')),
-    const Center(child: Text('Mood Content')),
-    const Center(child: Text('Sleep Content')),
-    const Center(child: Text('Stress Content')),
-  ];
+  final List<String> _tabs = ['progressTracking', 'mood', 'sleep', 'stress'];
 
   void _onTabSelected(int index) {
     setState(() {
@@ -63,10 +56,6 @@ class _ProfileScreenState extends State<ProfileScreen>
     super.initState();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   checkInternet() async {
     if (await isConnected()) {
@@ -74,6 +63,9 @@ class _ProfileScreenState extends State<ProfileScreen>
       profileController.getGuide();
       profileController.getPrivacy();
       profileController.getProgress("isLastMonth");
+      profileController.getMoodChart();
+      profileController.getSleepChart();
+      profileController.getStressChart();
       setState(() {});
     } else {
       showSnackBarError(context, "noInternet".tr);
@@ -203,7 +195,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  _tabs[index],
+                                  _tabs[index].tr,
                                   style: Style.nunRegular(
                                     fontSize: 14,
                                   ),
@@ -222,18 +214,6 @@ class _ProfileScreenState extends State<ProfileScreen>
                     ],
                   ),
                 ),
-                /*Align(
-                  alignment: Alignment.topLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Text(
-                      "progressTracking".tr,
-                      style: Style.nunitoBold(
-                        fontSize: Dimens.d20,
-                      ),
-                    ),
-                  ),
-                ),*/
                 Dimens.d10.spaceHeight,
                 Container(
                   margin:
@@ -551,21 +531,23 @@ class _ProfileScreenState extends State<ProfileScreen>
                                 ),
                               ),
                             )
-                          : Container(
-                              height: 131,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              child: SfCartesianChart(
-                                primaryXAxis: CategoryAxis(labelStyle: Style.nunitoSemiBold(fontSize:11,color:ColorConstant.color949494  ),
+                          : GetBuilder<ProfileController>(
+                              builder: (controller) {
+                                return Container(
+                                  height: 131,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  child: SfCartesianChart(
+                                    primaryXAxis: CategoryAxis(labelStyle: Style.nunitoSemiBold(fontSize:11,color:ColorConstant.color949494  ),
                                   majorGridLines:
-                                      const MajorGridLines(width: 0),
-                                ),
-                                primaryYAxis: NumericAxis(
+                                          const MajorGridLines(width: 0),
+                                    ),
+                                    primaryYAxis: NumericAxis(
                                   labelStyle: Style.nunitoSemiBold(fontSize:11,color:ColorConstant.color949494  ),
                                   majorGridLines:
-                                      const MajorGridLines(width: 0),
-                                ),
-                                legend: Legend(isVisible: false ),plotAreaBorderColor: Colors.transparent,
+                                          const MajorGridLines(width: 0),
+                                    ),
+                                    legend: Legend(isVisible: false ),plotAreaBorderColor: Colors.transparent,
 
                                 tooltipBehavior: TooltipBehavior(enable: true),
                                 series: <LineSeries<MoodData, String>>[
@@ -573,19 +555,141 @@ class _ProfileScreenState extends State<ProfileScreen>
                                     color: _selectedIndex == 1
                                         ? ColorConstant.color2E2EFF
                                         : _selectedIndex == 2
-                                            ? ColorConstant.color008000
-                                            : ColorConstant.colorFF0000,
-                                    dataSource: getMoodData(),
-                                    xValueMapper: (MoodData mood, _) =>
-                                        mood.day,
-                                    yValueMapper: (MoodData mood, _) =>
-                                        mood.value,
-                                    name: 'Mood',width: 1,
-                                    dataLabelSettings: const DataLabelSettings(
+                                                ? ColorConstant.color008000
+                                                : ColorConstant.colorFF0000,
+                                        dataSource: _selectedIndex == 1
+                                            ? getMoodData(
+                                                mon: controller.moodChartModel
+                                                        .data?[0].averageFeeling
+                                                        ?.toDouble() ??
+                                                    0.0,
+                                                tue: controller.moodChartModel
+                                                        .data?[1].averageFeeling
+                                                        ?.toDouble() ??
+                                                    0.0,
+                                                wed: controller.moodChartModel
+                                                        .data?[2].averageFeeling
+                                                        ?.toDouble() ??
+                                                    0.0,
+                                                thu: controller.moodChartModel
+                                                        .data?[3].averageFeeling
+                                                        ?.toDouble() ??
+                                                    0.0,
+                                                fri: controller.moodChartModel
+                                                        .data?[4].averageFeeling
+                                                        ?.toDouble() ??
+                                                    0.0,
+                                                sat: controller.moodChartModel
+                                                        .data?[5].averageFeeling
+                                                        ?.toDouble() ??
+                                                    0.0,
+                                                sun: controller.moodChartModel
+                                                        .data?[6].averageFeeling
+                                                        ?.toDouble() ??
+                                                    0.0,
+                                              )
+                                            : _selectedIndex == 2
+                                                ? getMoodData(
+                                                    mon: controller
+                                                            .sleepChartModel
+                                                            .data?[0]
+                                                            .averageSleep
+                                                            ?.toDouble() ??
+                                                        0.0,
+                                                    tue: controller
+                                                            .sleepChartModel
+                                                            .data?[1]
+                                                            .averageSleep
+                                                            ?.toDouble() ??
+                                                        0.0,
+                                                    wed: controller
+                                                            .sleepChartModel
+                                                            .data?[2]
+                                                            .averageSleep
+                                                            ?.toDouble() ??
+                                                        0.0,
+                                                    thu: controller
+                                                            .sleepChartModel
+                                                            .data?[3]
+                                                            .averageSleep
+                                                            ?.toDouble() ??
+                                                        0.0,
+                                                    fri: controller
+                                                            .sleepChartModel
+                                                            .data?[4]
+                                                            .averageSleep
+                                                            ?.toDouble() ??
+                                                        0.0,
+                                                    sat: controller
+                                                            .sleepChartModel
+                                                            .data?[5]
+                                                            .averageSleep
+                                                            ?.toDouble() ??
+                                                        0.0,
+                                                    sun: controller
+                                                            .sleepChartModel
+                                                            .data?[6]
+                                                            .averageSleep
+                                                            ?.toDouble() ??
+                                                        0.0,
+                                                  )
+                                                : getMoodData(
+                                                    mon: controller
+                                                            .stressChartModel
+                                                            .data?[0]
+                                                            .averageStress
+                                                            ?.toDouble() ??
+                                                        0.0,
+                                                    tue: controller
+                                                            .stressChartModel
+                                                            .data?[1]
+                                                            .averageStress
+                                                            ?.toDouble() ??
+                                                        0.0,
+                                                    wed: controller
+                                                            .stressChartModel
+                                                            .data?[2]
+                                                            .averageStress
+                                                            ?.toDouble() ??
+                                                        0.0,
+                                                    thu: controller
+                                                            .stressChartModel
+                                                            .data?[3]
+                                                            .averageStress
+                                                            ?.toDouble() ??
+                                                        0.0,
+                                                    fri: controller
+                                                            .stressChartModel
+                                                            .data?[4]
+                                                            .averageStress
+                                                            ?.toDouble() ??
+                                                        0.0,
+                                                    sat: controller
+                                                            .stressChartModel
+                                                            .data?[5]
+                                                            .averageStress
+                                                            ?.toDouble() ??
+                                                        0.0,
+                                                    sun: controller
+                                                            .stressChartModel
+                                                            .data?[6]
+                                                            .averageStress
+                                                            ?.toDouble() ??
+                                                        0.0,
+                                                  ),
+                                        xValueMapper: (MoodData mood, _) =>
+                                            mood.day,
+                                        yValueMapper: (MoodData mood, _) =>
+                                            mood.value,
+                                        name: 'Mood',
+                                        width: 1,
+                                        dataLabelSettings: const DataLabelSettings(
                                         isVisible: false),
                                   )
                                 ],
                               ),
+                                );
+                              },
                             ),
                     ],
                   ),
@@ -835,15 +939,30 @@ class _ProfileScreenState extends State<ProfileScreen>
     );
   }
 
-  List<MoodData> getMoodData() {
+  List<MoodData> getMoodData({
+    double? mon,
+    double? tue,
+    double? wed,
+    double? thu,
+    double? fri,
+    double? sat,
+    double? sun,
+  }) {
     return [
-      MoodData('MON',_selectedIndex == 1?   7.0:_selectedIndex == 2?6.9:7.0),
+      MoodData('MON', mon!),
+      MoodData('TUE', tue!),
+      MoodData('WED', wed!),
+      MoodData('THU', thu!),
+      MoodData('FRI', fri!),
+      MoodData('SAT', sat!),
+      MoodData('SUN', sun!),
+      /*   MoodData('MON',_selectedIndex == 1?   7.0:_selectedIndex == 2?6.9:7.0),
       MoodData('TUE',_selectedIndex == 1?   6.3:_selectedIndex == 2?6.2:6.2),
       MoodData('WED', _selectedIndex == 1?  6.7:_selectedIndex == 2?6.3:6.3),
       MoodData('THU', _selectedIndex == 1?  6.2:_selectedIndex == 2?6.4:6.4),
       MoodData('FRI', _selectedIndex == 1?  6.5:_selectedIndex == 2?6.5:6.5),
       MoodData('SAT',_selectedIndex == 1?   6.1:_selectedIndex == 2?6.6:6.6),
-      MoodData('SUN', _selectedIndex == 1?  6.8:_selectedIndex == 2?6.7:6.2),
+      MoodData('SUN', _selectedIndex == 1?  6.8:_selectedIndex == 2?6.7:6.2),*/
     ];
   }
 }

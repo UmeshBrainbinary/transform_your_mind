@@ -246,6 +246,7 @@ class ImageConstant {
   static String slider = "$imagePath/silder.png";
   static String sliderThumb = "$imagePath/slider_icon.svg";
   static String mic = "$iconPath/mic.svg";
+  static String playMotivation = "$iconPath/playMotivation.svg";
   static String text = "$imagePath/transform_yourMind.png";
   static  String lottieDeleteAccount = "$lottie/lottie_delete_account.json";
   static String likeGif = "$gifPath/like.gif";

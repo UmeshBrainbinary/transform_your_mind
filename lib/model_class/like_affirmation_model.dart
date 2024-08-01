@@ -1,24 +1,24 @@
 // To parse this JSON data, do
 //
-//     final affirmationModel = affirmationModelFromJson(jsonString);
+//     final likeAffirmationModel = likeAffirmationModelFromJson(jsonString);
 
 import 'dart:convert';
 
-AffirmationModel affirmationModelFromJson(String str) => AffirmationModel.fromJson(json.decode(str));
+LikeAffirmationModel likeAffirmationModelFromJson(String str) => LikeAffirmationModel.fromJson(json.decode(str));
 
-String affirmationModelToJson(AffirmationModel data) => json.encode(data.toJson());
+String likeAffirmationModelToJson(LikeAffirmationModel data) => json.encode(data.toJson());
 
-class AffirmationModel {
-  List<AffirmationData>? data;
+class LikeAffirmationModel {
+  List<Datum>? data;
   int? total;
 
-  AffirmationModel({
+  LikeAffirmationModel({
     this.data,
     this.total,
   });
 
-  factory AffirmationModel.fromJson(Map<String, dynamic> json) => AffirmationModel(
-    data: json["data"] == null ? [] : List<AffirmationData>.from(json["data"]!.map((x) => AffirmationData.fromJson(x))),
+  factory LikeAffirmationModel.fromJson(Map<String, dynamic> json) => LikeAffirmationModel(
+    data: json["data"] == null ? [] : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
     total: json["total"],
   );
 
@@ -28,78 +28,87 @@ class AffirmationModel {
   };
 }
 
-class AffirmationData {
-  bool? userLiked;
+class Datum {
   String? id;
   String? name;
+  String? gName;
   String? description;
+  String? gDescription;
   String? category;
   int? status;
   String? createdBy;
   bool? isDefault;
   bool? isLiked;
+  bool? userLiked;
   String? audioFile;
+  bool? isCompleted;
+  int? alarmId;
+  String? lang;
   DateTime? createdAt;
   DateTime? updatedAt;
   int? v;
-  String? gName;
-  String? gDescription;
-  int? alarmId;
 
-  AffirmationData({
-    this.userLiked,
+  Datum({
     this.id,
     this.name,
+    this.gName,
     this.description,
+    this.gDescription,
     this.category,
     this.status,
     this.createdBy,
     this.isDefault,
     this.isLiked,
+    this.userLiked,
     this.audioFile,
+    this.isCompleted,
+    this.alarmId,
+    this.lang,
     this.createdAt,
     this.updatedAt,
     this.v,
-    this.gName,
-    this.gDescription,
-    this.alarmId,
   });
 
-  factory AffirmationData.fromJson(Map<String, dynamic> json) => AffirmationData(
-    userLiked: json["userLiked"],
+  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
     id: json["_id"],
     name: json["name"],
+    gName: json["g_name"],
     description: json["description"],
+    gDescription: json["g_description"],
     category: json["category"],
     status: json["status"],
     createdBy: json["created_by"],
     isDefault: json["isDefault"],
     isLiked: json["isLiked"],
+    userLiked: json["userLiked"],
     audioFile: json["audioFile"],
+    isCompleted: json["isCompleted"],
+    alarmId: json["alarmId"],
+    lang: json["lang"],
     createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
     updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
     v: json["__v"],
-    gName: json["g_name"],
-    gDescription: json["g_description"],
-    alarmId: json["alarmId"],
   );
 
   Map<String, dynamic> toJson() => {
-    "userLiked": userLiked,
     "_id": id,
     "name": name,
+    "g_name": gName,
     "description": description,
+    "g_description": gDescription,
     "category": category,
     "status": status,
-    "created_by":createdBy,
+    "created_by": createdBy,
     "isDefault": isDefault,
     "isLiked": isLiked,
+    "userLiked": userLiked,
     "audioFile": audioFile,
+    "isCompleted": isCompleted,
+    "alarmId": alarmId,
+    "lang": lang,
     "createdAt": createdAt?.toIso8601String(),
     "updatedAt": updatedAt?.toIso8601String(),
-    "g_name": gName,
-    "g_description": gDescription,
-    "alarmId": alarmId,
+    "__v": v,
   };
 }
 

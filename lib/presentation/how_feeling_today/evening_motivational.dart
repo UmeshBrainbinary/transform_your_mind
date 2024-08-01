@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
@@ -9,9 +9,7 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
-import 'package:transform_your_mind/presentation/dash_board_screen/dash_board_screen.dart';
 import 'package:transform_your_mind/presentation/how_feeling_today/how_feeling_evening_controller.dart';
-import 'package:transform_your_mind/presentation/how_feeling_today/how_feelings_controller.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
@@ -58,9 +56,9 @@ class EveningMotivational extends StatelessWidget {
                         children: [
                           GestureDetector(
                             onTap: () {
-                              controller.whatHelpedStress = -1;
+                                controller.whatHelpedStressAchieve = -1;
 
-                              controller.selectedOptionStress = "Yes";
+                                controller.selectedOptionStressAchieve = "Yes";
                               controller.update();
                             },
                             child: Container(
@@ -73,8 +71,9 @@ class EveningMotivational extends StatelessWidget {
                                   width: 1, // Increase border width
                                 ),
                               ),
-                              child: controller.selectedOptionStress == "Yes"
-                                  ? Center(
+                                child: controller.selectedOptionStressAchieve ==
+                                        "Yes"
+                                    ? Center(
                                 child: Container(
                                   width: 15,
                                   height: 15,
@@ -95,9 +94,10 @@ class EveningMotivational extends StatelessWidget {
                           Dimens.d40.spaceWidth,
                           GestureDetector(
                             onTap: () {
-                              controller.whatHelpedStress = -1;
+                                controller.whatHelpedStressAchieve = -1;
 
-                              controller.selectedOptionStress = "Partially";
+                                controller.selectedOptionStressAchieve =
+                              "Partially";
                               controller.update();
                             },
                             child: Container(
@@ -110,8 +110,9 @@ class EveningMotivational extends StatelessWidget {
                                   width: 1, // Increase border width
                                 ),
                               ),
-                              child: controller.selectedOptionStress == "Partially"
-                                  ? Center(
+                                child: controller.selectedOptionStressAchieve ==
+                                        "Partially"
+                                    ? Center(
                                 child: Container(
                                   width: 15,
                                   height: 15,
@@ -132,9 +133,9 @@ class EveningMotivational extends StatelessWidget {
                           Dimens.d40.spaceWidth,
                           GestureDetector(
                             onTap: () {
-                              controller.whatHelpedStress = -1;
-                              controller.selectedOptionStress = "No";
-                              controller.update();
+                                controller.whatHelpedStressAchieve = -1;
+                                controller.selectedOptionStressAchieve = "No";
+                                controller.update();
                             },
                             child: Container(
                               width: 22,
@@ -146,8 +147,9 @@ class EveningMotivational extends StatelessWidget {
                                   width: 1, // Increase border width
                                 ),
                               ),
-                              child: controller.selectedOptionStress == "No"
-                                  ? Center(
+                                child: controller.selectedOptionStressAchieve ==
+                                        "No"
+                                    ? Center(
                                 child: Container(
                                   width: 15,
                                   height: 15,
@@ -175,9 +177,10 @@ class EveningMotivational extends StatelessWidget {
 
                 //___________________________________ 2. _________________________________
 
-                controller.selectedOptionStress == "No"?Column(children: [
-
-                  commonTextTitle("whatPrevented".tr, count: "2"),
+                  controller.selectedOptionStressAchieve == "No"
+                      ? Column(
+                          children: [
+                            commonTextTitle("whatPrevented".tr, count: "2"),
                   Dimens.d20.spaceHeight,
                   GetBuilder<HowFeelingEveningController>(
                     builder: (controller) => ListView.builder(
@@ -241,8 +244,8 @@ class EveningMotivational extends StatelessWidget {
                   commonTextSubtitle("whatSupport".tr),
 
                   Dimens.d20.spaceHeight,
-                  commonTextFiled("", feelController.whatCanYouDo),
-                  Dimens.d20.spaceHeight,
+                            commonTextFiled("", feelController.sleep),
+                            Dimens.d20.spaceHeight,
 
                 ],):Column(children: [
                   commonTextTitle("whatHelpedYou".tr, count: "2"),
@@ -330,8 +333,13 @@ class EveningMotivational extends StatelessWidget {
                   onTap: () async {
                     FocusScope.of(context).unfocus();
                     PrefService.setValue(PrefKey.morningQuestion, true);
-                    feelController.setQuestions("motivational");
-                    /*  if (feelController.howDoYouIndex == -1) {
+                      if (feelController
+                          .selectedOptionStressAchieve!.isNotEmpty) {
+                        feelController.setQuestions("motivational");
+                      } else {
+                        showSnackBarError(context, "pleaseAddDoYou".tr);
+                      }
+                      /*  if (feelController.howDoYouIndex == -1) {
                     showSnackBarError(
                         context, "Please select how do you feel right now?");
                   } else if (feelController.whatIsYourMind.text.isEmpty) {

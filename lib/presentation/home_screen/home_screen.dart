@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
@@ -25,28 +26,24 @@ import 'package:transform_your_mind/presentation/audio_content_screen/screen/now
 import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_screen.dart';
 import 'package:transform_your_mind/presentation/breath_screen/breath_screen.dart';
 import 'package:transform_your_mind/presentation/home_screen/home_controller.dart';
+import 'package:transform_your_mind/presentation/home_screen/home_message_page.dart';
 import 'package:transform_your_mind/presentation/home_screen/widgets/home_widget.dart';
-import 'package:transform_your_mind/presentation/how_feeling_today/how_feeling_today_screen.dart';
-import 'package:transform_your_mind/presentation/how_feeling_today/how_feelings_evening.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_affirmation_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_gratitude_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/my_affirmation_page.dart';
-import 'package:transform_your_mind/presentation/journal_screen/widget/my_gratitude_page.dart';
+import 'package:transform_your_mind/presentation/motivational_message/motivation_screen.dart';
 import 'package:transform_your_mind/presentation/motivational_message/motivational_controller.dart';
-import 'package:transform_your_mind/presentation/motivational_message/motivational_message.dart';
 import 'package:transform_your_mind/presentation/positive_moment/positive_controller.dart';
 import 'package:transform_your_mind/presentation/positive_moment/positive_screen.dart';
 import 'package:transform_your_mind/presentation/start_practcing_screen/start_pratice_screen.dart';
 import 'package:transform_your_mind/presentation/start_pratice_affirmation/start_pratice_affirmation.dart';
 import 'package:transform_your_mind/presentation/subscription_screen/subscription_screen.dart';
 import 'package:transform_your_mind/presentation/transform_pods_screen/transform_pods_screen.dart';
-import 'package:transform_your_mind/presentation/welcome_screen/welcome_screen.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:transform_your_mind/widgets/custom_view_controller.dart';
-import 'package:http/http.dart' as http;
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -66,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen>
   GratitudeModel gratitudeModel = GratitudeModel();
   AffirmationController affirmationController = Get.put(AffirmationController());
   String currentLanguage = PrefService.getString(PrefKey.language);
-
+  MotivationalController motivationalController = Get.put(MotivationalController());
   @override
   void initState() {
     _setGreetingBasedOnTime();
@@ -96,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen>
     var request = http.Request(
         'GET',
         Uri.parse(
-            '${EndPoints.baseUrl}get-gratitude?created_by=${PrefService.getString(PrefKey.userId)}&date=${DateFormat('dd/MM/yyyy').format(now)}'));
+            '${EndPoints.baseUrl}get-gratitude?created_by=${PrefService.getString(PrefKey.userId)}&date=${DateFormat('dd/MM/yyyy').format(now)}&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}'));
 
     request.headers.addAll(headers);
 
@@ -117,6 +114,8 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   checkInternet() async {
+    await motivationalController.pause();
+
     if (await isConnected()) {
       getData();
     } else {
@@ -125,15 +124,20 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   getData() async {
-    await g.getMotivationalMessage();
     await g.getUSer();
-    await g.getPodApi();
-    await g.getBookMarkedList();
-    await g.getTodayGratitude();
-    await g.getTodayAffirmation();
-    await g.getRecentlyList();
-    await positiveController.getPositiveMoments();
-    await getGratitude();
+
+    getGratitude();
+
+    g.getMotivationalMessage();
+    g.getPodApi();
+    g.getBookMarkedList();
+
+    g.getTodayAffirmation();
+    g.getRecentlyList();
+    positiveController.getPositiveMoments();
+    setState(() {});
+    g.update(["home"]);
+    g.update();
   }
 
 
@@ -208,47 +212,6 @@ class _HomeScreenState extends State<HomeScreen>
     return Stack(
       children: [
         Scaffold(
-            /*floatingActionButton: ValueListenableBuilder(
-              valueListenable: showScrollTop,
-              builder: (context, value, child) {
-                return AnimatedOpacity(
-                  duration: const Duration(milliseconds: 700),
-                  //show/hide animation
-                  opacity: showScrollTop.value ? 1.0 : 0.0,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: ColorConstant.themeColor,
-                    ),
-                    padding: const EdgeInsets.all(5.0),
-                    child: FloatingActionButton(
-                      elevation: 0.0,
-                      onPressed: () {
-                        *//*   if(greeting=="goodMorning"){
-                          Get.to(()=> HowFeelingsEvening());
-
-                        }else{
-                          Get.to(()=>const HowFeelingTodayScreen());
-
-                        }*//*
-                        scrollController.animateTo(
-                          0,
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.fastOutSlowIn,
-                        );
-                      },
-                      backgroundColor: ColorConstant.themeColor,
-                      child: SvgPicture.asset(
-                        ImageConstant.icUpArrow,
-                        fit: BoxFit.fill,
-                        height: Dimens.d20.h,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),*/
             backgroundColor: themeController.isDarkMode.isTrue
                 ? ColorConstant.darkBackground
                 : ColorConstant.white,
@@ -277,23 +240,17 @@ class _HomeScreenState extends State<HomeScreen>
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: Dimens.d20),
-                                child: GestureDetector(onTap: () {
-
-                                  Get.to(()=>  const HowFeelingTodayScreen());
-
-                                },
-                                  child: Text(
-                                      "${greeting.tr}, ${PrefService.getString(PrefKey.name).toString()}",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: themeController.isDarkMode.isTrue
-                                              ? ColorConstant.white
-                                              : ColorConstant.black,
-                                          fontFamily: FontFamily.nunitoBold,
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 24,
-                                          letterSpacing: 1)),
-                                ),
+                                child: Text(
+                                    "${greeting.tr}, ${PrefService.getString(PrefKey.name).toString()}",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: themeController.isDarkMode.isTrue
+                                            ? ColorConstant.white
+                                            : ColorConstant.black,
+                                        fontFamily: FontFamily.nunitoBold,
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 24,
+                                        letterSpacing: 1)),
                               ),
                             ),
 
@@ -424,7 +381,7 @@ class _HomeScreenState extends State<HomeScreen>
                                     onTap: () {
                                       if (g.quickAccessList[index]["title"] ==
                                           "motivational") {
-                                        Get.to(()=>MotivationalMessageScreen(skip: false,))!
+                                        Get.to(() => const MotivationScreen())!
                                             .then((value) async {
                                           MotivationalController moti = Get.find<MotivationalController>();
                                           await moti.audioPlayer.dispose();
@@ -704,19 +661,13 @@ class _HomeScreenState extends State<HomeScreen>
   Widget topView(String? motivationalMessage) {
     return GestureDetector(
         onTap: () async {
-
-            //await NotificationService.scheduleNotification(DateTime.now());
-
-           /* Get.to(()=>  const HowFeelingsEvening());*/
-            Get.to(()=>  const HowFeelingsEvening());
-            /*    Navigator.push(context, MaterialPageRoute(
+          Navigator.push(context, MaterialPageRoute(
             builder: (context) {
               return HomeMessagePage(
                   motivationalMessage: motivationalMessage ??
                       "Believe in yourself, even when doubt creeps in. Today's progress is a step towards your dreams.");
               },
-              ));*/
-
+          ));
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -837,6 +788,7 @@ class _HomeScreenState extends State<HomeScreen>
                   child: Padding(
                     padding: const EdgeInsets.only(right: 20.0),
                     child: FeelGood(
+                      currentLanguage: currentLanguage,
                       audioTime: controller.audioListDuration.length > index ? _formatDuration( controller.audioListDuration[index]) : '8:00',
                       dataList: controller.audioData[index],
                     ),
@@ -1112,19 +1064,6 @@ class _HomeScreenState extends State<HomeScreen>
                                 await g.getTodayAffirmation();
                                 setState(() {});
                               },);
-                          /*    await g.updateTodayData(g.todayAList![index].id,
-                                  "update-affirmation");
-                              g.affirmationCheckList[index] = true;
-                              Future.delayed(const Duration(milliseconds: 500))
-                                  .then(
-                                (value) async {
-                                  g.todayAList!.removeAt(index);
-
-                                  await g.getTodayAffirmation();
-                                  setState(() {});
-                                },
-                              );
-                              setState(() {});*/
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -1133,15 +1072,12 @@ class _HomeScreenState extends State<HomeScreen>
                                       : ColorConstant.backGround,
                                   borderRadius: BorderRadius.circular(10)),
                               child: ListTile(
-                                subtitle: Text(
+                                title: Text(
                                   g.todayAList?[index].description ?? "",
                                   maxLines: 3,
                                   style: Style.nunRegular(),
                                 ),
-                                title: Text(
-                                  g.todayAList?[index].name ?? "",
-                                  style: Style.montserratSemiBold(),
-                                ),
+
 
                               ),
                             ),
@@ -1324,122 +1260,6 @@ class _HomeScreenState extends State<HomeScreen>
                       ),
                     ],
                   ),
-            /*     child: (g.todayGList ?? []).isEmpty
-                ? Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: CommonElevatedButton(
-                      height: Dimens.d46,
-                      title: "addTodayGratitude".tr,
-                      textStyle: Style.nunRegular(
-                          fontSize: Dimens.d17, color: ColorConstant.white),
-                      onTap: () {
-                        Get.toNamed(AppRoutes.myGratitudePage)!.then(
-                          (value) async {
-                            await g.getTodayGratitude();
-                            setState(() {});
-                          },
-                        );
-                      },
-                    ),
-                  )
-                : Column(
-                    children: [
-                      ListView.separated(
-                        shrinkWrap: true,
-                        padding: EdgeInsets.zero,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: g.todayGList?.length ?? 0,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () async {
-                              await g.updateTodayData(
-                                  g.todayGList![index].id,
-                                  "update-gratitude");
-                              g.gratitudeCheckList[index] = true;
-                              Future.delayed(
-                                  const Duration(milliseconds: 500))
-                                  .then(
-                                    (value)  async {
-
-
-                                  g.todayGList!.removeAt(index);
-
-                                  await g.getTodayGratitude();
-                                  setState(() {});
-                                },
-                              );
-                              setState(() {
-
-
-                              });
-                            },
-                            child: ListTile(
-                              subtitle: Text(
-                                g.todayGList?[index].description ?? "",
-                                maxLines: 3,
-                                style: Style.nunRegular(),
-                              ),
-                              title: Text(
-                                g.todayGList?[index].name ?? "",
-                                style: Style.montserratSemiBold(),
-                              ),
-                              trailing: g.gratitudeCheckList.isNotEmpty
-                                  ? g.gratitudeCheckList[index] == true
-                                      ? Container(
-                                          height: 40,
-                                          width: 40,
-                                          decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: ColorConstant.themeColor),
-                                      child: Center(
-                                          child: SvgPicture.asset(
-                                              ImageConstant.checkBox)),
-                                        )
-                                      : Container(
-                                          height: 40,
-                                          width: 40,
-                                          decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                  color: ColorConstant
-                                                      .themeColor)),
-                                        )
-                                  : Container(
-                                      height: 40,
-                                      width: 40,
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                              color: ColorConstant.themeColor)),
-                                    ),
-                            ),
-                          );
-                        },
-                        separatorBuilder: (context, index) {
-                          return const Divider();
-                        },
-                      ),
-                      Dimens.d20.spaceHeight,
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: CommonElevatedButton(
-                          height: Dimens.d46,
-                          title: "addNew".tr,
-                          textStyle: Style.nunRegular(
-                              fontSize: Dimens.d17, color: ColorConstant.white),
-                          onTap: () {
-                            Get.toNamed(AppRoutes.myGratitudePage)!.then(
-                              (value) async {
-                                await g.getTodayGratitude();
-                                setState(() {});
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                      Dimens.d20.spaceHeight,
-                    ],
-                  ),*/
           )
         ],
       ),

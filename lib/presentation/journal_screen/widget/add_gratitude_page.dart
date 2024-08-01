@@ -92,7 +92,7 @@ class _AddGratitudePageState extends State<AddGratitudePage>
     var request = http.Request(
         'GET',
         Uri.parse(
-            '${EndPoints.baseUrl}get-gratitude?created_by=${PrefService.getString(PrefKey.userId)}&date=${widget.date}'));
+            '${EndPoints.baseUrl}get-gratitude?created_by=${PrefService.getString(PrefKey.userId)}&date=${widget.date}&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}'));
 
     request.headers.addAll(headers);
 
@@ -165,7 +165,12 @@ class _AddGratitudePageState extends State<AddGratitudePage>
         'POST', Uri.parse('${EndPoints.baseUrl}add-gratitude'));
     request.body = json.encode({
       "description": addGratitudeText.text,
-      "created_by":PrefService.getString(PrefKey.userId)
+      "created_by": PrefService.getString(PrefKey.userId),
+      'lang': PrefService.getString(PrefKey.language).isEmpty
+          ? "english"
+          : PrefService.getString(PrefKey.language) != "en-US"
+              ? "german"
+              : "english"
     });
     request.headers.addAll(headers);
 
@@ -204,7 +209,12 @@ class _AddGratitudePageState extends State<AddGratitudePage>
         'POST', Uri.parse('${EndPoints.baseUrl}update-gratitude?id=$id'));
     request.body = json.encode({
       "description": description,
-      "created_by":PrefService.getString(PrefKey.userId)
+      "created_by": PrefService.getString(PrefKey.userId),
+      'lang': PrefService.getString(PrefKey.language).isEmpty
+          ? "english"
+          : PrefService.getString(PrefKey.language) != "en-US"
+              ? "german"
+              : "english"
     });
     request.headers.addAll(headers);
 
@@ -517,6 +527,9 @@ class _AddGratitudePageState extends State<AddGratitudePage>
                                 addGratitudeData[index].description =
                                     addGratitudeText.text.trim();
                               });
+                            }else{
+                              showSnackBarError(context,"pleaseAddYourGratitude".tr);
+
                             }
                           } else {
                             if (addGratitudeText.text.trim().isNotEmpty) {
@@ -527,6 +540,8 @@ class _AddGratitudePageState extends State<AddGratitudePage>
 
                               setState(() {});
                               setState.call(() {});
+                            }else{
+                              showSnackBarError(context,"pleaseAddYourGratitude".tr);
                             }
                           }
                         },

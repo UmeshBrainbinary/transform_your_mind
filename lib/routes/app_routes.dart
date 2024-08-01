@@ -46,6 +46,7 @@ import 'package:transform_your_mind/presentation/me_screen/screens/setting_scree
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/binding/setting_binding.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/setting_screen.dart';
 import 'package:transform_your_mind/presentation/motivational_message/binding/motivational_binding.dart';
+import 'package:transform_your_mind/presentation/motivational_message/motivation_screen.dart';
 import 'package:transform_your_mind/presentation/motivational_message/motivational_message.dart';
 import 'package:transform_your_mind/presentation/positive_moment/binding/positive_binding.dart';
 import 'package:transform_your_mind/presentation/positive_moment/positive_screen.dart';
@@ -103,6 +104,7 @@ class AppRoutes {
   static const String informationScreen = '/informationScreen';
   static const String breathScreen = '/breathScreen';
   static const String noticeHowYouFeel = '/noticeHowYouFeel';
+  static const String motivationScreen = '/MotivationScreen';
 
   static List<GetPage> pages = [
 
@@ -390,7 +392,11 @@ class AppRoutes {
       page: () =>    NoticeHowYouFeelScreen(),
       bindings: [BreathBinding()],
     ),
-
-
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: motivationScreen,
+      page: () => const MotivationScreen(),
+      bindings: [MotivationalBinding()],
+    ),
   ];
 }

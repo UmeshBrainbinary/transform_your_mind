@@ -124,7 +124,7 @@ class PositiveController extends GetxController {
       var request = http.Request(
         'GET',
         Uri.parse(
-          "${EndPoints.getMoment}created_by=${PrefService.getString(PrefKey.userId)}?$weeks=true",
+          "${EndPoints.getMoment}created_by=${PrefService.getString(PrefKey.userId)}?$weeks=true&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}",
         ),
       );
       request.headers.addAll(headers);
@@ -172,7 +172,7 @@ class PositiveController extends GetxController {
       var request = http.Request(
         'GET',
         Uri.parse(
-          "${EndPoints.getMoment}?created_by=${PrefService.getString(PrefKey.userId)}",
+          "${EndPoints.getMoment}?created_by=${PrefService.getString(PrefKey.userId)}&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}",
         ),
       );
 

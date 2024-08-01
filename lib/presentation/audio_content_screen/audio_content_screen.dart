@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
@@ -314,7 +313,7 @@ getData() async {
                                               },
                                               child: Stack(alignment: Alignment.topRight,
                                                 children: [
-                                                  Column(
+                                                  Column(crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
                                                       Stack(
                                                         alignment: Alignment.topRight,

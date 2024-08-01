@@ -58,7 +58,6 @@ class AudioContentController extends GetxController {
   RxBool loader = false.obs;
   RxBool loaderD = false.obs;
   GetPodsModel getPodsModel = GetPodsModel();
-  Duration? _audioDuration;
   final AudioPlayer _audioPlayer = AudioPlayer();
   Future<void> getPodApi() async {
     try {
@@ -68,7 +67,7 @@ class AudioContentController extends GetxController {
       var request = http.Request(
           'GET',
           Uri.parse(
-              '${EndPoints.getPod}?userId=${PrefService.getString(PrefKey.userId)}'));
+              '${EndPoints.getPod}?userId=${PrefService.getString(PrefKey.userId)}&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}'));
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();
 
@@ -121,7 +120,10 @@ class AudioContentController extends GetxController {
     var headers = {
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
-    var request = http.Request('GET', Uri.parse('https://transformyourmind-server.onrender.com/api/v1/rating-pod'));
+    var request = http.Request(
+        'GET',
+        Uri.parse(
+            'https://transformyourmind-server.onrender.com/api/v1/rating-pod?lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}'));
 
     request.headers.addAll(headers);
 

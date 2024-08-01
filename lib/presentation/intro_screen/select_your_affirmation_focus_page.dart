@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -22,7 +21,6 @@ import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/model_class/affirmation_model.dart';
 import 'package:transform_your_mind/model_class/common_model.dart';
 import 'package:transform_your_mind/model_class/get_user_model.dart';
-import 'package:transform_your_mind/presentation/intro_screen/select_your_focus_page.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
@@ -55,6 +53,7 @@ class _SelectYourAffirmationFocusPageState
     extends State<SelectYourAffirmationFocusPage> {
   List<Tag> listOfTags = [];
   List<String> tempData = [];
+  String currentLanguage = PrefService.getString(PrefKey.language);
 
   List<String> selectedTagNames = [];
   ValueNotifier<String> selectedReminderTime = ValueNotifier('');
@@ -75,7 +74,9 @@ class _SelectYourAffirmationFocusPageState
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
     var request = http.Request(
-        'GET', Uri.parse('${EndPoints.baseUrl}${EndPoints.getAffirmation}'));
+        'GET',
+        Uri.parse(
+            '${EndPoints.baseUrl}${EndPoints.getCategory}1&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}'));
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
@@ -176,9 +177,11 @@ class _SelectYourAffirmationFocusPageState
     setState(() {
       tag.isSelected = !tag.isSelected;
       if (tag.isSelected) {
-        selectedTagNames.add(tag.nameEn);
+        selectedTagNames
+            .add(currentLanguage == "en-US" ? tag.nameEn : tag.nameDe);
       } else {
-        selectedTagNames.remove(tag.nameEn);
+        selectedTagNames
+            .remove(currentLanguage == "en-US" ? tag.nameEn : tag.nameDe);
       }
     });
   }
@@ -190,7 +193,7 @@ class _SelectYourAffirmationFocusPageState
           ? ColorConstant.darkBackground
           : ColorConstant.white,
       appBar: CustomAppBar(
-        title: "selectYourAffirmationFocus".tr,
+        title: "selectYourAffirmationFocus".tr, // Set directly in English
       ),
       body: Stack(
         children: [
@@ -219,7 +222,7 @@ class _SelectYourAffirmationFocusPageState
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: AutoSizeText(
-                      "chooseMinInterest".tr,
+                      "chooseMinInterest".tr, // Set directly in English
                       textAlign: TextAlign.center,
                       style: Style.nunRegular(
                           color: themeController.isDarkMode.value
@@ -242,7 +245,9 @@ class _SelectYourAffirmationFocusPageState
                               return GestureDetector(
                                 onTap: () => _onTagTap(tag),
                                 child: CustomChip(
-                                  label: tag.nameDe,
+                                  label: currentLanguage == "en-US"
+                                      ? tag.nameEn
+                                      : tag.nameDe, // Use English name
                                   isChipSelected: tag.isSelected,
                                 ),
                               );
@@ -255,18 +260,21 @@ class _SelectYourAffirmationFocusPageState
                   Dimens.d20.spaceHeight,
                   FocusSelectButton(
                     primaryBtnText: widget.isFromMe
-                        ? "save".tr
+                        ? "Save" // Set directly in English
                         : widget.setting!
-                        ? "save".tr
-                        : "next".tr,
-                    secondaryBtnText: widget.isFromMe ? '' : "skip".tr,
+                            ? "Save" // Set directly in English
+                            : "Next",
+                    // Set directly in English
+                    secondaryBtnText: widget.isFromMe ? '' : "Skip",
+                    // Set directly in English
                     isLoading: false,
                     primaryBtnCallBack: () {
                       //getAffirmation();
                       if (selectedTagNames.isNotEmpty) {
                         setFocuses(widget.setting);
                       } else {
-                        showSnackBarError(context, 'Please5Affirmation'.tr);
+                        showSnackBarError(context,
+                            'Please select at least 5 affirmations'); // Set directly in English
                       }
                     },
                   )
@@ -305,7 +313,8 @@ class _SelectYourAffirmationFocusPageState
           loader = false;
         });
         if (setting == true) {
-          showSnackBarSuccess(context, "yourAffirmationHasBeenSelected".tr);
+          showSnackBarSuccess(context,
+              "yourAffirmationsSelected".tr); // Set directly in English
           Get.back();
         } else {
           Navigator.push(context, MaterialPageRoute(
@@ -330,3 +339,4 @@ class _SelectYourAffirmationFocusPageState
     }
   }
 }
+
