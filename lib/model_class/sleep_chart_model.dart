@@ -12,7 +12,7 @@ String sleepChartModelToJson(SleepChartModel data) =>
 
 class SleepChartModel {
   List<Datum>? data;
-  int? averageSleep;
+  dynamic averageSleep;
 
   SleepChartModel({
     this.data,
@@ -37,7 +37,7 @@ class SleepChartModel {
 
 class Datum {
   String? day;
-  int? averageSleep;
+  dynamic averageSleep;
 
   Datum({
     this.day,

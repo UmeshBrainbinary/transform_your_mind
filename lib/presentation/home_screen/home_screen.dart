@@ -130,6 +130,7 @@ class _HomeScreenState extends State<HomeScreen>
 
     g.getMotivationalMessage();
     g.getPodApi();
+    g.getSelfHypnoticApi();
     g.getBookMarkedList();
 
     g.getTodayAffirmation();
@@ -345,7 +346,21 @@ class _HomeScreenState extends State<HomeScreen>
                                 },
                               ),
                             ),
-                            Dimens.d40.spaceHeight,
+                            Dimens.d30.spaceHeight,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: Dimens.d20),
+                              child: Text(
+                                "selfHypnotic".tr,
+                                textAlign: TextAlign.center,
+                                style: Style.nunitoBold(
+                                  fontSize: Dimens.d22,
+                                ),
+                              ),
+                            ),
+                            Dimens.d30.spaceHeight,
+                            selfHypnotic(),
+                            Dimens.d30.spaceHeight,
                             Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: Dimens.d20),
@@ -799,6 +814,104 @@ class _HomeScreenState extends State<HomeScreen>
       },
     );
   }
+  Widget selfHypnotic() {
+    return GetBuilder<HomeController>(
+      id: "home",
+      builder: (controller) {
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: List.generate(controller.audioDataSelfHypnotic.length ?? 0, ( index) {
+              return GestureDetector(
+                  onTap: () {
+                    if (controller.audioDataSelfHypnotic[index].isPaid!) {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(
+                              Dimens.d24,
+                            ),
+                          ),
+                        ),
+                        builder: (BuildContext context) {
+                          return NowPlayingScreen(
+                            audioData: AudioData(
+                              id: controller.audioDataSelfHypnotic[index].id,
+                              isPaid: controller.audioDataSelfHypnotic[index].isPaid,
+                              image: controller.audioDataSelfHypnotic[index].image,
+                              rating: controller.audioDataSelfHypnotic[index].rating,
+                              description:
+                              controller.audioDataSelfHypnotic[index].description,
+                              name: controller.audioDataSelfHypnotic[index].name,
+                              isBookmarked:
+                              controller.audioDataSelfHypnotic[index].isBookmarked,
+                              isRated: controller.audioDataSelfHypnotic[index].isRated,
+                              category: controller.audioDataSelfHypnotic[index].category,
+                              createdAt: controller.audioDataSelfHypnotic[index].createdAt,
+                              podsBy: controller.audioDataSelfHypnotic[index].podsBy,
+                              expertName:
+                              controller.audioDataSelfHypnotic[index].expertName,
+                              audioFile: controller.audioDataSelfHypnotic[index].audioFile,
+                              isRecommended:
+                              controller.audioDataSelfHypnotic[index].isRecommended,
+                              status: controller.audioDataSelfHypnotic[index].status,
+                              createdBy: controller.audioDataSelfHypnotic[index].createdBy,
+                              updatedAt: controller.audioDataSelfHypnotic[index].updatedAt,
+                              v: controller.audioDataSelfHypnotic[index].v,
+                              download: false,
+                            ),
+                          );
+                        },
+                      ).then((value) {
+                        if (themeController.isDarkMode.isTrue) {
+                          SystemChrome.setSystemUIOverlayStyle(
+                              const SystemUiOverlayStyle(
+                                statusBarBrightness: Brightness.dark,
+                                statusBarIconBrightness: Brightness.light,
+                              ));
+                        } else {
+                          SystemChrome.setSystemUIOverlayStyle(
+                              const SystemUiOverlayStyle(
+                                statusBarBrightness: Brightness.light,
+                                statusBarIconBrightness: Brightness.dark,
+                              ));
+                        }
+                        Future.delayed(const Duration(seconds: 1)).then(
+                              (value) {
+                            setState(() {});
+                          },
+                        );
+                      },);
+                    }else{
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) {
+                          return SubscriptionScreen(
+                            skip: false,
+                          );
+                        },
+                      ));
+                    }
+
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 20.0),
+                    child: SelfHypnoticScreen(
+                      currentLanguage: currentLanguage,
+                      audioTime: controller.audioListDurationSelf.length > index ? _formatDuration( controller.audioListDurationSelf[index]) : '8:00',
+                      dataList: controller.audioDataSelfHypnotic[index],
+                    ),
+                  ));
+            }),
+          ),
+        );
+      },
+    );
+  }
+
 
   Widget bookmarkViw(HomeController controller) {
     return Column(

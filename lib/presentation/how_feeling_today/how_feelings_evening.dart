@@ -233,7 +233,7 @@ class _HowFeelingsEveningState extends State<HowFeelingsEvening> {
                     FocusScope.of(context).unfocus();
                     PrefService.setValue(PrefKey.morningQuestion, true);
                         if (howFeelingsController.howDoYouIndex != -1) {
-                          howFeelingsController.setQuestions("mood");
+                          howFeelingsController.setQuestions("mood",context);
                         } else {
                           showSnackBarError(
                               context, "pleaseAddHowAreYouFeeling".tr);

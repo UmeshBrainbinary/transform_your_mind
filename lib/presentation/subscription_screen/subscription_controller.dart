@@ -1,6 +1,13 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
 
 class SubscriptionController extends GetxController {
+
   RxList<Map<String, dynamic>> selectPlan = [
     {"plan": "Free", "des": "",
       "free":""
@@ -18,6 +25,7 @@ class SubscriptionController extends GetxController {
 
   @override
   void onInit() {
+
     List.generate(
       3,
       (index) => plan.add(false),
@@ -29,4 +37,7 @@ class SubscriptionController extends GetxController {
 
     update();
   }
+
+
+
 }

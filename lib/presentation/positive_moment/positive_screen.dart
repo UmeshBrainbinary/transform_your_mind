@@ -935,28 +935,57 @@ class _PositiveScreenState extends State<PositiveScreen> {
                     ),
                   ],
                 ),
-                InkWell(
-                  onTap: () async {
-                    Get.back();
-                    await positiveController
-                        .filterMoment(positiveController.conTap.value);
-                  },
-                  child: Container(
-                    width: 238,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(80),
-                      color: ColorConstant.themeColor,
+                Row(
+                  children:[
+                    InkWell(
+                    onTap: () async {
+                      Get.back();
+                      await positiveController
+                          .filterMoment(positiveController.conTap.value);
+                    },
+                    child: Container(
+                      height: 36,
+                      padding: const EdgeInsets.symmetric(horizontal: 55),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(80),
+                        color: ColorConstant.themeColor,
+                      ),
+                      child: Center(
+                          child: Text(
+                            "apply".tr,
+                            style: Style.nunRegular(
+                                color: ColorConstant.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w400),
+                          )),
                     ),
-                    child: Center(
-                        child: Text(
-                      "apply".tr,
-                      style: Style.nunRegular(
-                          color: ColorConstant.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w400),
-                    )),
                   ),
+                    const Spacer(),
+                    InkWell(
+                    onTap: () async {
+                      Get.back();
+                      await positiveController
+                          .filterMoment(positiveController.conTap.value);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 35),
+                      height: 36,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(80),
+                        color: ColorConstant.themeColor,
+                      ),
+                      child: Center(
+                          child: Text(
+                            "spotlight".tr,
+                            style: Style.nunRegular(
+                                color: ColorConstant.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w400),
+                          )),
+                    ),
+                  ),
+
+                  ],
                 )
               ],
             ),

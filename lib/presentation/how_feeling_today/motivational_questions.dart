@@ -194,7 +194,7 @@ class MotivationalQuestions extends StatelessWidget {
                   FocusScope.of(context).unfocus();
                   PrefService.setValue(PrefKey.morningQuestion, true);
                   if(feelController.whatDoYouWantToAchieve!=-1){
-                    feelController.setQuestions("motivation");
+                    feelController.setQuestions("motivation",context);
                   }else{
                     showSnackBarError(context, "pleaseSelectWhatDoYouAchieve".tr);
                   }

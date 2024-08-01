@@ -15,13 +15,16 @@ import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/model_class/positive_model.dart';
 import 'package:transform_your_mind/presentation/positive_moment/positive_controller.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:volume_controller/volume_controller.dart';
 import 'dart:math' as math;
 class PositiveStoryMoment extends StatefulWidget {
-  const PositiveStoryMoment({super.key});
+  List<PositiveDataList>? data;
+
+   PositiveStoryMoment({super.key,this.data});
 
   @override
   State<PositiveStoryMoment> createState() => _PositiveStoryMomentState();
@@ -97,8 +100,12 @@ class _PositiveStoryMomentState extends State<PositiveStoryMoment> {
             _progress = 0.0;
             _currentIndex++;
             if (_currentIndex >=
-                positiveController.filteredBookmarks!.length) {
+                widget.data!.length) {
               _timer!.cancel();
+              if (positiveController.filteredBookmarks!.length == 1) {
+                Get.back();
+                positiveController.pause();
+              }
             } else {
               _pageController.animateToPage(
                 _currentIndex,
@@ -200,13 +207,22 @@ class _PositiveStoryMomentState extends State<PositiveStoryMoment> {
                 PageView.builder(
                   scrollDirection: Axis.vertical,
                   itemCount:
-                  positiveController.filteredBookmarks?.length ?? 0,
+                  widget.data!.length ?? 0,
                   controller: _pageController,
-                  onPageChanged: (value) {
+                  onPageChanged: (value) async {
                     setState(() {
                       _currentIndex = value;
                       _progress = 0.0;
                     });
+                    if (_currentIndex == ( widget.data!.length - 1)) {
+
+                      await positiveController.pause();
+                      Future.delayed(Duration(seconds: speedChange())).then(
+                            (value) {
+                          Get.back();
+                        },
+                      );
+                    }
                   },
                   itemBuilder: (context, index) {
                     return Center(
@@ -214,7 +230,7 @@ class _PositiveStoryMomentState extends State<PositiveStoryMoment> {
                         padding:
                         const EdgeInsets.only(left: 48, right: 48, top: 40),
                         child: Text(
-                            "“${positiveController.filteredBookmarks![index]["des"]}”" ??
+                            "“${widget.data![index].description}”" ??
                                 "",
                             textAlign: TextAlign.center,
                             maxLines: 5,

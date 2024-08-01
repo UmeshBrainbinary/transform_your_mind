@@ -13,6 +13,7 @@ import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/model_class/bookmarked_model.dart';
 import 'package:transform_your_mind/model_class/get_pods_model.dart';
 import 'package:transform_your_mind/model_class/recently_model.dart';
+import 'package:transform_your_mind/model_class/self_hypnotic_model.dart';
 import 'package:transform_your_mind/presentation/positive_moment/positive_controller.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
@@ -349,6 +350,129 @@ class FeelGood extends StatelessWidget {
     );
   }
 }
+class SelfHypnoticScreen extends StatelessWidget {
+  SelfHypnoticData? dataList;
+  String? audioTime,currentLanguage;
+  SelfHypnoticScreen({super.key, this.dataList,this.audioTime,this.currentLanguage});
+
+  @override
+  Widget build(BuildContext context) {
+
+    return SizedBox(
+      width: Dimens.d156,
+      child: Stack(alignment: Alignment.topRight,
+        children: [
+          Column(crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  CommonLoadImage(
+                    borderRadius: 10,
+                    url: dataList?.image??
+                        "",
+                    width: Dimens.d156,
+                    height: Dimens.d113,
+                  ),
+                  Align(
+                    alignment:
+                    Alignment.topRight,
+                    child: Padding(
+                      padding:
+                      const EdgeInsets
+                          .only(
+                          right: 10,
+                          top: 10),
+                      child: SvgPicture.asset(
+                          ImageConstant.play),
+                    ),
+                  ),
+                  Positioned( bottom: 5.0,
+                    right: 5.0,
+                    child: Container(padding:  EdgeInsets.only(top: Platform.isIOS?0: 1),
+                      height: 12,width: 30,decoration: BoxDecoration(color: Colors.black.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(13)),
+                    child: Center(child: Text(audioTime!,style: Style.nunRegular(fontSize: 6,color: Colors.white),)) ,),
+                  )
+                ],
+              ),
+              Dimens.d10.spaceHeight,
+              Row(
+                mainAxisAlignment:
+                MainAxisAlignment
+                    .spaceBetween,
+                children: [
+                  SizedBox(
+                    width: 72,
+                    child: Text(
+                      dataList?.name
+                          .toString()??"",
+                      // "Motivational",
+                      style: Style
+                          .nunitoBold(
+                        fontSize: Dimens.d10,
+                      ),
+                      overflow: TextOverflow
+                          .ellipsis,
+                      maxLines: 1,
+                    ),
+                  ),
+                  const CircleAvatar(
+                    radius: 2,
+                    backgroundColor:
+                    ColorConstant
+                        .colorD9D9D9,
+                  ),
+                  Dimens.d10.spaceWidth,
+                  Row(
+                    children: [
+                      SvgPicture.asset(
+                        ImageConstant.rating,
+                        color: ColorConstant
+                            .colorFFC700,
+                        height: 10,
+                        width: 10,
+                      ),
+                      Dimens.d3.spaceWidth,
+
+                      Text(
+                        "${ dataList?.rating.toString()}.0",
+                        style: Style
+                            .nunMedium(
+                          fontSize:
+                          Dimens.d12,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                ],
+              ),
+              Dimens.d7.spaceHeight,
+              Text(
+               dataList?.description??"",
+                maxLines: Dimens.d2.toInt(),
+                style: Style.nunMedium(
+                    fontSize: Dimens.d14),
+                overflow:
+                TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+          if (!dataList!.isPaid!) Align(alignment: Alignment.topLeft,
+            child: Container(
+              margin: const EdgeInsets.all(7.0),
+              height: 14,width: 14,
+              decoration: const BoxDecoration(color: Colors.black,shape: BoxShape.circle),
+              child: Center(child: Image.asset(ImageConstant.lockHome,height: 7,width: 7,)),
+            ),
+          ) else const SizedBox()
+        ],
+      ),
+    );
+  }
+}
+
 
 class PositiveMoment extends StatelessWidget {
   int? index;

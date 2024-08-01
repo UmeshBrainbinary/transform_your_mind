@@ -164,26 +164,19 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   setScreens() async {
-    if (getUserModel.data?.morningMoodQuestions ??
-        false == false && greeting == "goodMorning") {
+    if (getUserModel.data?.morningMoodQuestions == false && greeting == "goodMorning") {
       Get.offAll(() => const HowFeelingTodayScreen());
-    } else if (getUserModel.data?.morningSleepQuestions ??
-        false == false && greeting == "goodMorning") {
+    } else if (getUserModel.data?.morningSleepQuestions  == false && greeting == "goodMorning") {
       Get.offAll(() => StressQuestions());
-    } else if (getUserModel.data?.morningStressQuestions ??
-        false == false && greeting == "goodMorning") {
+    } else if (getUserModel.data?.morningStressQuestions == false && greeting == "goodMorning") {
       Get.offAll(() => SleepQuestions());
-    } else if (getUserModel.data?.morningMotivationQuestions ??
-        false == false && greeting == "goodMorning") {
+    } else if (getUserModel.data?.morningMotivationQuestions  == false && greeting == "goodMorning") {
       Get.offAll(() => MotivationalQuestions());
-    } else if (getUserModel.data?.eveningMoodQuestions ??
-        false == false && greeting == "goodEvening") {
+    } else if (getUserModel.data?.eveningMoodQuestions == false && greeting == "goodEvening") {
       Get.offAll(() => const HowFeelingsEvening());
-    } else if (getUserModel.data?.eveningStressQuestions ??
-        false == false && greeting == "goodEvening") {
+    } else if (getUserModel.data?.eveningStressQuestions == false && greeting == "goodEvening") {
       Get.offAll(() => EveningStress());
-    } else if (getUserModel.data?.eveningMotivationQuestions ??
-        false == false && greeting == "goodEvening") {
+    } else if (getUserModel.data?.eveningMotivationQuestions == false && greeting == "goodEvening") {
       Get.offAll(() => EveningMotivational());
     } else {
       Get.offAll(() => const DashBoardScreen());

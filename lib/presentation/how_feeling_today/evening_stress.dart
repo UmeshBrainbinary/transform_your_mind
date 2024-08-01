@@ -407,7 +407,7 @@ class EveningStress extends StatelessWidget {
                     PrefService.setValue(PrefKey.eveningQuestion, true);
                     FocusScope.of(context).unfocus();
                     if (controller.selectedOptionStress!.isNotEmpty) {
-                      controller.setQuestions("sleep");
+                      controller.setQuestions("sleep",context);
                     } else {
                       showSnackBarError(
                           context, "pleaseSetDidYouFeelStressed".tr);

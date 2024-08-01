@@ -302,7 +302,7 @@ class SleepQuestions extends StatelessWidget {
                     PrefService.setValue(PrefKey.morningQuestion, true);
                     FocusScope.of(context).unfocus();
                    if(controller.selectedDidYouSleepWell!.isNotEmpty){
-                      controller.setQuestions("sleep");
+                      controller.setQuestions("sleep",context);
                    }else{
                      showSnackBarError(context, "pleaseSelectDidYouSleep".tr);
                    }

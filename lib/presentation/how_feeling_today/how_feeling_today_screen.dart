@@ -197,7 +197,7 @@ class _HowFeelingTodayScreenState extends State<HowFeelingTodayScreen> {
                   FocusScope.of(context).unfocus();
                   PrefService.setValue(PrefKey.morningQuestion, true);
                   if(controller.howDoYouIndex!=-1){
-                    await controller.setQuestions("mood");
+                    await controller.setQuestions("mood",context);
 
                   }else{
                     showSnackBarError(context, "pleaseSelectHowAreYouFelling".tr);

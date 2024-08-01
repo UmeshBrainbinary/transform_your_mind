@@ -10,6 +10,7 @@ import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/model_class/positive_model.dart';
+import 'package:transform_your_mind/presentation/positive_moment/positive_story_moment.dart';
 
 class PositiveController extends GetxController {
   RxList positiveMomentList = [].obs;
@@ -124,7 +125,7 @@ class PositiveController extends GetxController {
       var request = http.Request(
         'GET',
         Uri.parse(
-          "${EndPoints.getMoment}created_by=${PrefService.getString(PrefKey.userId)}?$weeks=true&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}",
+          "${EndPoints.getMoment}?created_by=${PrefService.getString(PrefKey.userId)}&$weeks=true&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}",
         ),
       );
       request.headers.addAll(headers);
@@ -135,6 +136,8 @@ class PositiveController extends GetxController {
         loader.value = false;
         positiveModel = positiveModelFromJson(responseBody);
         if (positiveModel.data != null) {
+          Get.to(()=> PositiveStoryMoment(data: positiveModel.data,));
+
           for (int i = 0; i < positiveModel.data!.length; i++) {
             positiveMomentList.add({
               "title": positiveModel.data?[i].title ?? '',

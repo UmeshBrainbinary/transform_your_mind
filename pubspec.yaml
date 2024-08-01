@@ -86,6 +86,9 @@ dependencies:
   vibration: ^1.9.0
   syncfusion_flutter_charts:
   dotted_border: ^2.1.0
+  in_app_purchase: ^3.2.0
+  in_app_purchase_storekit: ^0.3.17+3
+  in_app_purchase_android: ^0.3.6+5
 
 
 dev_dependencies:

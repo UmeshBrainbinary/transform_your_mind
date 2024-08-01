@@ -35,7 +35,7 @@ class PersonalizationScreenScreen extends StatefulWidget {
 class _PersonalizationScreenScreenState
     extends State<PersonalizationScreenScreen> {
   PersonalizationController personalizationController =
-      Get.find<PersonalizationController>();
+      Get.put(PersonalizationController());
 
   ThemeController themeController = Get.find<ThemeController>();
   String currentLanguage = '';
@@ -54,6 +54,8 @@ class _PersonalizationScreenScreenState
       setState(() {
         checkInternetCheck = true;
       });
+      await personalizationController.getScreen();
+
 
       currentLanguage = PrefService.getString(PrefKey.language).isEmpty
           ? "en-US"
@@ -113,6 +115,7 @@ class _PersonalizationScreenScreenState
           builder: (controller) {
             return Stack(
               children: [
+              if( controller.getScreenModel.data!=null)
                 checkInternetCheck
                     ? Image.network(
                         controller.getScreenModel.data?.first.image ?? "",

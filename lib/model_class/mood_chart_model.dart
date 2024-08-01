@@ -11,7 +11,7 @@ String moodChartModelToJson(MoodChartModel data) => json.encode(data.toJson());
 
 class MoodChartModel {
   List<Datum>? data;
-  int? averageFeeling;
+  dynamic averageFeeling;
 
   MoodChartModel({
     this.data,
@@ -35,7 +35,7 @@ class MoodChartModel {
 
 class Datum {
   String? day;
-  int? averageFeeling;
+  dynamic averageFeeling;
 
   Datum({
     this.day,

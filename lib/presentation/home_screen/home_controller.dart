@@ -15,13 +15,16 @@ import 'package:transform_your_mind/model_class/common_model.dart';
 import 'package:transform_your_mind/model_class/get_pods_model.dart';
 import 'package:transform_your_mind/model_class/get_user_model.dart';
 import 'package:transform_your_mind/model_class/recently_model.dart';
+import 'package:transform_your_mind/model_class/self_hypnotic_model.dart';
 import 'package:transform_your_mind/model_class/today_gratitude.dart';
 
 class HomeController extends GetxController {
   //_______________________________________  Variables __________________________
 
   RxList<AudioData> audioData = <AudioData>[].obs;
+  RxList<SelfHypnoticData> audioDataSelfHypnotic = <SelfHypnoticData>[].obs;
   GetPodsModel getPodsModel = GetPodsModel();
+  SelfHypnoticModel selfHypnoticModel = SelfHypnoticModel();
   RxBool loader = false.obs;
 
   DateTime todayDate = DateTime.now();
@@ -48,6 +51,7 @@ class HomeController extends GetxController {
   final AudioPlayer _audioPlayer = AudioPlayer();
 
   List audioListDuration = [];
+  List audioListDurationSelf = [];
 
   getPodApi() async {
     loader.value = true;
@@ -74,6 +78,58 @@ class HomeController extends GetxController {
           await _audioPlayer.setUrl(audioData[i].audioFile!);
           final duration = await _audioPlayer.load();
           audioListDuration.add(duration);
+        }
+
+        debugPrint("filter Data $audioData");
+        update(["home"]);
+        update();
+
+
+      } else {
+        loader.value = false;
+
+        debugPrint(response.reasonPhrase);
+        update(["home"]);
+        update();
+
+      }
+    } catch (e) {
+      loader.value = false;
+
+      debugPrint(e.toString());
+    }
+    loader.value = false;
+
+    update();
+    update(["home"]);
+
+  }
+  getSelfHypnoticApi() async {
+    loader.value = true;
+    try {
+      var headers = {
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+      };
+
+      var request = http.Request(
+          'GET',
+          Uri.parse(
+              '${EndPoints.getPod}?userId=${PrefService.getString(PrefKey.userId)}&selfHypnotic=true&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}'));
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        loader.value = false;
+
+        final responseBody = await response.stream.bytesToString();
+
+
+        selfHypnoticModel = selfHypnoticModelFromJson(responseBody);
+        audioDataSelfHypnotic.value = selfHypnoticModel.data ?? [];
+        for(int i = 0;i<audioDataSelfHypnotic.length;i++){
+          await _audioPlayer.setUrl(audioDataSelfHypnotic[i].audioFile!);
+          final duration = await _audioPlayer.load();
+          audioListDurationSelf.add(duration);
         }
 
         debugPrint("filter Data $audioData");

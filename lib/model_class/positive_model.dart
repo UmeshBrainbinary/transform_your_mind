@@ -9,14 +9,14 @@ PositiveModel positiveModelFromJson(String str) => PositiveModel.fromJson(json.d
 String positiveModelToJson(PositiveModel data) => json.encode(data.toJson());
 
 class PositiveModel {
-  List<Datum>? data;
+  List<PositiveDataList>? data;
 
   PositiveModel({
     this.data,
   });
 
   factory PositiveModel.fromJson(Map<String, dynamic> json) => PositiveModel(
-    data: json["data"] == null ? [] : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
+    data: json["data"] == null ? [] : List<PositiveDataList>.from(json["data"]!.map((x) => PositiveDataList.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -24,7 +24,7 @@ class PositiveModel {
   };
 }
 
-class Datum {
+class PositiveDataList {
   String? id;
   String? title;
   String? description;
@@ -33,7 +33,7 @@ class Datum {
   DateTime? updatedAt;
   int? v;
 
-  Datum({
+  PositiveDataList({
     this.id,
     this.title,
     this.description,
@@ -43,7 +43,7 @@ class Datum {
     this.v,
   });
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory PositiveDataList.fromJson(Map<String, dynamic> json) => PositiveDataList(
     id: json["_id"],
     title: json["title"],
     description: json["description"],

@@ -173,7 +173,7 @@ class ProfileController extends GetxController {
       var request = http.Request(
         'GET',
         Uri.parse(
-          "${EndPoints.moodChart}${PrefService.getString(PrefKey.userId)}?lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}",
+          "${EndPoints.moodChart}${PrefService.getString(PrefKey.userId)}&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}",
         ),
       );
 
@@ -201,7 +201,7 @@ class ProfileController extends GetxController {
       var request = http.Request(
         'GET',
         Uri.parse(
-          "${EndPoints.sleepChart}${PrefService.getString(PrefKey.userId)}?lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}",
+          "${EndPoints.sleepChart}${PrefService.getString(PrefKey.userId)}&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}",
         ),
       );
 
@@ -229,14 +229,14 @@ class ProfileController extends GetxController {
       var request = http.Request(
         'GET',
         Uri.parse(
-          "${EndPoints.stressChart}${PrefService.getString(PrefKey.userId)}?lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}",
+          "${EndPoints.stressChart}${PrefService.getString(PrefKey.userId)}&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}",
         ),
       );
 
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();
 
-      if (response.statusCode == 200) {
+      if (response. statusCode == 200) {
         final responseBody = await response.stream.bytesToString();
 
         stressChartModel = stressChartModelFromJson(responseBody);

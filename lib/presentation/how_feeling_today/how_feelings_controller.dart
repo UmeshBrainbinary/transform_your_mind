@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:transform_your_mind/core/common_api/common_api.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/presentation/how_feeling_today/motivational_questions.dart';
@@ -108,7 +109,7 @@ class HowFeelingsController extends GetxController{
     {"title":"D. ${"other".tr}","check":false},
   ].obs;
 
-  setQuestions(setting) async {
+  setQuestions(setting, BuildContext context,) async {
     try {
       var moodData = {};
       if (setting == "mood") {
@@ -251,12 +252,20 @@ class HowFeelingsController extends GetxController{
         http.StreamedResponse response = await request.send();
         if (response.statusCode == 200 || response.statusCode == 201) {
           if (setting == "mood") {
+            updateApi(context,pKey: "eveningMotivationQuestions");
+
             Get.to(() => StressQuestions());
           } else if (setting == "stress") {
+            updateApi(context,pKey: "eveningMotivationQuestions");
+
             Get.to(() => SleepQuestions());
           } else if (setting == "sleep") {
+            updateApi(context,pKey: "eveningMotivationQuestions");
+
             Get.to(() => MotivationalQuestions());
           } else {
+            updateApi(context,pKey: "eveningMotivationQuestions");
+
             Get.offAll(() => const DashBoardScreen());
           }
         }

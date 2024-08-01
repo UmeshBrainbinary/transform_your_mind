@@ -335,7 +335,7 @@ class EveningMotivational extends StatelessWidget {
                     PrefService.setValue(PrefKey.morningQuestion, true);
                       if (feelController
                           .selectedOptionStressAchieve!.isNotEmpty) {
-                        feelController.setQuestions("motivational");
+                        feelController.setQuestions("motivational",context);
                       } else {
                         showSnackBarError(context, "pleaseAddDoYou".tr);
                       }

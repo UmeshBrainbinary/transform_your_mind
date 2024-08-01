@@ -12,7 +12,7 @@ String stressChartModelToJson(StressChartModel data) =>
 
 class StressChartModel {
   List<Datum>? data;
-  int? averageStress;
+  dynamic averageStress;
 
   StressChartModel({
     this.data,
@@ -37,7 +37,7 @@ class StressChartModel {
 
 class Datum {
   String? day;
-  int? averageStress;
+  dynamic averageStress;
 
   Datum({
     this.day,
