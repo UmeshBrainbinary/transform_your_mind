@@ -137,7 +137,7 @@ class LoginController extends GetxController {
           return  SelectYourAffirmationFocusPage(isFromMe: false,setting: false,);
         },));
         } else {
-          getUserModel.data?.welcomeScreen ?? false == false
+          getUserModel.data?.welcomeScreen  == false
               ? Get.offAll(const WelcomeHomeScreen())
               : Get.offAllNamed(AppRoutes.dashBoardScreen);
         }

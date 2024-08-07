@@ -88,8 +88,11 @@ class _MotivationScreenState extends State<MotivationScreen> {
                   Get.to(() => MotivationalMessageScreen(
                         skip: false,
                       ))!.then((value) {
-                    motivationalController.pause();
-                  },);
+                      motivationalController.allFavList.value = true;
+                      motivationalController.update();
+                      motivationalController.pause();
+                      motivationalController.getMotivational();
+                    },);
                 },
                 child: SvgPicture.asset(
                   ImageConstant.playMotivation,

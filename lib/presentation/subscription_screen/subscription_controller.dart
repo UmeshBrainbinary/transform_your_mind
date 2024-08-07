@@ -1,10 +1,5 @@
-import 'dart:async';
-import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
 
 class SubscriptionController extends GetxController {
 
@@ -31,11 +26,6 @@ class SubscriptionController extends GetxController {
       (index) => plan.add(false),
     );
     super.onInit();
-  }
-
-  void selectPlanAtIndex(int index) {
-
-    update();
   }
 
 

@@ -18,6 +18,7 @@ import 'package:transform_your_mind/model_class/common_model.dart';
 import 'package:transform_your_mind/model_class/get_user_model.dart';
 import 'package:transform_your_mind/model_class/gratitude_all_data.dart';
 import 'package:transform_your_mind/model_class/gratitude_model.dart';
+import 'package:transform_your_mind/presentation/home_screen/home_controller.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_gratitude_page.dart';
 import 'package:transform_your_mind/presentation/start_practcing_screen/start_pratice_screen.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
@@ -63,6 +64,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
     super.initState();
   }
 
+  HomeController homeController = Get.find<HomeController>();
   GratitudeModel gratitudeModel = GratitudeModel();
   GratitudeAllDataModel gratitudeAllData = GratitudeAllDataModel();
   List<GratitudeAllData> lastMonthData = [];
@@ -308,8 +310,10 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 20),
                                 child: Text(
-                                  "“Calm mind brings inner strength and self-confidence, so that's very important for good health” ",
-                                  textAlign: TextAlign.center,
+                                    homeController.getUserModel.data
+                                            ?.motivationalMessage ??
+                                        "“Calm mind brings inner strength and self-confidence, so that's very important for good health” ",
+                                    textAlign: TextAlign.center,
                                   maxLines: 4,
                                   style: Style.nunRegular(
                                       fontSize: 18,

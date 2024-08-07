@@ -68,8 +68,6 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
 
   int perPageCount = 100;
   ValueNotifier selectedCategory = ValueNotifier(null);
-  List<bool> like = [];
-  List<bool> likeAffirmation = [];
   List? _filteredBookmarks;
 
   bool am = true;
@@ -342,10 +340,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
       affirmationDataModel = affirmationDataModelFromJson(responseBody);
       setState(() {
         _filteredBookmarks = affirmationDataModel.data;
-        for (int i = 0; i < _filteredBookmarks!.length; i++) {
-          like.add(_filteredBookmarks![i].isLiked);
-          likeAffirmation.add(_filteredBookmarks![i].userLiked);
-        }
+
       });
     } else {
       setState(() {
@@ -418,10 +413,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
 
       affirmationDataModel = affirmationDataModelFromJson(responseBody);
       _filteredBookmarks = affirmationDataModel.data;
-      for (int i = 0; i < _filteredBookmarks!.length; i++) {
-        // like.add(_filteredBookmarks![i].isLiked);
-        likeAffirmation.add(_filteredBookmarks![i].userLiked);
-      }
+
       setState(() {});
     } else {
       setState(() {

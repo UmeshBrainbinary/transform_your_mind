@@ -35,9 +35,9 @@ class AudioData {
   String? name;
   String? description;
   String? category;
-  int? status;
+  bool? status;
   String? createdBy;
-  int? podsBy;
+  bool? podsBy;
   String? audioFile;
   String? expertName;
   String? image;
@@ -52,6 +52,8 @@ class AudioData {
   String? gName;
   String? gDescription;
   String? gExpertName;
+  bool? selfHypnotic;
+  String? amount;
 
   AudioData({
     this.isBookmarked,
@@ -75,7 +77,9 @@ class AudioData {
     this.rating,
     this.isPaid,
     this.gDescription,
-    this.gExpertName,this.gName
+    this.gExpertName,this.gName,
+    this.selfHypnotic,
+    this.amount
   });
 
   factory AudioData.fromJson(Map<String, dynamic> json) => AudioData(
@@ -102,6 +106,8 @@ class AudioData {
     gExpertName: json["g_expertName"],
     gDescription: json["g_description"],
     gName: json["g_name"],
+    selfHypnotic: json["selfHypnotic"],
+    amount: json["amount"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -128,6 +134,8 @@ class AudioData {
     "g_name": gName,
     "g_description": gDescription,
     "g_expertName": gExpertName,
+    "selfHypnotic": selfHypnotic,
+    "amount": amount,
   };
 }
 

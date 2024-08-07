@@ -75,10 +75,10 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
   }
 
   void _startProgress() {
-    _timer?.cancel(); // Cancel any existing timer
+    _timer?.cancel();
     int durationInSeconds = speedChange();
     int durationInMilliseconds = durationInSeconds * 1000;
-    int intervalInMilliseconds = 50;
+    int intervalInMilliseconds = 80;
 
     _timer =
         Timer.periodic(Duration(milliseconds: intervalInMilliseconds), (timer) {
@@ -145,7 +145,7 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
       case 4:
         return 5;
       default:
-        return 5;
+        return 8;
     }
   }
 

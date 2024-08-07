@@ -28,6 +28,8 @@ import 'package:transform_your_mind/presentation/breath_screen/breath_screen.dar
 import 'package:transform_your_mind/presentation/home_screen/home_controller.dart';
 import 'package:transform_your_mind/presentation/home_screen/home_message_page.dart';
 import 'package:transform_your_mind/presentation/home_screen/widgets/home_widget.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/how_feeling_today_screen.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/how_feelings_evening.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_affirmation_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_gratitude_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/my_affirmation_page.dart';
@@ -35,7 +37,9 @@ import 'package:transform_your_mind/presentation/motivational_message/motivation
 import 'package:transform_your_mind/presentation/motivational_message/motivational_controller.dart';
 import 'package:transform_your_mind/presentation/positive_moment/positive_controller.dart';
 import 'package:transform_your_mind/presentation/positive_moment/positive_screen.dart';
+import 'package:transform_your_mind/presentation/start_practcing_screen/start_pratice_controller.dart';
 import 'package:transform_your_mind/presentation/start_practcing_screen/start_pratice_screen.dart';
+import 'package:transform_your_mind/presentation/start_pratice_affirmation/start_practice_affirmation_controller.dart';
 import 'package:transform_your_mind/presentation/start_pratice_affirmation/start_pratice_affirmation.dart';
 import 'package:transform_your_mind/presentation/subscription_screen/subscription_screen.dart';
 import 'package:transform_your_mind/presentation/transform_pods_screen/transform_pods_screen.dart';
@@ -114,31 +118,31 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   checkInternet() async {
-    await motivationalController.pause();
+
 
     if (await isConnected()) {
       getData();
     } else {
       showSnackBarError(context, "noInternet".tr);
     }
+
   }
 
   getData() async {
     await g.getUSer();
-
     getGratitude();
-
     g.getMotivationalMessage();
     g.getPodApi();
     g.getSelfHypnoticApi();
     g.getBookMarkedList();
-
     g.getTodayAffirmation();
     g.getRecentlyList();
+    g.getPersonalData();
     positiveController.getPositiveMoments();
+    if(motivationalController.isPlaying.isTrue){
+      await motivationalController.pause();
+    }
     setState(() {});
-    g.update(["home"]);
-    g.update();
   }
 
 
@@ -347,6 +351,7 @@ class _HomeScreenState extends State<HomeScreen>
                               ),
                             ),
                             Dimens.d30.spaceHeight,
+                            //___________________________________________ self hypnotic _____________________
                             Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: Dimens.d20),
@@ -360,6 +365,22 @@ class _HomeScreenState extends State<HomeScreen>
                             ),
                             Dimens.d30.spaceHeight,
                             selfHypnotic(),
+                            Dimens.d30.spaceHeight,
+                            //___________________________________________ recommendation _____________________
+
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: Dimens.d20),
+                              child: Text(
+                                "yourRecommendations".tr,
+                                textAlign: TextAlign.center,
+                                style: Style.nunitoBold(
+                                  fontSize: Dimens.d22,
+                                ),
+                              ),
+                            ),
+                            Dimens.d30.spaceHeight,
+                            recommendation(),
                             Dimens.d30.spaceHeight,
                             Padding(
                               padding: const EdgeInsets.symmetric(
@@ -676,6 +697,8 @@ class _HomeScreenState extends State<HomeScreen>
   Widget topView(String? motivationalMessage) {
     return GestureDetector(
         onTap: () async {
+         //  Get.to(()=>const HowFeelingsEvening());
+
           Navigator.push(context, MaterialPageRoute(
             builder: (context) {
               return HomeMessagePage(
@@ -729,7 +752,7 @@ class _HomeScreenState extends State<HomeScreen>
             children: List.generate(controller.audioData.length ?? 0, ( index) {
               return GestureDetector(
                   onTap: () {
-                    if (controller.audioData[index].isPaid!) {
+                    if (!controller.audioData[index].isPaid!) {
                       showModalBottomSheet(
                         context: context,
                         isScrollControlled: true,
@@ -818,15 +841,18 @@ class _HomeScreenState extends State<HomeScreen>
     return GetBuilder<HomeController>(
       id: "home",
       builder: (controller) {
-        return SingleChildScrollView(
+        return controller.audioDataSelfHypnotic.isEmpty?   Center(
+          child: Text("dataNotFound".tr, style: Style.gothamMedium(
+              fontSize: 24, fontWeight: FontWeight.w700),),
+        ): SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: List.generate(controller.audioDataSelfHypnotic.length ?? 0, ( index) {
+            children: List.generate(controller.audioDataSelfHypnotic.length, ( index) {
               return GestureDetector(
                   onTap: () {
-                    if (controller.audioDataSelfHypnotic[index].isPaid!) {
+                    if (!controller.audioDataSelfHypnotic[index].isPaid!) {
                       showModalBottomSheet(
                         context: context,
                         isScrollControlled: true,
@@ -881,8 +907,10 @@ class _HomeScreenState extends State<HomeScreen>
                               ));
                         }
                         Future.delayed(const Duration(seconds: 1)).then(
-                              (value) {
-                            setState(() {});
+                              (value) async {
+                                await g.getSelfHypnoticApi();
+
+                                setState(() {});
                           },
                         );
                       },);
@@ -911,82 +939,93 @@ class _HomeScreenState extends State<HomeScreen>
       },
     );
   }
-
-
-  Widget bookmarkViw(HomeController controller) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SingleChildScrollView(
+  Widget recommendation() {
+    return GetBuilder<HomeController>(
+      id: "home",
+      builder: (controller) {
+        return (controller.getPersonalDataModel.data??[]).isEmpty?   Center(
+          child: Text("dataNotFound".tr, style: Style.gothamMedium(
+              fontSize: 24, fontWeight: FontWeight.w700),),
+        ):SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: List.generate(
-                controller.bookmarkedModel.data?.length ?? 0, (index) {
+            children: List.generate(controller.getPersonalDataModel.data?.length ?? 0, ( index) {
               return GestureDetector(
                   onTap: () {
-                    if(controller.bookmarkedModel.data![index].isPaid!){
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(
-                              Dimens.d24,
-                            ),
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(
+                            Dimens.d24,
                           ),
                         ),
-                        builder: (BuildContext context) {
-                          return NowPlayingScreen(
-                            audioData: AudioData(
-                              id: controller.bookmarkedModel.data![index].id,
-                              isPaid: controller.bookmarkedModel.data![index].isPaid,
-                              image: controller.bookmarkedModel.data![index].image,
-                              rating: controller.bookmarkedModel.data![index].rating,
-                              description: controller.bookmarkedModel.data![index].description,
-                              name: controller.bookmarkedModel.data![index].name,
-                              isBookmarked: controller.bookmarkedModel.data![index].isBookmarked,
-                              isRated: controller.bookmarkedModel.data![index].isRated,
-                              category:controller.bookmarkedModel.data![index].category,
-                              createdAt: controller.bookmarkedModel.data![index].createdAt,
-                              podsBy: controller.bookmarkedModel.data![index].podsBy,
-                              expertName: controller.bookmarkedModel.data![index].expertName,
-                              audioFile: controller.bookmarkedModel.data![index].audioFile,
-                              isRecommended: controller.bookmarkedModel.data![index].isRecommended,
-                              status: controller.bookmarkedModel.data![index].status,
-                              createdBy: controller.bookmarkedModel.data![index].createdBy,
-                              updatedAt: controller.bookmarkedModel.data![index].updatedAt,
-                              v: controller.bookmarkedModel.data![index].v,
-                              download: false,
-                            ),
-                          );
+                      ),
+                      builder: (BuildContext context) {
+                        return NowPlayingScreen(
+                          show: true,
+                          audioData: AudioData(
+                            id: controller.getPersonalDataModel.data![index].id,
+                            isPaid: false,
+                            image: controller.getPersonalDataModel.data![index].image,
+                            rating: 0,
+                            description:
+                            controller.getPersonalDataModel.data![index].description,
+                            name: "",
+                            isBookmarked:false,
+                            isRated: false,
+                            category: "",
+                            createdAt: DateTime.now(),
+                            podsBy: false,
+                            expertName:"",
+                            audioFile: controller.getPersonalDataModel.data![index].audioFile,
+                            isRecommended:false,
+                            status: false,
+                            download: false,
+                          ),
+                        );
+                      },
+                    ).then((value) {
+                      if (themeController.isDarkMode.isTrue) {
+                        SystemChrome.setSystemUIOverlayStyle(
+                            const SystemUiOverlayStyle(
+                              statusBarBrightness: Brightness.dark,
+                              statusBarIconBrightness: Brightness.light,
+                            ));
+                      } else {
+                        SystemChrome.setSystemUIOverlayStyle(
+                            const SystemUiOverlayStyle(
+                              statusBarBrightness: Brightness.light,
+                              statusBarIconBrightness: Brightness.dark,
+                            ));
+                      }
+                      Future.delayed(const Duration(seconds: 1)).then(
+                            (value) async {
+                          await g.getSelfHypnoticApi();
+
+                          setState(() {});
                         },
                       );
-                    }else{
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (context) {
-                          return SubscriptionScreen(
-                            skip: false,
-                          );
-                        },
-                      ));
-                    }
+                    },);
+
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(right: 20.0),
-                    child: BookmarkListTile(
-                      dataList: controller.bookmarkedModel.data![index],
+                    child: RecommendationScreen(dataList: controller.getPersonalDataModel.data![index],
+                      currentLanguage: currentLanguage,
+                      audioTime: controller.audioListRecommendations.length > index ? _formatDuration( controller.audioListRecommendations[index]) : '8:00',
                     ),
                   ));
             }),
           ),
-        ),
-        // Dimens.d80.spaceHeight,
-      ],
+        );
+      },
     );
   }
+
 
   Widget recommendationsView(HomeController controller) {
     return Padding(
@@ -1226,6 +1265,9 @@ class _HomeScreenState extends State<HomeScreen>
                               }
                               Future.delayed(const Duration(seconds: 1)).then(
                                 (value) {
+                                  StartPracticeAffirmationController startC =
+                                  Get.put(StartPracticeAffirmationController());
+                                  startC.player.pause();
                                   setState(() {});
                                 },
                               );
@@ -1326,7 +1368,7 @@ class _HomeScreenState extends State<HomeScreen>
                             builder: (context) {
                               return  StartPracticeScreen(gratitudeList: gratitudeModel.data,);
                             },
-                          )).then((value) {
+                          )).then((value) async {
 
 
                             if (themeController.isDarkMode.isTrue) {
@@ -1343,8 +1385,12 @@ class _HomeScreenState extends State<HomeScreen>
                                   ));
                             }
                             Future.delayed(const Duration(seconds: 1)).then(
-                                  (value) {
-                                setState(() {});
+                                  (value) async {
+                                    StartPracticeController startC = Get.put(StartPracticeController());
+                                    await  startC.pause();
+                                setState(() {
+
+                                });
                               },
                             );
                           },);

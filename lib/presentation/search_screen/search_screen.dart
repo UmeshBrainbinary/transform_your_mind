@@ -192,7 +192,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                             audioContentController
                                                 .searchFocusNode
                                                 .unfocus();
-                                            if (controller
+                                            if (!controller
                                                 .audioData[index].isPaid!) {
                                               _onTileClick(
                                                   audioContent: controller
@@ -323,7 +323,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                                   ),
                                                 ],
                                               ),
-                                              !controller
+                                              controller
                                                       .audioData[index].isPaid!
                                                   ? Container(
                                                       margin:

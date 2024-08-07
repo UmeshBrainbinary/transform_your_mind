@@ -295,7 +295,7 @@ getData() async {
                                                 audioContentController
                                                     .searchFocusNode
                                                     .unfocus();
-                                                 if(controller.audioData[index].isPaid!){
+                                                 if(!controller.audioData[index].isPaid!){
                                                    _onTileClick(
                                                        audioContent: controller
                                                            .audioData[index],
@@ -482,7 +482,7 @@ getData() async {
                                                       ),
                                                     ],
                                                   ),
-                                                  !controller.audioData[index]
+                                                  controller.audioData[index]
                                                           .isPaid!
                                                       ? Align(
                                                           alignment:

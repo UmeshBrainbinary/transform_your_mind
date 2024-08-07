@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "616839099849",
+    "project_id": "transform-your-mind",
+    "storage_bucket": "transform-your-mind.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:616839099849:android:f0b01407b1582d364ba418",
+        "android_client_info": {
+          "package_name": "com.app.transformyourmind"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtKB63fDJsU8iX51nkbQv7tFrYwtlbd3g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

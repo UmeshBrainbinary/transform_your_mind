@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:alarm/alarm.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,19 +15,31 @@ import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/localization/app_translation.dart';
+import 'package:transform_your_mind/presentation/subscription_screen/purchase_api.dart';
+import 'package:transform_your_mind/presentation/subscription_screen/store_config.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 
 import 'core/utils/initial_bindings.dart';
 import 'core/utils/logger.dart';
 
+import 'presentation/subscription_screen/store_config.dart' as config;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AppTranslations.loadTranslations();
 
   tz.initializeTimeZones();
-
+  if (Platform.isIOS) {
+    await Firebase.initializeApp();
+  } else {
+    await Firebase.initializeApp(
+        options: const FirebaseOptions(
+            apiKey: "AIzaSyDtKB63fDJsU8iX51nkbQv7tFrYwtlbd3g",
+            appId: "1:616839099849:android:f0b01407b1582d364ba418",
+            messagingSenderId: "616839099849",
+            projectId: 'transform-your-mind'));
+  }
   var detroit = tz.getLocation('Asia/Kolkata');
   tz.setLocalLocation(detroit);
 
@@ -38,8 +52,19 @@ Future<void> main() async {
   });
 
   await Alarm.init();
-
-
+  if (Platform.isIOS) {
+    StoreConfig(
+      store: config.Store.appleStore,
+      apiKey: appleApiKey,
+    );
+  } else if (Platform.isAndroid) {
+    StoreConfig(
+      store: config.Store.googlePlay,
+      apiKey: googleApiKey,
+    );
+  }
+  final fcmToken = await FirebaseMessaging.instance.getToken();
+  debugPrint("fcmToken $fcmToken");
 }
 
 class MyApp extends StatefulWidget {
@@ -84,9 +109,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _initializeNotificationService() async {
-    await NotificationService.initializeNotifications(context);
-
-    await NotificationService.requestPermissions();
+    await NotificationService.init();
+/*await NotificationService.requestPermissions();*/
   }
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();

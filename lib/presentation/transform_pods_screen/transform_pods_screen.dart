@@ -167,7 +167,7 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
                               return GestureDetector(
                                 onTap: () {
                                   searchFocusNode.unfocus();
-                                  if (!controller.audioData[index].isPaid!) {
+                                  if (controller.audioData[index].isPaid!) {
                                     Get.toNamed(AppRoutes.subscriptionScreen);
 
                                   } else {
@@ -283,7 +283,7 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
                                     ),
                                   ],
                                 ),
-                                !controller.audioData[index].isPaid! ? Padding(
+                                controller.audioData[index].isPaid! ? Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Container(
                                     height: 14, width: 14,

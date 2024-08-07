@@ -125,13 +125,11 @@ class _AddGratitudePageState extends State<AddGratitudePage>
   String speechToSaveText = "";
 
   void _onLongPressEnd() {
+    _stopListening();
     setState(() {
-      _isPressed = false;
-      _isListening = false;
-    });
-    _controller!.reverse();
 
-    _speech!.stop();
+    });
+
   }
 
   @override
@@ -150,7 +148,7 @@ class _AddGratitudePageState extends State<AddGratitudePage>
   getData() async {
     await getGratitude();
   }
-
+  String _lastText = "";
   CommonModel commonModel = CommonModel();
 
   addGratitude() async {
@@ -199,6 +197,29 @@ class _AddGratitudePageState extends State<AddGratitudePage>
       loader = false;
     });
   }
+  void _startListening() {
+    _speech!.listen(
+      onResult: (result) {
+        setState(() {
+          addGratitudeText.text = "$_lastText ${result.recognizedWords}";
+        });
+      },
+      onSoundLevelChange: (level) {},
+
+    );
+    setState(() {
+      _isListening = true;
+    });
+  }
+
+  void _stopListening() {
+    _speech!.stop();
+    setState(() {
+      _isListening = false;
+      _lastText = addGratitudeText.text;
+    });
+  }
+
 
   updateGratitude(id, description) async {
     var headers = {
@@ -263,6 +284,7 @@ class _AddGratitudePageState extends State<AddGratitudePage>
     }
   }
 
+  String _pastWords = "";
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -398,6 +420,8 @@ class _AddGratitudePageState extends State<AddGratitudePage>
                         alignment: Alignment.topRight,
                         child: GestureDetector(
                             onTap: () {
+                              _lastText = "";
+                              addGratitudeText.clear();
                               _speechDataList.clear();
                               Get.back();
                             },
@@ -421,79 +445,60 @@ class _AddGratitudePageState extends State<AddGratitudePage>
                         focusNode: gratitudeFocus),
                     Dimens.d15.spaceHeight,
                     GestureDetector(
-                        onLongPressStart: (details) async {
+                        onLongPress: () async {
                           Vibration.vibrate(
                             pattern: [80, 80, 0, 0, 0, 0, 0, 0],
                             intensities: [20, 20, 0, 0, 0, 0, 0, 0],
                           );
                           setState(() {
                             _isPressed = true;
+                            _controller?.forward();
                           });
-                          _controller!.forward();
 
                           if (!_isListening) {
                             bool available = await _speech!.initialize(
                               onStatus: (val) {
                                 debugPrint("Status for speech recording $val");
-                                if (val == "done") {
-                                  _isPressed = false;
-                                  _isListening = false;
-                                } else if (val == 'notListening') {
-                                  _isPressed = false;
-                                  _isListening = false;
+                                if (val == "done" || val == 'notListening') {
+                                  setState(() {
+                                    _isPressed = false;
+                                    _isListening = false;
+                                  });
                                 }
                               },
                               onError: (val) {
                                 debugPrint(
                                     "Status for speech recording error $val");
-
                                 if (val.errorMsg == "error_no_match") {
-                                  _onLongPressEnd();
+                                  _stopListening();
                                 }
                               },
                             );
                             if (available) {
-                              _isListening = true;
-                              _speech!.listen(
-                                onResult: (val) => setState(() {
-
-                                  recordedText = val.recognizedWords;
-                                }),
-                              );
+                              setState(() {
+                                _isListening = true;
+                              });
+                              _startListening();
                             } else {
-                              _isPressed = false;
-                              _isListening = false;
+                              setState(() {
+                                _isPressed = false;
+                                _isListening = false;
+                              });
                             }
                           }
-                          setState.call(() {});
                         },
-                        onLongPressEnd: (details) {
+                        onLongPressUp: () {
+                          _onLongPressEnd();
+                          setState(() {
 
-                          _speechDataList.add(recordedText);
+                          });
                           Vibration.vibrate(
                             pattern: [80, 80, 0, 0, 0, 0, 0, 0],
-                            intensities: [
-                              20,
-                              20,
-                              0,
-                              0,
-                              0,
-                              0,
-                              0,
-                              0
-                            ],
+                            intensities: [20, 20, 0, 0, 0, 0, 0, 0],
                           );
-                          _onLongPressEnd();
-                          setState.call(() {
-                            debugPrint("speech all data store ${_speechDataList.join(' ')}");
-                            Future.delayed(const Duration(seconds: 1)).then((value) {
-                              addGratitudeText.text = _speechDataList.join(' ');
-                            },);
-                            recordedText = "";
-                          });
                         },
 
-                        child: _isPressed
+                        child: _isListening
                             ? Lottie.asset(
                                 ImageConstant.micAnimation,
                           height: Dimens.d100,
@@ -524,8 +529,8 @@ class _AddGratitudePageState extends State<AddGratitudePage>
 
                               await getGratitude();
                               setState.call(() {
-                                addGratitudeData[index].description =
-                                    addGratitudeText.text.trim();
+                                _lastText = "";
+                                addGratitudeText.clear();
                               });
                             }else{
                               showSnackBarError(context,"pleaseAddYourGratitude".tr);
@@ -539,7 +544,10 @@ class _AddGratitudePageState extends State<AddGratitudePage>
                               await getGratitude();
 
                               setState(() {});
-                              setState.call(() {});
+                              setState.call(() {
+                                _lastText = "";
+                                addGratitudeText.clear();
+                              });
                             }else{
                               showSnackBarError(context,"pleaseAddYourGratitude".tr);
                             }
@@ -642,6 +650,7 @@ class _AddGratitudePageState extends State<AddGratitudePage>
 
                                   setState(() {
                                     addGratitudeText.text = des!;
+                                    _lastText = des;
                                     _speechDataList.add(addGratitudeText.text);
                                   });
                                   _showAlertDialog(

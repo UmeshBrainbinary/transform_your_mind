@@ -131,7 +131,7 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
     _timer?.cancel();
     int durationInSeconds = speedChange();
     int durationInMilliseconds = durationInSeconds * 1000;
-    int intervalInMilliseconds = 50;
+    int intervalInMilliseconds = 80;
 
     _timer = Timer.periodic(Duration(milliseconds: intervalInMilliseconds), (timer) {
       if (!_isScrolling) {
@@ -176,7 +176,7 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
       case 4:
         return 5;
       default:
-        return 5;
+        return 8;
     }
   }
 

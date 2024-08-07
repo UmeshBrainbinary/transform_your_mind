@@ -34,8 +34,9 @@ class NowPlayingScreen extends StatefulWidget {
   final AudioData? audioData;
 
   bool? d = false;
+  bool? show ;
 
-  NowPlayingScreen({super.key, this.audioData, this.d});
+  NowPlayingScreen({super.key, this.audioData, this.d,this.show = false});
 
   @override
   State<NowPlayingScreen> createState() => _NowPlayingScreenState();
@@ -214,41 +215,47 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 35),
-                    child: Text(
+                    child: Center(
+                      child: Text(
 
-                      currentLanguage=="en-US"?widget.audioData?.description ??
-                          "":widget.audioData?.gDescription ??
-                          "",
-                      textAlign: TextAlign.center,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                      style: Style.nunitoSemiBold(
-                          fontSize: 18, color: ColorConstant.white),
+                        currentLanguage=="en-US"?widget.audioData?.description ??
+                            "":widget.audioData?.gDescription ??
+                            "",
+                        textAlign: TextAlign.center,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                        style: Style.nunitoSemiBold(
+                            fontSize: 18, color: ColorConstant.white),
+                      ),
                     ),
                   ),
                   Dimens.d14.spaceHeight,
-                  Text(
-                    /*widget.audioData?.expertName ??*/
-                    currentLanguage=="en-US"?widget.audioData?.expertName??"Chris hill": widget.audioData?.gExpertName?? "Chris hill",
-                    textAlign: TextAlign.center,
-                    style: Style.nunMedium(
-                        fontSize: 15, color: ColorConstant.white),
+                  Center(
+                    child: Text(
+                      /*widget.audioData?.expertName ??*/
+                      currentLanguage=="en-US"?widget.audioData?.expertName??"Chris hill": widget.audioData?.gExpertName?? "Chris hill",
+                      textAlign: TextAlign.center,
+                      style: Style.nunMedium(
+                          fontSize: 15, color: ColorConstant.white),
+                    ),
                   ),
                   Dimens.d14.spaceHeight,
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 35),
-                    child: Text(
-                      currentLanguage=="en-US"?widget.audioData?.name??"Chris hill": widget.audioData?.gName?? "Chris hill",
+                    child: Center(
+                      child: Text(
+                        currentLanguage=="en-US"?widget.audioData?.name??"Chris hill": widget.audioData?.gName?? "Chris hill",
 
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Style.nunRegular(
-                          fontSize: 15, color: ColorConstant.white),
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Style.nunRegular(
+                            fontSize: 15, color: ColorConstant.white),
+                      ),
                     ),
                   ),
                       Dimens.d90.spaceHeight,
-                      Row(mainAxisAlignment: MainAxisAlignment.center,
+                      widget.show!?const SizedBox():Row(mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       GestureDetector(
                         onTap: () async {
@@ -894,7 +901,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
 
   void _volumeTapHandler() {
     _isVolShowing.value = true;
-    volTimer = Timer(const Duration(seconds: 2), () {
+    volTimer = Timer(const Duration(seconds: 4), () {
       _isVolShowing.value = false;
     });
   }

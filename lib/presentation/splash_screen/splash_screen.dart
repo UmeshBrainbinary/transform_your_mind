@@ -42,8 +42,7 @@ class _SplashScreenState extends State<SplashScreen> {
     greeting = _getGreetingBasedOnTime();
     setState(() {});
   }
-  PersonalizationController personalizationController =
-  Get.put(PersonalizationController());
+
 
   String _getGreetingBasedOnTime() {
     final now = DateTime.now();
@@ -80,7 +79,7 @@ class _SplashScreenState extends State<SplashScreen> {
         checkInternetCheck = true;
       });
 
-      await personalizationController.getScreen();
+
       currentLanguage = PrefService.getString(PrefKey.language).isEmpty
           ? "en-US"
           : PrefService.getString(PrefKey.language);

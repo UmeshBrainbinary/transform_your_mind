@@ -35,9 +35,9 @@ class RecentlyData {
   String? name;
   String? description;
   String? category;
-  int? status;
+  bool? status;
   String? createdBy;
-  int? podsBy;
+  bool? podsBy;
   String? audioFile;
   String? expertName;
   String? image;

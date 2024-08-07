@@ -12,6 +12,7 @@ import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/model_class/affirmation_model.dart';
 import 'package:transform_your_mind/model_class/bookmarked_model.dart';
 import 'package:transform_your_mind/model_class/common_model.dart';
+import 'package:transform_your_mind/model_class/get_personal_model.dart';
 import 'package:transform_your_mind/model_class/get_pods_model.dart';
 import 'package:transform_your_mind/model_class/get_user_model.dart';
 import 'package:transform_your_mind/model_class/recently_model.dart';
@@ -42,6 +43,7 @@ class HomeController extends GetxController {
   //_______________________________________  Model Class _______________________
   GetUserModel getUserModel = GetUserModel();
   BookmarkedModel bookmarkedModel = BookmarkedModel();
+  GetPersonalDataModel getPersonalDataModel = GetPersonalDataModel();
   AffirmationModel affirmationModel = AffirmationModel();
   RecentlyModel recentlyModel = RecentlyModel();
   AffirmationModel todayAffirmation = AffirmationModel();
@@ -52,6 +54,7 @@ class HomeController extends GetxController {
 
   List audioListDuration = [];
   List audioListDurationSelf = [];
+  List audioListRecommendations = [];
 
   getPodApi() async {
     loader.value = true;
@@ -81,16 +84,14 @@ class HomeController extends GetxController {
         }
 
         debugPrint("filter Data $audioData");
-        update(["home"]);
-        update();
+
 
 
       } else {
         loader.value = false;
 
         debugPrint(response.reasonPhrase);
-        update(["home"]);
-        update();
+
 
       }
     } catch (e) {
@@ -110,11 +111,11 @@ class HomeController extends GetxController {
       var headers = {
         'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
       };
-
+      //userId=${PrefService.getString(PrefKey.userId)}&
       var request = http.Request(
           'GET',
           Uri.parse(
-              '${EndPoints.getPod}?userId=${PrefService.getString(PrefKey.userId)}&selfHypnotic=true&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}'));
+              '${EndPoints.getPod}?selfHypnotic=true&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}'));
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();
 
@@ -133,16 +134,14 @@ class HomeController extends GetxController {
         }
 
         debugPrint("filter Data $audioData");
-        update(["home"]);
-        update();
+
 
 
       } else {
         loader.value = false;
 
         debugPrint(response.reasonPhrase);
-        update(["home"]);
-        update();
+
 
       }
     } catch (e) {
@@ -212,11 +211,14 @@ class HomeController extends GetxController {
 
       final responseBody = await response.stream.bytesToString();
       bookmarkedModel = bookmarkedModelFromJson(responseBody);
-      for(int i = 0;i<bookmarkedModel.data!.length;i++){
-        await _audioPlayer.setUrl(bookmarkedModel.data![i].audioFile!);
-        final duration = await _audioPlayer.load();
-        audioListDuration.add(duration);
+      if((bookmarkedModel.data??[]).isNotEmpty){
+        for(int i = 0;i<bookmarkedModel.data!.length;i++){
+          await _audioPlayer.setUrl(bookmarkedModel.data![i].audioFile!);
+          final duration = await _audioPlayer.load();
+          audioListDuration.add(duration);
+        }
       }
+
 
       update(["home"]);
       loader.value = false;
@@ -252,6 +254,35 @@ class HomeController extends GetxController {
     } else {
       debugPrint(response.reasonPhrase);
     }
+    update(["home"]);
+  }
+  getPersonalData() async {
+    var headers = {
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.Request(
+        'GET',
+        Uri.parse(
+            '${EndPoints.getPersonalAudio}${PrefService.getString(PrefKey.userId)}&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      final responseBody = await response.stream.bytesToString();
+      getPersonalDataModel = getPersonalDataModelFromJson(responseBody);
+
+      for(int i = 0;i<getPersonalDataModel.data!.length;i++){
+        await _audioPlayer.setUrl(getPersonalDataModel.data![i].audioFile!);
+        final duration = await _audioPlayer.load();
+        audioListRecommendations.add(duration);
+      }
+      update(["home"]);
+    } else {
+      debugPrint(response.reasonPhrase);
+    }
+    debugPrint("getPersonalDataModel get personal data $getPersonalDataModel");
     update(["home"]);
   }
 
@@ -316,32 +347,4 @@ class HomeController extends GetxController {
   }
 
 
-
-  updateTodayData(id, url) async {
-    loader.value=true;
-    var headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
-    };
-    var request =
-        http.Request('POST', Uri.parse('${EndPoints.baseUrl}$url?id=$id'));
-    request.body = json.encode({"isCompleted": true,"created_by":PrefService.getString(PrefKey.userId)});
-    request.headers.addAll(headers);
-
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      loader.value=false;
-
-      final responseBody = await response.stream.bytesToString();
-
-      Get.back();
-    } else {
-      loader.value=false;
-
-      final responseBody = await response.stream.bytesToString();
-    }
-    loader.value=false;
-
-  }
 }

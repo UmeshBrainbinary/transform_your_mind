@@ -1,16 +1,18 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
+import 'package:transform_your_mind/core/service/purchase_setup/singletons_data.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/presentation/subscription_screen/purchase_api.dart';
+import 'package:transform_your_mind/presentation/subscription_screen/store_config.dart';
 import 'package:transform_your_mind/presentation/subscription_screen/subscription_controller.dart';
 import 'package:transform_your_mind/presentation/welcome_screen/welcome_screen.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
@@ -28,53 +30,47 @@ class SubscriptionScreen extends StatefulWidget {
 
 class _SubscriptionScreenState extends State<SubscriptionScreen> {
   SubscriptionController subscriptionController = Get.put(SubscriptionController());
-  final InAppPurchase _inAppPurchase = InAppPurchase.instance;
-  late StreamSubscription<List<PurchaseDetails>> _subscription;
-  final List<String> _productIds = ['1 Month', '1 Yearly'];
   ThemeController themeController = Get.find<ThemeController>();
-  List<ProductDetails> _products = [];
 
   @override
   void initState() {
     super.initState();
-    _initializeInAppPurchase();
-    _subscription = _inAppPurchase.purchaseStream.listen((purchaseDetailsList) {
-      _listenToPurchaseUpdated(purchaseDetailsList);
-    }, onDone: () {
-      _subscription.cancel();
-    }, onError: (error) {
-      // handle error here.
+    initPlatformState();
+  }
+
+  Future<void> initPlatformState() async {
+    await Purchases.setLogLevel(LogLevel.debug);
+
+    PurchasesConfiguration configuration;
+    configuration = PurchasesConfiguration(StoreConfig.instance!.apiKey)
+      ..appUserID = PrefService.getString(PrefKey.email)
+      ..observerMode = false;
+    await Purchases.configure(configuration);
+
+    CustomerInfo customerInfo = await Purchases.getCustomerInfo();
+    print("customerInfo : ${customerInfo.entitlements}");
+    print("customerInfo : ${PrefService.getString(PrefKey.email)}");
+    print("customerInfo : ${customerInfo.allPurchaseDates}");
+    print("customerInfo : ${customerInfo.activeSubscriptions}");
+
+    Purchases.addCustomerInfoUpdateListener((customerInfo1) async {
+      appData.appUserID = customerInfo1.originalAppUserId;
+
+      CustomerInfo customerInfo = await Purchases.getCustomerInfo();
+      print("customer data ====> ${customerInfo.allPurchaseDates}");
+      print("customer data ====> ${customerInfo.entitlements}");
+      print("customer data ====> ${customerInfo.allExpirationDates}");
+      print("customer data ====> ${customerInfo.activeSubscriptions}");
+      Offerings offerings = await Purchases.getOfferings();
+      var myProductList = offerings.current?.availablePackages;
+      print("Product length : $myProductList");
+
+      (customerInfo.entitlements.all[entitlementID.value] != null &&
+              customerInfo.entitlements.all[entitlementID.value]!.isActive)
+          ? appData.entitlementIsActive = true
+          : appData.entitlementIsActive = false;
     });
   }
-
-
-  Future<void> _initializeInAppPurchase() async {
-    final bool available = await _inAppPurchase.isAvailable();
-    ProductDetailsResponse response = await _inAppPurchase.queryProductDetails(_productIds.toSet());
-    if (response.notFoundIDs.isNotEmpty) {
-      setState(() {
-
-      });
-    } else {
-      setState(() {
-        _products = response.productDetails;
-      });
-    }
-  }
-
-  void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
-    purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
-      if (purchaseDetails.status == PurchaseStatus.pending) {
-      } else if (purchaseDetails.status == PurchaseStatus.purchased) {
-      } else if (purchaseDetails.status == PurchaseStatus.error) {
-      } else if (purchaseDetails.status == PurchaseStatus.restored) {
-      }
-      if (purchaseDetails.pendingCompletePurchase) {
-        await InAppPurchase.instance.completePurchase(purchaseDetails);
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -186,7 +182,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                         subscriptionController.plan[i] = i == index;
                       }
                     });
-                    _initiatePurchase(index);
                   },
                   child: Container(
                     margin: const EdgeInsets.only(bottom: 15),
@@ -290,7 +285,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             child: CommonElevatedButton(
               title: "purchase".tr,
               onTap: () async {
-                _initiatePurchase(0);
 
               },
             ),
@@ -300,20 +294,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       ),
     );
   }
-
-  void _initiatePurchase(int index) {
-    final productId = _productIds[index]; // Use the correct index or product ID mapping
-    final productDetails = _products.firstWhere((product) => product.id == productId, orElse: () => null as ProductDetails);
-
-    if (productDetails != null) {
-      final purchaseParam = PurchaseParam(productDetails: productDetails);
-      _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
-    } else {
-      // Handle the case where the productDetails is null
-      print("Product not found");
-    }
-  }
-
   Widget information(title, des) {
     return RichText(
       text: TextSpan(

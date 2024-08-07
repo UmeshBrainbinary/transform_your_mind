@@ -68,7 +68,6 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
   File? selectedImage;
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool loader = false;
-  List<String> _speechDataList = [];
 
   @override
   void initState() {
@@ -79,6 +78,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
     if (widget.des != null) {
       setState(() {
         descController.text = widget.des.toString();
+        _lastText = widget.des.toString();
       });
     }
 
@@ -192,16 +192,38 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
   bool _isPressed = false;
   bool _isListening = false;
   stt.SpeechToText? _speech;
-  String speechToSaveText = "";
 
   void _onLongPressEnd() {
+    _stopListening();
     setState(() {
-      _isPressed = false;
-      _isListening = false;
+
     });
 
 
     _speech!.stop();
+  }
+  String _lastText = "";
+
+  void _startListening() {
+    _speech!.listen(
+      onResult: (result) {
+        setState(() {
+          descController.text = "$_lastText ${result.recognizedWords}";
+        });
+      },
+      onSoundLevelChange: (level) {},
+
+    );
+    setState(() {
+      _isListening = true;
+    });
+  }
+  void _stopListening() {
+    _speech!.stop();
+    setState(() {
+      _isListening = false;
+      _lastText = descController.text;
+    });
   }
 
   @override
@@ -328,11 +350,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                                                 );
                                                 if (available) {
                                                   _isListening = true;
-                                                  _speech!.listen(
-                                                    onResult: (val) => setState(() {
-                                                      recordedText = val.recognizedWords;
-                                                    }),
-                                                  );
+                                                  _startListening();
                                                 } else {
                                                   _isPressed = false;
                                                   _isListening = false;
@@ -343,14 +361,9 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                                               });
                                             },
                                             onLongPressEnd: (details) {
-                                              _speechDataList.add(recordedText);
                                               _onLongPressEnd();
                                               setState(() {
-                                                debugPrint("speech all data store ${_speechDataList.join(' ')}");
-                                                Future.delayed(const Duration(milliseconds:500)).then((value) {
-                                                  descController.text = _speechDataList.join(' ');
-                                                  recordedText = "";
-                                                },);
+
 
                                               });
                                               Vibration.vibrate(
@@ -368,7 +381,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                                               );
 
                                             },
-                                            child: _isPressed
+                                            child: _isListening
                                                 ? Lottie.asset(
                                               ImageConstant.micAnimation,
                                               height: Dimens.d50,

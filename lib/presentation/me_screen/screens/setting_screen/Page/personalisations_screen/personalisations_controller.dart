@@ -63,8 +63,10 @@ class PersonalizationController extends GetxController {
   RxBool loader = false.obs;
   GetScreenModel getScreenModel = GetScreenModel();
   getScreen() async {
+
     loader.value = true;
-    var request = http.Request('GET', Uri.parse('https://transformyourmind-server.onrender.com/api/v1/get-screen'));
+    var request = http.Request('GET', Uri.parse(EndPoints.getScreen));
+
 
 
     http.StreamedResponse response = await request.send();

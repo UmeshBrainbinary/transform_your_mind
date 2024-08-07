@@ -41,5 +41,6 @@ class EndPoints {
   static String moodChart = "${baseUrl}mood-chart?created_by=";
   static String sleepChart = "${baseUrl}sleep-chart?created_by=";
   static String stressChart = "${baseUrl}stress-chart?created_by=";
-  static String getPersonalAudio = "${baseUrl}get-personal-audio";
+  static String getPersonalAudio = "${baseUrl}get-personal-audio?userId=";
+  static String getScreen = "${baseUrl}get-screen";
 }

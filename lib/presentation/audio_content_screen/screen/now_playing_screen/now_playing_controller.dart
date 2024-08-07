@@ -200,11 +200,6 @@ class NowPlayingController extends GetxController {
       if (response.statusCode == 200) {
         loader.value = false;
 
-       /* if (value == true) {
-          showSnackBarSuccess(context, "yourSoundsSuccessfullyBookmarked".tr);
-        } else {
-          showSnackBarSuccess(context, "yourSoundsSuccessfullyUnBookmarked".tr);
-        }*/
       } else {
         loader.value = false;
 

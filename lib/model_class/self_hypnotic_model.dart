@@ -35,9 +35,9 @@ class SelfHypnoticData {
   String? gName;
   String? gDescription;
   String? category;
-  int? status;
+  bool? status;
   String? createdBy;
-  int? podsBy;
+  bool? podsBy;
   String? audioFile;
   String? expertName;
   dynamic gExpertName;
@@ -48,7 +48,7 @@ class SelfHypnoticData {
   int? rating;
   bool? isPaid;
   bool? selfHypnotic;
-  int? amount;
+  dynamic amount;
   DateTime? createdAt;
   DateTime? updatedAt;
   int? v;

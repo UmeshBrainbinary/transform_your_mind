@@ -11,6 +11,7 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/model_class/bookmarked_model.dart';
+import 'package:transform_your_mind/model_class/get_personal_model.dart';
 import 'package:transform_your_mind/model_class/get_pods_model.dart';
 import 'package:transform_your_mind/model_class/recently_model.dart';
 import 'package:transform_your_mind/model_class/self_hypnotic_model.dart';
@@ -337,7 +338,7 @@ class FeelGood extends StatelessWidget {
               ),
             ],
           ),
-          if (!dataList!.isPaid!) Align(alignment: Alignment.topLeft,
+          if (dataList!.isPaid!) Align(alignment: Alignment.topLeft,
             child: Container(
               margin: const EdgeInsets.all(7.0),
               height: 14,width: 14,
@@ -459,7 +460,7 @@ class SelfHypnoticScreen extends StatelessWidget {
               ),
             ],
           ),
-          if (!dataList!.isPaid!) Align(alignment: Alignment.topLeft,
+          if (dataList!.isPaid!) Align(alignment: Alignment.topLeft,
             child: Container(
               margin: const EdgeInsets.all(7.0),
               height: 14,width: 14,
@@ -467,6 +468,85 @@ class SelfHypnoticScreen extends StatelessWidget {
               child: Center(child: Image.asset(ImageConstant.lockHome,height: 7,width: 7,)),
             ),
           ) else const SizedBox()
+        ],
+      ),
+    );
+  }
+}
+class RecommendationScreen extends StatelessWidget {
+  PersonalDataList? dataList;
+  String? audioTime,currentLanguage;
+  RecommendationScreen({super.key, this.dataList,this.audioTime,this.currentLanguage});
+
+  @override
+  Widget build(BuildContext context) {
+
+    return SizedBox(
+      width: Dimens.d156,
+      child: Stack(alignment: Alignment.topRight,
+        children: [
+          Column(crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  CommonLoadImage(
+                    borderRadius: 10,
+                    url: dataList?.image??
+                        "",
+                    width: Dimens.d156,
+                    height: Dimens.d113,
+                  ),
+                  Align(
+                    alignment:
+                    Alignment.topRight,
+                    child: Padding(
+                      padding:
+                      const EdgeInsets
+                          .only(
+                          right: 10,
+                          top: 10),
+                      child: SvgPicture.asset(
+                          ImageConstant.play),
+                    ),
+                  ),
+                  Positioned( bottom: 5.0,
+                    right: 5.0,
+                    child: Container(padding:  EdgeInsets.only(top: Platform.isIOS?0: 1),
+                      height: 12,width: 30,decoration: BoxDecoration(color: Colors.black.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(13)),
+                    child: Center(child: Text(audioTime!,style: Style.nunRegular(fontSize: 6,color: Colors.white),)) ,),
+                  )
+                ],
+              ),
+              Dimens.d10.spaceHeight,
+              SizedBox(
+                width: 72,
+                child: Text(
+                  dataList?.audioName
+                      .toString()??"",
+                  // "Motivational",
+                  style: Style
+                      .nunitoBold(
+                    fontSize: Dimens.d10,
+                  ),
+                  overflow: TextOverflow
+                      .ellipsis,
+                  maxLines: 1,
+                ),
+              ),
+              Dimens.d7.spaceHeight,
+              Text(
+               dataList?.description??"",
+                maxLines: Dimens.d2.toInt(),
+                style: Style.nunMedium(
+                    fontSize: Dimens.d14),
+                overflow:
+                TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+
         ],
       ),
     );
