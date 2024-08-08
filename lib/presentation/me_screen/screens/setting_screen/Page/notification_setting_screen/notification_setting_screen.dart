@@ -13,6 +13,7 @@ import 'package:transform_your_mind/presentation/me_screen/screens/setting_scree
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/setting_screen.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
+import 'package:flutter/services.dart';
 
 class NotificationSettingScreen extends StatefulWidget {
   const NotificationSettingScreen({super.key});
@@ -99,10 +100,14 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30),
-                    child: Text(
-                      "howManyTimesWouldYouLikeToBe".tr,
-                      textAlign: TextAlign.center,
-                      style: Style.nunRegular(fontSize: Dimens.d13),
+                    child: GestureDetector(onTap: () {
+
+                    },
+                      child: Text(
+                        "howManyTimesWouldYouLikeToBe".tr,
+                        textAlign: TextAlign.center,
+                        style: Style.nunRegular(fontSize: Dimens.d13),
+                      ),
                     ),
                   ),
                   Dimens.d21.h.spaceHeight,
@@ -322,7 +327,7 @@ class _CustomSwitchDState extends State<CustomSwitchD> {
               width: widget.height - 5,
               height: widget.height - 5,
               margin: const EdgeInsets.all(3),
-              decoration:   BoxDecoration(
+              decoration:   const BoxDecoration(
                   shape: BoxShape.circle,
                   color: ColorConstant.white
               ),
@@ -331,5 +336,17 @@ class _CustomSwitchDState extends State<CustomSwitchD> {
         ),
       ),
     );
+  }
+}
+
+class AlarmService {
+  static const MethodChannel _channel = MethodChannel('com.example.alarm');
+
+  Future<void> setAlarm(String dateTime) async {
+    try {
+      await _channel.invokeMethod('setAlarm', {"dateTime": dateTime});
+    } on PlatformException catch (e) {
+      print("Failed to set alarm: ${e.message}");
+    }
   }
 }
