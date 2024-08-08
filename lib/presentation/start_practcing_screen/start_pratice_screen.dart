@@ -34,25 +34,37 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
     with TickerProviderStateMixin {
   StartPracticeController startC = Get.put(StartPracticeController());
   double _setVolumeValue = 0;
+  Timer? _autoScrollTimer;
+
   int currentIndex = 1;
   int chooseImage = 0;
   final PageController _pageController = PageController();
   int _currentIndex = 0;
   double _progress = 0.0;
-  Timer? _timer;
   int selectedTime = 3;
   bool showBottom = false;
-
+  AnimationController? _progressController;
+  Animation<double>? _progressAnimation;
   @override
   void initState() {
     super.initState();
     startC.selectedSpeedIndex = 0;
     startC.setSpeed = false.obs;
 
-    startC.storyCompleted = List.generate(widget.gratitudeList!.length,
-        (index) => false); // Initialize all stories as not completed
+    startC.storyCompleted = List.generate(widget.gratitudeList!.length, (index) => false);
+    _progressController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: speedChange()),
+    )..addListener(() {
+        setState(() {
+          _progress = _progressController!.value;
+        });
+      });
 
-    _startProgress();
+    _progressAnimation =
+        Tween<double>(begin: 0.0, end: 1.0).animate(_progressController!);
+
+    _startAutoScrollTimer();
     VolumeController().listener((volume) {
     });
 
@@ -68,13 +80,19 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
       debugPrint("Error playing audio: $e");
     }
   }
+
+  void _startProgressAnimation() {
+    _progressController?.reset();
+    _progressController?.forward();
+  }
+
   @override
   void dispose() {
     startC.timer?.cancel();
     super.dispose();
   }
 
-  void _startProgress() {
+/*  void _startProgress() {
     _timer?.cancel();
     int durationInSeconds = speedChange();
     int durationInMilliseconds = durationInSeconds * 1000;
@@ -105,9 +123,31 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
         }
       });
     });
+  }*/
+
+  void _startAutoScrollTimer() {
+    _autoScrollTimer?.cancel(); // Cancel any existing timer
+    _autoScrollTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      if (_currentIndex < widget.gratitudeList!.length - 1) {
+        _currentIndex++;
+        _pageController.animateToPage(
+          _currentIndex,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+        _startProgressAnimation();
+      } else {
+        timer.cancel(); // Stop the timer
+        _onComplete(); // Handle completion
+      }
+    });
+  }
+
+  void _onComplete() async {
+    await updateGratitude(widget.gratitudeList![0].id);
+    Get.to(() => GreatWork(theme: startC.themeList[chooseImage]));
   }
   updateGratitude(id) async {
-
     var headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
@@ -223,7 +263,7 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
                         padding: const EdgeInsets.symmetric(horizontal: 2.0),
                         child: LinearProgressIndicator(
                           value: index == _currentIndex
-                              ? _progress
+                              ? _progressAnimation?.value
                               : (index < _currentIndex ? 1.0 : 0.0),
                           backgroundColor: Colors.grey,
                           valueColor: const AlwaysStoppedAnimation<Color>(
@@ -235,7 +275,6 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
                   }),
                 ),
               ),
-
               //_________________________________ story list  _______________________
               PageView.builder(
                 scrollDirection: Axis.vertical,
@@ -247,18 +286,10 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
                   setState(() {
                     _currentIndex = value;
                     _progress = 0.0;
+                    _startProgressAnimation(); // Restart animation
+
+                    _startAutoScrollTimer(); // Restart timer
                   });
-                    if (_currentIndex == (widget.gratitudeList!.length - 1)) {
-                    Future.delayed(Duration(seconds: speedChange())).then(
-                      (value) async {
-                        for(int i = 0;i<widget.gratitudeList!.length;i++){
-                          await updateGratitude(widget.gratitudeList![i].id);
-                        }
-                        await startC.pause();
-                        Get.to( GreatWork(theme:  startC.themeList[chooseImage],));
-                      },
-                    );
-                  }
                 },
                 itemBuilder: (context, index) {
                   return Stack(
@@ -406,7 +437,7 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
                                     startC.setSelectedSpeedIndex(index);
                                     speedChange();
                                     _progress = 0.0; // Reset the progress.
-                                    _startProgress();
+                                    _startAutoScrollTimer();
                                   });
                                 },
                                 child: Padding(

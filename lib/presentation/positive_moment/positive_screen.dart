@@ -941,7 +941,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
                     onTap: () async {
                       Get.back();
                       await positiveController
-                          .filterMoment(positiveController.conTap.value);
+                          .filterMoment(positiveController.conTap.value,context);
                     },
                     child: Container(
                       height: 36,
@@ -965,7 +965,7 @@ class _PositiveScreenState extends State<PositiveScreen> {
                     onTap: () async {
                       Get.back();
                       await positiveController
-                          .filterMoment(positiveController.conTap.value);
+                          .filterMoment(positiveController.conTap.value,context);
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 35),

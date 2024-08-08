@@ -48,7 +48,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     await Purchases.configure(configuration);
 
     CustomerInfo customerInfo = await Purchases.getCustomerInfo();
-    print("customerInfo : ${customerInfo.entitlements}");
+    ("customerInfo : ${customerInfo.entitlements}");
     print("customerInfo : ${PrefService.getString(PrefKey.email)}");
     print("customerInfo : ${customerInfo.allPurchaseDates}");
     print("customerInfo : ${customerInfo.activeSubscriptions}");

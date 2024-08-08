@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -62,13 +63,17 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    setMethod();
+
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         statusBarBrightness: Brightness.light,
         statusBarIconBrightness: Brightness.light,
         statusBarColor: Colors.transparent));
-    _setGreetingBasedOnTime();
-    checkInternet();
+Future.delayed(const Duration(seconds: 1)).then((value) {
+  setMethod();
+
+  _setGreetingBasedOnTime();
+  checkInternet();
+},);
     super.initState();
   }
   String currentLanguage = '';
@@ -90,6 +95,8 @@ class _SplashScreenState extends State<SplashScreen> {
       });
       showSnackBarError(Get.context!, "noInternet".tr);
     }
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+    debugPrint("fcmToken $fcmToken");
   }
 
 
@@ -113,7 +120,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
         getUserModel = getUserModelFromJson(responseBody);
         Future.delayed(
-          const Duration(seconds: 4),
+          const Duration(seconds: 3),
               () {
             PrefService.getBool(PrefKey.isLoginOrRegister) == true
                 ? getUserModel.data?.welcomeScreen == false
@@ -146,7 +153,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     } else {
       Future.delayed(
-        const Duration(seconds: 4),
+        const Duration(seconds: 3),
         () {
           PrefService.getBool(PrefKey.isLoginOrRegister) == true
               ? PrefService.getBool(PrefKey.welcomeScreen) == false

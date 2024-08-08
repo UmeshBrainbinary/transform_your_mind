@@ -73,8 +73,8 @@ class _MotivationalMessageScreenState extends State<MotivationalMessageScreen> {
   @override
   void initState() {
     super.initState();
-    motivationalController.setBackSounds();
     _setGreetingBasedOnTime();
+    soundPlay();
     _startProgress();
     VolumeController().listener((volume) {});
     VolumeController().getVolume().then((volume) => _setVolumeValue = volume);
@@ -84,7 +84,18 @@ class _MotivationalMessageScreenState extends State<MotivationalMessageScreen> {
       });
     }
   }
+  Future<void> soundPlay() async {
+    motivationalController.soundMute = false;
+    try {
+      await motivationalController.setUrl(motivationalController.soundList[1]["audio"]);
+      await motivationalController.play();
+    } catch (e) {
+      debugPrint("Error playing audio: $e");
+    }
+   setState(() {
 
+   });
+  }
   void _setGreetingBasedOnTime() {
     greeting = _getGreetingBasedOnTime();
     setState(() {});

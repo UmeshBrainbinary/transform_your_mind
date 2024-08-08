@@ -250,7 +250,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                             .currentPController.text ==
                                             changePasswordController
                                                 .newPController.text) {
-                                          showSnackBarError(context, "You cannot set the current password as the new password.");
+                                          showSnackBarError(context, "youCanNotSet".tr);
                                         } else {
                                           if (await isConnected()) {
                                             changePasswordController

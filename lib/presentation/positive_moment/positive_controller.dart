@@ -113,7 +113,7 @@ class PositiveController extends GetxController {
     update(['moment']);
   }
 
-  filterMoment(weeks) async {
+  filterMoment(weeks, BuildContext context) async {
     positiveMomentList = [].obs;
     positiveModel = PositiveModel();
     loader.value = true;
@@ -135,7 +135,7 @@ class PositiveController extends GetxController {
         final responseBody = await response.stream.bytesToString();
         loader.value = false;
         positiveModel = positiveModelFromJson(responseBody);
-        if (positiveModel.data != null) {
+        if ((positiveModel.data ?? []).isNotEmpty) {
           Get.to(()=> PositiveStoryMoment(data: positiveModel.data,));
 
           for (int i = 0; i < positiveModel.data!.length; i++) {
@@ -147,6 +147,11 @@ class PositiveController extends GetxController {
             });
           }
           filteredBookmarks = positiveMomentList;
+        } else {
+          Get.snackbar("Error", "pleaseAddPositiveMoment".tr,
+              overlayColor: Colors.red,
+              backgroundColor: Colors.red,
+              colorText: Colors.white);
         }
          update(["update"]);
       } else {

@@ -53,7 +53,7 @@ void showSnackBarSuccess(
       Overlay.of(context),
       CustomSnackBar.success(
         backgroundColor: ColorConstant.themeColor,
-        message: msg,
+        message: msg,icon: const SizedBox(),
         textStyle:  TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: Dimens.d14,

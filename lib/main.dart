@@ -35,10 +35,10 @@ Future<void> main() async {
   } else {
     await Firebase.initializeApp(
         options: const FirebaseOptions(
-            apiKey: "AIzaSyDtKB63fDJsU8iX51nkbQv7tFrYwtlbd3g",
-            appId: "1:616839099849:android:f0b01407b1582d364ba418",
-            messagingSenderId: "616839099849",
-            projectId: 'transform-your-mind'));
+            apiKey: "AIzaSyDqVV8VZFujz90zhumJKkUcoyqVY-B3QpI",
+            appId: "1:163422335038:android:9a43e6df9e637300db216f",
+            messagingSenderId: "163422335038",
+            projectId: 'transform-your-mind-afbb7'));
   }
   var detroit = tz.getLocation('Asia/Kolkata');
   tz.setLocalLocation(detroit);

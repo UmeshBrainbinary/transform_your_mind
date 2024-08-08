@@ -35,16 +35,7 @@ class MotivationalController extends GetxController {
 
     super.onInit();
   }
-  setBackSounds() async {
-    soundMute = false;
-    try {
-      await setUrl(soundList[1]["audio"]);
-      await play();
-    } catch (e) {
-      debugPrint("Error playing audio: $e");
-    }
-    update();
-  }
+
 
   checkInternet() async {
     if (await isConnected()) {

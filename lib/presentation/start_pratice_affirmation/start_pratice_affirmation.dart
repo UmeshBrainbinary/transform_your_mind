@@ -63,7 +63,6 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
   int _currentIndex = 0;
   int likeIndex = 0;
   double _progress = 0.0;
-  Timer? _timer;
   int selectedTime = 3;
   bool am = true;
   bool pm = false;
@@ -75,6 +74,10 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
   bool _isScrolling = true;
   AffirmationController affirmationController = Get.put(AffirmationController());
   bool likeAnimation = false;
+  AnimationController? _progressController;
+  Animation<double>? _progressAnimation;
+  Timer? _autoScrollTimer;
+
   @override
   void initState() {
     super.initState();
@@ -84,8 +87,17 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
     startC.setSpeed = false.obs;
 
     startC.storyCompleted = List.generate(widget.data!.length, (index) => false);
+    _progressController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: speedChange()),
+    )..addListener(() {
+      setState(() {
+        _progress = _progressController!.value;
+      });
+    });
 
-    _startProgress();
+    _progressAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(_progressController!);
+    _startAutoScrollTimer();
     VolumeController().listener((volume) {
     });
 
@@ -113,7 +125,7 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
     setState(() {
       _isScrolling = true;
     });
-    _startProgress();
+    _startAutoScrollTimer();
   }
 
   void _stopScrolling() {
@@ -127,7 +139,7 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
     super.dispose();
   }
 
-  void _startProgress() {
+  /*void _startProgress() {
     _timer?.cancel();
     int durationInSeconds = speedChange();
     int durationInMilliseconds = durationInSeconds * 1000;
@@ -160,9 +172,33 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
       }
       setState(() {});
     });
+  }*/
+  void _startAutoScrollTimer() {
+    _autoScrollTimer?.cancel();
+    _autoScrollTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      if (_currentIndex < widget.data!.length - 1) {
+        _currentIndex++;
+        _pageController.animateToPage(
+          _currentIndex,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+        _startProgressAnimation();
+      } else {
+        timer.cancel(); // Stop the timer
+        _onComplete(); // Handle completion
+      }
+    });
+  }
+  void _startProgressAnimation() {
+    _progressController?.reset();
+    _progressController?.forward();
   }
 
-
+  void _onComplete() async {
+    startC.player.pause();
+    Get.to(AffirmationGreatWork(theme: startC.themeList[chooseImage]));
+  }
   int speedChange() {
     switch (startC.selectedSpeedIndex) {
       case 0:
@@ -433,17 +469,12 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
                   setState(() {
                     _currentIndex = value;
                     likeIndex = value;
+                    _startProgressAnimation(); // Restart animation
+
+                    _startAutoScrollTimer(); //
                     _progress = 0.0;
                   });
-                      if (_currentIndex == (widget.data!.length - 1)) {
 
-                    await startC.player.pause();
-                    Future.delayed(Duration(seconds: speedChange())).then(
-                      (value) {
-                        Get.to( AffirmationGreatWork(theme: startC.themeList[chooseImage],));
-                      },
-                    );
-                  }
                 },
                 itemBuilder: (context, index) {
                   return Column(
@@ -660,7 +691,7 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
                                     startC.setSelectedSpeedIndex(index);
                                     speedChange();
                                     _progress = 0.0; // Reset the progress.
-                                    _startProgress();
+                                    _startAutoScrollTimer();
                                   });
                                 },
                                 child: Padding(
