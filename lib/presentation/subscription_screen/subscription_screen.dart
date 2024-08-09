@@ -1,23 +1,40 @@
+import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_android/in_app_purchase_android.dart';
+import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
+import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
-import 'package:transform_your_mind/core/service/purchase_setup/singletons_data.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
-import 'package:transform_your_mind/presentation/subscription_screen/purchase_api.dart';
-import 'package:transform_your_mind/presentation/subscription_screen/store_config.dart';
 import 'package:transform_your_mind/presentation/subscription_screen/subscription_controller.dart';
 import 'package:transform_your_mind/presentation/welcome_screen/welcome_screen.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
+
+final bool _kAutoConsume = Platform.isIOS || true;
+
+const String _kConsumableId = 'consumable';
+const String _kUpgradeId = 'upgrade';
+const String _kSilverSubscriptionId = 'transform_monthly';
+const String _kGoldSubscriptionId = 'transform_yearly';
+const List<String> _kProductIds = <String>[
+  _kConsumableId,
+  _kUpgradeId,
+  _kSilverSubscriptionId,
+  _kGoldSubscriptionId,
+];
 
 class SubscriptionScreen extends StatefulWidget {
   bool? skip;
@@ -31,14 +48,207 @@ class SubscriptionScreen extends StatefulWidget {
 class _SubscriptionScreenState extends State<SubscriptionScreen> {
   SubscriptionController subscriptionController = Get.put(SubscriptionController());
   ThemeController themeController = Get.find<ThemeController>();
-
+  final InAppPurchase _inAppPurchase = InAppPurchase.instance;
+  late StreamSubscription<List<PurchaseDetails>> _subscription;
+  List<String> _notFoundIds = <String>[];
+  List<ProductDetails> _products = <ProductDetails>[];
+  List<PurchaseDetails> _purchases = <PurchaseDetails>[];
+  List<String> _consumables = <String>[];
+  bool _isAvailable = false;
+  bool _purchasePending = false;
+  bool _loading = true;
+  String? _queryProductError;
   @override
   void initState() {
     super.initState();
-    initPlatformState();
+    List.generate(2, (index) {
+      subscriptionController.plan.add(false);
+    },);
+    final Stream<List<PurchaseDetails>> purchaseUpdated =
+        _inAppPurchase.purchaseStream;
+    _subscription = purchaseUpdated.listen(
+        (List<PurchaseDetails> purchaseDetailsList) {
+          _listenToPurchaseUpdated(purchaseDetailsList);
+        },
+        onDone: () {},
+        onError: (Object error) {
+          // handle error here.
+        });
+    initStoreInfo();
   }
 
-  Future<void> initPlatformState() async {
+  Future<void> consume(String id) async {
+    await ConsumableStore.consume(id);
+    final List<String> consumables = await ConsumableStore.load();
+    setState(() {
+      _consumables = consumables;
+    });
+  }
+
+  void showPendingUI() {
+    setState(() {
+      _purchasePending = true;
+    });
+  }
+
+  void handleError(IAPError error) {
+    setState(() {
+      _purchasePending = false;
+    });
+  }
+
+  Future<void> _listenToPurchaseUpdated(
+      List<PurchaseDetails> purchaseDetailsList) async {
+    for (final PurchaseDetails purchaseDetails in purchaseDetailsList) {
+      if (purchaseDetails.status == PurchaseStatus.pending) {
+        showPendingUI();
+      } else {
+        if (purchaseDetails.status == PurchaseStatus.error) {
+          handleError(purchaseDetails.error!);
+        } else if (purchaseDetails.status == PurchaseStatus.purchased ||
+            purchaseDetails.status == PurchaseStatus.restored) {
+          debugPrint("purchase details =========+++++$purchaseDetails");
+          final bool valid = await _verifyPurchase(purchaseDetails);
+          if (valid) {
+            unawaited(deliverProduct(purchaseDetails));
+          } else {
+            _handleInvalidPurchase(purchaseDetails);
+            return;
+          }
+        }
+        if (Platform.isAndroid) {
+          if (!_kAutoConsume && purchaseDetails.productID == _kConsumableId) {
+            final InAppPurchaseAndroidPlatformAddition androidAddition =
+                _inAppPurchase.getPlatformAddition<
+                    InAppPurchaseAndroidPlatformAddition>();
+            await androidAddition.consumePurchase(purchaseDetails);
+          }
+        }
+        if (purchaseDetails.pendingCompletePurchase) {
+          await _inAppPurchase.completePurchase(purchaseDetails);
+        }
+      }
+    }
+  }
+
+  void _handleInvalidPurchase(PurchaseDetails purchaseDetails) {
+    print("when user get purchase status ${purchaseDetails.status}");
+    print("when user get purchase error ${purchaseDetails.error}");
+    print(
+        "when user get purchase pendingCompletePurchase ${purchaseDetails.pendingCompletePurchase}");
+    print("when user get purchase productID ${purchaseDetails.productID}");
+    print("when user get purchase purchaseID ${purchaseDetails.purchaseID}");
+    print(
+        "when user get purchase transactionDate ${purchaseDetails.transactionDate}");
+    print(
+        "when user get purchase verificationData ${purchaseDetails.verificationData}");
+    // handle invalid purchase here if  _verifyPurchase` failed.
+  }
+
+  Future<void> deliverProduct(PurchaseDetails purchaseDetails) async {
+    debugPrint("deliverProduct =========+++++   $purchaseDetails");
+
+    // IMPORTANT!! Always verify purchase details before delivering the product.
+    if (purchaseDetails.productID == _kConsumableId) {
+      await ConsumableStore.save(purchaseDetails.purchaseID!);
+      final List<String> consumables = await ConsumableStore.load();
+      setState(() {
+        _purchasePending = false;
+        _consumables = consumables;
+      });
+    } else {
+      setState(() {
+        _purchases.add(purchaseDetails);
+        _purchasePending = false;
+      });
+    }
+  }
+
+  Future<bool> _verifyPurchase(PurchaseDetails purchaseDetails) {
+    print("after verify purchase details ======++++ $purchaseDetails");
+    // IMPORTANT!! Always verify a purchase before delivering the product.
+    // For the purpose of an example, we directly return true.
+    return Future<bool>.value(true);
+  }
+
+  Future<void> initStoreInfo() async {
+    final bool isAvailable = await _inAppPurchase.isAvailable();
+    if (!isAvailable) {
+      setState(() {
+        _isAvailable = isAvailable;
+        _products = <ProductDetails>[];
+        _purchases = <PurchaseDetails>[];
+        _notFoundIds = <String>[];
+        _consumables = <String>[];
+        _purchasePending = false;
+        _loading = false;
+      });
+      return;
+    }
+
+    print("$isAvailable");
+
+    if (Platform.isIOS) {
+      final InAppPurchaseStoreKitPlatformAddition iosPlatformAddition =
+          _inAppPurchase
+              .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+      await iosPlatformAddition.setDelegate(ExamplePaymentQueueDelegate());
+    }
+
+    final ProductDetailsResponse productDetailResponse =
+        await _inAppPurchase.queryProductDetails(_kProductIds.toSet());
+
+
+    print("plans checking ${ subscriptionController.plan}");
+    setState(() {
+      _queryProductError = productDetailResponse.error?.message;
+      _isAvailable = isAvailable;
+      _products = productDetailResponse.productDetails;
+      _purchases = <PurchaseDetails>[];
+      _notFoundIds = productDetailResponse.notFoundIDs;
+      _consumables = <String>[];
+      _purchasePending = false;
+      _loading = false;
+    });
+
+
+    if (productDetailResponse.productDetails.isEmpty) {
+      setState(() {
+        _queryProductError = null;
+        _isAvailable = isAvailable;
+        _products = productDetailResponse.productDetails;
+        _purchases = <PurchaseDetails>[];
+        _notFoundIds = productDetailResponse.notFoundIDs;
+        _consumables = <String>[];
+        _purchasePending = false;
+        _loading = false;
+      });
+      return;
+    }
+
+    final List<String> consumables = await ConsumableStore.load();
+    setState(() {
+      _isAvailable = isAvailable;
+      _products = productDetailResponse.productDetails;
+      _notFoundIds = productDetailResponse.notFoundIDs;
+      _consumables = consumables;
+      _purchasePending = false;
+      _loading = false;
+    });
+    print("consumable list $consumables");
+    if (productDetailResponse.productDetails[0].id == "transform_yearly") {
+      setState(() {
+        subscriptionController.plan[1] = true.obs;
+      });
+    } else if (productDetailResponse.productDetails[0].id ==
+        "transform_monthly") {
+      setState(() {
+        subscriptionController.plan[0] = true.obs;
+      });
+    }
+  }
+
+  /* Future<void> initPlatformState() async {
     await Purchases.setLogLevel(LogLevel.debug);
 
     PurchasesConfiguration configuration;
@@ -70,7 +280,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           ? appData.entitlementIsActive = true
           : appData.entitlementIsActive = false;
     });
-  }
+  }*/
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -285,7 +495,12 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             child: CommonElevatedButton(
               title: "purchase".tr,
               onTap: () async {
-
+                if (subscriptionController.plan[0] == true) {
+                  _purchasePlan("1 Month");
+                } else if (subscriptionController.plan[1] == true) {
+                  _purchasePlan("1 Year");
+                }
+                debugPrint("${subscriptionController.plan}");
               },
             ),
           ),
@@ -315,5 +530,104 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _purchasePlan(String plan) async {
+    try {
+      // Identify the product based on the selected plan
+      String productId;
+      if (plan == "1 Month") {
+        productId = _kSilverSubscriptionId; // Use your actual product ID
+      } else if (plan == "1 Year") {
+        productId = _kGoldSubscriptionId; // Use your actual product ID
+      } else {
+        throw Exception("Invalid plan selected");
+      }
+
+      // Get the product details
+      ProductDetails? selectedProduct = _products.firstWhereOrNull(
+        (product) => product.id == productId,
+      );
+
+      if (selectedProduct == null) {
+        print("selected plan ------ +++++ $selectedProduct");
+        // Handle the case where the product is not found
+        print("Product not found");
+        return;
+      }
+
+      // Make the purchase
+      final PurchaseParam purchaseParam = PurchaseParam(
+        productDetails: selectedProduct,
+        applicationUserName: null,
+      );
+
+      bool success =
+          await _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
+
+      if (!success) {
+        // Handle unsuccessful purchase attempt
+        print("Purchase unsuccessful");
+      } else {
+        showSnackBarSuccess(context, "Subscription set successful");
+      }
+    } catch (e) {
+      // Handle any errors
+      print("Error purchasing plan: $e");
+    }
+  }
+}
+
+class ExamplePaymentQueueDelegate implements SKPaymentQueueDelegateWrapper {
+  @override
+  bool shouldContinueTransaction(
+      SKPaymentTransactionWrapper transaction, SKStorefrontWrapper storefront) {
+    return true;
+  }
+
+  @override
+  bool shouldShowPriceConsent() {
+    return false;
+  }
+}
+
+class ConsumableStore {
+  static const String _kPrefKey = 'consumables';
+  static Future<void> _writes = Future<void>.value();
+
+  /// Adds a consumable with ID `id` to the store.
+  ///
+  /// The consumable is only added after the returned Future is complete.
+  static Future<void> save(String id) {
+    _writes = _writes.then((void _) => _doSave(id));
+    return _writes;
+  }
+
+  /// Consumes a consumable with ID `id` from the store.
+  ///
+  /// The consumable was only consumed after the returned Future is complete.
+  static Future<void> consume(String id) {
+    _writes = _writes.then((void _) => _doConsume(id));
+    return _writes;
+  }
+
+  /// Returns the list of consumables from the store.
+  static Future<List<String>> load() async {
+    return (await SharedPreferences.getInstance()).getStringList(_kPrefKey) ??
+        <String>[];
+  }
+
+  static Future<void> _doSave(String id) async {
+    final List<String> cached = await load();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    cached.add(id);
+    await prefs.setStringList(_kPrefKey, cached);
+  }
+
+  static Future<void> _doConsume(String id) async {
+    final List<String> cached = await load();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    cached.remove(id);
+    await prefs.setStringList(_kPrefKey, cached);
   }
 }

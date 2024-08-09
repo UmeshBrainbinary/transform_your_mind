@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -95,8 +97,16 @@ Future.delayed(const Duration(seconds: 1)).then((value) {
       });
       showSnackBarError(Get.context!, "noInternet".tr);
     }
-    final fcmToken = await FirebaseMessaging.instance.getToken();
-    debugPrint("fcmToken $fcmToken");
+    if(Platform.isIOS){
+      final fcmToken = await FirebaseMessaging.instance.getAPNSToken();
+      debugPrint("fcmToken $fcmToken");
+
+    }else{
+      final fcmToken = await FirebaseMessaging.instance.getToken();
+      debugPrint("fcmToken $fcmToken");
+
+    }
+
   }
 
 

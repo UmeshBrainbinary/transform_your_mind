@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -87,7 +89,7 @@ class _ProfileScreenState extends State<ProfileScreen>
           Column(
             children: [
               const Spacer(),
-              Dimens.d40.spaceHeight,
+              Dimens.d30.spaceHeight,
               Stack(
                 alignment: Alignment.bottomCenter,
                 children: [
@@ -268,8 +270,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                           ? Align(
                               alignment: Alignment.centerLeft,
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 20),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: Platform.isIOS ? 16 : 20,
+                                    vertical: 20),
                                 child: Row(
                                   children: [
                                     GetBuilder<ProfileController>(

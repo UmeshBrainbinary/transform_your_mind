@@ -1,6 +1,7 @@
 enum Store { appleStore, googlePlay }
 
 class StoreConfig {
+
   final Store store;
   final String apiKey;
   static StoreConfig? _instance;

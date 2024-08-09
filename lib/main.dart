@@ -52,7 +52,7 @@ Future<void> main() async {
   });
 
   await Alarm.init();
-  if (Platform.isIOS) {
+/*  if (Platform.isIOS) {
     StoreConfig(
       store: config.Store.appleStore,
       apiKey: appleApiKey,
@@ -62,9 +62,16 @@ Future<void> main() async {
       store: config.Store.googlePlay,
       apiKey: googleApiKey,
     );
+  }*/
+  if(Platform.isIOS){
+    final fcmToken = await FirebaseMessaging.instance.getAPNSToken();
+    debugPrint("fcmToken $fcmToken");
+
+  }else{
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+    debugPrint("fcmToken $fcmToken");
+
   }
-  final fcmToken = await FirebaseMessaging.instance.getToken();
-  debugPrint("fcmToken $fcmToken");
 }
 
 class MyApp extends StatefulWidget {

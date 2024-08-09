@@ -272,6 +272,7 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
   }
 }
 
+
 class CustomSwitchD extends StatefulWidget {
   final bool value;
   final ValueChanged<bool> onChanged;
