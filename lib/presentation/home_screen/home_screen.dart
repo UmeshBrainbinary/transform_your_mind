@@ -272,7 +272,7 @@ class _HomeScreenState extends State<HomeScreen>
                               padding: const EdgeInsets.symmetric(
                                   horizontal: Dimens.d20),
                               child: Text(
-                                "feelGood".tr,
+                                "meditations".tr,
                                 textAlign: TextAlign.center,
                                 style: Style.nunitoBold(fontSize: Dimens.d22),
                               ),
@@ -350,21 +350,8 @@ class _HomeScreenState extends State<HomeScreen>
                                 },
                               ),
                             ),
-                            Dimens.d30.spaceHeight,
-                            //___________________________________________ self hypnotic _____________________
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: Dimens.d20),
-                              child: Text(
-                                "selfHypnotic".tr,
-                                textAlign: TextAlign.center,
-                                style: Style.nunitoBold(
-                                  fontSize: Dimens.d22,
-                                ),
-                              ),
-                            ),
-                            Dimens.d30.spaceHeight,
-                            selfHypnotic(),
+
+
                             Dimens.d30.spaceHeight,
                             //___________________________________________ recommendation _____________________
 
@@ -1190,7 +1177,7 @@ class _HomeScreenState extends State<HomeScreen>
                     height: Dimens.d46,
                     textStyle: Style.nunRegular(
                         fontSize: currentLanguage=="en-US"?Dimens.d17:Dimens.d15, color: ColorConstant.white),
-                    title: "addTodayAffirmation".tr,
+                    title: "empowerMindset".tr,
                     onTap: () {
                      Get.to(const AddAffirmationPage(
                        isFromMyAffirmation: true,

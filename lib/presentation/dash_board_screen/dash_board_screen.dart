@@ -322,7 +322,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                           width: Dimens.d20,
                         ),
                       ),
-                      label: 'tools'.tr,
+                      label: 'Tools',
                       activeIcon: Padding(
                         padding: const EdgeInsets.only(bottom: 6),
                         child: SvgPicture.asset(

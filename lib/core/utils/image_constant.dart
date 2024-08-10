@@ -208,6 +208,7 @@ class ImageConstant {
   static String checkMark = "$iconPath/chek_mark_pods.svg";
   static String bulbDark = "$iconPath/bulb_dark.png";
   static String positiveMoment = "$iconPath/positiveMoment.svg";
+  static String selfHypnotic = "$iconPath/self_hypnotic.svg";
   static String seeAll = "$iconPath/seeAll.svg";
   static String sos = "$iconPath/sos.svg";
   static String playGratitude = "$iconPath/play_gratitude.png";

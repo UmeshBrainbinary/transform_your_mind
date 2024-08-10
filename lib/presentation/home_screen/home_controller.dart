@@ -32,12 +32,12 @@ class HomeController extends GetxController {
   List<bool> affirmationCheckList = [];
   List<bool> gratitudeCheckList = [];
   List<Map<String, dynamic>> quickAccessList = [
-    {"title": "motivational", "icon": ImageConstant.meditationIconQuick,"color": ColorConstant.colorF7E2CD},
-    {"title": "transformAudios", "icon": ImageConstant.podIconQuick,"color": ColorConstant.colorEDC9ED},
-    {"title": "gratitudeJournal", "icon": ImageConstant.journalIconQuick,"color": ColorConstant.colorC8CDF7},
-    {"title": "positiveMoments", "icon": ImageConstant.sleepIconQuick,"color": ColorConstant.colorF9CDCE},
-    {"title": "affirmation", "icon": ImageConstant.homeAffirmation,"color": ColorConstant.colorFFDDAA},
-    {"title": "breathingExerciseTitle", "icon": ImageConstant.breathing,"color": ColorConstant.colorD5F8A9},
+    {"title": "motivationalQ", "icon": ImageConstant.meditationIconQuick,"color": ColorConstant.colorF7E2CD},
+    {"title": "transformAudiosQ", "icon": ImageConstant.podIconQuick,"color": ColorConstant.colorEDC9ED},
+    {"title": "gratitudeJournalQ", "icon": ImageConstant.journalIconQuick,"color": ColorConstant.colorC8CDF7},
+    {"title": "positiveMomentsQ", "icon": ImageConstant.sleepIconQuick,"color": ColorConstant.colorF9CDCE},
+    {"title": "affirmationeQ", "icon": ImageConstant.homeAffirmation,"color": ColorConstant.colorFFDDAA},
+    {"title": "breathingExerciseTitleQ", "icon": ImageConstant.breathing,"color": ColorConstant.colorD5F8A9},
   ];
 
   //_______________________________________  Model Class _______________________

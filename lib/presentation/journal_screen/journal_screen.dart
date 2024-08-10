@@ -72,6 +72,12 @@ class _JournalScreenState extends State<JournalScreen>
       lottie: ImageConstant.positiveMoment,
       route: AppRoutes.positiveScreen,
     ),
+    JournalData(
+      img: ImageConstant.selfHypnotic,
+      title: "selfHypnotic".tr,
+      lottie: ImageConstant.selfHypnotic,
+      route: AppRoutes.selfHypnotic,
+    ),
   ];
 
   @override

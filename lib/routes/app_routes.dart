@@ -52,6 +52,8 @@ import 'package:transform_your_mind/presentation/positive_moment/binding/positiv
 import 'package:transform_your_mind/presentation/positive_moment/positive_screen.dart';
 import 'package:transform_your_mind/presentation/profile_screen/binding/profile_binding.dart';
 import 'package:transform_your_mind/presentation/profile_screen/profile_screen.dart';
+import 'package:transform_your_mind/presentation/self_hypnotic/binding/self_hypnotic_binding.dart';
+import 'package:transform_your_mind/presentation/self_hypnotic/self_hypnotic.dart';
 import 'package:transform_your_mind/presentation/splash_screen/binding/splash_binding.dart';
 import 'package:transform_your_mind/presentation/splash_screen/information_screen.dart';
 import 'package:transform_your_mind/presentation/splash_screen/intro_screen.dart';
@@ -98,6 +100,7 @@ class AppRoutes {
   static const String motivationalMessageScreen = '/motivationalMessageScreen';
   static const String affirmationAlarmScreen = '/affirmationAlarmScreen';
   static const String positiveScreen = '/positiveScreen';
+  static const String selfHypnotic = '/selfHypnotic';
   static const String feedbackScreen = '/feedbackScreen';
   static const String nowPlayScreen = '/nowPlayScreen';
   static const String introScreen = '/introScreen';
@@ -361,6 +364,12 @@ class AppRoutes {
       bindings: [MotivationalBinding()],
     ),
 
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: selfHypnotic,
+      page: () =>   const SelfHypnotic(),
+      bindings: [SelfHypnoticBinding()],
+    ),
     GetPage(
       transition: Transition.rightToLeft,
       name: positiveScreen,

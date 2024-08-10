@@ -70,7 +70,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
         (List<PurchaseDetails> purchaseDetailsList) {
           _listenToPurchaseUpdated(purchaseDetailsList);
         },
-        onDone: () {},
+        onDone: () async {
+          await _subscription.cancel();
+        },
         onError: (Object error) {
           // handle error here.
         });
