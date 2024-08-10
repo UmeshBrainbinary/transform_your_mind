@@ -178,10 +178,10 @@ class _SelectYourAffirmationFocusPageState
       tag.isSelected = !tag.isSelected;
       if (tag.isSelected) {
         selectedTagNames
-            .add(currentLanguage == "en-US" ? tag.nameEn : tag.nameDe);
+            .add(currentLanguage == "en-US" || currentLanguage == "" ? tag.nameEn : tag.nameDe);
       } else {
         selectedTagNames
-            .remove(currentLanguage == "en-US" ? tag.nameEn : tag.nameDe);
+            .remove(currentLanguage == "en-US" || currentLanguage == ""? tag.nameEn : tag.nameDe);
       }
     });
   }
@@ -245,7 +245,7 @@ class _SelectYourAffirmationFocusPageState
                               return GestureDetector(
                                 onTap: () => _onTagTap(tag),
                                 child: CustomChip(
-                                  label: currentLanguage == "en-US"
+                                  label: currentLanguage == "en-US" || currentLanguage == ""
                                       ? tag.nameEn
                                       : tag.nameDe, // Use English name
                                   isChipSelected: tag.isSelected,

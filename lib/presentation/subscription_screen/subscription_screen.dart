@@ -193,6 +193,12 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           _inAppPurchase
               .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
       await iosPlatformAddition.setDelegate(ExamplePaymentQueueDelegate());
+    }else{
+      final InAppPurchaseAndroidPlatformAddition androidAddition =
+      _inAppPurchase.getPlatformAddition<InAppPurchaseAndroidPlatformAddition>();
+      print(androidAddition);
+      // Configure Android-specific settings if needed
+
     }
 
     final ProductDetailsResponse productDetailResponse =
@@ -247,40 +253,84 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       });
     }
   }
+  Future<void> checkData() async {
+    final bool isAvailable = await _inAppPurchase.isAvailable();
+    if (!isAvailable) {
+      setState(() {
+        _isAvailable = isAvailable;
+        _products = <ProductDetails>[];
+        _purchases = <PurchaseDetails>[];
+        _notFoundIds = <String>[];
+        _consumables = <String>[];
+        _purchasePending = false;
+        _loading = false;
+      });
+      return;
+    }
 
-  /* Future<void> initPlatformState() async {
-    await Purchases.setLogLevel(LogLevel.debug);
+    print("$isAvailable");
 
-    PurchasesConfiguration configuration;
-    configuration = PurchasesConfiguration(StoreConfig.instance!.apiKey)
-      ..appUserID = PrefService.getString(PrefKey.email)
-      ..observerMode = false;
-    await Purchases.configure(configuration);
+    if (Platform.isIOS) {
+      final InAppPurchaseStoreKitPlatformAddition iosPlatformAddition =
+          _inAppPurchase
+              .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+      await iosPlatformAddition.setDelegate(ExamplePaymentQueueDelegate());
+    }
 
-    CustomerInfo customerInfo = await Purchases.getCustomerInfo();
-    ("customerInfo : ${customerInfo.entitlements}");
-    print("customerInfo : ${PrefService.getString(PrefKey.email)}");
-    print("customerInfo : ${customerInfo.allPurchaseDates}");
-    print("customerInfo : ${customerInfo.activeSubscriptions}");
+    final ProductDetailsResponse productDetailResponse =
+        await _inAppPurchase.queryProductDetails(_kProductIds.toSet());
 
-    Purchases.addCustomerInfoUpdateListener((customerInfo1) async {
-      appData.appUserID = customerInfo1.originalAppUserId;
 
-      CustomerInfo customerInfo = await Purchases.getCustomerInfo();
-      print("customer data ====> ${customerInfo.allPurchaseDates}");
-      print("customer data ====> ${customerInfo.entitlements}");
-      print("customer data ====> ${customerInfo.allExpirationDates}");
-      print("customer data ====> ${customerInfo.activeSubscriptions}");
-      Offerings offerings = await Purchases.getOfferings();
-      var myProductList = offerings.current?.availablePackages;
-      print("Product length : $myProductList");
-
-      (customerInfo.entitlements.all[entitlementID.value] != null &&
-              customerInfo.entitlements.all[entitlementID.value]!.isActive)
-          ? appData.entitlementIsActive = true
-          : appData.entitlementIsActive = false;
+    print("plans checking ${ subscriptionController.plan}");
+    setState(() {
+      _queryProductError = productDetailResponse.error?.message;
+      _isAvailable = isAvailable;
+      _products = productDetailResponse.productDetails;
+      _purchases = <PurchaseDetails>[];
+      _notFoundIds = productDetailResponse.notFoundIDs;
+      _consumables = <String>[];
+      _purchasePending = false;
+      _loading = false;
     });
-  }*/
+
+
+    if (productDetailResponse.productDetails.isEmpty) {
+      setState(() {
+        _queryProductError = null;
+        _isAvailable = isAvailable;
+        _products = productDetailResponse.productDetails;
+        _purchases = <PurchaseDetails>[];
+        _notFoundIds = productDetailResponse.notFoundIDs;
+        _consumables = <String>[];
+        _purchasePending = false;
+        _loading = false;
+      });
+      return;
+    }
+
+    final List<String> consumables = await ConsumableStore.load();
+    setState(() {
+      _isAvailable = isAvailable;
+      _products = productDetailResponse.productDetails;
+      _notFoundIds = productDetailResponse.notFoundIDs;
+      _consumables = consumables;
+      _purchasePending = false;
+      _loading = false;
+    });
+    print("consumable list $consumables");
+    print("productDetailResponse details To save in api $productDetailResponse");
+    if (productDetailResponse.productDetails[0].id == "transform_yearly") {
+      setState(() {
+        subscriptionController.plan[1] = true.obs;
+      });
+    } else if (productDetailResponse.productDetails[0].id ==
+        "transform_monthly") {
+      setState(() {
+        subscriptionController.plan[0] = true.obs;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -336,11 +386,15 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             Dimens.d22.spaceHeight,
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: Dimens.d50),
-              child: Text(
-                "chooseSub".tr,
-                textAlign: TextAlign.center,
-                style: Style.nunRegular(
-                  fontSize: Dimens.d14,
+              child: GestureDetector(onTap: () {
+                _subscription.cancel();
+              },
+                child: Text(
+                  "chooseSub".tr,
+                  textAlign: TextAlign.center,
+                  style: Style.nunRegular(
+                    fontSize: Dimens.d14,
+                  ),
                 ),
               ),
             ),
@@ -567,9 +621,13 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
       if (!success) {
         // Handle unsuccessful purchase attempt
-        print("Purchase unsuccessful");
+        print("$purchaseParam");
+
       } else {
+        print("Purchase unsuccessful");
+
         showSnackBarSuccess(context, "Subscription set successful");
+        checkData();
       }
     } catch (e) {
       // Handle any errors

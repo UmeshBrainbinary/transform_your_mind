@@ -97,8 +97,7 @@ class _WelcomeScreenState extends State<WelcomeHomeScreen>
   int startTimer = 0;
 
   Future<void> _onLongPress() async {
-    await welcomeHomeController.pause();
-    await welcomeHomeController.audioPlayer.stop();
+
     Vibration.vibrate(
       pattern: [80, 80, 0, 0, 0, 0, 0, 0],
       intensities: [20, 20, 0, 0, 0, 0, 0, 0],

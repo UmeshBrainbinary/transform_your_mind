@@ -210,10 +210,10 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
       tag.isSelected = !tag.isSelected;
       if (tag.isSelected) {
         selectedTagNames
-            .add(currentLanguage == "en-US" ? tag.englishName : tag.germanName);
+            .add(currentLanguage == "en-US" || currentLanguage == "" ? tag.englishName : tag.germanName);
       } else {
         selectedTagNames.remove(
-            currentLanguage == "en-US" ? tag.englishName : tag.germanName);
+            currentLanguage == "en-US" || currentLanguage == "" ? tag.englishName : tag.germanName);
       }
     });
   }
@@ -282,7 +282,7 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
                               return GestureDetector(
                                 onTap: () => _onTagTap(tag),
                                 child: CustomChip(
-                                  label: currentLanguage == "en-US"
+                                  label: currentLanguage == "en-US" || currentLanguage == ""
                                       ? tag.englishName
                                       : tag.germanName,
                                   isChipSelected: tag.isSelected,
