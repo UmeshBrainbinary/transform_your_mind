@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
@@ -13,10 +14,13 @@ import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
+import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/main.dart';
+import 'package:transform_your_mind/model_class/get_user_model.dart';
 import 'package:transform_your_mind/presentation/subscription_screen/subscription_controller.dart';
 import 'package:transform_your_mind/presentation/welcome_screen/welcome_screen.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
@@ -58,6 +62,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   bool _purchasePending = false;
   bool _loading = true;
   String? _queryProductError;
+  DateTime now = DateTime.now(); // Current date and time
+  DateTime? futureDate;
+  bool valueChecked = false;
   @override
   void initState() {
     super.initState();
@@ -77,6 +84,12 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           // handle error here.
         });
     initStoreInfo();
+    setState(() {
+      futureDate =
+          now.add(const Duration(days: 365 + 7)); // Adding 1 year and 1 week
+    });
+    print('Current Date: $now');
+    print('Future Date: $futureDate');
   }
 
   Future<void> consume(String id) async {
@@ -101,6 +114,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
   Future<void> _listenToPurchaseUpdated(
       List<PurchaseDetails> purchaseDetailsList) async {
+    final ProductDetailsResponse productDetailResponse =
+        await _inAppPurchase.queryProductDetails(_kProductIds.toSet());
     for (final PurchaseDetails purchaseDetails in purchaseDetailsList) {
       if (purchaseDetails.status == PurchaseStatus.pending) {
         showPendingUI();
@@ -110,6 +125,41 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
         } else if (purchaseDetails.status == PurchaseStatus.purchased ||
             purchaseDetails.status == PurchaseStatus.restored) {
           debugPrint("purchase details =========+++++$purchaseDetails");
+
+          try {
+            var headers = {
+              'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+            };
+            var request = http.MultipartRequest(
+                'POST',
+                Uri.parse(
+                    '${EndPoints.baseUrl}${EndPoints.updateUser}${PrefService.getString(PrefKey.userId)}'));
+            request.fields.addAll({
+              'isSubscribed': "true",
+              'subscriptionId': productDetailResponse.productDetails[0].id,
+              'subscriptionTitle':
+                  productDetailResponse.productDetails[0].title,
+              'subscriptionDescription': "",
+              'price': "",
+              'rawPrice': "",
+              'currencyCode': "",
+              'subscriptionDate': "",
+              'expiryDate': "",
+            });
+
+            request.headers.addAll(headers);
+
+            http.StreamedResponse response = await request.send();
+
+            if (response.statusCode == 200) {
+              showSnackBarSuccess(context, "Subscription set successful");
+              await getUSer();
+            } else {
+              debugPrint(response.reasonPhrase);
+            }
+          } catch (e) {
+            debugPrint(e.toString());
+          }
           final bool valid = await _verifyPurchase(purchaseDetails);
           if (valid) {
             unawaited(deliverProduct(purchaseDetails));
@@ -254,6 +304,13 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
         subscriptionController.plan[0] = true.obs;
       });
     }
+    for (int i = 0; i < subscriptionController.plan.length; i++) {
+      if (subscriptionController.plan[i] == true) {
+        setState(() {
+          valueChecked = true;
+        });
+      }
+    }
   }
   Future<void> checkData() async {
     final bool isAvailable = await _inAppPurchase.isAvailable();
@@ -333,6 +390,39 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     }
   }
 
+  GetUserModel getUserModel = GetUserModel();
+
+  getUSer() async {
+    try {
+      var headers = {
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+      };
+      var request = http.Request(
+        'GET',
+        Uri.parse(
+          "${EndPoints.getUser}${PrefService.getString(PrefKey.userId)}",
+        ),
+      );
+
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        final responseBody = await response.stream.bytesToString();
+
+        getUserModel = getUserModelFromJson(responseBody);
+        isSubscribed = getUserModel.data?.isSubscribed ?? false;
+
+        await PrefService.setValue(
+            PrefKey.userImage, getUserModel.data?.userProfile ?? "");
+      } else {
+        debugPrint(response.reasonPhrase);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -388,15 +478,11 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             Dimens.d22.spaceHeight,
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: Dimens.d50),
-              child: GestureDetector(onTap: () {
-                _subscription.cancel();
-              },
-                child: Text(
-                  "chooseSub".tr,
-                  textAlign: TextAlign.center,
-                  style: Style.nunRegular(
-                    fontSize: Dimens.d14,
-                  ),
+              child: Text(
+                "chooseSub".tr,
+                textAlign: TextAlign.center,
+                style: Style.nunRegular(
+                  fontSize: Dimens.d14,
                 ),
               ),
             ),
@@ -550,13 +636,17 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 30.0),
             child: CommonElevatedButton(
               title: "purchase".tr,
+              buttonColor:
+                  valueChecked ? Colors.grey : ColorConstant.themeColor,
               onTap: () async {
-                if (subscriptionController.plan[0] == true) {
-                  _purchasePlan("1 Month");
-                } else if (subscriptionController.plan[1] == true) {
-                  _purchasePlan("1 Year");
+                if (!valueChecked) {
+                  if (subscriptionController.plan[0] == true) {
+                    _purchasePlan("1 Month");
+                  } else if (subscriptionController.plan[1] == true) {
+                    _purchasePlan("1 Year");
+                  }
+                  debugPrint("${subscriptionController.plan}");
                 }
-                debugPrint("${subscriptionController.plan}");
               },
             ),
           ),
@@ -628,7 +718,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       } else {
         print("Purchase unsuccessful");
 
-        showSnackBarSuccess(context, "Subscription set successful");
         checkData();
       }
     } catch (e) {

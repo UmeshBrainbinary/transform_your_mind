@@ -528,10 +528,8 @@ class _AddGratitudePageState extends State<AddGratitudePage>
                                   addGratitudeText.text.trim());
 
                               await getGratitude();
-                              setState.call(() {
-                                _lastText = "";
-                                addGratitudeText.clear();
-                              });
+                              _lastText = "";
+                              addGratitudeText.clear();
                             }else{
                               showSnackBarError(context,"pleaseAddYourGratitude".tr);
 
@@ -542,12 +540,9 @@ class _AddGratitudePageState extends State<AddGratitudePage>
 
                               await addGratitude();
                               await getGratitude();
+                              _lastText = "";
+                              addGratitudeText.clear();
 
-                              setState(() {});
-                              setState.call(() {
-                                _lastText = "";
-                                addGratitudeText.clear();
-                              });
                             }else{
                               showSnackBarError(context,"pleaseAddYourGratitude".tr);
                             }

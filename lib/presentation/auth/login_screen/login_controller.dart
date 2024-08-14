@@ -8,6 +8,7 @@ import 'package:transform_your_mind/core/service/http_service.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
+import 'package:transform_your_mind/main.dart';
 import 'package:transform_your_mind/model_class/common_model.dart';
 import 'package:transform_your_mind/model_class/get_user_model.dart';
 import 'package:transform_your_mind/model_class/login_model.dart';
@@ -130,6 +131,7 @@ class LoginController extends GetxController {
         final responseBody = await response.stream.bytesToString();
 
         getUserModel = getUserModelFromJson(responseBody);
+        isSubscribed = getUserModel.data?.isSubscribed??false;
         if ((getUserModel.data?.focuses ?? []).isEmpty) {
           Get.offAllNamed(AppRoutes.selectYourFocusPage);
         } else if ((getUserModel.data?.affirmations ?? []).isEmpty) {

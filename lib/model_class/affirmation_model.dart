@@ -45,6 +45,7 @@ class AffirmationData {
   String? gName;
   String? gDescription;
   int? alarmId;
+  bool? record;
 
   AffirmationData({
     this.userLiked,
@@ -63,6 +64,7 @@ class AffirmationData {
     this.gName,
     this.gDescription,
     this.alarmId,
+    this.record,
   });
 
   factory AffirmationData.fromJson(Map<String, dynamic> json) => AffirmationData(
@@ -82,6 +84,7 @@ class AffirmationData {
     gName: json["g_name"],
     gDescription: json["g_description"],
     alarmId: json["alarmId"],
+    record: json["record"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -100,6 +103,7 @@ class AffirmationData {
     "g_name": gName,
     "g_description": gDescription,
     "alarmId": alarmId,
+    "record": record,
   };
 }
 

@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/common_api/common_api.dart';
+import 'package:transform_your_mind/core/common_widget/common_text_button.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/shimmer_widget.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
@@ -291,7 +292,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                         children: [
                           Dimens.d10.spaceHeight,
                           Text(
-                            "${"welcome".tr}, ${PrefService.getString(PrefKey.name).toString()}",
+                            "${"welcome".tr}, ${capitalizeFirstLetter(PrefService.getString(PrefKey.name).toString())}",
                             textAlign: TextAlign.center,
                             style: Style.nunRegular(fontSize: 26),
                           ),
@@ -511,7 +512,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                       ),
                       Dimens.d12.spaceHeight,
                       Text(
-                        "${greeting.tr}, ${PrefService.getString(PrefKey.name).toString()}!",
+                        "${greeting.tr}, ${capitalizeFirstLetter(PrefService.getString(PrefKey.name).toString())}!",
                         textAlign: TextAlign.center,
                         style: Style.nunRegular(
                             fontSize: 26, color: ColorConstant.white),

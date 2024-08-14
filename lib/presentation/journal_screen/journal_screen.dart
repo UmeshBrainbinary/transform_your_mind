@@ -202,7 +202,7 @@ class _JournalScreenState extends State<JournalScreen>
                                                     SvgPicture.asset( journalList[index].img!,height: Dimens.d54,width: Dimens.d54,),
                                                     Dimens.d15.spaceHeight,
                                                     Text(
-                                                      journalList[index].title,
+                                                      journalList[index].title,maxLines: 1,overflow: TextOverflow.ellipsis,
                                                       style: Style
                                                           .nunRegular(),
                                                     )

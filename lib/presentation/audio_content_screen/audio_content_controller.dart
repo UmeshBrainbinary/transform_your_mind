@@ -115,7 +115,9 @@ class AudioContentController extends GetxController {
       debugPrint(e.toString());
     }
     update(['update']);
+    update();
   }
+
   Future<void> getRate() async {
     var headers = {
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'

@@ -103,12 +103,13 @@
   "forEach": "Für jede",
   "totalSessions": "Gesamtzahl der Sitzungen",
   "greatWork": "Grossartig!",
-  "empowerMindset": "Stärken Sie Ihre Denkweise!",
+  "empowerMindset": "Stärke dein Mindset",
   "motivationalQ": "Zitate",
   "gratitudeJournalQ": "Dankbarkeit",
   "positiveMomentsQ": "Achtsamkeit",
   "affirmationeQ": "Affirmationen",
   "breathingExerciseTitleQ": "Atemtechnik",
+  "whatAreGreatFull": "Wofür bist du heute dankbar?",
 
   "YouCompleted": "Du hast heute einen wichtigen Teil deiner\nReise abgeschlossen. Ein grossartiger Start",
 
@@ -266,7 +267,9 @@
   "affirmationAlarms": "Affirmationsalarme",
   "motivational": "Motivierend",
   "positiveMoments": "Positiv Momente",
+  "positiveMomentH": "Achtsamkeit",
   "transformAudios": "Audios transformieren",
+  "transformAudiosQ": "Audios",
 
   "addPositiveMoments": "Fügen Sie positive Momente hinzu",
   "imageRequired": "Das Bildfeld ist erforderlich.",
@@ -303,7 +306,7 @@
 
   "pleaseEnterTitle": "Das Titelfeld ist erforderlich.",
   "pleaseEnterDescription": "Das Feld Beschreibung ist erforderlich.",
-  "today'sAffirmation": "heute  Affirmationen",
+  "today'sAffirmation": "Heutige Affirmationen",
   "successfullyGratitude": "Fügen Sie Ihre Dankbarkeit erfolgreich hinzu",
   "affirmationSuccessfully": "Die Bestätigung wurde erfolgreich aktualisiert.",
   "editGratitude": "Bearbeiten Sie Dankbarkeit",

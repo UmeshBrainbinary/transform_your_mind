@@ -50,7 +50,6 @@ class _CommonElevatedButtonState extends State<CommonElevatedButton> {
         borderRadius: Dimens.d26.radiusAll,
         child: Container(
           height: widget.height ?? Dimens.d46,
-          width:  widget.width,
           padding: widget.contentPadding ??
               const EdgeInsets.symmetric(
                 horizontal: Dimens.d18,

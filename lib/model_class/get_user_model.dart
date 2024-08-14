@@ -36,10 +36,9 @@ class Data {
   List<String>? focuses;
   List<String>? affirmations;
   DateTime? dob;
-  List<dynamic>? bookmarkedPods;
+  List<String>? bookmarkedPods;
   List<String>? recentlyPlayedPods;
   bool? isSubscribed;
-  List<dynamic>? likedAffirmation;
   List<String>? likedMotivationalMessages;
   String? motivationalMessage;
   String? language;
@@ -51,12 +50,21 @@ class Data {
   bool? eveningStressQuestions;
   bool? eveningMotivationQuestions;
   dynamic createdBy;
-  List<dynamic>? ratedPods;
+  List<RatedPod>? ratedPods;
   DateTime? createdAt;
   DateTime? updatedAt;
   int? v;
   bool? myGratitude;
   bool? welcomeScreen;
+  List<PersonalAudio>? personalAudios;
+  int? rawPrice;
+  String? currencyCode;
+  DateTime? expiryDate;
+  String? price;
+  DateTime? subscriptionDate;
+  String? subscriptionDescription;
+  String? subscriptionId;
+  String? subscriptionTitle;
 
   Data({
     this.id,
@@ -73,7 +81,6 @@ class Data {
     this.bookmarkedPods,
     this.recentlyPlayedPods,
     this.isSubscribed,
-    this.likedAffirmation,
     this.likedMotivationalMessages,
     this.motivationalMessage,
     this.language,
@@ -91,6 +98,15 @@ class Data {
     this.v,
     this.myGratitude,
     this.welcomeScreen,
+    this.personalAudios,
+    this.rawPrice,
+    this.currencyCode,
+    this.expiryDate,
+    this.price,
+    this.subscriptionDate,
+    this.subscriptionDescription,
+    this.subscriptionId,
+    this.subscriptionTitle,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -105,10 +121,9 @@ class Data {
     focuses: json["focuses"] == null ? [] : List<String>.from(json["focuses"]!.map((x) => x)),
     affirmations: json["affirmations"] == null ? [] : List<String>.from(json["affirmations"]!.map((x) => x)),
     dob: json["dob"] == null ? null : DateTime.parse(json["dob"]),
-    bookmarkedPods: json["bookmarkedPods"] == null ? [] : List<dynamic>.from(json["bookmarkedPods"]!.map((x) => x)),
+    bookmarkedPods: json["bookmarkedPods"] == null ? [] : List<String>.from(json["bookmarkedPods"]!.map((x) => x)),
     recentlyPlayedPods: json["recentlyPlayedPods"] == null ? [] : List<String>.from(json["recentlyPlayedPods"]!.map((x) => x)),
     isSubscribed: json["isSubscribed"],
-    likedAffirmation: json["likedAffirmation"] == null ? [] : List<dynamic>.from(json["likedAffirmation"]!.map((x) => x)),
     likedMotivationalMessages: json["likedMotivationalMessages"] == null ? [] : List<String>.from(json["likedMotivationalMessages"]!.map((x) => x)),
     motivationalMessage: json["motivationalMessage"],
     language: json["language"],
@@ -120,12 +135,21 @@ class Data {
     eveningStressQuestions: json["eveningStressQuestions"],
     eveningMotivationQuestions: json["eveningMotivationQuestions"],
     createdBy: json["created_by"],
-    ratedPods: json["ratedPods"] == null ? [] : List<dynamic>.from(json["ratedPods"]!.map((x) => x)),
+    ratedPods: json["ratedPods"] == null ? [] : List<RatedPod>.from(json["ratedPods"]!.map((x) => RatedPod.fromJson(x))),
     createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
     updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
     v: json["__v"],
     myGratitude: json["myGratitude"],
     welcomeScreen: json["welcomeScreen"],
+    personalAudios: json["personalAudios"] == null ? [] : List<PersonalAudio>.from(json["personalAudios"]!.map((x) => PersonalAudio.fromJson(x))),
+    rawPrice: json["rawPrice"],
+    currencyCode: json["currencyCode"],
+    expiryDate: json["expiryDate"] == null ? null : DateTime.parse(json["expiryDate"]),
+    price: json["price"],
+    subscriptionDate: json["subscriptionDate"] == null ? null : DateTime.parse(json["subscriptionDate"]),
+    subscriptionDescription: json["subscriptionDescription"],
+    subscriptionId: json["subscriptionId"],
+    subscriptionTitle: json["subscriptionTitle"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -143,7 +167,6 @@ class Data {
     "bookmarkedPods": bookmarkedPods == null ? [] : List<dynamic>.from(bookmarkedPods!.map((x) => x)),
     "recentlyPlayedPods": recentlyPlayedPods == null ? [] : List<dynamic>.from(recentlyPlayedPods!.map((x) => x)),
     "isSubscribed": isSubscribed,
-    "likedAffirmation": likedAffirmation == null ? [] : List<dynamic>.from(likedAffirmation!.map((x) => x)),
     "likedMotivationalMessages": likedMotivationalMessages == null ? [] : List<dynamic>.from(likedMotivationalMessages!.map((x) => x)),
     "motivationalMessage": motivationalMessage,
     "language": language,
@@ -155,11 +178,92 @@ class Data {
     "eveningStressQuestions": eveningStressQuestions,
     "eveningMotivationQuestions": eveningMotivationQuestions,
     "created_by": createdBy,
-    "ratedPods": ratedPods == null ? [] : List<dynamic>.from(ratedPods!.map((x) => x)),
+    "ratedPods": ratedPods == null ? [] : List<dynamic>.from(ratedPods!.map((x) => x.toJson())),
     "createdAt": createdAt?.toIso8601String(),
     "updatedAt": updatedAt?.toIso8601String(),
     "__v": v,
     "myGratitude": myGratitude,
     "welcomeScreen": welcomeScreen,
+    "personalAudios": personalAudios == null ? [] : List<dynamic>.from(personalAudios!.map((x) => x.toJson())),
+    "rawPrice": rawPrice,
+    "currencyCode": currencyCode,
+    "expiryDate": expiryDate?.toIso8601String(),
+    "price": price,
+    "subscriptionDate": subscriptionDate?.toIso8601String(),
+    "subscriptionDescription": subscriptionDescription,
+    "subscriptionId": subscriptionId,
+    "subscriptionTitle": subscriptionTitle,
+  };
+}
+
+class PersonalAudio {
+  String? audioFile;
+  String? audioName;
+  String? description;
+  String? gAudioName;
+  String? gDescription;
+  String? image;
+  String? lang;
+  String? id;
+
+  PersonalAudio({
+    this.audioFile,
+    this.audioName,
+    this.description,
+    this.gAudioName,
+    this.gDescription,
+    this.image,
+    this.lang,
+    this.id,
+  });
+
+  factory PersonalAudio.fromJson(Map<String, dynamic> json) => PersonalAudio(
+    audioFile: json["audioFile"],
+    audioName: json["audioName"],
+    description: json["description"],
+    gAudioName: json["g_audioName"],
+    gDescription: json["g_description"],
+    image: json["image"],
+    lang: json["lang"],
+    id: json["_id"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "audioFile": audioFile,
+    "audioName": audioName,
+    "description": description,
+    "g_audioName": gAudioName,
+    "g_description": gDescription,
+    "image": image,
+    "lang": lang,
+    "_id": id,
+  };
+}
+
+class RatedPod {
+  String? podId;
+  String? note;
+  int? star;
+  String? id;
+
+  RatedPod({
+    this.podId,
+    this.note,
+    this.star,
+    this.id,
+  });
+
+  factory RatedPod.fromJson(Map<String, dynamic> json) => RatedPod(
+    podId: json["podId"],
+    note: json["note"],
+    star: json["star"],
+    id: json["_id"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "podId": podId,
+    "note": note,
+    "star": star,
+    "_id": id,
   };
 }

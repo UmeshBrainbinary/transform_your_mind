@@ -126,16 +126,16 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
     await getCategoryAffirmation();
   }
 
-  void _onAddClick(BuildContext context) {
+  void _onAddClick(BuildContext context,{bool? record}) {
     String subscriptionStatus = "SUBSCRIBED";
     if (!(subscriptionStatus == "SUBSCRIBED" ||
         subscriptionStatus == "SUBSCRIBED")) {
     } else {
       Navigator.push(context, MaterialPageRoute(
         builder: (context) {
-          return const AddAffirmationPage(
+          return  AddAffirmationPage(
             isFromMyAffirmation: true,
-            isEdit: false,
+            isEdit: false,record: record!,
           );
         },
       )).then(
@@ -414,7 +414,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
       affirmationDataModel = affirmationDataModelFromJson(responseBody);
       _filteredBookmarks = affirmationDataModel.data;
 
-      setState(() {});
+
     } else {
       setState(() {
         loader = false;
@@ -569,7 +569,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                 padding: const EdgeInsets.only(right: Dimens.d20),
                 child: GestureDetector(
                   onTap: () {
-                    _onAddClick(context);
+                    _onAddClick(context,record: false);
                   },
                   child: SvgPicture.asset(
                     ImageConstant.addTools,
@@ -729,8 +729,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
 
             if ((affirmationModel.data ?? []).isNotEmpty)
               Dimens.d20.spaceHeight,
-            (affirmationModel.data ?? []).isEmpty
-                ? loader == true
+            if ((affirmationModel.data ?? []).isEmpty) loader == true
                     ? Padding(
                         padding: const EdgeInsets.only(top: 10),
                         child: shimmerCommon(),
@@ -744,8 +743,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                 fontSize: 24, fontWeight: FontWeight.w700),
                           ),
                         ),
-                  )
-                : ListView.builder(
+                  ) else ListView.builder(
                     itemCount: affirmationModel.data?.length ?? 0,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -771,167 +769,177 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                 : ColorConstant.white,
                             borderRadius: Dimens.d16.radiusAll,
                           ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          child: Stack(alignment: Alignment.bottomRight,
                             children: [
-                              Expanded(
-                                child: Text(
-                                  affirmationModel.data![index].description
-                                      .toString(),
-                                  overflow: TextOverflow.ellipsis,
-                                  style: Style.nunRegular(
-                                      height: Dimens.d2,
-                                      fontSize: Dimens.d15,
-                                      color: themeController.isDarkMode.isTrue
-                                          ? ColorConstant.white
-                                          : Colors.black),
-                                  maxLines: 2,
-                                ),
-                              ),
-                              Align(
-                                alignment: Alignment.topRight,
-                                child: PopupMenuButton(
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(10.0),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      affirmationModel.data![index].description
+                                          .toString(),
+                                      overflow: TextOverflow.ellipsis,
+                                      style: Style.nunRegular(
+                                          height: Dimens.d2,
+                                          fontSize: Dimens.d15,
+                                          color: themeController.isDarkMode.isTrue
+                                              ? ColorConstant.white
+                                              : Colors.black),
+                                      maxLines: 2,
                                     ),
                                   ),
-                                  color: themeController.isDarkMode.isTrue
-                                      ? const Color(0xffE8F4F8)
-                                      : ColorConstant.white,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: SvgPicture.asset(
-                                      ImageConstant.moreVert,
-                                      color: ColorConstant.colorD9D9D9,
-                                    ),
-                                  ),
-                                  itemBuilder: (context) {
-                                    return [
-                                      PopupMenuItem(
-                                        child: Column(
-                                          children: [
-                                            InkWell(
-                                              onTap: () {
-                                                Get.back();
-                                                Navigator.push(context,
-                                                    MaterialPageRoute(
-                                                  builder: (context) {
-                                                    return AddAffirmationPage(
-                                                      index: index,
-                                                      id: affirmationModel
-                                                              .data?[index]
-                                                              .id ??
-                                                          "",
-                                                      isFromMyAffirmation: true,
-                                                      title: affirmationModel
-                                                              .data?[index]
-                                                              .name ??
-                                                          "",
-                                                      isEdit: true,
-                                                      des: affirmationModel
-                                                              .data?[index]
-                                                              .description ??
-                                                          "",
-                                                    );
-                                                  },
-                                                )).then(
-                                                  (value) async {
-                                                    await getAffirmationYour(
-                                                        DateFormat('dd/MM/yyyy')
-                                                            .format(DateTime
-                                                                .now()));
-
-                                                    setState(() {});
-                                                  },
-                                                );
-                                              },
-                                              child: Container(
-                                                height: 28,
-                                                width: 86,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(5),
-                                                  color: ColorConstant
-                                                      .color5B93FF
-                                                      .withOpacity(0.05),
-                                                ),
-                                                child: Row(
-                                                  children: [
-                                                    Dimens.d5.spaceWidth,
-                                                    SvgPicture.asset(
-                                                      ImageConstant.editTools,
-                                                      color: ColorConstant
-                                                          .color5B93FF,
-                                                    ),
-                                                    Dimens.d5.spaceWidth,
-                                                    Text(
-                                                      'edit'.tr,
-                                                      style: Style.nunMedium(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        color: ColorConstant
-                                                            .color5B93FF,
-                                                      ),
-                                                    ),
-                                                    const Spacer(),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            Dimens.d15.spaceHeight,
-                                            InkWell(
-                                              onTap: () {
-                                                Get.back();
-                                                _showAlertDialogDelete(
-                                                    context,
-                                                    index,
-                                                    affirmationModel
-                                                            .data?[index].id ??
-                                                        "");
-                                              },
-                                              child: Container(
-                                                height: 28,
-                                                width: 86,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(5),
-                                                  color: ColorConstant
-                                                      .colorE71D36
-                                                      .withOpacity(0.05),
-                                                ),
-                                                child: Row(
-                                                  children: [
-                                                    Dimens.d5.spaceWidth,
-                                                    SvgPicture.asset(
-                                                      ImageConstant.delete,
-                                                      color: ColorConstant
-                                                          .colorE71D36,
-                                                    ),
-                                                    Dimens.d5.spaceWidth,
-                                                    Text(
-                                                      'delete'.tr,
-                                                      style: Style.nunMedium(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        color: ColorConstant
-                                                            .colorE71D36,
-                                                      ),
-                                                    ),
-                                                    const Spacer(),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ],
+                                  Align(
+                                    alignment: Alignment.topRight,
+                                    child: PopupMenuButton(
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10.0),
                                         ),
                                       ),
-                                    ];
-                                  },
-                                ),
+                                      color: themeController.isDarkMode.isTrue
+                                          ? const Color(0xffE8F4F8)
+                                          : ColorConstant.white,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: SvgPicture.asset(
+                                          ImageConstant.moreVert,
+                                          color: ColorConstant.colorD9D9D9,
+                                        ),
+                                      ),
+                                      itemBuilder: (context) {
+                                        return [
+                                          PopupMenuItem(
+                                            child: Column(
+                                              children: [
+                                                InkWell(
+                                                  onTap: () {
+                                                    Get.back();
+                                                    Navigator.push(context,
+                                                        MaterialPageRoute(
+                                                      builder: (context) {
+                                                        return AddAffirmationPage(
+                                                          index: index,
+                                                          id: affirmationModel
+                                                                  .data?[index]
+                                                                  .id ??
+                                                              "",
+                                                          isFromMyAffirmation: true,
+                                                          title: affirmationModel
+                                                                  .data?[index]
+                                                                  .name ??
+                                                              "",
+                                                          isEdit: true,
+                                                          des: affirmationModel
+                                                                  .data?[index]
+                                                                  .description ??
+                                                              "",
+                                                        );
+                                                      },
+                                                    )).then(
+                                                      (value) async {
+                                                        await getAffirmationYour(
+                                                            DateFormat('dd/MM/yyyy')
+                                                                .format(DateTime
+                                                                    .now()));
+
+                                                        setState(() {});
+                                                      },
+                                                    );
+                                                  },
+                                                  child: Container(
+                                                    height: 28,
+                                                    width: 86,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(5),
+                                                      color: ColorConstant
+                                                          .color5B93FF
+                                                          .withOpacity(0.05),
+                                                    ),
+                                                    child: Row(
+                                                      children: [
+                                                        Dimens.d5.spaceWidth,
+                                                        SvgPicture.asset(
+                                                          ImageConstant.editTools,
+                                                          color: ColorConstant
+                                                              .color5B93FF,
+                                                        ),
+                                                        Dimens.d5.spaceWidth,
+                                                        Text(
+                                                          'edit'.tr,
+                                                          style: Style.nunMedium(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color: ColorConstant
+                                                                .color5B93FF,
+                                                          ),
+                                                        ),
+                                                        const Spacer(),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                Dimens.d15.spaceHeight,
+                                                InkWell(
+                                                  onTap: () {
+                                                    Get.back();
+                                                    _showAlertDialogDelete(
+                                                        context,
+                                                        index,
+                                                        affirmationModel
+                                                                .data?[index].id ??
+                                                            "");
+                                                  },
+                                                  child: Container(
+                                                    height: 28,
+                                                    width: 86,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(5),
+                                                      color: ColorConstant
+                                                          .colorE71D36
+                                                          .withOpacity(0.05),
+                                                    ),
+                                                    child: Row(
+                                                      children: [
+                                                        Dimens.d5.spaceWidth,
+                                                        SvgPicture.asset(
+                                                          ImageConstant.delete,
+                                                          color: ColorConstant
+                                                              .colorE71D36,
+                                                        ),
+                                                        Dimens.d5.spaceWidth,
+                                                        Text(
+                                                          'delete'.tr,
+                                                          style: Style.nunMedium(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color: ColorConstant
+                                                                .colorE71D36,
+                                                          ),
+                                                        ),
+                                                        const Spacer(),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ];
+                                      },
+                                    ),
+                                  ),
+                                ],
                               ),
+                              GestureDetector(onTap: () {
+                                _onAddClick(context,record: true);
+
+                              },
+                                  child: const Icon(Icons.emergency_recording,color: Colors.black,))
+
                             ],
                           ),
 

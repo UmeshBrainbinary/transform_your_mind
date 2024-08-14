@@ -269,7 +269,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                     Dimens.d20.spaceHeight,
                     Container(
                       height: Dimens.d54,
-                      padding: EdgeInsets.only(left: 20),
+                      padding: const EdgeInsets.only(left: 20),
                       width: 315,
                       decoration: BoxDecoration(
                           color: themeController.isDarkMode.isTrue

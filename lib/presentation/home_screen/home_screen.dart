@@ -4,9 +4,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:transform_your_mind/core/common_widget/common_text_button.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/http_service.dart';
@@ -150,6 +152,8 @@ class _HomeScreenState extends State<HomeScreen>
 
   void _setGreetingBasedOnTime() {
     greeting = _getGreetingBasedOnTime();
+    greeting.toUpperCase().camelCase;
+
     setState(() {});
   }
 
@@ -246,7 +250,7 @@ class _HomeScreenState extends State<HomeScreen>
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: Dimens.d20),
                                 child: Text(
-                                    "${greeting.tr}, ${PrefService.getString(PrefKey.name).toString()}",
+                                    "${greeting.tr}, ${capitalizeFirstLetter(PrefService.getString(PrefKey.name).toString())}",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         color: themeController.isDarkMode.isTrue
@@ -285,7 +289,7 @@ class _HomeScreenState extends State<HomeScreen>
                                   horizontal: Dimens.d20),
                               child: Row(children: [
                                 Text(
-                                  "positiveMoments".tr,
+                                  "positiveMomentH".tr,
                                   textAlign: TextAlign.center,
                                   style: Style.nunitoBold(fontSize: Dimens.d22),
                                 ),
@@ -403,7 +407,7 @@ class _HomeScreenState extends State<HomeScreen>
                                   return GestureDetector(
                                     onTap: () {
                                       if (g.quickAccessList[index]["title"] ==
-                                          "motivational") {
+                                          "motivationalQ") {
                                         Get.to(() => const MotivationScreen())!
                                             .then((value) async {
                                           MotivationalController moti = Get.find<MotivationalController>();
@@ -413,7 +417,7 @@ class _HomeScreenState extends State<HomeScreen>
                                         });
                                       } else if (g.quickAccessList[index]
                                               ["title"] ==
-                                          "transformAudios") {
+                                          "transformAudiosQ") {
                                         Navigator.push(context,
                                             MaterialPageRoute(
                                           builder: (context) {
@@ -426,7 +430,7 @@ class _HomeScreenState extends State<HomeScreen>
                                         );
                                       } else if (g.quickAccessList[index]
                                               ["title"] ==
-                                          "gratitudeJournal") {
+                                          "gratitudeJournalQ") {
                                         Navigator.pushNamed(context,
                                                 AppRoutes.myGratitudePage)
                                             .then((value) {
@@ -434,7 +438,7 @@ class _HomeScreenState extends State<HomeScreen>
                                         });
                                       } else if (g.quickAccessList[index]
                                               ["title"] ==
-                                          "positiveMoments") {
+                                          "positiveMomentsQ") {
                                         Navigator.push(context,
                                             MaterialPageRoute(
                                           builder: (context) {
@@ -447,7 +451,7 @@ class _HomeScreenState extends State<HomeScreen>
                                         );
                                       } else if (g.quickAccessList[index]
                                               ["title"] ==
-                                          "affirmation") {
+                                          "affirmationeQ") {
                                         Navigator.push(context,
                                             MaterialPageRoute(
                                           builder: (context) {
@@ -702,7 +706,7 @@ class _HomeScreenState extends State<HomeScreen>
               alignment: Alignment.center,
               children: [
                 Image.asset(
-                  ImageConstant.container,
+                  ImageConstant.gratitudeContainer,
                   height: 150,
                   width: Get.width,
                   fit: BoxFit.cover,
@@ -1312,7 +1316,7 @@ class _HomeScreenState extends State<HomeScreen>
             child: (gratitudeModel.data ?? []).isEmpty
                 ? CommonElevatedButton(
                     height: Dimens.d46,
-                    title: "addTodayGratitude".tr,
+                    title: "whatAreGreatFull".tr,
                     textStyle: Style.nunRegular(
                         fontSize: currentLanguage=="en-US"?Dimens.d17:Dimens.d15, color: ColorConstant.white),
                     onTap: () {

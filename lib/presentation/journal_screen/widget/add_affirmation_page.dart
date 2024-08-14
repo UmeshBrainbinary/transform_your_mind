@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
+import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:record/record.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
@@ -33,7 +36,7 @@ import '../../../core/utils/prefKeys.dart';
 class AddAffirmationPage extends StatefulWidget {
   final bool isFromMyAffirmation;
   final bool? isEdit;
-  final bool? isSaved;
+  final bool? isSaved, record;
   final int? index;
   final String? title, des,id;
 
@@ -45,6 +48,7 @@ class AddAffirmationPage extends StatefulWidget {
       this.isEdit,
       this.index,
       this.id,
+      this.record = false,
       super.key});
 
   @override
@@ -68,6 +72,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
   File? selectedImage;
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool loader = false;
+  bool recordFile = false;
 
   @override
   void initState() {
@@ -83,6 +88,39 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
     }
 
     super.initState();
+  }
+
+  String? _recordFilePath;
+  bool _isRecording = false;
+  final record = AudioRecorder();
+
+  Future<void> _startRecording() async {
+    if (await Permission.microphone.request().isGranted) {
+      final directory = await getApplicationDocumentsDirectory();
+      final fileName = '${DateTime.now().millisecondsSinceEpoch}';
+      _recordFilePath = '${directory.path}/$fileName';
+
+      await record.start(const RecordConfig(), path: _recordFilePath!);
+      setState(() => _isRecording = true);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Microphone permission is required for recording.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> _stopRecording() async {
+    if (_isRecording) {
+      _stopListening();
+
+      await record.stop();
+      setState(() => _isRecording = false);
+
+      debugPrint('Recording saved to: $_recordFilePath');
+    }
   }
 
   Future<void> _requestMicrophonePermission() async {
@@ -189,7 +227,10 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
   }
 
   //________________________________ speech to text _________________
+  final AudioPlayer audioPlayerVoices = AudioPlayer();
+
   bool _isPressed = false;
+  bool play = false;
   bool _isListening = false;
   stt.SpeechToText? _speech;
 
@@ -268,15 +309,16 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Expanded(
-                      child: CustomScrollViewWidget(
+                    !widget.record!
+                        ? Expanded(
+                            child: CustomScrollViewWidget(
                         child: LayoutContainer(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Dimens.d20.spaceHeight,
-                              Stack(
-                                children: [
+                                    Stack(
+                                      children: [
                                   Stack(alignment: Alignment.topRight,
                                     children: [
                                       CommonTextField(addSuffix: true,
@@ -460,8 +502,131 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                           ),
                         ),
                       ),
-                    ),
+                          )
+                        : const SizedBox(),
                     Dimens.d10.spaceHeight,
+                    widget.record!
+                        ? Column(
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          _startRecording();
+                                          recordFile = true;
+                                        });
+                                      },
+                                      child: Icon(
+                                        Icons.emergency_recording,
+                                        color: recordFile
+                                            ? Colors.grey
+                                            : Colors.red,
+                                      )),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          _stopRecording();
+
+                                          recordFile = false;
+                                        });
+                                      },
+                                      child: Icon(
+                                        Icons.stop,
+                                        color: recordFile
+                                            ? Colors.black
+                                            : Colors.grey,
+                                      )),
+                                ],
+                              ),
+                              Dimens.d50.spaceHeight,
+                              _recordFilePath!=null?Row(
+                                children: [
+                                  !widget.isEdit!
+                                      ? const SizedBox()
+                                      : Expanded(
+                                          child: CommonElevatedButton(
+                                            title: "cancel".tr,
+                                            outLined: true,
+                                            textStyle: Style.nunRegular(
+                                                color: themeController
+                                                        .isDarkMode.isTrue
+                                                    ? Colors.white
+                                                    : ColorConstant.black),
+                                            onTap: () {
+                                              setState(() {});
+                                              Get.back();
+                                            },
+                                          ),
+                                        ),
+                                  Dimens.d20.spaceWidth,
+                                  Expanded(
+                                    child: CommonElevatedButton(
+                                      textStyle: Style.nunRegular(
+                                          fontSize: widget.isEdit!
+                                              ? Dimens.d14
+                                              : Dimens.d20,
+                                          color: ColorConstant.white),
+                                      title: widget.isEdit!
+                                          ? "update".tr
+                                          : "save".tr,
+                                      onTap: () async {
+                                        titleFocus.unfocus();
+                                        descFocus.unfocus();
+                                        if (_formKey.currentState!.validate()) {
+                                          if (widget.isEdit!) {
+                                            if (await isConnected()) {
+                                              updateAffirmation();
+                                            } else {
+                                              showSnackBarError(
+                                                  context, "noInternet".tr);
+                                            }
+                                          } else {
+                                            if (await isConnected()) {
+                                              PrefService.setValue(
+                                                  PrefKey
+                                                      .firstTimeUserAffirmation,
+                                                  true);
+
+                                              addAffirmation();
+                                            } else {
+                                              showSnackBarError(
+                                                  context, "noInternet".tr);
+                                            }
+                                          }
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ):const SizedBox(),
+                              Dimens.d50.spaceHeight,
+
+                              _recordFilePath!=null?GestureDetector(onTap: () async {
+                                if (audioPlayerVoices.playing) {
+                                  play = false;
+
+                                  audioPlayerVoices.pause();
+                                } else {
+                                  await audioPlayerVoices.setFilePath(_recordFilePath!);
+                                  audioPlayerVoices.play();
+                                  play = true;
+
+                                }
+
+                                setState(() {
+
+                                });
+                              },child:  Icon(play?Icons.pause:Icons.play_arrow,color: Colors.black,)):const SizedBox()
+                            ],
+                          )
+                        : const SizedBox(),
+                    Dimens.d50.spaceHeight,
                   ],
                 ),
               );

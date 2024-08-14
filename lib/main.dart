@@ -24,12 +24,17 @@ import 'core/utils/initial_bindings.dart';
 import 'core/utils/logger.dart';
 
 import 'presentation/subscription_screen/store_config.dart' as config;
-
+bool? isSubscribed = false;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AppTranslations.loadTranslations();
 
   tz.initializeTimeZones();
+
+  var detroit = tz.getLocation('Asia/Kolkata');
+  tz.setLocalLocation(detroit);
+
+  await PrefService.init();
   if (Platform.isIOS) {
     await Firebase.initializeApp();
   } else {
@@ -40,10 +45,6 @@ Future<void> main() async {
             messagingSenderId: "163422335038",
             projectId: 'transform-your-mind-afbb7'));
   }
-  var detroit = tz.getLocation('Asia/Kolkata');
-  tz.setLocalLocation(detroit);
-
-  await PrefService.init();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]).then((value) {
