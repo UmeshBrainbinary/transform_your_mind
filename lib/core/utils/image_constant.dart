@@ -6,6 +6,11 @@ class ImageConstant {
 
   /// audio
   static String audioPath = 'assets/audio/audio.mp3';
+  static String audioPath1 = 'assets/audio/1.mp3';
+  static String audioPath2 = 'assets/audio/2.mp3';
+  static String audioPath3 = 'assets/audio/3.mp3';
+  static String audioPath4 = 'assets/audio/4.mp3';
+  static String audioPath5 = 'assets/audio/5.mp3';
 
   static String iconDashboardPath = '$iconPath/dashboard';
   static String iconExplorePath = '$iconPath/explore';

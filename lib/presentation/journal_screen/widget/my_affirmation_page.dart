@@ -29,6 +29,7 @@ import 'package:transform_your_mind/model_class/common_model.dart';
 import 'package:transform_your_mind/presentation/home_screen/home_message_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/journal_controller.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_affirmation_page.dart';
+import 'package:transform_your_mind/presentation/start_audio_affirmation/start_audio_affirmation_screen.dart';
 import 'package:transform_your_mind/presentation/start_pratice_affirmation/start_pratice_affirmation.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
@@ -126,7 +127,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
     await getCategoryAffirmation();
   }
 
-  void _onAddClick(BuildContext context,{bool? record}) {
+  void _onAddClick(BuildContext context,{bool? record, String? des,String? id}) {
     String subscriptionStatus = "SUBSCRIBED";
     if (!(subscriptionStatus == "SUBSCRIBED" ||
         subscriptionStatus == "SUBSCRIBED")) {
@@ -136,6 +137,8 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
           return  AddAffirmationPage(
             isFromMyAffirmation: true,
             isEdit: false,record: record!,
+            des: des,
+              id: id,
           );
         },
       )).then(
@@ -186,9 +189,13 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
     };
     var request = http.Request(
         'GET',
+        // Uri.parse(
+        //     '${EndPoints.baseUrl}${EndPoints.getYourAffirmation}${PrefService.getString(PrefKey.userId)}&isDefault=false&date=$date&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}'));
+
         Uri.parse(
-            '${EndPoints.baseUrl}${EndPoints.getYourAffirmation}${PrefService.getString(PrefKey.userId)}&isDefault=false&date=$date&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}'));
-    request.headers.addAll(headers);
+            '${EndPoints.baseUrl}${EndPoints.getYourAffirmation}${PrefService.getString(PrefKey.userId)}&date=$date&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}'));
+
+        request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
 
@@ -569,7 +576,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                 padding: const EdgeInsets.only(right: Dimens.d20),
                 child: GestureDetector(
                   onTap: () {
-                    _onAddClick(context,record: false);
+                    _onAddClick(context,record: false,);
                   },
                   child: SvgPicture.asset(
                     ImageConstant.addTools,
@@ -935,10 +942,14 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                 ],
                               ),
                               GestureDetector(onTap: () {
-                                _onAddClick(context,record: true);
+                                _onAddClick(context,record: true,des:  affirmationModel.data![index].description
+                                    .toString(),id: affirmationModel
+                                    .data?[index]
+                                    .id ??
+                                    "");
 
                               },
-                                  child: const Icon(Icons.emergency_recording,color: Colors.black,))
+                                  child: const Icon(Icons.mic_none_rounded,color: Colors.red,))
 
                             ],
                           ),
@@ -1346,6 +1357,12 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
             (affirmationModel.data ?? []).isNotEmpty
                 ? GestureDetector(
                     onTap: () {
+                      affirmationModel.data?[0].audioFile != null?
+                          Get.off(StartAudioAffirmationScreen(
+                            id: affirmationModel.data?[0].id,
+                            data: affirmationModel.data,
+                          ))
+                          :
                       Get.off(StartPracticeAffirmation(
                         id: affirmationModel.data?[0].id,
                         data: affirmationModel.data,

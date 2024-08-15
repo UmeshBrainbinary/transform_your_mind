@@ -626,7 +626,9 @@
   "pleaseAddPositiveMoment": "Please add your positive moments",
   "youCanNotSet": "Sie können das aktuelle Passwort nicht als neues Passwort festlegen.",
 
-  "StartWithExercise": "Also, lass uns mit einer kleinen Übung beginnen: Atme - dann genieße deine tägliche Routine, um dein bestes Leben zu führen"
-
+  "StartWithExercise": "Also, lass uns mit einer kleinen Übung beginnen: Atme - dann genieße deine tägliche Routine, um dein bestes Leben zu führen",
+  "Record": "Aufzeichnen",
+  "Stop": "Kurz",
+  "Test recording": "Testaufnahme"
 
 }

@@ -143,7 +143,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               'price': "",
               'rawPrice': "",
               'currencyCode': "",
-              'subscriptionDate': "",
+              'subscriptionDate': DateTime.now().toString(),
               'expiryDate': "",
             });
 

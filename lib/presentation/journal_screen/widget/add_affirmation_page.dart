@@ -153,12 +153,14 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
     request.fields.addAll({
       'created_by':PrefService.getString(PrefKey.userId),
       'description': descController.text.trim(),
+
       'lang': PrefService.getString(PrefKey.language).isEmpty
           ? "english"
           : PrefService.getString(PrefKey.language) != "en-US"
               ? "german"
               : "english"
     });
+
 
     request.headers.addAll(headers);
 
@@ -195,12 +197,16 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
     request.fields.addAll({
       "description": descController.text,
       "created_by": PrefService.getString(PrefKey.userId),
+      "isDefault":_recordFilePath != null && _recordFilePath !=''?true.toString():false.toString(),
       'lang': PrefService.getString(PrefKey.language).isEmpty
           ? "english"
           : PrefService.getString(PrefKey.language) != "en-US"
               ? "german"
               : "english"
     });
+    if(_recordFilePath != null && _recordFilePath !=''){
+      request.files.add(await http.MultipartFile.fromPath('audioFile',_recordFilePath! ));
+    }
 
     request.headers.addAll(headers);
 
@@ -275,7 +281,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
           ? ColorConstant.darkBackground
           : ColorConstant.backGround,
       appBar: CustomAppBar(
-        title: widget.isEdit! ? "editAffirmation".tr : "addAffirmation".tr,
+        title: widget.isEdit! ? "editAffirmation".tr : widget.isFromMyAffirmation? "Record Affirmation":"addAffirmation".tr,
         action: !(widget.isFromMyAffirmation)
             ? Row(children: [
                 GestureDetector(onTap: () {}, child: Text("skip".tr)),
@@ -305,7 +311,171 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
             builder: (context, constraints) {
               return Form(
                 key: _formKey,
-                child: Column(
+                child:
+                widget.record!
+                    ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+
+                  children: [
+
+
+                    Row(
+                      mainAxisAlignment:MainAxisAlignment.center,
+                      children: [
+                        Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                if(recordFile) {
+                                  setState(() {
+                                    _stopRecording();
+
+                                    recordFile = false;
+                                  });
+                                }
+                                else
+                                  {
+                                    setState(() {
+                                      _startRecording();
+                                      recordFile = true;
+                                    });
+                                  }
+                              },
+                              child: Container(
+                                height: 68,
+                                width: 68,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: ColorConstant.themeColor
+                                ),
+                                alignment: Alignment.center,
+                                child:  Icon(recordFile ?Icons.stop_circle_outlined:Icons.mic_rounded,color: Colors.white,size: 35,),
+                              ),
+                            ),
+
+                            Dimens.d10.spaceHeight,
+                            Text(recordFile ?"Stop".tr:"Record".tr,style: Style.nunRegular(
+                                fontSize: Dimens.d14,
+
+                                color: ColorConstant.black),),
+                          ],
+                        ),
+                        _recordFilePath!=null &&!recordFile?const SizedBox(width: 50,):const SizedBox(),
+                        _recordFilePath!=null && !recordFile? Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () async {
+                                if (audioPlayerVoices.playing) {
+                                  play = false;
+
+                                  audioPlayerVoices.pause();
+                                } else {
+                                  await audioPlayerVoices.setFilePath(_recordFilePath!);
+                                  audioPlayerVoices.play();
+                                  play = true;
+
+                                }
+
+                                setState(() {
+
+                                });
+                              },
+                              child: Container(
+                                height: 68,
+                                width: 68,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: ColorConstant.themeColor
+                                ),
+                                alignment: Alignment.center,
+                                child:  Icon(play?Icons.pause:Icons.play_arrow,color: Colors.white,size: 35,),
+                              ),
+                            ),
+
+                            Dimens.d10.spaceHeight,
+                            Text("Test recording".tr,style: Style.nunRegular(
+                                fontSize: Dimens.d14,
+                                color: ColorConstant.black),),
+                          ],
+                        ):const SizedBox(),
+                      ],
+                    ),
+                    Dimens.d50.spaceHeight,
+                    _recordFilePath!=null?Row(
+                      children: [
+                        !widget.isEdit!
+                            ? const SizedBox()
+                            : Expanded(
+                          child: CommonElevatedButton(
+                            title: "cancel".tr,
+                            outLined: true,
+                            textStyle: Style.nunRegular(
+                                color: themeController
+                                    .isDarkMode.isTrue
+                                    ? Colors.white
+                                    : ColorConstant.black),
+                            onTap: () {
+                              setState(() {});
+                              Get.back();
+                            },
+                          ),
+                        ),
+                        Dimens.d20.spaceWidth,
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 20.0),
+                            child: CommonElevatedButton(
+                              textStyle: Style.nunRegular(
+                                  fontSize: widget.isEdit!
+                                      ? Dimens.d14
+                                      : Dimens.d20,
+                                  color: ColorConstant.white),
+                              title: widget.isEdit!
+                                  ? "update".tr
+                                  : "save".tr,
+                              onTap: () async {
+                                titleFocus.unfocus();
+                                descFocus.unfocus();
+                                if (_formKey.currentState!.validate()) {
+                                  if (widget.isEdit!) {
+                                    if (await isConnected()) {
+                                      updateAffirmation();
+                                    } else {
+                                      showSnackBarError(
+                                          context, "noInternet".tr);
+                                    }
+                                  } else {
+                                    if (await isConnected()) {
+                                      PrefService.setValue(
+                                          PrefKey
+                                              .firstTimeUserAffirmation,
+                                          true);
+
+                                      if(widget.isFromMyAffirmation)
+                                        {
+                                          updateAffirmation();
+                                        }
+                                      else
+                                        {
+                                      addAffirmation();
+
+                                        }
+                                    } else {
+                                      showSnackBarError(
+                                          context, "noInternet".tr);
+                                    }
+                                  }
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ):const SizedBox(),
+
+                  ],
+                )
+                    : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -505,127 +675,6 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                           )
                         : const SizedBox(),
                     Dimens.d10.spaceHeight,
-                    widget.record!
-                        ? Column(
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          _startRecording();
-                                          recordFile = true;
-                                        });
-                                      },
-                                      child: Icon(
-                                        Icons.emergency_recording,
-                                        color: recordFile
-                                            ? Colors.grey
-                                            : Colors.red,
-                                      )),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          _stopRecording();
-
-                                          recordFile = false;
-                                        });
-                                      },
-                                      child: Icon(
-                                        Icons.stop,
-                                        color: recordFile
-                                            ? Colors.black
-                                            : Colors.grey,
-                                      )),
-                                ],
-                              ),
-                              Dimens.d50.spaceHeight,
-                              _recordFilePath!=null?Row(
-                                children: [
-                                  !widget.isEdit!
-                                      ? const SizedBox()
-                                      : Expanded(
-                                          child: CommonElevatedButton(
-                                            title: "cancel".tr,
-                                            outLined: true,
-                                            textStyle: Style.nunRegular(
-                                                color: themeController
-                                                        .isDarkMode.isTrue
-                                                    ? Colors.white
-                                                    : ColorConstant.black),
-                                            onTap: () {
-                                              setState(() {});
-                                              Get.back();
-                                            },
-                                          ),
-                                        ),
-                                  Dimens.d20.spaceWidth,
-                                  Expanded(
-                                    child: CommonElevatedButton(
-                                      textStyle: Style.nunRegular(
-                                          fontSize: widget.isEdit!
-                                              ? Dimens.d14
-                                              : Dimens.d20,
-                                          color: ColorConstant.white),
-                                      title: widget.isEdit!
-                                          ? "update".tr
-                                          : "save".tr,
-                                      onTap: () async {
-                                        titleFocus.unfocus();
-                                        descFocus.unfocus();
-                                        if (_formKey.currentState!.validate()) {
-                                          if (widget.isEdit!) {
-                                            if (await isConnected()) {
-                                              updateAffirmation();
-                                            } else {
-                                              showSnackBarError(
-                                                  context, "noInternet".tr);
-                                            }
-                                          } else {
-                                            if (await isConnected()) {
-                                              PrefService.setValue(
-                                                  PrefKey
-                                                      .firstTimeUserAffirmation,
-                                                  true);
-
-                                              addAffirmation();
-                                            } else {
-                                              showSnackBarError(
-                                                  context, "noInternet".tr);
-                                            }
-                                          }
-                                        }
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ):const SizedBox(),
-                              Dimens.d50.spaceHeight,
-
-                              _recordFilePath!=null?GestureDetector(onTap: () async {
-                                if (audioPlayerVoices.playing) {
-                                  play = false;
-
-                                  audioPlayerVoices.pause();
-                                } else {
-                                  await audioPlayerVoices.setFilePath(_recordFilePath!);
-                                  audioPlayerVoices.play();
-                                  play = true;
-
-                                }
-
-                                setState(() {
-
-                                });
-                              },child:  Icon(play?Icons.pause:Icons.play_arrow,color: Colors.black,)):const SizedBox()
-                            ],
-                          )
-                        : const SizedBox(),
                     Dimens.d50.spaceHeight,
                   ],
                 ),

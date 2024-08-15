@@ -623,7 +623,8 @@
     "selfHypnotic": "Self hypnotic",
     "youCanNotSet": "You cannot set the current password as the new password.",
     "pleaseAddPositiveMoment": "Please add your positive moments",
-  "StartWithExercise": "So, let`s start with a little exercise: Breath - then enjoy your daily routine to transform to your best life"
-
-
+  "StartWithExercise": "So, let`s start with a little exercise: Breath - then enjoy your daily routine to transform to your best life",
+"Record": "Record",
+  "Stop": "Stop",
+  "Test recording": "Test recording"
 }
