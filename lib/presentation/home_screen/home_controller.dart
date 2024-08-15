@@ -285,7 +285,7 @@ class HomeController extends GetxController {
     debugPrint("getPersonalDataModel get personal data $getPersonalDataModel");
     update(["home"]);
   }
-
+bool isAudio = false;
   getTodayAffirmation() async {
     affirmationCheckList = [];
     update(["home"]);
@@ -312,6 +312,16 @@ class HomeController extends GetxController {
           (index) => affirmationCheckList.add(false),
         );
       }
+
+      todayAList!.forEach((e){
+        if(e.audioFile != null)
+          {
+            isAudio =true;
+
+          }
+      });
+
+
 
       update(["home"]);
     } else {

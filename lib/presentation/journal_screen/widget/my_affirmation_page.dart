@@ -818,12 +818,26 @@ bool isAudio = false;
                                       color: themeController.isDarkMode.isTrue
                                           ? const Color(0xffE8F4F8)
                                           : ColorConstant.white,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: SvgPicture.asset(
-                                          ImageConstant.moreVert,
-                                          color: ColorConstant.colorD9D9D9,
-                                        ),
+                                      child: Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: SvgPicture.asset(
+                                              ImageConstant.moreVert,
+                                              color: ColorConstant.colorD9D9D9,
+                                            ),
+                                          ),
+
+                                          affirmationModel.data?[index].audioFile == null?   GestureDetector(onTap: () {
+                                            _onAddClick(context,record: true,des:  affirmationModel.data![index].description
+                                                .toString(),id: affirmationModel
+                                                .data?[index]
+                                                .id ??
+                                                "");
+
+                                          },
+                                              child: const Icon(Icons.mic_none_rounded,color: Colors.red,)):const SizedBox()
+                                        ],
                                       ),
                                       itemBuilder: (context) {
                                         return [
@@ -953,15 +967,7 @@ bool isAudio = false;
                                   ),
                                 ],
                               ),
-                              GestureDetector(onTap: () {
-                                _onAddClick(context,record: true,des:  affirmationModel.data![index].description
-                                    .toString(),id: affirmationModel
-                                    .data?[index]
-                                    .id ??
-                                    "");
 
-                              },
-                                  child: const Icon(Icons.mic_none_rounded,color: Colors.red,))
 
                             ],
                           ),
@@ -1399,7 +1405,7 @@ bool isAudio = false;
                                            data: affirmationModel.data,
                                          ));
                              },
-                             child: const Icon(Icons.keyboard_voice_rounded,size: 30,)):const SizedBox(),
+                             child: const Icon(Icons.keyboard_voice_rounded,size: 30,color:  ColorConstant.white,)):const SizedBox(),
                          const SizedBox(width: 10,),
                          InkWell(
                              onTap:(){
@@ -1408,7 +1414,7 @@ bool isAudio = false;
                                  data: affirmationModel.data,
                                ));
                              },
-                             child: const Icon(Icons.text_fields_rounded,size: 30,)),
+                             child: const Icon(Icons.text_fields_rounded,size: 30,color:  ColorConstant.white,)),
                        ],
                      ),
                       ],

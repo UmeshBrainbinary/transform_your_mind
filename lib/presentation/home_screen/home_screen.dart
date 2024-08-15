@@ -39,6 +39,7 @@ import 'package:transform_your_mind/presentation/motivational_message/motivation
 import 'package:transform_your_mind/presentation/motivational_message/motivational_controller.dart';
 import 'package:transform_your_mind/presentation/positive_moment/positive_controller.dart';
 import 'package:transform_your_mind/presentation/positive_moment/positive_screen.dart';
+import 'package:transform_your_mind/presentation/start_audio_affirmation/start_audio_affirmation_screen.dart';
 import 'package:transform_your_mind/presentation/start_practcing_screen/start_pratice_controller.dart';
 import 'package:transform_your_mind/presentation/start_practcing_screen/start_pratice_screen.dart';
 import 'package:transform_your_mind/presentation/start_pratice_affirmation/start_practice_affirmation_controller.dart';
@@ -50,6 +51,7 @@ import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:transform_your_mind/widgets/custom_view_controller.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -67,9 +69,11 @@ class _HomeScreenState extends State<HomeScreen>
   HomeController g = Get.put(HomeController());
   ThemeController themeController = Get.find<ThemeController>();
   GratitudeModel gratitudeModel = GratitudeModel();
-  AffirmationController affirmationController = Get.put(AffirmationController());
+  AffirmationController affirmationController =
+      Get.put(AffirmationController());
   String currentLanguage = PrefService.getString(PrefKey.language);
-  MotivationalController motivationalController = Get.put(MotivationalController());
+  MotivationalController motivationalController =
+      Get.put(MotivationalController());
   @override
   void initState() {
     _setGreetingBasedOnTime();
@@ -89,10 +93,7 @@ class _HomeScreenState extends State<HomeScreen>
     super.initState();
   }
 
-
-
   getGratitude() async {
-
     var headers = {
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
@@ -111,23 +112,17 @@ class _HomeScreenState extends State<HomeScreen>
       gratitudeModel = gratitudeModelFromJson(responseBody);
 
       debugPrint("gratitude Model ${gratitudeModel.data}");
-
-
     } else {
-
       debugPrint(response.reasonPhrase);
     }
   }
 
   checkInternet() async {
-
-
     if (await isConnected()) {
       getData();
     } else {
       showSnackBarError(context, "noInternet".tr);
     }
-
   }
 
   getData() async {
@@ -141,12 +136,11 @@ class _HomeScreenState extends State<HomeScreen>
     g.getRecentlyList();
     g.getPersonalData();
     positiveController.getPositiveMoments();
-    if(motivationalController.isPlaying.isTrue){
+    if (motivationalController.isPlaying.isTrue) {
       await motivationalController.pause();
     }
     setState(() {});
   }
-
 
   String greeting = "";
 
@@ -172,7 +166,6 @@ class _HomeScreenState extends State<HomeScreen>
     }
   }
 
-
   TimeOfDay selectedTime = TimeOfDay.now();
 
   @override
@@ -195,16 +188,17 @@ class _HomeScreenState extends State<HomeScreen>
     }
   }
 
-
   Future<void> _refresh() async {
     checkInternet();
   }
+
   String _formatDuration(Duration? duration) {
     if (duration == null) return "00:00";
     final minutes = duration.inMinutes.remainder(60).toString().padLeft(2, '0');
     final seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
     return "$minutes:$seconds";
   }
+
   @override
   Widget build(BuildContext context) {
     if (themeController.isDarkMode.isTrue) {
@@ -283,78 +277,106 @@ class _HomeScreenState extends State<HomeScreen>
                             ),
                             Dimens.d20.spaceHeight,
                             recentlyView(),
-                            positiveController.positiveMomentList.isEmpty?const SizedBox():Dimens.d40.spaceHeight,
-                            positiveController.positiveMomentList.isEmpty?const SizedBox():Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: Dimens.d20),
-                              child: Row(children: [
-                                Text(
-                                  "positiveMomentH".tr,
-                                  textAlign: TextAlign.center,
-                                  style: Style.nunitoBold(fontSize: Dimens.d22),
-                                ),
-                                const Spacer(),
-                                GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(context, MaterialPageRoute(
-                                        builder: (context) {
-                                          return const PositiveScreen();
-                                        },
-                                      )).then(
-                                        (value) {
-                                          if (themeController.isDarkMode.isTrue) {
-                                            SystemChrome.setSystemUIOverlayStyle(
-                                                const SystemUiOverlayStyle(
-                                                  statusBarBrightness: Brightness.dark,
-                                                  statusBarIconBrightness: Brightness.light,
-                                                ));
-                                          } else {
-                                            SystemChrome.setSystemUIOverlayStyle(
-                                                const SystemUiOverlayStyle(
-                                                  statusBarBrightness: Brightness.light,
-                                                  statusBarIconBrightness: Brightness.dark,
-                                                ));
-                                          }
-                                          Future.delayed(const Duration(seconds: 1)).then(
-                                                (value) {
-                                              setState(() {});
+                            positiveController.positiveMomentList.isEmpty
+                                ? const SizedBox()
+                                : Dimens.d40.spaceHeight,
+                            positiveController.positiveMomentList.isEmpty
+                                ? const SizedBox()
+                                : Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: Dimens.d20),
+                                    child: Row(children: [
+                                      Text(
+                                        "positiveMomentH".tr,
+                                        textAlign: TextAlign.center,
+                                        style: Style.nunitoBold(
+                                            fontSize: Dimens.d22),
+                                      ),
+                                      const Spacer(),
+                                      GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(context,
+                                                MaterialPageRoute(
+                                              builder: (context) {
+                                                return const PositiveScreen();
+                                              },
+                                            )).then(
+                                              (value) {
+                                                if (themeController
+                                                    .isDarkMode.isTrue) {
+                                                  SystemChrome
+                                                      .setSystemUIOverlayStyle(
+                                                          const SystemUiOverlayStyle(
+                                                    statusBarBrightness:
+                                                        Brightness.dark,
+                                                    statusBarIconBrightness:
+                                                        Brightness.light,
+                                                  ));
+                                                } else {
+                                                  SystemChrome
+                                                      .setSystemUIOverlayStyle(
+                                                          const SystemUiOverlayStyle(
+                                                    statusBarBrightness:
+                                                        Brightness.light,
+                                                    statusBarIconBrightness:
+                                                        Brightness.dark,
+                                                  ));
+                                                }
+                                                Future.delayed(const Duration(
+                                                        seconds: 1))
+                                                    .then(
+                                                  (value) {
+                                                    setState(() {});
+                                                  },
+                                                );
+                                              },
+                                            );
+                                          },
+                                          child: Text(
+                                            "seeAll".tr,
+                                            style: Style.gothamLight(
+                                                color:
+                                                    ColorConstant.color5A7681,
+                                                fontSize: 12),
+                                          )),
+                                      Dimens.d4.spaceWidth,
+                                      SvgPicture.asset(ImageConstant.seeAll)
+                                    ]),
+                                  ),
+                            positiveController.positiveMomentList.isEmpty
+                                ? const SizedBox()
+                                : Dimens.d24.spaceHeight,
+                            positiveController.positiveMomentList.isEmpty
+                                ? const SizedBox()
+                                : SizedBox(
+                                    height: 156,
+                                    child: ListView.builder(
+                                      padding: const EdgeInsets.only(left: 22),
+                                      itemCount: positiveController
+                                          .positiveMomentList.length,
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder: (context, index) {
+                                        return GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(context,
+                                                  MaterialPageRoute(
+                                                builder: (context) {
+                                                  return const PositiveScreen();
+                                                },
+                                              )).then(
+                                                (value) async {
+                                                  await positiveController
+                                                      .getPositiveMoments();
+                                                  setState(() {});
+                                                },
+                                              );
                                             },
-                                          );
-                                        },
-                                      );
-                                    },
-                                    child: Text(
-                                      "seeAll".tr,
-                                      style: Style.gothamLight(
-                                          color: ColorConstant.color5A7681,
-                                          fontSize: 12),
-                                    )),
-                                Dimens.d4.spaceWidth,
-                                SvgPicture.asset(ImageConstant.seeAll)
-
-                              ]),
-                            ),
-                            positiveController.positiveMomentList.isEmpty?const SizedBox():Dimens.d24.spaceHeight,
-                            positiveController.positiveMomentList.isEmpty?const SizedBox():SizedBox(
-                              height: 156,
-                              child: ListView.builder(padding: const EdgeInsets.only(left: 22),
-                                itemCount: positiveController.positiveMomentList.length,
-                                scrollDirection: Axis.horizontal,
-                                itemBuilder: (context, index) {
-                                  return GestureDetector(onTap: () {
-                                    Navigator.push(context, MaterialPageRoute(
-                                      builder: (context) {
-                                        return const PositiveScreen();
+                                            child: PositiveMoment(
+                                              index: index,
+                                            ));
                                       },
-                                    )).then((value) async {
-                                     await positiveController.getPositiveMoments();
-                                      setState(() {});
-                                    },);
-                                  },child: PositiveMoment(index: index,));
-                                },
-                              ),
-                            ),
-
+                                    ),
+                                  ),
 
                             Dimens.d30.spaceHeight,
                             //___________________________________________ recommendation _____________________
@@ -410,7 +432,8 @@ class _HomeScreenState extends State<HomeScreen>
                                           "motivationalQ") {
                                         Get.to(() => const MotivationScreen())!
                                             .then((value) async {
-                                          MotivationalController moti = Get.find<MotivationalController>();
+                                          MotivationalController moti = Get
+                                              .find<MotivationalController>();
                                           await moti.audioPlayer.dispose();
                                           await moti.audioPlayer.pause();
                                           setState(() {});
@@ -503,8 +526,10 @@ class _HomeScreenState extends State<HomeScreen>
                                                 .tr,
                                             style: Style.montserratSemiBold(
                                                 fontSize: 8,
-                                                color:
-                                                    themeController.isDarkMode.isTrue?ColorConstant.white:ColorConstant.black),
+                                                color: themeController
+                                                        .isDarkMode.isTrue
+                                                    ? ColorConstant.white
+                                                    : ColorConstant.black),
                                           ),
                                         ],
                                       ),
@@ -570,7 +595,8 @@ class _HomeScreenState extends State<HomeScreen>
                                   ),
                                   color: ColorConstant.themeColor,
                                   borderRadius: BorderRadius.circular(6)),
-                              child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Row(
@@ -639,7 +665,8 @@ class _HomeScreenState extends State<HomeScreen>
                                           overlayRadius:
                                               16.0), // Customize the overlay shape and size
                                     ),
-                                    child: SizedBox(height: 2,
+                                    child: SizedBox(
+                                      height: 2,
                                       child: Slider(
                                         thumbColor: Colors.transparent,
                                         activeColor: ColorConstant.backGround,
@@ -657,7 +684,6 @@ class _HomeScreenState extends State<HomeScreen>
                                     ),
                                   ),
                                   Dimens.d5.spaceHeight,
-
                                 ],
                               ),
                             ),
@@ -688,14 +714,14 @@ class _HomeScreenState extends State<HomeScreen>
   Widget topView(String? motivationalMessage) {
     return GestureDetector(
         onTap: () async {
-         //  Get.to(()=>const HowFeelingsEvening());
+          //  Get.to(()=>const HowFeelingsEvening());
 
           Navigator.push(context, MaterialPageRoute(
             builder: (context) {
               return HomeMessagePage(
                   motivationalMessage: motivationalMessage ??
                       "Believe in yourself, even when doubt creeps in. Today's progress is a step towards your dreams.");
-              },
+            },
           ));
         },
         child: Padding(
@@ -715,16 +741,20 @@ class _HomeScreenState extends State<HomeScreen>
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Text(
                     "“ ${g.getUserModel.data?.motivationalMessage ?? "“ Believe in yourself and all that you are. Know that there is something inside you that is greater than any obstacle.” "}” ",
-                    textAlign: TextAlign.center,maxLines: 4,
+                    textAlign: TextAlign.center,
+                    maxLines: 4,
                     style: Style.gothamLight(
                         fontSize: 15, color: ColorConstant.black),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 110,left: 200),
-                  child: Text("Christian D. Larson",style: Style.nunRegular(fontSize: 12,color: ColorConstant.black),),
+                  padding: const EdgeInsets.only(top: 110, left: 200),
+                  child: Text(
+                    "Christian D. Larson",
+                    style: Style.nunRegular(
+                        fontSize: 12, color: ColorConstant.black),
+                  ),
                 )
-
               ],
             ),
           ),
@@ -740,7 +770,7 @@ class _HomeScreenState extends State<HomeScreen>
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: List.generate(controller.audioData.length ?? 0, ( index) {
+            children: List.generate(controller.audioData.length ?? 0, (index) {
               return GestureDetector(
                   onTap: () {
                     if (!controller.audioData[index].isPaid!) {
@@ -783,27 +813,29 @@ class _HomeScreenState extends State<HomeScreen>
                             ),
                           );
                         },
-                      ).then((value) {
-                        if (themeController.isDarkMode.isTrue) {
-                          SystemChrome.setSystemUIOverlayStyle(
-                              const SystemUiOverlayStyle(
-                                statusBarBrightness: Brightness.dark,
-                                statusBarIconBrightness: Brightness.light,
-                              ));
-                        } else {
-                          SystemChrome.setSystemUIOverlayStyle(
-                              const SystemUiOverlayStyle(
-                                statusBarBrightness: Brightness.light,
-                                statusBarIconBrightness: Brightness.dark,
-                              ));
-                        }
-                        Future.delayed(const Duration(seconds: 1)).then(
-                              (value) {
-                            setState(() {});
-                          },
-                        );
-                      },);
-                    }else{
+                      ).then(
+                        (value) {
+                          if (themeController.isDarkMode.isTrue) {
+                            SystemChrome.setSystemUIOverlayStyle(
+                                const SystemUiOverlayStyle(
+                              statusBarBrightness: Brightness.dark,
+                              statusBarIconBrightness: Brightness.light,
+                            ));
+                          } else {
+                            SystemChrome.setSystemUIOverlayStyle(
+                                const SystemUiOverlayStyle(
+                              statusBarBrightness: Brightness.light,
+                              statusBarIconBrightness: Brightness.dark,
+                            ));
+                          }
+                          Future.delayed(const Duration(seconds: 1)).then(
+                            (value) {
+                              setState(() {});
+                            },
+                          );
+                        },
+                      );
+                    } else {
                       Navigator.push(context, MaterialPageRoute(
                         builder: (context) {
                           return SubscriptionScreen(
@@ -812,13 +844,14 @@ class _HomeScreenState extends State<HomeScreen>
                         },
                       ));
                     }
-
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(right: 20.0),
                     child: FeelGood(
                       currentLanguage: currentLanguage,
-                      audioTime: controller.audioListDuration.length > index ? _formatDuration( controller.audioListDuration[index]) : '8:00',
+                      audioTime: controller.audioListDuration.length > index
+                          ? _formatDuration(controller.audioListDuration[index])
+                          : '8:00',
                       dataList: controller.audioData[index],
                     ),
                   ));
@@ -828,195 +861,244 @@ class _HomeScreenState extends State<HomeScreen>
       },
     );
   }
+
   Widget selfHypnotic() {
     return GetBuilder<HomeController>(
       id: "home",
       builder: (controller) {
-        return controller.audioDataSelfHypnotic.isEmpty?   Center(
-          child: Text("dataNotFound".tr, style: Style.gothamMedium(
-              fontSize: 24, fontWeight: FontWeight.w700),),
-        ): SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: List.generate(controller.audioDataSelfHypnotic.length, ( index) {
-              return GestureDetector(
-                  onTap: () {
-                    if (!controller.audioDataSelfHypnotic[index].isPaid!) {
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(
-                              Dimens.d24,
-                            ),
+        return controller.audioDataSelfHypnotic.isEmpty
+            ? Center(
+                child: Text(
+                  "dataNotFound".tr,
+                  style: Style.gothamMedium(
+                      fontSize: 24, fontWeight: FontWeight.w700),
+                ),
+              )
+            : SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: List.generate(
+                      controller.audioDataSelfHypnotic.length, (index) {
+                    return GestureDetector(
+                        onTap: () {
+                          if (!controller
+                              .audioDataSelfHypnotic[index].isPaid!) {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(
+                                    Dimens.d24,
+                                  ),
+                                ),
+                              ),
+                              builder: (BuildContext context) {
+                                return NowPlayingScreen(
+                                  audioData: AudioData(
+                                    id: controller
+                                        .audioDataSelfHypnotic[index].id,
+                                    isPaid: controller
+                                        .audioDataSelfHypnotic[index].isPaid,
+                                    image: controller
+                                        .audioDataSelfHypnotic[index].image,
+                                    rating: controller
+                                        .audioDataSelfHypnotic[index].rating,
+                                    description: controller
+                                        .audioDataSelfHypnotic[index]
+                                        .description,
+                                    name: controller
+                                        .audioDataSelfHypnotic[index].name,
+                                    isBookmarked: controller
+                                        .audioDataSelfHypnotic[index]
+                                        .isBookmarked,
+                                    isRated: controller
+                                        .audioDataSelfHypnotic[index].isRated,
+                                    category: controller
+                                        .audioDataSelfHypnotic[index].category,
+                                    createdAt: controller
+                                        .audioDataSelfHypnotic[index].createdAt,
+                                    podsBy: controller
+                                        .audioDataSelfHypnotic[index].podsBy,
+                                    expertName: controller
+                                        .audioDataSelfHypnotic[index]
+                                        .expertName,
+                                    audioFile: controller
+                                        .audioDataSelfHypnotic[index].audioFile,
+                                    isRecommended: controller
+                                        .audioDataSelfHypnotic[index]
+                                        .isRecommended,
+                                    status: controller
+                                        .audioDataSelfHypnotic[index].status,
+                                    createdBy: controller
+                                        .audioDataSelfHypnotic[index].createdBy,
+                                    updatedAt: controller
+                                        .audioDataSelfHypnotic[index].updatedAt,
+                                    v: controller
+                                        .audioDataSelfHypnotic[index].v,
+                                    download: false,
+                                  ),
+                                );
+                              },
+                            ).then(
+                              (value) {
+                                if (themeController.isDarkMode.isTrue) {
+                                  SystemChrome.setSystemUIOverlayStyle(
+                                      const SystemUiOverlayStyle(
+                                    statusBarBrightness: Brightness.dark,
+                                    statusBarIconBrightness: Brightness.light,
+                                  ));
+                                } else {
+                                  SystemChrome.setSystemUIOverlayStyle(
+                                      const SystemUiOverlayStyle(
+                                    statusBarBrightness: Brightness.light,
+                                    statusBarIconBrightness: Brightness.dark,
+                                  ));
+                                }
+                                Future.delayed(const Duration(seconds: 1)).then(
+                                  (value) async {
+                                    await g.getSelfHypnoticApi();
+
+                                    setState(() {});
+                                  },
+                                );
+                              },
+                            );
+                          } else {
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) {
+                                return SubscriptionScreen(
+                                  skip: false,
+                                );
+                              },
+                            ));
+                          }
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 20.0),
+                          child: SelfHypnoticScreen(
+                            currentLanguage: currentLanguage,
+                            audioTime:
+                                controller.audioListDurationSelf.length > index
+                                    ? _formatDuration(
+                                        controller.audioListDurationSelf[index])
+                                    : '8:00',
+                            dataList: controller.audioDataSelfHypnotic[index],
                           ),
-                        ),
-                        builder: (BuildContext context) {
-                          return NowPlayingScreen(
-                            audioData: AudioData(
-                              id: controller.audioDataSelfHypnotic[index].id,
-                              isPaid: controller.audioDataSelfHypnotic[index].isPaid,
-                              image: controller.audioDataSelfHypnotic[index].image,
-                              rating: controller.audioDataSelfHypnotic[index].rating,
-                              description:
-                              controller.audioDataSelfHypnotic[index].description,
-                              name: controller.audioDataSelfHypnotic[index].name,
-                              isBookmarked:
-                              controller.audioDataSelfHypnotic[index].isBookmarked,
-                              isRated: controller.audioDataSelfHypnotic[index].isRated,
-                              category: controller.audioDataSelfHypnotic[index].category,
-                              createdAt: controller.audioDataSelfHypnotic[index].createdAt,
-                              podsBy: controller.audioDataSelfHypnotic[index].podsBy,
-                              expertName:
-                              controller.audioDataSelfHypnotic[index].expertName,
-                              audioFile: controller.audioDataSelfHypnotic[index].audioFile,
-                              isRecommended:
-                              controller.audioDataSelfHypnotic[index].isRecommended,
-                              status: controller.audioDataSelfHypnotic[index].status,
-                              createdBy: controller.audioDataSelfHypnotic[index].createdBy,
-                              updatedAt: controller.audioDataSelfHypnotic[index].updatedAt,
-                              v: controller.audioDataSelfHypnotic[index].v,
-                              download: false,
-                            ),
-                          );
-                        },
-                      ).then((value) {
-                        if (themeController.isDarkMode.isTrue) {
-                          SystemChrome.setSystemUIOverlayStyle(
-                              const SystemUiOverlayStyle(
-                                statusBarBrightness: Brightness.dark,
-                                statusBarIconBrightness: Brightness.light,
-                              ));
-                        } else {
-                          SystemChrome.setSystemUIOverlayStyle(
-                              const SystemUiOverlayStyle(
-                                statusBarBrightness: Brightness.light,
-                                statusBarIconBrightness: Brightness.dark,
-                              ));
-                        }
-                        Future.delayed(const Duration(seconds: 1)).then(
-                              (value) async {
-                                await g.getSelfHypnoticApi();
-
-                                setState(() {});
-                          },
-                        );
-                      },);
-                    }else{
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (context) {
-                          return SubscriptionScreen(
-                            skip: false,
-                          );
-                        },
-                      ));
-                    }
-
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 20.0),
-                    child: SelfHypnoticScreen(
-                      currentLanguage: currentLanguage,
-                      audioTime: controller.audioListDurationSelf.length > index ? _formatDuration( controller.audioListDurationSelf[index]) : '8:00',
-                      dataList: controller.audioDataSelfHypnotic[index],
-                    ),
-                  ));
-            }),
-          ),
-        );
+                        ));
+                  }),
+                ),
+              );
       },
     );
   }
+
   Widget recommendation() {
     return GetBuilder<HomeController>(
       id: "home",
       builder: (controller) {
-        return (controller.getPersonalDataModel.data??[]).isEmpty?   Center(
-          child: Text("dataNotFound".tr, style: Style.gothamMedium(
-              fontSize: 24, fontWeight: FontWeight.w700),),
-        ):SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: List.generate(controller.getPersonalDataModel.data?.length ?? 0, ( index) {
-              return GestureDetector(
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(
-                            Dimens.d24,
-                          ),
-                        ),
-                      ),
-                      builder: (BuildContext context) {
-                        return NowPlayingScreen(
-                          show: true,
-                          audioData: AudioData(
-                            id: controller.getPersonalDataModel.data![index].id,
-                            isPaid: false,
-                            image: controller.getPersonalDataModel.data![index].image,
-                            rating: 0,
-                            description:
-                            controller.getPersonalDataModel.data![index].description,
-                            name: "",
-                            isBookmarked:false,
-                            isRated: false,
-                            category: "",
-                            createdAt: DateTime.now(),
-                            podsBy: false,
-                            expertName:"",
-                            audioFile: controller.getPersonalDataModel.data![index].audioFile,
-                            isRecommended:false,
-                            status: false,
-                            download: false,
-                          ),
-                        );
-                      },
-                    ).then((value) {
-                      if (themeController.isDarkMode.isTrue) {
-                        SystemChrome.setSystemUIOverlayStyle(
-                            const SystemUiOverlayStyle(
-                              statusBarBrightness: Brightness.dark,
-                              statusBarIconBrightness: Brightness.light,
-                            ));
-                      } else {
-                        SystemChrome.setSystemUIOverlayStyle(
-                            const SystemUiOverlayStyle(
-                              statusBarBrightness: Brightness.light,
-                              statusBarIconBrightness: Brightness.dark,
-                            ));
-                      }
-                      Future.delayed(const Duration(seconds: 1)).then(
-                            (value) async {
-                          await g.getSelfHypnoticApi();
+        return (controller.getPersonalDataModel.data ?? []).isEmpty
+            ? Center(
+                child: Text(
+                  "dataNotFound".tr,
+                  style: Style.gothamMedium(
+                      fontSize: 24, fontWeight: FontWeight.w700),
+                ),
+              )
+            : SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: List.generate(
+                      controller.getPersonalDataModel.data?.length ?? 0,
+                      (index) {
+                    return GestureDetector(
+                        onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(
+                                  Dimens.d24,
+                                ),
+                              ),
+                            ),
+                            builder: (BuildContext context) {
+                              return NowPlayingScreen(
+                                show: true,
+                                audioData: AudioData(
+                                  id: controller
+                                      .getPersonalDataModel.data![index].id,
+                                  isPaid: false,
+                                  image: controller
+                                      .getPersonalDataModel.data![index].image,
+                                  rating: 0,
+                                  description: controller.getPersonalDataModel
+                                      .data![index].description,
+                                  name: "",
+                                  isBookmarked: false,
+                                  isRated: false,
+                                  category: "",
+                                  createdAt: DateTime.now(),
+                                  podsBy: false,
+                                  expertName: "",
+                                  audioFile: controller.getPersonalDataModel
+                                      .data![index].audioFile,
+                                  isRecommended: false,
+                                  status: false,
+                                  download: false,
+                                ),
+                              );
+                            },
+                          ).then(
+                            (value) {
+                              if (themeController.isDarkMode.isTrue) {
+                                SystemChrome.setSystemUIOverlayStyle(
+                                    const SystemUiOverlayStyle(
+                                  statusBarBrightness: Brightness.dark,
+                                  statusBarIconBrightness: Brightness.light,
+                                ));
+                              } else {
+                                SystemChrome.setSystemUIOverlayStyle(
+                                    const SystemUiOverlayStyle(
+                                  statusBarBrightness: Brightness.light,
+                                  statusBarIconBrightness: Brightness.dark,
+                                ));
+                              }
+                              Future.delayed(const Duration(seconds: 1)).then(
+                                (value) async {
+                                  await g.getSelfHypnoticApi();
 
-                          setState(() {});
+                                  setState(() {});
+                                },
+                              );
+                            },
+                          );
                         },
-                      );
-                    },);
-
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 20.0),
-                    child: RecommendationScreen(dataList: controller.getPersonalDataModel.data![index],
-                      currentLanguage: currentLanguage,
-                      audioTime: controller.audioListRecommendations.length > index ? _formatDuration( controller.audioListRecommendations[index]) : '8:00',
-                    ),
-                  ));
-            }),
-          ),
-        );
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 20.0),
+                          child: RecommendationScreen(
+                            dataList:
+                                controller.getPersonalDataModel.data![index],
+                            currentLanguage: currentLanguage,
+                            audioTime: controller
+                                        .audioListRecommendations.length >
+                                    index
+                                ? _formatDuration(
+                                    controller.audioListRecommendations[index])
+                                : '8:00',
+                          ),
+                        ));
+                  }),
+                ),
+              );
       },
     );
   }
-
 
   Widget recommendationsView(HomeController controller) {
     return Padding(
@@ -1032,11 +1114,11 @@ class _HomeScreenState extends State<HomeScreen>
               shrinkWrap: true,
               padding: EdgeInsets.zero,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount:  controller.audioData.length,
+              itemCount: controller.audioData.length,
               itemBuilder: (context, index) {
                 return InkWell(
                   onTap: () {
-                    if(controller.audioData[index].isPaid!){
+                    if (controller.audioData[index].isPaid!) {
                       showModalBottomSheet(
                         context: context,
                         isScrollControlled: true,
@@ -1049,16 +1131,13 @@ class _HomeScreenState extends State<HomeScreen>
                         ),
                         builder: (BuildContext context) {
                           return NowPlayingScreen(
-                            audioData:controller.audioData[index],
+                            audioData: controller.audioData[index],
                           );
                         },
                       );
-
-                    }else{
+                    } else {
                       Get.toNamed(AppRoutes.subscriptionScreen);
                     }
-
-
                   },
                   child: Container(
                     height: Dimens.d70,
@@ -1066,16 +1145,16 @@ class _HomeScreenState extends State<HomeScreen>
                     padding: const EdgeInsets.symmetric(horizontal: 6),
                     margin: const EdgeInsets.symmetric(vertical: 12),
                     decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: themeController.isDarkMode.value
-                    ? ColorConstant.textfieldFillColor
-                    : Colors.white,
+                      borderRadius: BorderRadius.circular(15),
+                      color: themeController.isDarkMode.value
+                          ? ColorConstant.textfieldFillColor
+                          : Colors.white,
                     ),
-              child: Row(children: [
-                Stack(
-                  alignment: Alignment.topRight,
-                  children: [
-                    CachedNetworkImage(
+                    child: Row(children: [
+                      Stack(
+                        alignment: Alignment.topRight,
+                        children: [
+                          CachedNetworkImage(
                             height: 58,
                             width: 75,
                             imageUrl: controller.audioData[index].image ?? "",
@@ -1083,47 +1162,51 @@ class _HomeScreenState extends State<HomeScreen>
                               decoration: BoxDecoration(
                                 shape: BoxShape.rectangle,
                                 borderRadius: BorderRadius.circular(
-                            10.0,
+                                  10.0,
+                                ),
+                                image: DecorationImage(
+                                  image: imageProvider,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            placeholder: (context, url) => PlaceHolderCNI(
+                              height: Dimens.d80.h,
+                              width: Dimens.d80,
+                              borderRadius: 10.0,
+                            ),
+                            errorWidget: (context, url, error) =>
+                                PlaceHolderCNI(
+                              height: Dimens.d80.h,
+                              width: Dimens.d80,
+                              isShowLoader: false,
+                              borderRadius: 8.0,
+                            ),
                           ),
-                          image: DecorationImage(
-                            image: imageProvider,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                          controller.audioData[index].isPaid!
+                              ? const SizedBox()
+                              : Container(
+                                  margin: const EdgeInsets.all(6.0),
+                                  height: 10,
+                                  width: 10,
+                                  decoration: const BoxDecoration(
+                                      color: Colors.black,
+                                      shape: BoxShape.circle),
+                                  child: Center(
+                                      child: Image.asset(
+                                    ImageConstant.lockHome,
+                                    height: 5,
+                                    width: 5,
+                                  )),
+                                )
+                        ],
                       ),
-                      placeholder: (context, url) => PlaceHolderCNI(
-                        height: Dimens.d80.h,
-                        width: Dimens.d80,
-                        borderRadius: 10.0,
-                      ),
-                      errorWidget: (context, url, error) => PlaceHolderCNI(
-                        height: Dimens.d80.h,
-                        width: Dimens.d80,
-                        isShowLoader: false,
-                        borderRadius: 8.0,
-                      ),
-                    ),
-                    controller.audioData[index].isPaid!?const SizedBox():Container(
-                      margin: const EdgeInsets.all(6.0),
-                      height: 10,
-                      width: 10,
-                      decoration: const BoxDecoration(
-                          color: Colors.black, shape: BoxShape.circle),
-                      child: Center(
-                          child: Image.asset(
-                        ImageConstant.lockHome,
-                        height: 5,
-                        width: 5,
-                      )),
-                    )
-                  ],
-                ),
-                Dimens.d25.spaceWidth,
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                         Dimens.d12.spaceHeight,
+                      Dimens.d25.spaceWidth,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Dimens.d12.spaceHeight,
                           SizedBox(
                             width: Dimens.d200,
                             child: Text(
@@ -1133,28 +1216,26 @@ class _HomeScreenState extends State<HomeScreen>
                                   fontSize: 20, fontWeight: FontWeight.w600),
                             ),
                           ),
-                    Dimens.d5.spaceHeight,
-
-                    SizedBox(
-                      width: Dimens.d200,
-                      child: Text(
-                        controller.audioData[index].description ?? "",
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
+                          Dimens.d5.spaceHeight,
+                          SizedBox(
+                            width: Dimens.d200,
+                            child: Text(
+                              controller.audioData[index].description ?? "",
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
                               style: Style.gothamLight(
                                 fontSize: 12,
                               ),
-                      ),
-                    ),
-                    Dimens.d7.spaceHeight,
-
-                  ],
-                )
-              ]),
+                            ),
+                          ),
+                          Dimens.d7.spaceHeight,
+                        ],
+                      )
+                    ]),
+                  ),
+                );
+              },
             ),
-          );
-        },
-      ),
     );
   }
 
@@ -1180,17 +1261,22 @@ class _HomeScreenState extends State<HomeScreen>
                 ? CommonElevatedButton(
                     height: Dimens.d46,
                     textStyle: Style.nunRegular(
-                        fontSize: currentLanguage=="en-US"?Dimens.d17:Dimens.d15, color: ColorConstant.white),
+                        fontSize: currentLanguage == "en-US"
+                            ? Dimens.d17
+                            : Dimens.d15,
+                        color: ColorConstant.white),
                     title: "empowerMindset".tr,
                     onTap: () {
-                     Get.to(const AddAffirmationPage(
-                       isFromMyAffirmation: true,
-                       isEdit: false,))!.then(
-                           (value) async {
-                         await g.getTodayAffirmation();
-                         setState(() {});
-                       },
-                     );
+                      Get.to(const AddAffirmationPage(
+                        isFromMyAffirmation: true,
+                        isEdit: false,
+                      ))!
+                          .then(
+                        (value) async {
+                          await g.getTodayAffirmation();
+                          setState(() {});
+                        },
+                      );
                     },
                   )
                 : Column(
@@ -1203,10 +1289,12 @@ class _HomeScreenState extends State<HomeScreen>
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: () async {
-                              Get.to(()=> const MyAffirmationPage())!.then((value) async {
-                                await g.getTodayAffirmation();
-                                setState(() {});
-                              },);
+                              Get.to(() => const MyAffirmationPage())!.then(
+                                (value) async {
+                                  await g.getTodayAffirmation();
+                                  setState(() {});
+                                },
+                              );
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -1220,8 +1308,6 @@ class _HomeScreenState extends State<HomeScreen>
                                   maxLines: 3,
                                   style: Style.nunRegular(),
                                 ),
-
-
                               ),
                             ),
                           );
@@ -1231,58 +1317,134 @@ class _HomeScreenState extends State<HomeScreen>
                         },
                       ),
                       Dimens.d20.spaceHeight,
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) {
-                              return  StartPracticeAffirmation(
-                                id:  g.todayAList?[0].id ,
-                              data: g.todayAList!,);
-                            },
-                          )).then(
-                            (value) {
-                              if (themeController.isDarkMode.isTrue) {
-                                SystemChrome.setSystemUIOverlayStyle(
-                                    const SystemUiOverlayStyle(
-                                  statusBarBrightness: Brightness.dark,
-                                  statusBarIconBrightness: Brightness.light,
-                                ));
-                              } else {
-                                SystemChrome.setSystemUIOverlayStyle(
-                                    const SystemUiOverlayStyle(
-                                  statusBarBrightness: Brightness.light,
-                                  statusBarIconBrightness: Brightness.dark,
-                                ));
-                              }
-                              Future.delayed(const Duration(seconds: 1)).then(
-                                (value) {
-                                  StartPracticeAffirmationController startC =
-                                  Get.put(StartPracticeAffirmationController());
-                                  startC.player.pause();
-                                  setState(() {});
-                                },
-                              );
-                            },
-                          );
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 30),
-                          height: Dimens.d46,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(80),
-                              color: ColorConstant.themeColor),
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 30),
+                        height: Dimens.d46,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(80),
+                            color: ColorConstant.themeColor),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Image.asset(ImageConstant.playGratitude,
-                                  height: 20, width: 20),
-                              Dimens.d8.spaceWidth,
+                              // Image.asset(ImageConstant.playGratitude,
+                              //     height: 20, width: 20),
+                              // Dimens.d8.spaceWidth,
                               Text(
                                 "startPracticing".tr,
                                 style: Style.nunRegular(
                                     fontSize: 16, color: ColorConstant.white),
-                              )
+                              ),
+                              Row(
+                                children: [
+                                  g.isAudio
+                                      ? InkWell(
+                                          onTap: () {
+                                            Navigator.push(context,
+                                                MaterialPageRoute(
+                                                    builder: (context) {
+                                              return StartAudioAffirmationScreen(
+                                                id: g.todayAList?[0].id,
+                                                data: g.todayAList!,
+                                              );
+                                            })).then(
+                                              (value) {
+                                                if (themeController
+                                                    .isDarkMode.isTrue) {
+                                                  SystemChrome
+                                                      .setSystemUIOverlayStyle(
+                                                          const SystemUiOverlayStyle(
+                                                    statusBarBrightness:
+                                                        Brightness.dark,
+                                                    statusBarIconBrightness:
+                                                        Brightness.light,
+                                                  ));
+                                                } else {
+                                                  SystemChrome
+                                                      .setSystemUIOverlayStyle(
+                                                          const SystemUiOverlayStyle(
+                                                    statusBarBrightness:
+                                                        Brightness.light,
+                                                    statusBarIconBrightness:
+                                                        Brightness.dark,
+                                                  ));
+                                                }
+                                                Future.delayed(const Duration(
+                                                        seconds: 1))
+                                                    .then(
+                                                  (value) {
+                                                    StartPracticeAffirmationController
+                                                        startC = Get.put(
+                                                            StartPracticeAffirmationController());
+                                                    startC.player.pause();
+                                                    setState(() {});
+                                                  },
+                                                );
+                                              },
+                                            );
+                                          },
+                                          child: const Icon(
+                                            Icons.keyboard_voice_rounded,
+                                            size: 30,
+                                            color: ColorConstant.white,
+                                          ))
+                                      : const SizedBox(),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  InkWell(
+                                      onTap: () {
+                                        Navigator.push(context,
+                                            MaterialPageRoute(builder: (context) {
+                                          return StartPracticeAffirmation(
+                                            id: g.todayAList?[0].id,
+                                            data: g.todayAList!,
+                                          );
+                                        })).then(
+                                          (value) {
+                                            if (themeController
+                                                .isDarkMode.isTrue) {
+                                              SystemChrome
+                                                  .setSystemUIOverlayStyle(
+                                                      const SystemUiOverlayStyle(
+                                                statusBarBrightness:
+                                                    Brightness.dark,
+                                                statusBarIconBrightness:
+                                                    Brightness.light,
+                                              ));
+                                            } else {
+                                              SystemChrome
+                                                  .setSystemUIOverlayStyle(
+                                                      const SystemUiOverlayStyle(
+                                                statusBarBrightness:
+                                                    Brightness.light,
+                                                statusBarIconBrightness:
+                                                    Brightness.dark,
+                                              ));
+                                            }
+                                            Future.delayed(
+                                                    const Duration(seconds: 1))
+                                                .then(
+                                              (value) {
+                                                StartPracticeAffirmationController
+                                                    startC = Get.put(
+                                                        StartPracticeAffirmationController());
+                                                startC.player.pause();
+                                                setState(() {});
+                                              },
+                                            );
+                                          },
+                                        );
+                                      },
+                                      child: const Icon(
+                                        Icons.text_fields_rounded,
+                                        size: 30,
+                                        color: ColorConstant.white,
+                                      )),
+                                ],
+                              ),
                             ],
                           ),
                         ),
@@ -1318,37 +1480,48 @@ class _HomeScreenState extends State<HomeScreen>
                     height: Dimens.d46,
                     title: "whatAreGreatFull".tr,
                     textStyle: Style.nunRegular(
-                        fontSize: currentLanguage=="en-US"?Dimens.d17:Dimens.d15, color: ColorConstant.white),
+                        fontSize: currentLanguage == "en-US"
+                            ? Dimens.d17
+                            : Dimens.d15,
+                        color: ColorConstant.white),
                     onTap: () {
-                      Navigator.push(context,   MaterialPageRoute(builder: (context) {
-                        return  AddGratitudePage( isFromMyGratitude: true,
-                          registerUser: false, categoryListAll: [],
-                          previous:false,
-                          edit: false,);
-                      },)).then((value) async {
-                        await getGratitude();
-                        setState(() {
-
-                        });
-                      },);
-
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) {
+                          return AddGratitudePage(
+                            isFromMyGratitude: true,
+                            registerUser: false,
+                            categoryListAll: [],
+                            previous: false,
+                            edit: false,
+                          );
+                        },
+                      )).then(
+                        (value) async {
+                          await getGratitude();
+                          setState(() {});
+                        },
+                      );
                     },
                   )
                 : Column(
                     children: [
                       ListView.builder(
                         padding: EdgeInsets.zero,
-                        itemCount: gratitudeModel.data?.length??0,
+                        itemCount: gratitudeModel.data?.length ?? 0,
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 20.0),
                             child: commonContainer(
-                                gratitudeList:  gratitudeModel.data,
-                                des: gratitudeModel.data?[index].description??"",
+                                gratitudeList: gratitudeModel.data,
+                                des: gratitudeModel.data?[index].description ??
+                                    "",
                                 date: "${index + 1}",
-                                day: DateFormat('EEE').format(gratitudeModel.data![index].createdAt!).toUpperCase()),
+                                day: DateFormat('EEE')
+                                    .format(
+                                        gratitudeModel.data![index].createdAt!)
+                                    .toUpperCase()),
                           );
                         },
                       ),
@@ -1357,34 +1530,35 @@ class _HomeScreenState extends State<HomeScreen>
                         onTap: () {
                           Navigator.push(context, MaterialPageRoute(
                             builder: (context) {
-                              return  StartPracticeScreen(gratitudeList: gratitudeModel.data,);
+                              return StartPracticeScreen(
+                                gratitudeList: gratitudeModel.data,
+                              );
                             },
-                          )).then((value) async {
-
-
-                            if (themeController.isDarkMode.isTrue) {
-                              SystemChrome.setSystemUIOverlayStyle(
-                                  const SystemUiOverlayStyle(
-                                    statusBarBrightness: Brightness.dark,
-                                    statusBarIconBrightness: Brightness.light,
-                                  ));
-                            } else {
-                              SystemChrome.setSystemUIOverlayStyle(
-                                  const SystemUiOverlayStyle(
-                                    statusBarBrightness: Brightness.light,
-                                    statusBarIconBrightness: Brightness.dark,
-                                  ));
-                            }
-                            Future.delayed(const Duration(seconds: 1)).then(
-                                  (value) async {
-                                    StartPracticeController startC = Get.put(StartPracticeController());
-                                    await  startC.pause();
-                                setState(() {
-
-                                });
-                              },
-                            );
-                          },);
+                          )).then(
+                            (value) async {
+                              if (themeController.isDarkMode.isTrue) {
+                                SystemChrome.setSystemUIOverlayStyle(
+                                    const SystemUiOverlayStyle(
+                                  statusBarBrightness: Brightness.dark,
+                                  statusBarIconBrightness: Brightness.light,
+                                ));
+                              } else {
+                                SystemChrome.setSystemUIOverlayStyle(
+                                    const SystemUiOverlayStyle(
+                                  statusBarBrightness: Brightness.light,
+                                  statusBarIconBrightness: Brightness.dark,
+                                ));
+                              }
+                              Future.delayed(const Duration(seconds: 1)).then(
+                                (value) async {
+                                  StartPracticeController startC =
+                                      Get.put(StartPracticeController());
+                                  await startC.pause();
+                                  setState(() {});
+                                },
+                              );
+                            },
+                          );
                         },
                         child: Container(
                           margin: const EdgeInsets.symmetric(horizontal: 30),
@@ -1416,16 +1590,21 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget commonContainer({String? date, String? day, String? des,List<GratitudeData>? gratitudeList}) {
+  Widget commonContainer(
+      {String? date,
+      String? day,
+      String? des,
+      List<GratitudeData>? gratitudeList}) {
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(
           builder: (context) {
-            return AddGratitudePage(date:  DateFormat("dd/MM/yyyy").format(DateTime.now()),
+            return AddGratitudePage(
+              date: DateFormat("dd/MM/yyyy").format(DateTime.now()),
               categoryList: gratitudeList,
-              previous:false,
-
-              isFromMyGratitude: true, categoryListAll: [],
+              previous: false,
+              isFromMyGratitude: true,
+              categoryListAll: [],
               registerUser: false,
               edit: true,
             );
@@ -1444,7 +1623,8 @@ class _HomeScreenState extends State<HomeScreen>
                 ? ColorConstant.textfieldFillColor
                 : ColorConstant.backGround,
             borderRadius: BorderRadius.circular(18)),
-        child: Row(crossAxisAlignment: CrossAxisAlignment.center,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
               height: 63,
@@ -1471,7 +1651,7 @@ class _HomeScreenState extends State<HomeScreen>
             Dimens.d13.spaceWidth,
             Expanded(
                 child: Text(
-                  "“$des”",
+              "“$des”",
               style: Style.nunRegular(
                   height: 2, fontSize: 11, fontWeight: FontWeight.w400),
             ))

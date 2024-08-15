@@ -134,6 +134,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   getLanguages() {
+    print("c" +currentLanguage);
     if (currentLanguage.isNotEmpty) {
       if (currentLanguage == 'en-US') {
         newLocale = const Locale('en', 'US');

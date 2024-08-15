@@ -349,7 +349,9 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                                     color: ColorConstant.themeColor
                                 ),
                                 alignment: Alignment.center,
-                                child:  Icon(recordFile ?Icons.stop_circle_outlined:Icons.mic_rounded,color: Colors.white,size: 35,),
+                                child: recordFile ?
+                                const Icon(Icons.stop_circle_outlined, color: Colors.redAccent,size: 35,):
+                                const Icon(Icons.mic_rounded,color: Colors.white,size: 35,),
                               ),
                             ),
 
@@ -421,7 +423,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                           ),
                         ),
                         Dimens.d20.spaceWidth,
-                        Expanded(
+                        _recordFilePath!=null && !recordFile?  Expanded(
                           child: Padding(
                             padding: const EdgeInsets.only(right: 20.0),
                             child: CommonElevatedButton(
@@ -469,7 +471,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                               },
                             ),
                           ),
-                        ),
+                        ):const SizedBox(),
                       ],
                     ):const SizedBox(),
 

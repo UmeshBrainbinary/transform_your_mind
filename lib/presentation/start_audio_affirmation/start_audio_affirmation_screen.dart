@@ -379,6 +379,7 @@ double value =  0;
                   ]),
                    InkWell(
                       onTap: () async {
+                        if(totalDuration != Duration.zero){
                         if (startC.play) {
                           setState(()  {
                             startC.play = false;
@@ -389,6 +390,7 @@ double value =  0;
                             startC.play = true;
                           });
                             await audioPlayerVoices.play();
+                        }
                         }
                       },
                       child: Container(
