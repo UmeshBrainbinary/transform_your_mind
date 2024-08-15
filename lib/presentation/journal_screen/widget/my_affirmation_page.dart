@@ -84,7 +84,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   AffirmationModel affirmationModel = AffirmationModel();
   AffirmationAllModel affirmationAllModel = AffirmationAllModel();
   List<AffirmationDataAll>? affirmationAllData;
-
+bool isAudio = false;
   AffirmationCategoryModel affirmationCategoryModel = AffirmationCategoryModel();
   AffirmationDataModel affirmationDataModel = AffirmationDataModel();
   bool loader = false;
@@ -203,6 +203,18 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
       final responseBody = await response.stream.bytesToString();
 
       affirmationModel = affirmationModelFromJson(responseBody);
+       isAudio = false;
+      affirmationModel.data!.forEach((e){
+
+        if(e.audioFile != null)
+        {
+          isAudio =true;
+          setState(() {
+
+          });
+        }
+      });
+
       loader = false;
       setState(() {});
     } else {
@@ -1355,41 +1367,54 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
             if ((affirmationModel.data ?? []).isNotEmpty)
               Dimens.d10.spaceHeight,
             (affirmationModel.data ?? []).isNotEmpty
-                ? GestureDetector(
-                    onTap: () {
-                      affirmationModel.data?[0].audioFile != null?
-                          Get.off(StartAudioAffirmationScreen(
-                            id: affirmationModel.data?[0].id,
-                            data: affirmationModel.data,
-                          ))
-                          :
-                      Get.off(StartPracticeAffirmation(
-                        id: affirmationModel.data?[0].id,
-                        data: affirmationModel.data,
-                     ));
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 30),
-                      height: Dimens.d46,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(80),
-                          color: ColorConstant.themeColor),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(ImageConstant.playGratitude,
-                              height: 20, width: 20),
-                          Dimens.d8.spaceWidth,
-                          Text(
-                            "startPracticing".tr,
-                                  style: Style.nunRegular(
-                                      fontSize: 16, color: ColorConstant.white),
-                          )
-                        ],
-                      ),
+                ? Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 30),
+                  height: Dimens.d46,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(80),
+                      color: ColorConstant.themeColor),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+
+                            Text(
+                              "startPracticing".tr,
+                                    style: Style.nunitoBold(
+                                        fontSize: 16, color: ColorConstant.white),
+                            )
+                          ],
+                        ),
+                      Row(
+                       children: [
+                         isAudio?InkWell(
+                             onTap:(){
+                               Get.off(StartAudioAffirmationScreen(
+                                           id: affirmationModel.data?[0].id,
+                                           data: affirmationModel.data,
+                                         ));
+                             },
+                             child: const Icon(Icons.keyboard_voice_rounded,size: 30,)):const SizedBox(),
+                         const SizedBox(width: 10,),
+                         InkWell(
+                             onTap:(){
+                               Get.off(StartPracticeAffirmation(
+                                 id: affirmationModel.data?[0].id,
+                                 data: affirmationModel.data,
+                               ));
+                             },
+                             child: const Icon(Icons.text_fields_rounded,size: 30,)),
+                       ],
+                     ),
+                      ],
                     ),
-                  )
+                  ),
+                )
                 : const SizedBox(),
             Dimens.d40.spaceHeight,
             //______________________________________ filter data

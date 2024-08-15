@@ -5,7 +5,6 @@ import 'dart:ui';
 
 import 'package:alarm/alarm.dart';
 import 'package:alarm/model/alarm_settings.dart';
-import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -91,12 +90,22 @@ class _StartAudioAffirmationScreenState
       if (state == ProcessingState.completed) {
 
         await audioPlayerVoices.pause();
+        setState(() {
+          startC.play = false;
+        });
         await audioPlayerVoices.seek(Duration.zero, index: 0);
+        value =0;
+        setState(() {
+          startC.play = true;
+        });
+        await audioPlayerVoices.play();
+
         value =0;
         setState(() {
 
         });
 print("#### Done #####");
+
       }
 
 
@@ -236,7 +245,7 @@ double value =  0;
     return WillPopScope(
       onWillPop: () async {
         await startC.player.pause();
-        audioPlayerVoices.stop();
+       await audioPlayerVoices.stop();
         return true;
       },
       child: Scaffold(
@@ -410,6 +419,7 @@ double value =  0;
                   onTap: () async {
                     Get.back();
                     await startC.player.pause();
+                    await audioPlayerVoices.stop();
                   },
                   child: Container(
                     height: 42,
@@ -644,7 +654,8 @@ double value =  0;
   setBackSounds() async {
     startC.soundMute = false;
     startC.player.setVolume(1);
-    await startC.player.setUrl(startC.soundList[1]["audio"]);
+    await startC.player.setAsset(startC.soundList[1]["audio"]);
+    await startC.player.setLoopMode(LoopMode.one);
     await startC.player.play();
   }
 
@@ -721,6 +732,7 @@ double value =  0;
                                 });
                                 await startC.player
                                     .setAsset(startC.soundList[index]["audio"]);
+                                await startC.player.setLoopMode(LoopMode.one);
                                 await startC.player.play();
                               },
                               child: startC.soundList[index]["title"] == "None"
