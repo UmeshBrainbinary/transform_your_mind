@@ -16,6 +16,7 @@ import 'package:numberpicker/numberpicker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
+import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
@@ -88,19 +89,20 @@ class _StartAudioAffirmationScreenState
   init();
     audioPlayerVoices.processingStateStream.listen((state) async {
       if (state == ProcessingState.completed) {
-
-        await audioPlayerVoices.pause();
         setState(() {
+          value =0;
           startC.play = false;
         });
-        await audioPlayerVoices.seek(Duration.zero, index: 0);
-        value =0;
+        await audioPlayerVoices.pause();
+
+        await audioPlayerVoices.setAudioSource(myPlayList,initialIndex: 0);
+
         setState(() {
           startC.play = true;
         });
         await audioPlayerVoices.play();
 
-        value =0;
+
         setState(() {
 
         });
@@ -158,11 +160,11 @@ print("#### Done #####");
 List<AudioSource> list = [];
 late ConcatenatingAudioSource myPlayList ;
   init() async {
+
     setBackSounds();
 
 
-
-
+startC.loader.value =true;
   for (AffirmationData path in widget.data!) {
     if(path.audioFile != null) {
        source = AudioSource.uri(Uri.parse(path.audioFile!));
@@ -186,13 +188,14 @@ late ConcatenatingAudioSource myPlayList ;
   await audioPlayerVoices.setAudioSource(myPlayList,initialIndex: 0);
   setState(() {
     startC.play = true;
-
+    startC.loader.value =false;
   });
 
   await audioPlayerVoices.play();
 
+
   }
-  bool loader = false;
+
 
   bool showBottom = false;
   Duration totalDuration = Duration.zero;
@@ -250,404 +253,436 @@ double value =  0;
       },
       child: Scaffold(
         backgroundColor: Colors.black.withOpacity(0.5),
-        body: GestureDetector(
-          onTap: () {
-            setState(() {
-              startC.setSpeed.value = false;
-            });
-          },
-          child: Stack(
-            children: [
-              //_________________________________ background Image _______________________
-              Stack(
+        body: Stack(
+          alignment: Alignment.center,
+          children: [
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  startC.setSpeed.value = false;
+                });
+              },
+              child: Stack(
                 children: [
-                  CachedNetworkImage(
-                    height: Get.height,
-                    width: Get.width,
-                    imageUrl: startC.themeList[chooseImage],
-                    imageBuilder: (context, imageProvider) => Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(
-                          10.0,
-                        ),
-                        image: DecorationImage(
-                          image: imageProvider,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    placeholder: (context, url) => PlaceHolderCNI(
-                      height: Get.height,
-                      width: Get.width,
-                      borderRadius: 10.0,
-                    ),
-                    errorWidget: (context, url, error) => PlaceHolderCNI(
-                      height: Get.height,
-                      width: Get.width,
-                      isShowLoader: false,
-                      borderRadius: 8.0,
-                    ),
-                  ),
-                  BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
-                    // Adjust the sigmaX and sigmaY values to control the blur intensity
-                    child: Container(
-                      height: Get.height,
-                      width: Get.width,
-                      color: Colors.black.withOpacity(
-                          0.5), // Adjust the opacity to your preference
-                    ),
-                  ),
-                ],
-              ),
-              //_________________________________ story Progress indicators _______________________
-              // Positioned(
-              //   top: 40,
-              //   left: 10,
-              //   right: 10,
-              //   child: Row(
-              //     children: List.generate(widget.data!.length, (index) {
-              //       return Expanded(
-              //         child: Padding(
-              //           padding: const EdgeInsets.symmetric(horizontal: 2.0),
-              //           child: LinearProgressIndicator(
-              //             value: index == _currentIndex
-              //                 ? _progress
-              //                 : (index < _currentIndex ? 1.0 : 0.0),
-              //             backgroundColor: Colors.grey,
-              //             valueColor: const AlwaysStoppedAnimation<Color>(
-              //               Colors.white,
-              //             ),
-              //           ),
-              //         ),
-              //       );
-              //     }),
-              //   ),
-              // ),
-
-              //_________________________________ close button  _______________________
-
-
-
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  SfRadialGauge(axes: <RadialAxis>[
-                    RadialAxis(
-                      minimum: 0,
-                      maximum: 100,
-                      showLabels: false,
-                      showTicks: false,
-                      startAngle: 270,
-                      endAngle: 270,
-                      radiusFactor: 0.55,
-                      axisLineStyle: const AxisLineStyle(
-                        thickness: 0.02,
-                        cornerStyle: CornerStyle.bothCurve,
-                        color: Colors.white,
-                        thicknessUnit: GaugeSizeUnit.factor,
-                      ),
-                      pointers:  <GaugePointer>[
-                        RangePointer(
-                          value: value,
-                          cornerStyle: CornerStyle.bothCurve,
-                          width: 0.02,
-                          sizeUnit: GaugeSizeUnit.factor,
-                          enableAnimation: true,
-                          color: ColorConstant.themeColor,
-                          animationDuration:1500,
-                          animationType: AnimationType.ease,
-
-                        ),
-
-                      ],
-                      annotations: <GaugeAnnotation>[
-                        GaugeAnnotation(
-                            widget: Container(
-                          height: 150,
-                          width: 150,
+                  //_________________________________ background Image _______________________
+                  Stack(
+                    children: [
+                      CachedNetworkImage(
+                        height: Get.height,
+                        width: Get.width,
+                        imageUrl: startC.themeList[chooseImage],
+                        imageBuilder: (context, imageProvider) => Container(
                           decoration: BoxDecoration(
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(
+                              10.0,
+                            ),
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        placeholder: (context, url) => PlaceHolderCNI(
+                          height: Get.height,
+                          width: Get.width,
+                          borderRadius: 10.0,
+                        ),
+                        errorWidget: (context, url, error) => PlaceHolderCNI(
+                          height: Get.height,
+                          width: Get.width,
+                          isShowLoader: false,
+                          borderRadius: 8.0,
+                        ),
+                      ),
+                      BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
+                        // Adjust the sigmaX and sigmaY values to control the blur intensity
+                        child: Container(
+                          height: Get.height,
+                          width: Get.width,
+                          color: Colors.black.withOpacity(
+                              0.5), // Adjust the opacity to your preference
+                        ),
+                      ),
+                    ],
+                  ),
+                  //_________________________________ story Progress indicators _______________________
+                  // Positioned(
+                  //   top: 40,
+                  //   left: 10,
+                  //   right: 10,
+                  //   child: Row(
+                  //     children: List.generate(widget.data!.length, (index) {
+                  //       return Expanded(
+                  //         child: Padding(
+                  //           padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                  //           child: LinearProgressIndicator(
+                  //             value: index == _currentIndex
+                  //                 ? _progress
+                  //                 : (index < _currentIndex ? 1.0 : 0.0),
+                  //             backgroundColor: Colors.grey,
+                  //             valueColor: const AlwaysStoppedAnimation<Color>(
+                  //               Colors.white,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       );
+                  //     }),
+                  //   ),
+                  // ),
+
+                  //_________________________________ close button  _______________________
+
+
+
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      SfRadialGauge(axes: <RadialAxis>[
+                        RadialAxis(
+                          minimum: 0,
+                          maximum: 100,
+                          showLabels: false,
+                          showTicks: false,
+                          startAngle: 270,
+                          endAngle: 270,
+                          radiusFactor: 0.55,
+                          axisLineStyle: const AxisLineStyle(
+                            thickness: 0.02,
+                            cornerStyle: CornerStyle.bothCurve,
+                            color: Colors.white,
+                            thicknessUnit: GaugeSizeUnit.factor,
+                          ),
+                          pointers:  <GaugePointer>[
+                            RangePointer(
+                              value: value,
+                              cornerStyle: CornerStyle.bothCurve,
+                              width: 0.02,
+                              sizeUnit: GaugeSizeUnit.factor,
+                              enableAnimation: true,
+                              color: value ==0?Colors.white:ColorConstant.themeColor,
+                              animationDuration:1500,
+                              animationType: AnimationType.ease,
+
+                            ),
+
+                          ],
+                          annotations: <GaugeAnnotation>[
+                            GaugeAnnotation(
+                                widget: Container(
+                              height: 150,
+                              width: 150,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: Colors.white)),
+                              alignment: Alignment.center,
+
+
+                            )),
+                            GaugeAnnotation(
+                                widget: Container(
+                              height: 250,
+                              width: 250,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                image: DecorationImage(image: AssetImage(
+                                  ImageConstant.logoSplashRemoved,
+                                ),
+                                opacity: 0.5
+                                ),
+                                ),
+                              alignment: Alignment.center,
+
+
+                            )),
+                          ],
+                        )
+                      ]),
+                       InkWell(
+                          onTap: () async {
+                            if(totalDuration != Duration.zero){
+                            if (startC.play) {
+                              setState(()  {
+                                startC.play = false;
+                              });
+                                await audioPlayerVoices.stop();
+                            } else {
+                              setState(()  {
+                                startC.play = true;
+                              });
+                              try {
+                                await audioPlayerVoices.play();
+                              }catch(e){
+                                debugPrint(e.toString());
+                              }
+                            }
+                            }
+                          },
+                          child: Container(
+                            height: 80,
+                            width: 80,
+                            alignment: Alignment.center,
+                            decoration:  const BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white)),
-                          alignment: Alignment.center,
+                              color: Colors.white,
 
 
-                        )),
-                      ],
-                    )
-                  ]),
-                   InkWell(
+
+
+                            ),
+                            child: Icon(
+                              (startC.play)
+                                  ? Icons.pause
+                                  : Icons.play_arrow_rounded,
+                              size: 50,
+                              color: ColorConstant.themeColor,
+                            ),
+                          )),
+
+
+                    ],
+                  ),
+                  //_________________________________ Skip Method  _______________________
+                  Positioned(
+                    top: Dimens.d70,
+                    left: 16,
+                    child: GestureDetector(
                       onTap: () async {
-                        if(totalDuration != Duration.zero){
-                        if (startC.play) {
-                          setState(()  {
-                            startC.play = false;
-                          });
-                            await audioPlayerVoices.stop();
-                        } else {
-                          setState(()  {
-                            startC.play = true;
-                          });
-                            await audioPlayerVoices.play();
-                        }
-                        }
+                        Get.back();
+                        await startC.player.pause();
+                        await audioPlayerVoices.stop();
                       },
                       child: Container(
-                        height: 100,
-                        width: 100,
-                        alignment: Alignment.center,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white
-                        ),
-                        child: Icon(
-                          (startC.play)
-                              ? Icons.pause
-                              : Icons.play_arrow_rounded,
-                          size: 50,
-                          color: ColorConstant.themeColor,
-                        ),
-                      )),
-
-
-                ],
-              ),
-              //_________________________________ Skip Method  _______________________
-              Positioned(
-                top: Dimens.d70,
-                left: 16,
-                child: GestureDetector(
-                  onTap: () async {
-                    Get.back();
-                    await startC.player.pause();
-                    await audioPlayerVoices.stop();
-                  },
-                  child: Container(
-                    height: 42,
-                    width: 42,
-                    padding: const EdgeInsets.only(left: 8),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: ColorConstant.white),
-                    child: const Center(
-                        child: Icon(
-                          Icons.arrow_back_ios,
-                          color: Colors.black,
-                          size: 20,
-                        )),
-                  ),
-                ),
-              ),
-              //_________________________________ theme Change button  _______________________
-
-              Positioned(
-                top: Dimens.d70,
-                right: 16,
-                child: Row(
-                  children: [
-                    Column(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              showBottom = true;
-                            });
-                            sheetSound();
-                          },
-                          child: Container(
-                            height: 42,
-                            width: 42,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(9),
-                                color: ColorConstant.white.withOpacity(0.15)),
-                            child: Center(
-                              child: SvgPicture.asset(
-                                ImageConstant.music,
-                                height: Dimens.d28,
-                                width: Dimens.d28,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Dimens.d5.spaceHeight,
-                        Text(
-                          "music".tr,
-                          style: Style.gothamLight(
-                              fontSize: 10, color: Colors.white),
-                        )
-                      ],
-                    ),
-                    Dimens.d10.spaceWidth,
-                    Column(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              showBottom = true;
-                            });
-                            sheetTheme();
-                          },
-                          child: Container(
-                            height: 42,
-                            width: 42,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(9),
-                                color: ColorConstant.white.withOpacity(0.15)),
-                            child: Center(
-                              child: Image.asset(
-                                ImageConstant.themeChange,
-                                height: Dimens.d28,
-                                width: Dimens.d28,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Dimens.d5.spaceHeight,
-                        Text(
-                          "theme".tr,
-                          style: Style.gothamLight(
-                              fontSize: 10, color: Colors.white),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              startC.setSpeed.isTrue
-                  ? Positioned(
-                      bottom: Dimens.d170,
-                      left: MediaQuery.of(context).size.width / 2.5,
-                      child: Container(
-                        width: 82,
-                        padding: const EdgeInsets.only(bottom: 10),
+                        height: 42,
+                        width: 42,
+                        padding: const EdgeInsets.only(left: 8),
                         decoration: BoxDecoration(
-                            color: ColorConstant.black,
-                            borderRadius: BorderRadius.circular(10)),
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            padding: EdgeInsets.zero,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: startC.speedList.length,
-                            itemBuilder: (context, index) {
-                              bool isChecked =
-                                  startC.selectedSpeedIndex == index;
-
-                              return GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    startC.setSelectedSpeedIndex(index);
-                                    // speedChange();
-                                    _progress = 0.0; // Reset the progress.
-                                    // _startAutoScrollTimer();
-                                  });
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 10, right: 10, top: 10),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        isChecked ? Icons.check : null,
-                                        color: isChecked
-                                            ? ColorConstant.themeColor
-                                            : ColorConstant.transparent,
-                                        size: 10,
-                                      ),
-                                      Dimens.d5.spaceWidth,
-                                      Text(
-                                        startC.speedList[index],
-                                        style: Style.nunRegular(
-                                            fontSize: 10,
-                                            color: isChecked
-                                                ? ColorConstant.themeColor
-                                                : ColorConstant.white),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }),
+                            borderRadius: BorderRadius.circular(5),
+                            color: ColorConstant.white),
+                        child: const Center(
+                            child: Icon(
+                              Icons.arrow_back_ios,
+                              color: Colors.black,
+                              size: 20,
+                            )),
                       ),
-                    )
-                  : const SizedBox(),
-              //_________________________________ bottom View sound  _______________________
+                    ),
+                  ),
+                  //_________________________________ theme Change button  _______________________
 
-              showBottom
-                  ? const SizedBox()
-                  : Positioned(
-                      bottom: Dimens.d85,
-                      left: MediaQuery.of(context).size.width / 5,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 27, vertical: 10),
-                        decoration: BoxDecoration(
-                            color: ColorConstant.white.withOpacity(0.15),
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
+                  Positioned(
+                    top: Dimens.d70,
+                    right: 16,
+                    child: Row(
+                      children: [
+                        Column(
                           children: [
                             GestureDetector(
                               onTap: () {
                                 setState(() {
-                                  startC.soundMute = !startC.soundMute;
+                                  showBottom = true;
                                 });
-                                if (startC.soundMute) {
-                                  startC.player.setVolume(0);
-                                } else {
-                                  startC.player.setVolume(1);
-                                }
+                                sheetSound();
                               },
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  SvgPicture.asset(
-                                    startC.soundMute
-                                        ? ImageConstant.soundMute
-                                        : ImageConstant.soundMax,
-                                    color: ColorConstant.white,
+                              child: Container(
+                                height: 42,
+                                width: 42,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(9),
+                                    color: ColorConstant.white.withOpacity(0.15)),
+                                child: Center(
+                                  child: SvgPicture.asset(
+                                    ImageConstant.music,
+                                    height: Dimens.d28,
+                                    width: Dimens.d28,
                                   ),
-                                  commonText("sound".tr),
-                                ],
+                                ),
                               ),
                             ),
-                            Dimens.d32.spaceWidth,
-                            Container(
-                              width: 1,
-                              height: 47,
-                              color: ColorConstant.white,
-                            ),
-                            Dimens.d32.spaceWidth,
+                            Dimens.d5.spaceHeight,
+                            Text(
+                              "music".tr,
+                              style: Style.gothamLight(
+                                  fontSize: 10, color: Colors.white),
+                            )
+                          ],
+                        ),
+                        Dimens.d10.spaceWidth,
+                        Column(
+                          children: [
                             GestureDetector(
                               onTap: () {
                                 setState(() {
-                                  startC.setSpeed.value =
-                                      !startC.setSpeed.value;
+                                  showBottom = true;
                                 });
+                                sheetTheme();
                               },
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  commonTextTitle("auto".tr),
-                                  Dimens.d6.spaceHeight,
-                                  commonText("forEach".tr),
-                                ],
+                              child: Container(
+                                height: 42,
+                                width: 42,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(9),
+                                    color: ColorConstant.white.withOpacity(0.15)),
+                                child: Center(
+                                  child: Image.asset(
+                                    ImageConstant.themeChange,
+                                    height: Dimens.d28,
+                                    width: Dimens.d28,
+                                  ),
+                                ),
                               ),
                             ),
+                            Dimens.d5.spaceHeight,
+                            Text(
+                              "theme".tr,
+                              style: Style.gothamLight(
+                                  fontSize: 10, color: Colors.white),
+                            )
                           ],
                         ),
-                      ),
+                      ],
                     ),
-              likeAnimation == true
-                  ? Center(
-                      child: Image.asset(
-                        ImageConstant.likeGif,
-                      ),
-                    )
-                  : const SizedBox(),
-            ],
-          ),
+                  ),
+                  startC.setSpeed.isTrue
+                      ? Positioned(
+                          bottom: Dimens.d170,
+                          left: MediaQuery.of(context).size.width / 2.5,
+                          child: Container(
+                            width: 82,
+                            padding: const EdgeInsets.only(bottom: 10),
+                            decoration: BoxDecoration(
+                                color: ColorConstant.black,
+                                borderRadius: BorderRadius.circular(10)),
+                            child: ListView.builder(
+                                shrinkWrap: true,
+                                padding: EdgeInsets.zero,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: startC.speedList.length,
+                                itemBuilder: (context, index) {
+                                  bool isChecked =
+                                      startC.selectedSpeedIndex == index;
+
+                                  return GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        startC.setSelectedSpeedIndex(index);
+                                        // speedChange();
+                                        _progress = 0.0; // Reset the progress.
+                                        // _startAutoScrollTimer();
+                                      });
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 10, right: 10, top: 10),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            isChecked ? Icons.check : null,
+                                            color: isChecked
+                                                ? ColorConstant.themeColor
+                                                : ColorConstant.transparent,
+                                            size: 10,
+                                          ),
+                                          Dimens.d5.spaceWidth,
+                                          Text(
+                                            startC.speedList[index],
+                                            style: Style.nunRegular(
+                                                fontSize: 10,
+                                                color: isChecked
+                                                    ? ColorConstant.themeColor
+                                                    : ColorConstant.white),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }),
+                          ),
+                        )
+                      : const SizedBox(),
+                  //_________________________________ bottom View sound  _______________________
+
+                  showBottom
+                      ? const SizedBox()
+                      : Positioned(
+                          bottom: Dimens.d85,
+                          left: MediaQuery.of(context).size.width / 5,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 27, vertical: 10),
+                            decoration: BoxDecoration(
+                                color: ColorConstant.white.withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(20)),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      startC.soundMute = !startC.soundMute;
+                                    });
+                                    if (startC.soundMute) {
+                                      startC.player.setVolume(0);
+                                    } else {
+                                      startC.player.setVolume(1);
+                                    }
+                                  },
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      SvgPicture.asset(
+                                        startC.soundMute
+                                            ? ImageConstant.soundMute
+                                            : ImageConstant.soundMax,
+                                        color: ColorConstant.white,
+                                      ),
+                                      commonText("sound".tr),
+                                    ],
+                                  ),
+                                ),
+                                Dimens.d32.spaceWidth,
+                                Container(
+                                  width: 1,
+                                  height: 47,
+                                  color: ColorConstant.white,
+                                ),
+                                Dimens.d32.spaceWidth,
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      startC.setSpeed.value =
+                                          !startC.setSpeed.value;
+                                    });
+                                  },
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      commonTextTitle("auto".tr),
+                                      Dimens.d6.spaceHeight,
+                                      commonText("forEach".tr),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                  likeAnimation == true
+                      ? Center(
+                          child: Image.asset(
+                            ImageConstant.likeGif,
+                          ),
+                        )
+                      : const SizedBox(),
+                ],
+              ),
+            ),
+            Obx(
+                  () => startC.loader.isTrue ? commonLoader() : const SizedBox(),
+            ),
+          ],
         ),
       ),
     );

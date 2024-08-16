@@ -213,7 +213,12 @@ class HomeController extends GetxController {
       bookmarkedModel = bookmarkedModelFromJson(responseBody);
       if((bookmarkedModel.data??[]).isNotEmpty){
         for(int i = 0;i<bookmarkedModel.data!.length;i++){
-          await _audioPlayer.setUrl(bookmarkedModel.data![i].audioFile!);
+          try {
+            await _audioPlayer.setUrl(bookmarkedModel.data![i].audioFile!);
+          }catch (e) {
+    print("Failed to load audio: $e");
+    // Handle the error, e.g., show a message to the user.
+    }
           final duration = await _audioPlayer.load();
           audioListDuration.add(duration);
         }
@@ -274,9 +279,13 @@ class HomeController extends GetxController {
       getPersonalDataModel = getPersonalDataModelFromJson(responseBody);
 
       for(int i = 0;i<getPersonalDataModel.data!.length;i++){
-        await _audioPlayer.setUrl(getPersonalDataModel.data![i].audioFile!);
+        try {
+          await _audioPlayer.setUrl(getPersonalDataModel.data![i].audioFile!);
         final duration = await _audioPlayer.load();
         audioListRecommendations.add(duration);
+        }catch (e){
+          print(e);
+        }
       }
       update(["home"]);
     } else {

@@ -95,6 +95,7 @@ dependencies:
   syncfusion_flutter_gauges:
 
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

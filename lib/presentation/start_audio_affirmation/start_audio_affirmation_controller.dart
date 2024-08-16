@@ -56,9 +56,11 @@ class StartAudioAffirmationController extends GetxController{
     selectedSpeedIndex = index;
     update();
   }
+  RxBool loader = false.obs;
 
   @override
   void onInit() {
+
     selectedSpeedIndex = 0;
     super.onInit();
   }

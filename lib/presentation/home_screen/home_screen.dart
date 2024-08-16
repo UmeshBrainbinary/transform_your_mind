@@ -481,7 +481,8 @@ class _HomeScreenState extends State<HomeScreen>
                                             return const MyAffirmationPage();
                                           },
                                         )).then(
-                                          (value) {
+                                          (value) async {
+                                            await g.getTodayAffirmation();
                                             setState(() {});
                                           },
                                         );

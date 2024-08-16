@@ -33,10 +33,14 @@ Future<void> main() async {
 
   var detroit = tz.getLocation('Asia/Kolkata');
   tz.setLocalLocation(detroit);
-
   await PrefService.init();
   if (Platform.isIOS) {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      options: const FirebaseOptions(apiKey: "AIzaSyDmL_3cUGmr0-sqqFSFyQQezS2x21z7pso",
+          appId: '1:163422335038:ios:bac98b95c225f792db216f',
+          messagingSenderId: '163422335038',
+          projectId: 'transform-your-mind-afbb7')
+    );
   } else {
     await Firebase.initializeApp(
         options: const FirebaseOptions(

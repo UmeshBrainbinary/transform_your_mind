@@ -87,6 +87,22 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
       });
     }
 
+    audioPlayerVoices.processingStateStream.listen((state) async {
+      if (state == ProcessingState.completed) {
+
+        await audioPlayerVoices.pause();
+        setState(() {
+         play = false;
+        });
+        await audioPlayerVoices.seek(Duration.zero, index: 0);
+
+        print("#### Done #####");
+
+      }
+
+
+    });
+
     super.initState();
   }
 
