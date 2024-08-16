@@ -143,9 +143,11 @@ Future.delayed(const Duration(seconds: 1)).then((value) {
             ));
           },
         );
-        await PrefService.setValue(PrefKey.language,
-            getUserModel.data!.language == "english" ? "en-US" : "de-DE");
 
+        if(getUserModel.data!.language != null) {
+          await PrefService.setValue(PrefKey.language,
+              getUserModel.data!.language == "english" ? "en-US" : "de-DE");
+        }
         await PrefService.setValue(
             PrefKey.userImage, getUserModel.data?.userProfile ?? "");
       } else {

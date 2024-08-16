@@ -15,15 +15,12 @@ import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/localization/app_translation.dart';
-import 'package:transform_your_mind/presentation/subscription_screen/purchase_api.dart';
-import 'package:transform_your_mind/presentation/subscription_screen/store_config.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 
 import 'core/utils/initial_bindings.dart';
 import 'core/utils/logger.dart';
 
-import 'presentation/subscription_screen/store_config.dart' as config;
 bool? isSubscribed = false;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,18 +33,25 @@ Future<void> main() async {
   await PrefService.init();
   if (Platform.isIOS) {
     await Firebase.initializeApp(
-      options: const FirebaseOptions(apiKey: "AIzaSyDmL_3cUGmr0-sqqFSFyQQezS2x21z7pso",
+      options: const FirebaseOptions(
+          apiKey: "AIzaSyDmL_3cUGmr0-sqqFSFyQQezS2x21z7pso",
           appId: '1:163422335038:ios:bac98b95c225f792db216f',
           messagingSenderId: '163422335038',
           projectId: 'transform-your-mind-afbb7')
     );
   } else {
-    await Firebase.initializeApp(
-        options: const FirebaseOptions(
-            apiKey: "AIzaSyDqVV8VZFujz90zhumJKkUcoyqVY-B3QpI",
-            appId: "1:163422335038:android:9a43e6df9e637300db216f",
-            messagingSenderId: "163422335038",
-            projectId: 'transform-your-mind-afbb7'));
+    try {
+      await Firebase.initializeApp(
+          options: const FirebaseOptions(
+              apiKey: "AIzaSyDqVV8VZFujz90zhumJKkUcoyqVY-B3QpI",
+              appId: "1:163422335038:android:9a43e6df9e637300db216f",
+              messagingSenderId: "163422335038",
+              projectId: 'transform-your-mind-afbb7'));
+    }
+    catch(E){
+
+      print("=======");
+    }
   }
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,

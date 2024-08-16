@@ -215,12 +215,13 @@ class HomeController extends GetxController {
         for(int i = 0;i<bookmarkedModel.data!.length;i++){
           try {
             await _audioPlayer.setUrl(bookmarkedModel.data![i].audioFile!);
+            final duration = await _audioPlayer.load();
+            audioListDuration.add(duration);
           }catch (e) {
     print("Failed to load audio: $e");
     // Handle the error, e.g., show a message to the user.
     }
-          final duration = await _audioPlayer.load();
-          audioListDuration.add(duration);
+
         }
       }
 

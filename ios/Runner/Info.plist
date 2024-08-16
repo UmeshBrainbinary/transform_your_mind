@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.gdelataillade.fetch</string>
+	</array>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -22,10 +26,6 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
-	<key>NSMicrophoneUsageDescription</key>
-    <string>We need to access to the microphone to record</string>
-    <key>NSSpeechRecognitionUsageDescription</key>
-    <string>This example need Text to Speech recognition</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>
@@ -40,30 +40,28 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
-	<key>BGTaskSchedulerPermittedIdentifiers</key>
-    	<array>
-    		<string>com.gdelataillade.fetch</string>
-    	</array>
-    <key>NSCalendarsUsageDescription</key>
-    <string>We need access to your calendar to set alarms</string>
-    <key>NSRemindersUsageDescription</key>
-    <string>We need access to your reminders to set alarms</string>
+	<key>NSAudioAndRecordingUsageDescription</key>
+	<string>This app needs access to audio to play alarm sounds.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>We need access to your calendar to set alarms</string>
 	<key>NSCameraUsageDescription</key>
 	<string>We need access to your camera to take pictures.</string>
 	<key>NSDocumentsFolderUsageDescription</key>
 	<string>Our app saves audio recordings to the Documents folder.</string>
+	<key>NSLibraryDirectory</key>
+	<string>audio_file.mp3</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>We need access to your location to show your current position.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We need access to your location to show your current position.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Need permission to access the microphone</string>
-	<key>NSLibraryDirectory</key>
-    <string>audio_file.mp3</string>
-	<key>NSAudioAndRecordingUsageDescription</key>
-    <string>This app needs access to audio to play alarm sounds.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Need permission to access photo library</string>
+	<key>NSRemindersUsageDescription</key>
+	<string>We need access to your reminders to set alarms</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>This example need Text to Speech recognition</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>

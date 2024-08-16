@@ -143,8 +143,10 @@ class LoginController extends GetxController {
               ? Get.offAll(const WelcomeHomeScreen())
               : Get.offAllNamed(AppRoutes.dashBoardScreen);
         }
-        await PrefService.setValue(PrefKey.language,
-            getUserModel.data!.language == "english" ? "en-US" : "de-DE");
+        if(getUserModel.data!.language !=null) {
+          await PrefService.setValue(PrefKey.language,
+              getUserModel.data!.language == "english" ? "en-US" : "de-DE");
+        }
 
         update();
         await PrefService.setValue(
