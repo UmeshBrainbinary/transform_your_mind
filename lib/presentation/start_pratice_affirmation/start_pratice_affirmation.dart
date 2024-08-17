@@ -175,15 +175,16 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
   }*/
   void _startAutoScrollTimer() {
     _autoScrollTimer?.cancel();
-    _autoScrollTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+    _startProgressAnimation();
+    _autoScrollTimer = Timer.periodic( Duration(seconds: speedChange()), (timer) {
       if (_currentIndex < widget.data!.length - 1) {
         _currentIndex++;
         _pageController.animateToPage(
           _currentIndex,
-          duration: const Duration(milliseconds: 300),
+          duration:  const Duration(milliseconds:300),
           curve: Curves.easeInOut,
         );
-        _startProgressAnimation();
+
       } else {
         timer.cancel(); // Stop the timer
         _onComplete(); // Handle completion
@@ -193,6 +194,7 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
   void _startProgressAnimation() {
     _progressController?.reset();
     _progressController?.forward();
+    _progressController?.animateTo(currentIndex.toDouble(),duration:   Duration(seconds: speedChange()),curve: Curves.easeInOut,);
   }
 
   void _onComplete() async {

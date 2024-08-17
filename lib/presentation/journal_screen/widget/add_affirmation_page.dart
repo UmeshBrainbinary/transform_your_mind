@@ -114,7 +114,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
     if (await Permission.microphone.request().isGranted) {
       final directory = await getApplicationDocumentsDirectory();
       final fileName = '${DateTime.now().millisecondsSinceEpoch}';
-      _recordFilePath = '${directory.path}/$fileName';
+      _recordFilePath = '${directory.path}/$fileName.aac';
 
       await record.start(const RecordConfig(), path: _recordFilePath!);
       setState(() => _isRecording = true);
@@ -388,6 +388,9 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
 
                                   audioPlayerVoices.pause();
                                 } else {
+
+
+
                                   await audioPlayerVoices.setFilePath(_recordFilePath!);
                                   audioPlayerVoices.play();
                                   play = true;

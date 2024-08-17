@@ -7,6 +7,7 @@ import 'package:alarm/alarm.dart';
 import 'package:alarm/model/alarm_settings.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
+import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -79,7 +80,9 @@ class _StartAudioAffirmationScreenState
   AnimationController? _progressController;
   Animation<double>? _progressAnimation;
   Timer? _autoScrollTimer;
-  final AudioPlayer audioPlayerVoices = AudioPlayer();
+   AudioPlayer audioPlayerVoices = AudioPlayer( handleInterruptions: false,
+    androidApplyAudioAttributes: false,
+    handleAudioSessionActivation: false,);
 
   @override
   void initState() {
@@ -160,25 +163,38 @@ print("#### Done #####");
 List<AudioSource> list = [];
 late ConcatenatingAudioSource myPlayList ;
   init() async {
-
+    audioPlayerVoices = AudioPlayer();
     setBackSounds();
 
 
 startC.loader.value =true;
+
+
+    final session = await AudioSession.instance;
+    await session.configure(const AudioSessionConfiguration.speech());
   for (AffirmationData path in widget.data!) {
     if(path.audioFile != null) {
-       source = AudioSource.uri(Uri.parse(path.audioFile!));
+      try {
+        source = AudioSource.uri(Uri.parse(path.audioFile!));
+      }
+      catch(e){
+        print(e);
+      }
     }
     try {
       // Preload the audio source
 
-      final duration = await audioPlayerVoices.setAudioSource(source!);
-      if (duration != null) {
-        totalDuration += duration;
+      if(source != null) {
+        final duration = await audioPlayerVoices.setAudioSource(source!);
+        if (duration != null) {
+          totalDuration += duration;
+        }
       }
       list.add(source!);
+
     } catch (e) {
       print('Error loading audio: $e');
+
     }
   }
 
@@ -567,9 +583,8 @@ double value =  0;
                                     onTap: () {
                                       setState(() {
                                         startC.setSelectedSpeedIndex(index);
-                                        // speedChange();
-                                        _progress = 0.0; // Reset the progress.
-                                        // _startAutoScrollTimer();
+                                         speedChange();
+                              audioPlayerVoices.setSpeed(speedChange().toDouble()/10);
                                       });
                                     },
                                     child: Padding(
@@ -1036,6 +1051,24 @@ double value =  0;
         style: Style.montserratBold(
             fontSize: 22, color: ColorConstant.themeColor));
   }
+
+  int speedChange() {
+    switch (startC.selectedSpeedIndex) {
+      case 0:
+        return 10;
+      case 1:
+        return 20;
+      case 2:
+        return 15;
+      case 3:
+        return 10;
+      case 4:
+        return 5;
+      default:
+        return 8;
+    }
+  }
+
 
   @override
   void dispose() {
