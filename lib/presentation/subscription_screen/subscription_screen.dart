@@ -68,13 +68,20 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   @override
   void initState() {
     super.initState();
+    getUserData();
+
+    print('Current Date: $now');
+    print('Future Date: $futureDate');
+  }
+  getUserData() async {
+    await getUSer();
     List.generate(2, (index) {
       subscriptionController.plan.add(false);
     },);
     final Stream<List<PurchaseDetails>> purchaseUpdated =
         _inAppPurchase.purchaseStream;
     _subscription = purchaseUpdated.listen(
-        (List<PurchaseDetails> purchaseDetailsList) {
+            (List<PurchaseDetails> purchaseDetailsList) {
           _listenToPurchaseUpdated(purchaseDetailsList);
         },
         onDone: () async {
@@ -88,8 +95,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       futureDate =
           now.add(const Duration(days: 365 + 7)); // Adding 1 year and 1 week
     });
-    print('Current Date: $now');
-    print('Future Date: $futureDate');
   }
 
   Future<void> consume(String id) async {
@@ -294,16 +299,19 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       _loading = false;
     });
     print("consumable list $consumables");
-    if (productDetailResponse.productDetails[0].id == "transform_yearly") {
-      setState(() {
-        subscriptionController.plan[1] = true.obs;
-      });
-    } else if (productDetailResponse.productDetails[0].id ==
-        "transform_monthly") {
-      setState(() {
-        subscriptionController.plan[0] = true.obs;
-      });
+    if(getUserModel.data!.isSubscribed==true){
+      if (productDetailResponse.productDetails[0].id == "transform_yearly") {
+        setState(() {
+          subscriptionController.plan[1] = true.obs;
+        });
+      } else if (productDetailResponse.productDetails[0].id ==
+          "transform_monthly") {
+        setState(() {
+          subscriptionController.plan[0] = true.obs;
+        });
+      }
     }
+
     for (int i = 0; i < subscriptionController.plan.length; i++) {
       if (subscriptionController.plan[i] == true) {
         setState(() {
@@ -378,16 +386,19 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     });
     print("consumable list $consumables");
     print("productDetailResponse details To save in api $productDetailResponse");
-    if (productDetailResponse.productDetails[0].id == "transform_yearly") {
-      setState(() {
-        subscriptionController.plan[1] = true.obs;
-      });
-    } else if (productDetailResponse.productDetails[0].id ==
-        "transform_monthly") {
-      setState(() {
-        subscriptionController.plan[0] = true.obs;
-      });
+    if(getUserModel.data!.isSubscribed==false){
+      if (productDetailResponse.productDetails[0].id == "transform_yearly") {
+        setState(() {
+          subscriptionController.plan[1] = true.obs;
+        });
+      } else if (productDetailResponse.productDetails[0].id ==
+          "transform_monthly") {
+        setState(() {
+          subscriptionController.plan[0] = true.obs;
+        });
+      }
     }
+
   }
 
   GetUserModel getUserModel = GetUserModel();
@@ -415,6 +426,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
         await PrefService.setValue(
             PrefKey.userImage, getUserModel.data?.userProfile ?? "");
+        setState(() {
+
+        });
       } else {
         debugPrint(response.reasonPhrase);
       }
@@ -639,6 +653,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               buttonColor:
                   valueChecked ? Colors.grey : ColorConstant.themeColor,
               onTap: () async {
+
+
                 if (!valueChecked) {
                   if (subscriptionController.plan[0] == true) {
                     _purchasePlan("1 Month");
