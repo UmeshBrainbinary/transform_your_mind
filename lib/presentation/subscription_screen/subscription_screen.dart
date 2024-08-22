@@ -127,7 +127,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       } else {
         if (purchaseDetails.status == PurchaseStatus.error) {
           handleError(purchaseDetails.error!);
-        } else if (purchaseDetails.status == PurchaseStatus.purchased ||
+        }
+        else if (purchaseDetails.status == PurchaseStatus.purchased ||
             purchaseDetails.status == PurchaseStatus.restored) {
           debugPrint("purchase details =========+++++$purchaseDetails");
 
@@ -141,11 +142,11 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     '${EndPoints.baseUrl}${EndPoints.updateUser}${PrefService.getString(PrefKey.userId)}'));
             request.fields.addAll({
               'isSubscribed': "true",
-              'subscriptionId': productDetailResponse.productDetails[0].id,
+              'subscriptionId':  subscriptionController.plan[1] == true?"transform_yearly":"transform_monthly",
               'subscriptionTitle':
-                  productDetailResponse.productDetails[0].title,
+              subscriptionController.plan[1] == true?"Premium Yearly":"Premium Monthly",
               'subscriptionDescription': "",
-              'price': "",
+              'price': "€"+ subscriptionController.plan[1] == true?"49.99":"6.99",
               'rawPrice': "",
               'currencyCode': "",
               'subscriptionDate': DateTime.now().toString(),
@@ -300,11 +301,11 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     });
     print("consumable list $consumables");
     if(getUserModel.data!.isSubscribed==true){
-      if (productDetailResponse.productDetails[0].id == "transform_yearly") {
+      if (getUserModel.data!.subscriptionId == "transform_yearly") {
         setState(() {
           subscriptionController.plan[1] = true.obs;
         });
-      } else if (productDetailResponse.productDetails[0].id ==
+      } else if (getUserModel.data!.subscriptionId ==
           "transform_monthly") {
         setState(() {
           subscriptionController.plan[0] = true.obs;
@@ -386,12 +387,12 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     });
     print("consumable list $consumables");
     print("productDetailResponse details To save in api $productDetailResponse");
-    if(getUserModel.data!.isSubscribed==false){
-      if (productDetailResponse.productDetails[0].id == "transform_yearly") {
+    if(getUserModel.data!.isSubscribed==true){
+      if (getUserModel.data!.subscriptionId == "transform_yearly") {
         setState(() {
           subscriptionController.plan[1] = true.obs;
         });
-      } else if (productDetailResponse.productDetails[0].id ==
+      } else if (getUserModel.data!.subscriptionId ==
           "transform_monthly") {
         setState(() {
           subscriptionController.plan[0] = true.obs;
@@ -535,7 +536,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           ),
           Dimens.d20.spaceHeight,
           Obx(
-                () => ListView.builder(
+                () => subscriptionController.plan.length !=0?
+                ListView.builder(
               itemCount: subscriptionController.selectPlan.length,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -632,7 +634,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                   ),
                 );
               },
-            ),
+            ):const SizedBox(),
           ),
           Dimens.d40.spaceHeight,
           Text(

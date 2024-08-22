@@ -25,19 +25,13 @@ bool? isSubscribed = false;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AppTranslations.loadTranslations();
-
-  tz.initializeTimeZones();
-
-  var detroit = tz.getLocation('Asia/Kolkata');
-  tz.setLocalLocation(detroit);
-  await PrefService.init();
   if (Platform.isIOS) {
     await Firebase.initializeApp(
-      options: const FirebaseOptions(
-          apiKey: "AIzaSyDmL_3cUGmr0-sqqFSFyQQezS2x21z7pso",
-          appId: '1:163422335038:ios:bac98b95c225f792db216f',
-          messagingSenderId: '163422335038',
-          projectId: 'transform-your-mind-afbb7')
+        options: const FirebaseOptions(
+            apiKey: "AIzaSyDmL_3cUGmr0-sqqFSFyQQezS2x21z7pso",
+            appId: '1:163422335038:ios:bac98b95c225f792db216f',
+            messagingSenderId: '163422335038',
+            projectId: 'transform-your-mind-afbb7')
     );
   } else {
     try {
@@ -53,6 +47,35 @@ Future<void> main() async {
       print("=======");
     }
   }
+  if(Platform.isIOS){
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+    flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+        IOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+    await NotificationService.init();
+    String token  =  await NotificationService.generateFCMAccessToken();
+    print(token);
+    print("------");
+  }else{
+    await NotificationService.init();
+  String token  =  await NotificationService.generateFCMAccessToken();
+  print(token);
+  print("------");
+  }
+  tz.initializeTimeZones();
+
+
+
+  var detroit = tz.getLocation('Asia/Kolkata');
+  tz.setLocalLocation(detroit);
+  await PrefService.init();
+
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]).then((value) {
@@ -73,14 +96,17 @@ Future<void> main() async {
     );
   }*/
   if(Platform.isIOS){
-    final fcmToken = await FirebaseMessaging.instance.getAPNSToken();
+    final fcmAPNSToken = await FirebaseMessaging.instance.getAPNSToken();
+    final fcmToken = await FirebaseMessaging.instance.getToken();
     debugPrint("fcmToken $fcmToken");
+    debugPrint("apnsToken $fcmAPNSToken");
 
   }else{
     final fcmToken = await FirebaseMessaging.instance.getToken();
-    debugPrint("fcmToken $fcmToken");
+    debugPrint("fcmTokenAndroid $fcmToken");
 
   }
+
 }
 
 class MyApp extends StatefulWidget {
@@ -126,6 +152,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _initializeNotificationService() async {
     await NotificationService.init();
+    await NotificationService.generateFCMAccessToken();
 /*await NotificationService.requestPermissions();*/
   }
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
