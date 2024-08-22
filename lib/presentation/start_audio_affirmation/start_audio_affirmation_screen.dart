@@ -158,11 +158,22 @@ print("#### Done #####");
       setState(() {});
     });
   }*/
+  getLikeData() {
+    if ((widget.data ?? []).isNotEmpty) {
+      for (int i = 0; i < widget.data!.length; i++) {
+        like.add(widget.data?[i].isLiked ?? false);
+      }
+    }
+    setState(() {
+
+    });
+  }
 
   AudioSource? source;
 List<AudioSource> list = [];
 late ConcatenatingAudioSource myPlayList ;
   init() async {
+     getLikeData();
     audioPlayerVoices = AudioPlayer();
     setBackSounds();
 
@@ -560,6 +571,68 @@ double value =  0;
                       ],
                     ),
                   ),
+
+                  //_____________________________ like ,clock, share________________________
+                  showBottom
+                      ? const SizedBox()
+                      : Positioned(
+                      bottom: Dimens.d246,
+                      left: MediaQuery.of(context).size.width / 3.2,
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Share.share(widget.data![_currentIndex].description.toString());
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: SvgPicture.asset(ImageConstant.share,
+                                  color: ColorConstant.white, height: 22, width: 22),
+                            ),
+                          ),
+                          Dimens.d40.spaceWidth,
+                          GestureDetector(
+                            onTap: () {
+                             // _stopScrolling();
+                              setState(() {
+                                showBottom = true;
+                              });
+                              sheetAlarm();
+                            },
+                            child: SvgPicture.asset(ImageConstant.alarm,
+                                color: ColorConstant.white, height: 20, width: 20),
+                          ),
+                          Dimens.d40.spaceWidth,
+                          GestureDetector(
+                            onTap: () async {
+                              like[likeIndex] = !like[likeIndex];
+
+                              await updateAffirmationLike(
+                                  isLiked: like[likeIndex],
+                                  id: widget.data![likeIndex].id);
+
+                              setState(() {
+                                likeAnimation = like[likeIndex];
+                                Future.delayed(const Duration(seconds: 2)).then(
+                                      (value) {
+                                    setState(() {
+                                      likeAnimation = false;
+                                    });
+                                  },);
+                              });
+                            },
+                            child:  SvgPicture.asset(
+                              like[likeIndex]?ImageConstant.likeRedTools:ImageConstant.likeTools,
+                              color: like[likeIndex]?ColorConstant.deleteRed:ColorConstant.white,
+                              height: 20,
+                              width: 20,
+                            ),
+                          )
+
+                        ],
+                      )),
+
+
                   startC.setSpeed.isTrue
                       ? Positioned(
                           bottom: Dimens.d170,
@@ -701,6 +774,462 @@ double value =  0;
         ),
       ),
     );
+  }
+
+
+  Future sheetAlarm() {
+    return showModalBottomSheet(
+      barrierColor: Colors.transparent,
+      backgroundColor: Colors.transparent,
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Stack(
+              children: [
+                Positioned(top: 600,
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                    child: Container(),
+                  ),
+                ),
+                Container(
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(20),
+                      topLeft: Radius.circular(20),
+                    ),
+                    color: Colors.transparent,
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(20),
+                        topLeft: Radius.circular(20),
+                      ),
+                      color: ColorConstant.black.withOpacity(0.4),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Dimens.d10.spaceHeight,
+                            Center(
+                              child: Container(
+                                height: 4,
+                                width: 40,
+                                decoration: BoxDecoration(
+                                  color: ColorConstant.colorBCBCBC,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                            ),
+                            Dimens.d10.spaceHeight,
+                            Row(
+                              children: [
+                                Text(
+                                  "Alarm".tr,
+                                  style: Style.nunMedium(
+                                    fontSize: 32,
+                                    color: ColorConstant.white,
+                                  ),
+                                ),
+                                const Spacer(),
+                                Container(
+                                  height: 26,
+                                  width: Dimens.d100,
+                                  decoration: BoxDecoration(
+                                    color: ColorConstant.transparent,
+                                    borderRadius: BorderRadius.circular(17),
+                                    border: Border.all(
+                                      color: ColorConstant.colorBFBFBF,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState.call(() {
+                                            am = true;
+                                            pm = false;
+                                          });
+                                        },
+                                        child: Container(
+                                          width: Dimens.d49,
+                                          decoration: BoxDecoration(
+                                            color: am
+                                                ? ColorConstant.themeColor
+                                                : ColorConstant.transparent,
+                                            borderRadius:
+                                            BorderRadius.circular(17),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              "AM",
+                                              style: Style.nunRegular(
+                                                fontSize: 12,
+                                                color: am
+                                                    ? ColorConstant.white
+                                                    : ColorConstant.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState.call(() {
+                                            am = false;
+                                            pm = true;
+                                          });
+                                        },
+                                        child: Container(
+                                          height: 26,
+                                          width: Dimens.d49,
+                                          decoration: BoxDecoration(
+                                            color: pm
+                                                ? ColorConstant.themeColor
+                                                : ColorConstant.transparent,
+                                            borderRadius:
+                                            BorderRadius.circular(17),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              "PM",
+                                              style: Style.nunRegular(
+                                                fontSize: 12,
+                                                color: pm
+                                                    ? ColorConstant.white
+                                                    : ColorConstant.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Dimens.d10.spaceHeight,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 70),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+
+                                  commonTextA("hours".tr),
+                                  commonTextA("minutes".tr),
+                                  commonTextA("seconds".tr),
+
+
+                                ],
+                              ),
+                            ),
+                            Dimens.d10.spaceHeight,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 70),
+                              child: Row(
+                                children: [
+
+                                  NumberPicker(
+                                    infiniteLoop: true,
+                                    zeroPad: true,
+                                    value: selectedHour,
+                                    minValue: 0,
+                                    textStyle: Style.nunRegular(
+                                      fontSize: 14,
+                                      color: ColorConstant.colorCACACA,
+                                    ),
+                                    selectedTextStyle: Style.montserratBold(
+                                      fontSize: 22,
+                                      color: ColorConstant.themeColor,
+                                    ),
+                                    maxValue: am ? 12 : 24,
+                                    itemHeight: 50,
+                                    itemWidth: 50,
+                                    onChanged: (value) =>
+                                        setState(() => selectedHour = value),
+                                  ),
+                                  const Spacer(),
+                                  numericSymbol(),
+                                  const Spacer(),
+                                  NumberPicker(
+                                    infiniteLoop: true,
+                                    zeroPad: true,
+                                    value: selectedMinute,
+                                    minValue: 0,
+                                    itemHeight: 50,
+                                    itemWidth: 50,
+                                    textStyle: Style.nunRegular(
+                                      fontSize: 14,
+                                      color: ColorConstant.colorCACACA,
+                                    ),
+                                    selectedTextStyle: Style.montserratBold(
+                                      fontSize: 22,
+                                      color: ColorConstant.themeColor,
+                                    ),
+                                    maxValue: 59,
+                                    onChanged: (value) =>
+                                        setState(() => selectedMinute = value),
+                                  ),
+                                  const Spacer(),
+                                  numericSymbol(),
+                                  const Spacer(),
+                                  NumberPicker(
+                                    infiniteLoop: true,
+                                    zeroPad: true,
+                                    value: selectedSeconds,
+                                    minValue: 0,
+                                    itemHeight: 50,
+                                    itemWidth: 50,
+                                    textStyle: Style.nunRegular(
+                                      fontSize: 14,
+                                      color: ColorConstant.colorCACACA,
+                                    ),
+                                    selectedTextStyle: Style.montserratBold(
+                                      fontSize: 22,
+                                      color: ColorConstant.themeColor,
+                                    ),
+                                    maxValue: 59,
+                                    onChanged: (value) =>
+                                        setState(() => selectedSeconds = value),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) {
+                                    return const AudioList();
+                                  },
+                                ));
+                              },
+                              child: Container(
+                                margin:
+                                const EdgeInsets.symmetric(horizontal: 40),
+                                height: Dimens.d51,
+                                width: Get.width,
+                                decoration: BoxDecoration(
+                                  color: ColorConstant.backGround,
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Dimens.d14.spaceWidth,
+                                    Text(
+                                      "sound".tr,
+                                      style: Style.nunRegular(fontSize: 14,color: Colors.black),
+                                    ),
+                                    const Spacer(),
+                                    Text(
+                                      "default".tr,
+                                      style: Style.nunRegular(
+                                        fontSize: 14,
+                                        color: ColorConstant.color787878,
+                                      ),
+                                    ),
+                                    SvgPicture.asset(
+                                      ImageConstant.settingArrowRight,
+                                      color: ColorConstant.color787878,
+                                    ),
+                                    Dimens.d14.spaceWidth,
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Dimens.d20.spaceHeight,
+                            Padding(
+                              padding:
+                              EdgeInsets.symmetric(horizontal: Dimens.d70.h),
+                              child: CommonElevatedButton(
+                                textStyle: Style.nunRegular(
+                                  fontSize: Dimens.d14,
+                                  color: ColorConstant.white,
+                                ),
+                                title: "save".tr,
+                                onTap: () async {
+                                  _setAlarm(widget.data?[_currentIndex].alarmId??0);
+                                  await createAlarm(widget.id);
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    ).whenComplete(() {
+     // _startScrolling();
+
+      setState(() {
+        showBottom = false;
+      });
+    });
+  }
+
+
+
+  createAlarm(id) async {
+    setState(() {
+      startC.loader.value = true;
+    });
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.Request('POST', Uri.parse(EndPoints.addAlarm));
+    request.body = json.encode({
+      "hours": selectedHour,
+      "minutes": selectedMinute,
+      "seconds": selectedSeconds,
+      "time": am == true ? "AM" : "PM",
+      "affirmationId": id,
+      "created_by": PrefService.getString(PrefKey.userId)
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200 ) {
+      selectedSeconds = 0;
+      selectedMinute = 0;
+      selectedHour = 0;
+      setState(() {
+        startC.loader.value = false;
+      });
+
+      debugPrint(await response.stream.bytesToString());
+      showSnackBarSuccess(context, "alarmSet".tr);
+      Get.back();
+    } else {
+      selectedSeconds = 0;
+      selectedMinute = 0;
+      selectedHour = 0;
+      final responseBody = await response.stream.bytesToString();
+      commonModel = commonModelFromJson(responseBody);
+      showSnackBarSuccess(context, commonModel.message ?? "alarmAlreadySet".tr);
+      Get.back();
+
+      setState(() {
+        startC.loader.value = false;
+      });
+
+      debugPrint(response.reasonPhrase);
+    }
+    setState(() {
+      startC.loader.value= false;
+    });
+  }
+
+
+
+  void _setAlarm(id) async {
+    DateTime alarmTime = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day,
+        selectedHour,selectedMinute,selectedSeconds);
+    final alarmSettings = AlarmSettings(
+        id: id,
+        dateTime: alarmTime,
+        assetAudioPath: widget.data?[0].audioFile ?? 'assets/audio/audio.mp3',
+        loopAudio: true,
+        vibrate: false,
+        volume: 0.2,
+        androidFullScreenIntent: true,
+        fadeDuration: 3.0,
+        notificationTitle: 'TransformYourMind',
+        notificationBody: 'TransformYourMind Alarm ringing.....',
+        enableNotificationOnKill: Platform.isAndroid?Platform.isAndroid:Platform.isIOS);
+    await Alarm.set(
+      alarmSettings: alarmSettings,
+    );
+  }
+  Future<void> navigateToRingScreen(AlarmSettings alarmSettings) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute<void>(
+        builder: (context) =>
+            AlarmNotificationScreen(alarmSettings: alarmSettings),
+      ),
+    );
+    loadAlarms();
+  }
+  void loadAlarms() {
+    setState(() {
+      alarms = Alarm.getAlarms();
+      alarms.sort((a, b) => a.dateTime.isBefore(b.dateTime) ? 0 : 1);
+    });
+  }
+  Future<void> checkAndroidNotificationPermission() async {
+    final status = await Permission.notification.status;
+    if (status.isDenied) {
+      alarmPrint('Requesting notification permission...');
+      final res = await Permission.notification.request();
+      alarmPrint(
+        'Notification permission ${res.isGranted ? '' : 'not '}granted',
+      );
+    }
+  }
+  Future<void> checkAndroidScheduleExactAlarmPermission() async {
+    final status = await Permission.scheduleExactAlarm.status;
+    if (kDebugMode) {
+      print('Schedule exact alarm permission: $status.');
+    }
+    if (status.isDenied) {
+      if (kDebugMode) {
+        print('Requesting schedule exact alarm permission...');
+      }
+      final res = await Permission.scheduleExactAlarm.request();
+      if (kDebugMode) {
+        print(
+            'Schedule exact alarm permission ${res.isGranted ? '' : 'not'} granted.');
+      }
+    }
+  }
+
+  updateAffirmationLike({String? id, bool? isLiked}) async {
+    setState(() {
+      startC.loader.value = true;
+    });
+    debugPrint("User Id ${PrefService.getString(PrefKey.userId)}");
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.MultipartRequest(
+        'POST',
+        Uri.parse(
+            '${EndPoints.baseUrl}${EndPoints.updateAffirmation}$id'));
+
+    request.fields.addAll({'isLiked': "$isLiked"});
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      setState(() {
+        startC.loader.value = false;
+      });
+      setState(() {});
+    } else {
+      setState(() {
+        startC.loader.value = false;
+      });
+      debugPrint(response.reasonPhrase);
+    }
+    setState(() {
+      startC.loader.value = false;
+    });
   }
 
   setBackSounds() async {
