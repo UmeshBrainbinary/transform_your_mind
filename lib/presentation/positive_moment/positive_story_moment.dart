@@ -217,11 +217,11 @@ class _PositiveStoryMomentState extends State<PositiveStoryMoment> {
                     if (_currentIndex == ( widget.data!.length - 1)) {
 
                       await positiveController.pause();
-                      // Future.delayed(Duration(seconds: speedChange())).then(
-                      //       (value) {
-                      //     Get.back();
-                      //   },
-                      // );
+                      Future.delayed(Duration(seconds: speedChange())).then(
+                            (value) {
+                          Get.back();
+                        },
+                      );
                     }
                   },
                   itemBuilder: (context, index) {
