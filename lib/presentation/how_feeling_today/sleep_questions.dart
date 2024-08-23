@@ -188,7 +188,7 @@ class SleepQuestions extends StatelessWidget {
                     ),
                   ),
                   Dimens.d20.spaceHeight,
-                  commonTextTitle("whatCanYouDoToday".tr, count: "3"),
+                  // commonTextTitle("whatCanYouDoToday".tr, count: "3"),
 
                   Dimens.d30.spaceHeight,
                   commonTextSubtitle("whatMeasures".tr),
@@ -366,7 +366,9 @@ class SleepQuestions extends StatelessWidget {
   }
 
   commonText(String title, {String? count, double? fontSize}) {
-    return Text(title.tr, style: Style.nunMedium(fontSize: fontSize ?? 16));
+    return SizedBox(
+        width: Get.width *0.6,
+        child: Text(title.tr, style: Style.nunMedium(fontSize: fontSize ?? 16)));
   }
 
   commonTextSubtitle(title){

@@ -115,11 +115,11 @@ class MotivationalQuestions extends StatelessWidget {
                 GetBuilder<HowFeelingsController>(
                   builder: (controller) => ListView.builder(
                     padding: EdgeInsets.zero,
-                    itemCount: controller.whatHelpedYou.length,
+                    itemCount: controller.whatStepCanYou.length,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
-                      var data = controller.whatHelpedYou[index];
+                      var data = controller.whatStepCanYou[index];
                       return GestureDetector(
                         onTap: () {
                           controller.whatStep = index;
@@ -165,6 +165,191 @@ class MotivationalQuestions extends StatelessWidget {
                     },
                   ),
                 ),
+
+
+
+                /// ---- 3-----
+                commonTextTitle(
+                    "How motivated are you to make the most of today?".tr,
+                    count: "3"),
+
+                Dimens.d20.spaceHeight,
+                GetBuilder<HowFeelingsController>(
+                  builder: (controller) => ListView.builder(
+                    padding: EdgeInsets.zero,
+                    itemCount:  controller.howMotivated.length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      var data = controller.howMotivated[index];
+                      return GestureDetector(
+                        onTap: () {
+                          controller.howMotivateBool = index;
+                          controller.update();
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(
+                              bottom: 15, left: 20, right: 20),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 13, vertical: 10),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: controller.howMotivateBool == index
+                                      ? ColorConstant.themeColor
+                                      : Colors.transparent),
+                              color: themeController.isDarkMode.isTrue
+                                  ? ColorConstant.textfieldFillColor
+                                  : ColorConstant.white,
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Row(
+                            children: [
+                              commonText(data["title"]),
+                              const Spacer(),
+                              controller.howMotivateBool == index
+                                  ? SvgPicture.asset(ImageConstant.check)
+                                  : Container(
+                                height: 18,
+                                width: 18,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                        color: themeController
+                                            .isDarkMode.isTrue
+                                            ? ColorConstant.white
+                                            : ColorConstant.black,
+                                        width: 1)),
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Dimens.d15.spaceHeight,
+
+
+                /// ---- 4-----
+                 commonTextTitle(
+                    "What inspired you to give your best today?".tr,
+                    count: "4"),
+
+                Dimens.d20.spaceHeight,
+                GetBuilder<HowFeelingsController>(
+                  builder: (controller) => ListView.builder(
+                    padding: EdgeInsets.zero,
+                    itemCount:  controller.whatInspire.length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      var data = controller.whatInspire[index];
+                      return GestureDetector(
+                        onTap: () {
+                          controller.whatInspireBool = index;
+                          controller.update();
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(
+                              bottom: 15, left: 20, right: 20),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 13, vertical: 10),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: controller.whatInspireBool == index
+                                      ? ColorConstant.themeColor
+                                      : Colors.transparent),
+                              color: themeController.isDarkMode.isTrue
+                                  ? ColorConstant.textfieldFillColor
+                                  : ColorConstant.white,
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Row(
+                            children: [
+                              commonText(data["title"]),
+                              const Spacer(),
+                              controller.whatInspireBool == index
+                                  ? SvgPicture.asset(ImageConstant.check)
+                                  : Container(
+                                height: 18,
+                                width: 18,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                        color: themeController
+                                            .isDarkMode.isTrue
+                                            ? ColorConstant.white
+                                            : ColorConstant.black,
+                                        width: 1)),
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Dimens.d15.spaceHeight,
+
+
+                /// ---- 5-----
+               commonTextTitle(
+                    "Which challenge do you want to conquer today?".tr,
+                    count: "5"),
+
+                Dimens.d20.spaceHeight,
+               GetBuilder<HowFeelingsController>(
+                  builder: (controller) => ListView.builder(
+                    padding: EdgeInsets.zero,
+                    itemCount:  controller.whichChallenge.length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      var data = controller.whichChallenge[index];
+                      return GestureDetector(
+                        onTap: () {
+                          controller.whichChallengeBool = index;
+                          controller.update();
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(
+                              bottom: 15, left: 20, right: 20),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 13, vertical: 10),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: controller.whichChallengeBool == index
+                                      ? ColorConstant.themeColor
+                                      : Colors.transparent),
+                              color: themeController.isDarkMode.isTrue
+                                  ? ColorConstant.textfieldFillColor
+                                  : ColorConstant.white,
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Row(
+                            children: [
+                              commonText(data["title"]),
+                              const Spacer(),
+                              controller.whichChallengeBool == index
+                                  ? SvgPicture.asset(ImageConstant.check)
+                                  : Container(
+                                height: 18,
+                                width: 18,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                        color: themeController
+                                            .isDarkMode.isTrue
+                                            ? ColorConstant.white
+                                            : ColorConstant.black,
+                                        width: 1)),
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Dimens.d15.spaceHeight,
+
 
                 Dimens.d15.spaceHeight,
                 commonTextSubtitle("whatParticularly".tr),
@@ -261,7 +446,9 @@ class MotivationalQuestions extends StatelessWidget {
   }
 
   commonText(String title, {String? count, double? fontSize}) {
-    return Text(title.tr, style: Style.nunMedium(fontSize: fontSize ?? 16));
+    return SizedBox(
+        width: Get.width *0.6,
+        child: Text(title.tr, style: Style.nunMedium(fontSize: fontSize ?? 16)));
   }
 
   commonTextSubtitle(title) {

@@ -135,7 +135,67 @@ class EveningSleep extends StatelessWidget {
 
                   //___________________________________ 2. _________________________________
 
-                  controller.selectedDidYouSleepWell == "No"?Column(children: [
+                  /// ==== 1====
+               /*   controller.selectedDidYouSleepWell == "No"?Column(children: [
+                    commonTextTitle("WhatNegatively".tr, count: "2"),
+                    Dimens.d20.spaceHeight,
+                    GetBuilder<HowFeelingEveningController>(
+                      builder: (controller) => ListView.builder(
+                        padding: EdgeInsets.zero,
+                        itemCount: controller.whatNegatively.length,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          var data = controller.whatNegatively[index];
+                          return GestureDetector(
+                            onTap: () {
+                              controller.howDoYouIndexSleep = index;
+                              controller.update();
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(
+                                  bottom: 15, left: 20, right: 20),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 13, vertical: 10),
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: controller.howDoYouIndexSleep == index
+                                          ? ColorConstant.themeColor
+                                          : Colors.transparent),
+                                  color: themeController.isDarkMode.isTrue
+                                      ? ColorConstant.textfieldFillColor
+                                      : ColorConstant.white,
+                                  borderRadius: BorderRadius.circular(8)),
+                              child: Row(
+                                children: [
+                                  commonText(data["title"]),
+                                  const Spacer(),
+                                  controller.howDoYouIndexSleep == index
+                                      ? SvgPicture.asset(ImageConstant.check)
+                                      : Container(
+                                    height: 18,
+                                    width: 18,
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                            color: themeController
+                                                .isDarkMode.isTrue
+                                                ? ColorConstant.white
+                                                : ColorConstant.black,
+                                            width: 1)),
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    Dimens.d20.spaceHeight,*/
+                  controller.selectedDidYouSleepWell == "No"?
+                  Column(children: [
+
+
                     commonTextTitle("WhatNegatively".tr, count: "2"),
                     Dimens.d20.spaceHeight,
                     GetBuilder<HowFeelingEveningController>(
@@ -191,6 +251,8 @@ class EveningSleep extends StatelessWidget {
                       ),
                     ),
                     Dimens.d20.spaceHeight,
+
+
                     commonTextTitle("whatCanYouDoToday".tr, count: "3"),
 
                     Dimens.d30.spaceHeight,
@@ -203,7 +265,8 @@ class EveningSleep extends StatelessWidget {
                     commonTextFiled("", controller.whatHasHelped),
                     Dimens.d30.spaceHeight,
 
-                  ],):Column(children: [
+                  ],):
+                  Column(children: [
                     commonTextTitle("isThereSomethingHelps".tr, count: "2"),
 
                     Dimens.d20.spaceHeight,

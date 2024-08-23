@@ -52,7 +52,7 @@ class _HowFeelingTodayScreenState extends State<HowFeelingTodayScreen> {
               ),
               Dimens.d20.spaceHeight,
               //___________________________________ 1. _________________________
-              commonTextTitle("howDoYouFeel".tr, count: "1"),
+              commonTextTitle("How are you feeling right now?".tr, count: "1"),
 
               Dimens.d20.spaceHeight,
               GetBuilder<HowFeelingsController>(
@@ -114,24 +114,18 @@ class _HowFeelingTodayScreenState extends State<HowFeelingTodayScreen> {
               //___________________________________  2. ________________________
 
               commonTextTitle(
-                  controller.howDoYouIndex != 0 || controller.howDoYouIndex==-1
-                      ? "whatCanYouToday".tr
-                      : "whatHelpedYOu".tr,
+                   "What helped you start your day well?".tr,
                   count: "2"),
 
               Dimens.d20.spaceHeight,
               GetBuilder<HowFeelingsController>(
                 builder: (controller) => ListView.builder(
                   padding: EdgeInsets.zero,
-                  itemCount: controller.howDoYouIndex != 0
-                      ? controller.whatCanYouToday.length
-                      : controller.whatHelpedYou.length,
+                  itemCount:controller.whatHelpedYou.length,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
-                    var data = controller.howDoYouIndex != 0
-                        ? controller.whatCanYouToday[index]
-                        : controller.whatHelpedYou[index];
+                    var data = controller.whatHelpedYou[index];
                     return GestureDetector(
                       onTap: () {
                         controller.whatHelped = index;
@@ -178,6 +172,70 @@ class _HowFeelingTodayScreenState extends State<HowFeelingTodayScreen> {
                 ),
               ),
               Dimens.d15.spaceHeight,
+
+
+              commonTextTitle(
+                 "whatCanYouToday".tr
+                    ,
+                  count: "3"),
+
+              Dimens.d20.spaceHeight,
+              GetBuilder<HowFeelingsController>(
+                builder: (controller) => ListView.builder(
+                  padding: EdgeInsets.zero,
+                  itemCount: controller.whatCanYouToday.length,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    var data = controller.whatCanYouToday[index]
+                   ;
+                    return GestureDetector(
+                      onTap: () {
+                        controller.whatHelpedCan = index;
+
+                        controller.update();
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.only(
+                            bottom: 15, left: 20, right: 20),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 13, vertical: 10),
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                color: controller.whatHelpedCan == index
+                                    ? ColorConstant.themeColor
+                                    : Colors.transparent),
+                            color: themeController.isDarkMode.isTrue
+                                ? ColorConstant.textfieldFillColor
+                                : ColorConstant.white,
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Row(
+                          children: [
+                            commonText(data["title"]),
+                            const Spacer(),
+                            controller.whatHelpedCan == index
+                                ? SvgPicture.asset(ImageConstant.check)
+                                : Container(
+                              height: 18,
+                              width: 18,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                      color: themeController
+                                          .isDarkMode.isTrue
+                                          ? ColorConstant.white
+                                          : ColorConstant.black,
+                                      width: 1)),
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Dimens.d15.spaceHeight,
+
               commonTextSubtitle(controller.howDoYouIndex!=0 ||controller.howDoYouIndex==-1?"whatPositive".tr:"howCanYouMaintain".tr),
               Dimens.d20.spaceHeight,
               commonTextFiled("", controller.whatPositive),

@@ -58,15 +58,7 @@ Future<void> main() async {
       badge: true,
       sound: true,
     );
-    await NotificationService.init();
-    String token  =  await NotificationService.generateFCMAccessToken();
-    print(token);
-    print("------");
-  }else{
-    await NotificationService.init();
-  String token  =  await NotificationService.generateFCMAccessToken();
-  print(token);
-  print("------");
+
   }
   tz.initializeTimeZones();
 
@@ -75,6 +67,11 @@ Future<void> main() async {
   var detroit = tz.getLocation('Asia/Kolkata');
   tz.setLocalLocation(detroit);
   await PrefService.init();
+  await NotificationService.init();
+  String token  =  await NotificationService.generateFCMAccessToken();
+  if (kDebugMode) {
+    print(token);
+  }
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,

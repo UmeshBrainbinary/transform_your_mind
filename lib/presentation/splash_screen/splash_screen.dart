@@ -42,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen> {
   GetUserModel getUserModel = GetUserModel();
 
   void _setGreetingBasedOnTime() {
-    greeting = _getGreetingBasedOnTime();
+     greeting = _getGreetingBasedOnTime();
     setState(() {});
   }
 

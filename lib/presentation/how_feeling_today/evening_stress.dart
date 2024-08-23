@@ -376,6 +376,72 @@ class EveningStress extends StatelessWidget {
                               },
                             ),
                           ),
+
+
+                          Dimens.d15.spaceHeight,
+                          commonTextTitle("How successful were you in relieving your stress today?".tr, count: "4"),
+
+                          Dimens.d20.spaceHeight,
+                          GetBuilder<HowFeelingEveningController>(
+                            builder: (controller) => ListView.builder(
+                              padding: EdgeInsets.zero,
+                              itemCount: controller.success.length,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                var data = controller.success[index];
+                                return GestureDetector(
+                                  onTap: () {
+                                    controller.successBool = index;
+                                    controller.update();
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.only(
+                                        bottom: 15, left: 20, right: 20),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 13, vertical: 10),
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color:
+                                            controller.successBool ==
+                                                index
+                                                ? ColorConstant.themeColor
+                                                : Colors.transparent),
+                                        color: themeController.isDarkMode.isTrue
+                                            ? ColorConstant.textfieldFillColor
+                                            : ColorConstant.white,
+                                        borderRadius: BorderRadius.circular(8)),
+                                    child: Row(
+                                      children: [
+                                        commonText(data["title"]),
+                                        const Spacer(),
+                                        controller.successBool == index
+                                            ? SvgPicture.asset(
+                                            ImageConstant.check)
+                                            : Container(
+                                          height: 18,
+                                          width: 18,
+                                          decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                  color: themeController
+                                                      .isDarkMode
+                                                      .isTrue
+                                                      ? ColorConstant
+                                                      .white
+                                                      : ColorConstant
+                                                      .black,
+                                                  width: 1)),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+
+
                           Dimens.d15.spaceHeight,
                           commonTextSubtitle(controller.whatHelpedStress != 0
                               ? "whatCouldHaveDone".tr
@@ -397,6 +463,10 @@ class EveningStress extends StatelessWidget {
                                   "", controller.areThere),
                         ],
                       ),
+
+
+                /// ---- 3
+
 
                 Dimens.d40.spaceHeight,
 
@@ -471,7 +541,9 @@ class EveningStress extends StatelessWidget {
   }
 
   commonText(String title, {String? count, double? fontSize}) {
-    return Text(title.tr, style: Style.nunMedium(fontSize: fontSize ?? 16));
+    return SizedBox(
+        width: Get.width *0.6,
+        child: Text(title.tr, style: Style.nunMedium(fontSize: fontSize ?? 16)));
   }
 
   commonTextSubtitle(title) {

@@ -259,5 +259,6 @@ class ImageConstant {
   static String likeGif = "$gifPath/like.gif";
   static String micAnimation = "$lottie/mic_animation.json";
   static String animation = "$lottie/animation.json";
+  static String celebration = "$gifPath/celebration.gif";
 
 }

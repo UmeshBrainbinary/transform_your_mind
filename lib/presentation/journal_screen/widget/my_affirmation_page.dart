@@ -658,7 +658,7 @@ bool isAudio = false;
                                       : ColorConstant.transparent),
                               child: Center(
                                 child: Text(
-                                  "yourAffirmation".tr,
+                                  "addYourAffirmation".tr,
                                   style: Style.nunRegular(
                                       fontSize: Dimens.d14,
                                       color: _currentTabIndex == 0

@@ -173,14 +173,188 @@ class EveningMotivational extends StatelessWidget {
                   },
                 ),
 
-                Dimens.d30.spaceHeight,
+                //___________________________________ 3. _________________________________
+                Dimens.d20.spaceHeight,
+                commonTextTitle("How well did you maintain your motivation today?".tr, count: "2"),
 
+                Dimens.d20.spaceHeight,
+                GetBuilder<HowFeelingEveningController>(
+                  builder: (controller) => ListView.builder(
+                    padding: EdgeInsets.zero,
+                    itemCount: controller.maintain.length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      var data = controller.maintain[index];
+                      return GestureDetector(
+                        onTap: () {
+                          controller.maintainBool = index;
+
+                          controller.update();
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(
+                              bottom: 15, left: 20, right: 20),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 13, vertical: 10),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: controller.maintainBool == index
+                                      ? ColorConstant.themeColor
+                                      : Colors.transparent),
+                              color: themeController.isDarkMode.isTrue
+                                  ? ColorConstant.textfieldFillColor
+                                  : ColorConstant.white,
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Row(
+                            children: [
+                              commonText(data["title"]),
+                              const Spacer(),
+                              controller.maintainBool == index
+                                  ? SvgPicture.asset(ImageConstant.check)
+                                  : Container(
+                                height: 18,
+                                width: 18,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                        color: themeController
+                                            .isDarkMode.isTrue
+                                            ? ColorConstant.white
+                                            : ColorConstant.black,
+                                        width: 1)),
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+
+                //___________________________________ 4. _________________________________
+                Dimens.d20.spaceHeight,
+                commonTextTitle("What inspired you to give your best today?".tr, count: "3"),
+
+                Dimens.d20.spaceHeight,
+                GetBuilder<HowFeelingEveningController>(
+                  builder: (controller) => ListView.builder(
+                    padding: EdgeInsets.zero,
+                    itemCount: controller.inspired.length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      var data = controller.inspired[index];
+                      return GestureDetector(
+                        onTap: () {
+                          controller.inspiredBool = index;
+
+                          controller.update();
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(
+                              bottom: 15, left: 20, right: 20),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 13, vertical: 10),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: controller.inspiredBool == index
+                                      ? ColorConstant.themeColor
+                                      : Colors.transparent),
+                              color: themeController.isDarkMode.isTrue
+                                  ? ColorConstant.textfieldFillColor
+                                  : ColorConstant.white,
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Row(
+                            children: [
+                              commonText(data["title"]),
+                              const Spacer(),
+                              controller.inspiredBool == index
+                                  ? SvgPicture.asset(ImageConstant.check)
+                                  : Container(
+                                height: 18,
+                                width: 18,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                        color: themeController
+                                            .isDarkMode.isTrue
+                                            ? ColorConstant.white
+                                            : ColorConstant.black,
+                                        width: 1)),
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                //___________________________________ 5. _________________________________
+                Dimens.d20.spaceHeight,
+                commonTextTitle("How well did you conquer your challenge today?".tr, count: "4"),
+
+                Dimens.d20.spaceHeight,
+                GetBuilder<HowFeelingEveningController>(
+                  builder: (controller) => ListView.builder(
+                    padding: EdgeInsets.zero,
+                    itemCount: controller.concure.length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      var data = controller.concure[index];
+                      return GestureDetector(
+                        onTap: () {
+                          controller.concureBool = index;
+
+                          controller.update();
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(
+                              bottom: 15, left: 20, right: 20),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 13, vertical: 10),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: controller.concureBool == index
+                                      ? ColorConstant.themeColor
+                                      : Colors.transparent),
+                              color: themeController.isDarkMode.isTrue
+                                  ? ColorConstant.textfieldFillColor
+                                  : ColorConstant.white,
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Row(
+                            children: [
+                              commonText(data["title"]),
+                              const Spacer(),
+                              controller.concureBool == index
+                                  ? SvgPicture.asset(ImageConstant.check)
+                                  : Container(
+                                height: 18,
+                                width: 18,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                        color: themeController
+                                            .isDarkMode.isTrue
+                                            ? ColorConstant.white
+                                            : ColorConstant.black,
+                                        width: 1)),
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Dimens.d20.spaceHeight,
                 //___________________________________ 2. _________________________________
 
                   controller.selectedOptionStressAchieve == "No"
                       ? Column(
                           children: [
-                            commonTextTitle("whatPrevented".tr, count: "2"),
+                            commonTextTitle("whatPrevented".tr, count: "5"),
                   Dimens.d20.spaceHeight,
                   GetBuilder<HowFeelingEveningController>(
                     builder: (controller) => ListView.builder(
@@ -247,8 +421,9 @@ class EveningMotivational extends StatelessWidget {
                             commonTextFiled("", feelController.sleep),
                             Dimens.d20.spaceHeight,
 
-                ],):Column(children: [
-                  commonTextTitle("whatHelpedYou".tr, count: "2"),
+                ],):
+                  Column(children: [
+                  commonTextTitle("whatHelpedYou".tr, count: "5"),
 
                   Dimens.d20.spaceHeight,
                   GetBuilder<HowFeelingEveningController>(
@@ -316,6 +491,11 @@ class EveningMotivational extends StatelessWidget {
                   Dimens.d20.spaceHeight,
                   commonTextFiled("", feelController.howWill),
                 ],),
+
+
+
+
+
 
                 Dimens.d50.spaceHeight,
                 Padding(
@@ -398,7 +578,10 @@ class EveningMotivational extends StatelessWidget {
   }
 
   commonText(String title, {String? count, double? fontSize}) {
-    return Text(title.tr, style: Style.nunMedium(fontSize: fontSize ?? 16));
+    return SizedBox(
+        width: Get.width *0.6,
+
+        child: Text(title.tr, style: Style.nunMedium(fontSize: fontSize ?? 16)));
   }
 
   commonTextSubtitle(title) {

@@ -199,6 +199,7 @@
   "releaseToLoadMore": "Zum Laden loslassen!",
   "noMoreData": "Keine Daten mehr!",
   "yourAffirmation": "Ihre Affirmation",
+  "addYourAffirmation": "Ihre Affirmation",
   "affirmationHeader": "Affirmationsüberschrift",
   "transformYourMindAffirmation": "TransformiereDeinenGeist-Affirmation",
   "enterYourOwnAffirmation": "Geben Sie Ihre eigene Affirmation ein",
@@ -629,6 +630,174 @@
   "StartWithExercise": "Also, lass uns mit einer kleinen Übung beginnen: Atme - dann genieße deine tägliche Routine, um dein bestes Leben zu führen",
   "Record": "Aufzeichnen",
   "Stop": "Kurz",
-  "Test recording": "Testaufnahme"
+  "Test recording": "Testaufnahme",
+  "Record affirmation": "Record affirmation",
 
+  "What is causing your stress this morning?": "Was verursacht deinen Stress heute Morgen?",
+  "An upcoming task or deadline": "Eine bevorstehende Aufgabe oder Deadline",
+  "Personal obligations":"Persönliche Verpflichtungen",
+  "Health concerns": "Gesundheitliche Probleme",
+  "General tension or nervousness":"Allgemeine Anspannung oder Nervosität",
+  "Something else": "Etwas anderes",
+
+  "How could you relieve this stress?": "Wie kÃ¶nntest du diesen Stress abbauen?",
+  "Through breathing exercises or audios": "Durch AtemÃ¼bungen oder Audios",
+  "By taking a short break": "Indem ich eine kurze Pause einlege",
+  "Through movement or a walk": "Durch Bewegung oder einen Spaziergang",
+  "By setting priorities and planning the day": "Indem ich PrioritÃ¤ten setze und den Tag plane",
+  "By talking to someone I trust": "Durch ein GesprÃ¤ch mit jemandem, dem ich vertraue",
+
+  "How motivated are you to make the most of today?": "Wie motiviert bist du, das Beste aus dem heutigen Tag zu machen?",
+  "I can’t wait to get started!":"Ich kann es kaum erwarten, loszulegen!",
+  "I feel full of energy and drive.": "Ich fÃ¼hle mich voller Energie und Tatendrang.",
+  "I’m ready to start the day.":"Ich bin bereit, den Tag zu starten.",
+  "I’m taking my time to get going.": "Ich nehme mir Zeit, um in Schwung zu kommen.",
+  "I’m starting off a bit slower today.":"Ich starte heute etwas ruhiger.",
+
+  "What inspires you to give your best today?": "Was inspiriert dich heute dazu, dein Bestes zu geben?",
+  "Maximizing my full potential":"Mein volles Potenzial ausschÃ¶pfen",
+  "The desire to achieve my goals": "Der Wunsch, meine Ziele zu erreichen",
+  "The pursuit of personal satisfaction":"Das Streben nach persÃ¶nlicher Zufriedenheit",
+  "The goal of being better than yesterday": "Das Ziel, heute besser zu sein als gestern",
+
+  "Which challenge do you want to conquer today?": "Welche Herausforderung mÃ¶chtest du heute meistern?",
+  "An exciting task at work or school":"Eine spannende Aufgabe im Job/Ausbildung",
+  "Learning or trying something new": "Etwas Neues lernen oder ausprobieren",
+  "Staying calm and relaxed throughout the day":"Gelassen und entspannt durch den Tag gehen",
+  "Taking a step towards an important goal": "Einen Schritt in Richtung eines wichtigen Ziels machen",
+  "Overcoming a personal boundary":"Eine persÃ¶nliche Grenze Ã¼berwinden",
+
+  "Racing thoughts": "Gedankenkarussell",
+  "Noise or external disturbances":"LÃ¤rm oder Ã¤uÃŸere StÃ¶rungen",
+  "Uncomfortable bed or sleeping position": "Unbequemes Bett oder Schlafposition",
+  "Health issues":"Gesundheitliche Beschwerden",
+
+  "How are you feeling right now?": "Wie fÃ¼hlst du dich gerade?",
+  "I’m feeling great!":"Mir geht's super!",
+  "I feel good.": "FÃ¼hle mich gut.",
+  "I’m okay.":"Es geht so.",
+  "I’m a bit tired.": "Bin etwas mÃ¼de.",
+  "I’m staying calm and focused.":"Ich bleibe ruhig und fokussiert.",
+
+
+
+  "What helped you start your day well?": "Was hat dir geholfen, den Tag gut zu starten?",
+  "A restful sleep":"Ein erholsamer Schlaf",
+  "A relaxing morning routine": "Eine entspannte Morgenroutine",
+  "Time for a healthy breakfast":"Zeit fÃ¼r ein gesundes FrÃ¼hstÃ¼ck",
+  "Positive thoughts": "Positive Gedanken",
+
+  "How did you feel throughout the day?": "Wie hast du dich den Tag Ã¼ber gefÃ¼hlt?",
+  "It was a great day!":"Es war ein groÃŸartiger Tag!",
+  "I felt good most of the time.": "Ich habe mich die meiste Zeit gut gefÃ¼hlt.",
+  "My mood was up and down.":"Meine Stimmung war wechselhaft.",
+  "I was a bit tired, but I pushed through.": "Ich war etwas mÃ¼de, aber ich habe es durchgezogen.",
+  "I stayed calm and focused throughout the day.":"Ich habe ruhig und fokussiert den Tag Ã¼berstanden.",
+
+  "What helped you have a positive day?": "Was hat dir heute geholfen, den Tag positiv zu gestalten?",
+  "A restful moment or break":"Ein erholsamer Moment oder Pause",
+  "A soothing activity or routine": "Eine wohltuende AktivitÃ¤t oder Routine",
+  "A healthy meal during the day":"Eine gesunde Mahlzeit zwischendurch",
+  "Positive thoughts and self-motivation": "Positive Gedanken und Selbstmotivation",
+  "Something else that helped me":"Etwas anderes, das mir geholfen hat",
+
+  "How successful were you in relieving your stress today?": "Wie erfolgreich konntest du deinen Stress heute abbauen?",
+  "Very successful, I feel much more relaxed now":"Sehr erfolgreich, ich fÃ¼hle mich jetzt viel entspannter",
+  "Good, I used my stress management strategies": "Gut, ich habe meine StressbewÃ¤ltigungsstrategien genutzt",
+  "Partially, it helped a little":"Teilweise, es hat etwas geholfen",
+  "It was challenging, but I did my best": "Es war herausfordernd, aber ich habe mein Bestes gegeben",
+  "I didn’t quite succeed, but I’l try again tomorrow":"Ich habe es nicht ganz geschafft, aber morgen versuche ich es wieder",
+
+
+  "How well did you maintain your motivation today?": "Wie gut konntest du heute deine Motivation aufrechterhalten?",
+  "I fully utilized my motivation.":"Ich habe meine Motivation voll genutzt.",
+  "I was motivated, but there were ups and downs.": "Ich war motiviert, aber es gab Schwankungen.",
+  "It was challenging, but I kept going.":"Es war herausfordernd, aber ich habe durchgehalten.",
+  "I stayed motivated, even though it wasn't easy.": "Ich habe mich motiviert, obwohl es nicht leicht war.",
+  "It was a calm day, but I gave it my best.":"Es war ein ruhiger Tag, aber ich habe mein Bestes gegeben.",
+
+
+
+  "What inspired you to give your best today?": "Was hat dich heute inspiriert, dein Bestes zu geben?",
+  "I maximized my full potential.":"Ich habe mein volles Potenzial ausgeschöpft.",
+  "I sought personal satisfaction.": "Ich habe nach persönlicher Zufriedenheit gestrebt.",
+  "I created something positive.":"Ich habe etwas Positives geschaffen.",
+  "I tried to make a difference.": "Ich habe versucht, einen Unterschied zu machen.",
+  "I aimed to be better than yesterday.":"Ich wollte heute besser sein als gestern.",
+
+
+  "How well did you conquer your challenge today?": "Wie gut hast du deine heutige Herausforderung gemeistert?",
+  "With great success and confidence":"Mit groÃŸem Erfolg und Zuversicht",
+  "Very well, I'm satisfied": "Sehr gut, ich bin zufrieden",
+  "Well, but it was challenging":"Gut, aber es war herausfordernd",
+  "It wasn't easy, but I gave my best": "Es war nicht einfach, aber ich habe mein Bestes gegeben",
+  "I gained valuable experience":"Ich habe wertvolle Erfahrungen gesammelt"
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

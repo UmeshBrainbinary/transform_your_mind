@@ -56,7 +56,7 @@ class _HowFeelingsEveningState extends State<HowFeelingsEvening> {
                   ),
                   Dimens.d20.spaceHeight,
                   //___________________________________ 1. _________________________________
-                  commonTextTitle("howDoYouFeelEvening".tr, count: "1"),
+                  commonTextTitle("How did you feel throughout the day?".tr, count: "1"),
 
                   Dimens.d20.spaceHeight,
                   GetBuilder<HowFeelingEveningController>(
@@ -115,13 +115,74 @@ class _HowFeelingsEveningState extends State<HowFeelingsEvening> {
                   ),
                   Dimens.d15.spaceHeight,
 
+                  /// =============== 2
+                  commonTextTitle("What helped you have a positive day?".tr, count: "2"),
+
+                  Dimens.d20.spaceHeight,
+                  GetBuilder<HowFeelingEveningController>(
+                    builder: (controller) => ListView.builder(
+                      padding: EdgeInsets.zero,
+                      itemCount: controller.whatHelpedPositive.length,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        var data = controller.whatHelpedPositive[index];
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              controller.howDoYouIndexPositive = index;
+                            });
+                            controller.update();
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.only(
+                                bottom: 15, left: 20, right: 20),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 13, vertical: 10),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: controller.howDoYouIndexPositive == index
+                                        ? ColorConstant.themeColor
+                                        : Colors.transparent),
+                                color: themeController.isDarkMode.isTrue
+                                    ? ColorConstant.textfieldFillColor
+                                    : ColorConstant.white,
+                                borderRadius: BorderRadius.circular(8)),
+                            child: Row(
+                              children: [
+                                commonText(data["title"]),
+                                const Spacer(),
+                                controller.howDoYouIndexPositive == index
+                                    ? SvgPicture.asset(ImageConstant.check)
+                                    : Container(
+                                  height: 18,
+                                  width: 18,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                          color: themeController
+                                              .isDarkMode.isTrue
+                                              ? ColorConstant.white
+                                              : ColorConstant.black,
+                                          width: 1)),
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  Dimens.d15.spaceHeight,
+                  /// =============== 2
+
                   //___________________________________ 2. _________________________________
 
                   commonTextTitle(
                       howFeelingsController.howDoYouIndex != 0
                           ? "wasThereSomethingAffected".tr
                           : "wasThereSomething".tr,
-                      count: "2"),
+                      count: "3"),
 
                   Dimens.d20.spaceHeight,
                   GetBuilder<HowFeelingEveningController>(
@@ -302,7 +363,9 @@ class _HowFeelingsEveningState extends State<HowFeelingsEvening> {
   }
 
   commonText(String title, {String? count, double? fontSize}) {
-    return Text(title.tr, style: Style.nunMedium(fontSize: fontSize ?? 16));
+    return SizedBox(
+        width: Get.width *0.6,
+        child: Text(title.tr, style: Style.nunMedium(fontSize: fontSize ?? 16)));
   }
 
   commonTextSubtitle(title) {

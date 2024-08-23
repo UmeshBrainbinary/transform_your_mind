@@ -297,7 +297,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
           ? ColorConstant.darkBackground
           : ColorConstant.backGround,
       appBar: CustomAppBar(
-        title: widget.isEdit! ? "editAffirmation".tr : widget.isFromMyAffirmation? "Record Affirmation":"addAffirmation".tr,
+        title: widget.isEdit! ? "editAffirmation".tr : widget.isFromMyAffirmation && (widget.record ?? false)? "Record affirmation":"addAffirmation".tr,
         action: !(widget.isFromMyAffirmation)
             ? Row(children: [
                 GestureDetector(onTap: () {}, child: Text("skip".tr)),
@@ -534,7 +534,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                                         onChanged: (value) => currentLength
                                             .value = descController.text.length,
                                       ),
-                                      Padding(
+                                    /*  Padding(
                                         padding: const EdgeInsets.only(top: 45,right: 20),
                                         child: GestureDetector(
                                             onLongPressStart: (details) async {
@@ -624,7 +624,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                                             )
                                                 : SvgPicture.asset(
                                                 ImageConstant.mic)),
-                                      ),
+                                      ),*/
                                     ],
                                   ),
                                 ],

@@ -37,28 +37,59 @@ class HowFeelingsController extends GetxController{
   int whatDoYouWantToAchieve = -1;
   int howDoYouIndexSleep = -1;
   int whatHelped = -1;
+  int whatHelpedCan = -1;
   int whatStep = -1;
   int whatHelpedStress = -1;
+
+  ///---1 ---
+  int whatCausing = -1;
+    ///---2 ---
+    int houwCouldBool = -1;
+    ///---1 ---  /// motivation
+    int howMotivateBool = -1;
+    ///---2 ---
+    int whatInspireBool = -1;
+    ///---3 ---
+    int whichChallengeBool = -1;
+
+
   int feelPhysically = -1;
   int selectedIndex = -1;
   String? selectedOption = '';
   String? selectedOptionStress = '';
   String? selectedDidYouSleepWell = '';
   String? selectedOptionForSleep = '';
-
-  RxList howDoYouFeelList = [
-    {"title":"A. ${"Good".tr}","check":false},
-    {"title":"B. ${"Neutral".tr}","check":false},
-    {"title":"C. ${"Bad".tr}","check":false},
+  //
+  // RxList howDoYouFeelList = [
+  //   {"title":"A. ${"Good".tr}","check":false},
+  //   {"title":"B. ${"Neutral".tr}","check":false},
+  //   {"title":"C. ${"Bad".tr}","check":false},
+  // ].obs;
+    RxList howDoYouFeelList = [
+      {"title":"A. ${"I’m feeling great!".tr}","check":false},
+      {"title":"B. ${"I feel good.".tr}","check":false},
+      {"title":"C. ${"I’m okay.".tr}","check":false},
+      {"title":"D. ${"I’m a bit tired.".tr}","check":false},
+      {"title":"E. ${"I’m staying calm and focused.".tr}","check":false},
   ].obs;
-  RxList whatHelpedYou = [
-    {"title": "A. ${"GoodNews".tr}", "check": false},
-    {"title": "B. ${"RestfulSleep".tr}", "check": false},
-    {"title": "C. ${"PositiveThoughts".tr}", "check": false},
-    {"title":"D. ${"Other".tr}","check":false},
-  ].obs;
 
-  RxList whatCanYouToday = [
+
+  // RxList whatHelpedYou = [
+  //   {"title": "A. ${"GoodNews".tr}", "check": false},
+  //   {"title": "B. ${"RestfulSleep".tr}", "check": false},
+  //   {"title": "C. ${"PositiveThoughts".tr}", "check": false},
+  //   {"title":"D. ${"Other".tr}","check":false},
+  // ].obs;
+    RxList whatHelpedYou = [
+      {"title":"A. ${"A restful sleep".tr}","check":false},
+      {"title":"B. ${"A relaxing morning routine".tr}","check":false},
+      {"title":"C. ${"Time for a healthy breakfast".tr}","check":false},
+      {"title":"D. ${"Positive thoughts".tr}","check":false},
+      {"title":"E. ${"Something else".tr}","check":false},
+    ].obs;
+
+
+    RxList whatCanYouToday = [
     {"title":"A. ${"planPositiveActivities".tr}","check":false},
     {"title":"B. ${"TakeBreaks".tr}","check":false},
     {"title":"C. ${"TalkSomeone".tr}","check":false},
@@ -72,6 +103,53 @@ class HowFeelingsController extends GetxController{
     {"title":"D. ${"TalkFrd".tr}","check":false},
     {"title":"E. ${"Other".tr}","check":false},
   ].obs;
+/// ---- 1-----
+    RxList whatIsCausing = [
+      {"title":"A. ${"An upcoming task or deadline".tr}","check":false},
+      {"title":"B. ${"Personal obligations".tr}","check":false},
+      {"title":"C. ${"Health concerns".tr}","check":false},
+      {"title":"D. ${"General tension or nervousness".tr}","check":false},
+      {"title":"E. ${"Something else".tr}","check":false},
+    ].obs;
+
+
+    /// ---- 2-----
+    RxList howCould = [
+      {"title":"A. ${"Through breathing exercises or audios".tr}","check":false},
+      {"title":"B. ${"By taking a short break".tr}","check":false},
+      {"title":"C. ${"Through movement or a walk".tr}","check":false},
+      {"title":"D. ${"By setting priorities and planning the day".tr}","check":false},
+      {"title":"E. ${"By talking to someone I trust".tr}","check":false},
+    ].obs;
+
+    /// ---- 3-----
+    RxList howMotivated = [
+      {"title":"A. ${"I can’t wait to get started!".tr}","check":false},
+      {"title":"B. ${"I feel full of energy and drive.".tr}","check":false},
+      {"title":"C. ${"I’m ready to start the day.".tr}","check":false},
+      {"title":"D. ${"I’m taking my time to get going.".tr}","check":false},
+      {"title":"E. ${"I’m starting off a bit slower today".tr}","check":false},
+    ].obs;
+    /// ---- 4-----
+    RxList whatInspire = [
+      {"title":"A. ${"Maximizing my full potential".tr}","check":false},
+      {"title":"B. ${"The desire to achieve my goals".tr}","check":false},
+      {"title":"C. ${"The pursuit of personal satisfaction".tr}","check":false},
+      {"title":"D. ${"The goal of being better than yesterda".tr}","check":false},
+      {"title":"E. ${"Something else".tr}","check":false},
+    ].obs;
+
+    /// ---- 5 -----
+    RxList whichChallenge = [
+      {"title":"A. ${"An exciting task at work or school".tr}","check":false},
+      {"title":"B. ${"Learning or trying something new".tr}","check":false},
+      {"title":"C. ${"Staying calm and relaxed throughout the day".tr}","check":false},
+      {"title":"D. ${"Taking a step towards an important goal".tr}","check":false},
+      {"title":"E. ${"Overcoming a personal boundary".tr}","check":false},
+    ].obs;
+
+
+
   RxList whatHelpsYouStart = [
     {"title":"A. ${"StructuredPlan".tr}","check":false},
     {"title":"B. ${"relaxationTechniques".tr}","check":false},
@@ -95,13 +173,21 @@ class HowFeelingsController extends GetxController{
     {"title":"D. ${"other".tr}","check":false},
   ].obs;
 
-  RxList whatNegatively = [
-    {"title":"A. ${"Worries".tr}","check":false},
-    {"title":"B. ${"Noise".tr}","check":false},
-    {"title":"C. ${"uncomfortableBed".tr}","check":false},
-    {"title":"D. ${"Health".tr}","check":false},
-    {"title":"E. ${"other".tr}","check":false},
-  ].obs;
+  // RxList whatNegatively = [
+  //   {"title":"A. ${"Worries".tr}","check":false},
+  //   {"title":"B. ${"Noise".tr}","check":false},
+  //   {"title":"C. ${"uncomfortableBed".tr}","check":false},
+  //   {"title":"D. ${"Health".tr}","check":false},
+  //   {"title":"E. ${"other".tr}","check":false},
+  // ].obs;
+    ///----1----
+    RxList whatNegatively = [
+      {"title":"A. ${"Racing thoughts".tr}","check":false},
+      {"title":"B. ${"Noise or external disturbances".tr}","check":false},
+      {"title":"C. ${"Uncomfortable bed or sleeping position".tr}","check":false},
+      {"title":"D. ${"Health issues".tr}","check":false},
+      {"title":"E. ${"Something else".tr}","check":false},
+    ].obs;
   RxList whatStepCanYou = [
     {"title":"A. ${"planning".tr}","check":false},
     {"title":"B. ${"seekingHelp".tr}","check":false},
@@ -116,11 +202,21 @@ class HowFeelingsController extends GetxController{
         moodData = {
           "type": "mood",
           "created_by": PrefService.getString(PrefKey.userId),
-          "morningFeeling": howDoYouIndex == 0
-              ? "good"
+          "morningFeeling":     howDoYouIndex == 0
+                        ? "good"
+                         :howDoYouIndex == 1
+                        ? "neutral"
+                        : "bad",
+
+             "youFeelingRight": howDoYouIndex == 0
+              ? "I’m feeling great!"
               : howDoYouIndex == 1
-                  ? "neutral"
-                  : "bad",
+                  ? "I feel good."
+                  : howDoYouIndex == 2?
+                  "I’m okay.":howDoYouIndex == 3?"I’m a bit tired.":
+          howDoYouIndex == 4?"I’m staying calm and focused.":
+          "bad",
+
           "morningHelp": whatHelped == -1
               ? null
               : whatHelped == 0
@@ -130,16 +226,26 @@ class HowFeelingsController extends GetxController{
                       : whatHelped == 2
                           ? "positiveThoughts"
                           : "other",
+
+          "helpedYouStart": whatHelped == -1
+              ? null
+              : whatHelped == 0
+                  ? "A restful sleep"
+                  : whatHelped == 1
+                      ? "A relaxing morning routine"
+                      : whatHelped == 2
+                          ? "Time for a healthy breakfas"
+                          : whatHelped == 3?"Positive thoughts":"others",
           "positiveFeeling": whatPositive.text.trim(),
           "morningGoal": whatAreYouLooking.text.trim(),
           "goodMood": whatSmallSteps.text.trim(),
-          "improveMood": whatHelped == -1
+          "improveMood": whatHelpedCan == -1
               ? null
-              : whatHelped == 0
+              : whatHelpedCan == 0
                   ? "planPositiveActivities"
-                  : whatHelped == 1
+                  : whatHelpedCan == 1
                       ? "takeBreaks"
-                      : whatHelped == 2
+                      : whatHelpedCan == 2
                           ? "talkToSomeone"
                           : "other",
           "positiveActivity": whatPositive.text.trim(),
@@ -158,14 +264,14 @@ class HowFeelingsController extends GetxController{
           "negativelyAffected": howDoYouIndexSleep == -1
               ? null
               : howDoYouIndexSleep == 0
-                  ? "worries"
+                  ? "Racing thoughts"
                   : howDoYouIndexSleep == 1
-                      ? "noise"
+                      ? "Noise or external disturbances"
                       : howDoYouIndexSleep == 2
-                          ? "uncomfortableBed"
+                          ? "Uncomfortable bed or sleeping position"
                           : howDoYouIndexSleep == 3
-                              ? "health"
-                              : "other",
+                              ? "Health issues"
+                              : "Something else",
           "improveSleep": whatMeasures.text.trim(),
           "helpedSleep": whatHasHelped.text.trim().isEmpty
               ? null
@@ -174,23 +280,49 @@ class HowFeelingsController extends GetxController{
       } else if (setting == "stress") {
         moodData = {
           "type": "stress",
+          "feelingStressed"
+          :selectedOptionStress!.toLowerCase(),
           "created_by": PrefService.getString(PrefKey.userId),
           "morningStress": selectedOptionStress!.toLowerCase(),
           "minimizeStress": selectedOptionStress == "Yes"
               ? whatHelpedStress == -1
-                  ? null
-                  : whatHelpedStress == 0
-                      ? "listenToAudio"
-                      : whatHelpedStress == 1
-                          ? "breathingTechnique"
-                          : whatHelpedStress == 2
-                              ? "spendTimeOutdoors"
-                              : whatHelpedStress == 3
-                                  ? "talkToFriend"
-                                  : "other"
+              ? null
+              : whatHelpedStress == 0
+              ? "ListenAudio"
+              : whatHelpedStress == 1
+              ? "BreathingTechnique"
+              : whatHelpedStress == 2
+              ? "SpendOutdoors"
+              : whatHelpedStress == 3
+              ? "TalkFrd"
+              : "Other"
               : whatHelpedStress == -1
+              ? null
+              : null,
+          "causingYourStress":
+          whatCausing == -1
                   ? null
-                  : null,
+                  : whatCausing == 0
+                      ? "An upcoming task or deadline"
+                      : whatCausing == 1
+                          ? "Personal obligations"
+                          : whatCausing == 2
+                              ? "Health concerns"
+                              : whatCausing == 3
+                                  ? "General tension or nervousness"
+                                  : "Something else",
+
+                    "relieveThisStress":houwCouldBool == -1
+    ? null
+        : houwCouldBool == 0
+    ? "Through breathing exercises or audios"
+        : houwCouldBool == 1
+    ? "By taking a short break"
+        : houwCouldBool == 2
+    ? "Through movement or a walk"
+        : houwCouldBool == 3
+    ? "By setting priorities and planning the day"
+        : "By talking to someone I trust",
           "relaxaionTechniques": whatRelaxation.text.trim(),
           "treatYourself": howCanYouYourSelf.text.trim(),
           "positiveThoughts": whatPositiveThought.text.trim(),
@@ -232,11 +364,29 @@ class HowFeelingsController extends GetxController{
                       : whatStep == 2
                           ? "timeManagement"
                           : "other",
+
+
+
+          "motivatedAreYou":howMotivateBool ==-1?null:
+    howMotivateBool ==0?"I can’t wait to get started!": howMotivateBool ==1?"I feel full of energy and drive."
+    : howMotivateBool ==2?"I’m ready to start the day."  : howMotivateBool ==3?"I’m taking my time to get going."
+        : howMotivateBool ==4?"I’m starting off a bit slower today":"others",
+
+          "inspiresYoutoGive":whatInspireBool ==-1?null:
+    whatInspireBool ==0?"Maximizing my full potential": whatInspireBool ==1?"The desire to achieve my goals"
+        : whatInspireBool ==2?"The pursuit of personal satisfaction"  : whatInspireBool ==3?"The goal of being better than yesterda"
+        : whatInspireBool ==4?" Something else":"others",
+
+          "challengeDoYou":whichChallengeBool ==-1?null:
+    whichChallengeBool ==0?"An exciting task at work or school": whichChallengeBool ==1?"Learning or trying something new"
+        : whichChallengeBool ==2?"Staying calm and relaxed throughout the day"  : whichChallengeBool ==3?"Taking a step towards an important goal"
+        : whichChallengeBool ==4?" Overcoming a personal boundary":"others",
           "particularlyMotivates": whatParticularly.text.trim(),
           "rewardYourself": howWill.text.trim(),
           "ensureStay": howCanEnsure.text.trim()
         };
       }
+print(moodData);
 
       var headers = {
         'Content-Type': 'application/json',

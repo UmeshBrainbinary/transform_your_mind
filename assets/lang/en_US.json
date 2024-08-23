@@ -174,7 +174,7 @@
   "enterTitle": "Enter title",
   "title": "Title",
   "enterDescription": "Enter description",
-  "typeYourDescription": "Type your affirmation or speak",
+  "typeYourDescription": "Type your affirmation",
   "description": "Description",
   "draft": "Draft",
   "exploreTransformRituals": "Explore transform rituals",
@@ -199,6 +199,7 @@
   "releaseToLoadMore": "Release to load more!",
   "noMoreData": "No more data!",
   "yourAffirmation": "Your affirmation",
+  "addYourAffirmation": "Add your affirmation",
   "affirmationHeader": "Affirmation header",
   "transformYourMindAffirmation": "TransformYourMind affirmation",
   "enterYourOwnAffirmation": "Enter your own affirmation",
@@ -626,5 +627,134 @@
   "StartWithExercise": "So, let`s start with a little exercise: Breath - then enjoy your daily routine to transform to your best life",
 "Record": "Record",
   "Stop": "Stop",
-  "Test recording": "Test recording"
+  "Test recording": "Test recording",
+  "Record affirmation": "Record affirmation",
+  "What is causing your stress this morning?": "What is causing your stress this morning?",
+  "An upcoming task or deadline": "An upcoming task or deadline",
+          "Personal obligations":"Personal obligations",
+          "Health concerns": "Health concerns",
+          "General tension or nervousness":"General tension or nervousness",
+          "Something else": "Something else",
+
+        "How could you relieve this stress?": "How could you relieve this stress?",
+        "Through breathing exercises or audios": "Through breathing exercises or audios",
+        "By taking a short break": "By taking a short break",
+        "Through movement or a walk": "Through movement or a walk",
+        "By setting priorities and planning the day": "By setting priorities and planning the day",
+        "By talking to someone I trust": "By talking to someone I trust",
+
+  "How motivated are you to make the most of today?": "How motivated are you to make the most of today?",
+  "I can’t wait to get started!":"I can’t wait to get started!",
+  "I feel full of energy and drive.": "I feel full of energy and drive.",
+  "I’m ready to start the day.":"I’m ready to start the day.",
+  "I’m taking my time to get going.": "I’m taking my time to get going.",
+  "I’m starting off a bit slower today.":"I’m starting off a bit slower today.",
+
+  "What inspires you to give your best today?": "What inspires you to give your best today?",
+  "Maximizing my full potential":"Maximizing my full potential",
+  "The desire to achieve my goals": "The desire to achieve my goals",
+  "The pursuit of personal satisfaction":"The pursuit of personal satisfaction",
+  "The goal of being better than yesterday": "The goal of being better than yesterday",
+
+  "Which challenge do you want to conquer today?": "Which challenge do you want to conquer today?",
+  "An exciting task at work or school":"An exciting task at work or school",
+  "Learning or trying something new": "Learning or trying something new",
+  "Staying calm and relaxed throughout the day":"Staying calm and relaxed throughout the day",
+  "Taking a step towards an important goal": "Taking a step towards an important goal",
+  "Overcoming a personal boundary":"Overcoming a personal boundary",
+
+
+  "Racing thoughts": "Racing thoughts",
+  "Noise or external disturbances":"Noise or external disturbances",
+  "Uncomfortable bed or sleeping position": "Uncomfortable bed or sleeping position",
+  "Health issues":"Health issues",
+
+  "How are you feeling right now?": "How are you feeling right now?",
+  "I’m feeling great!":"I’m feeling great!",
+  "I feel good.": "I feel good.",
+  "I’m okay.":"I’m okay.",
+  "I’m a bit tired.": "I’m a bit tired.",
+  "I’m staying calm and focused.":"I’m staying calm and focused.",
+
+  "What helped you start your day well?": "What helped you start your day well?",
+  "A restful sleep":"A restful sleep",
+  "A relaxing morning routine": "A relaxing morning routine",
+  "Time for a healthy breakfast":"Time for a healthy breakfast",
+  "Positive thoughts": "Positive thoughts",
+
+  "How did you feel throughout the day?": "How did you feel throughout the day?",
+  "It was a great day!":"It was a great day!",
+  "I felt good most of the time.": "I felt good most of the time.",
+  "My mood was up and down.":"My mood was up and down.",
+  "I was a bit tired, but I pushed through.": "I was a bit tired, but I pushed through.",
+  "I stayed calm and focused throughout the day.":"I stayed calm and focused throughout the day.",
+
+          "What helped you have a positive day?": "What helped you have a positive day?",
+          "A restful moment or break":"A restful moment or break",
+          "A soothing activity or routine": "A soothing activity or routine",
+          "A healthy meal during the day":"A healthy meal during the day",
+          "Positive thoughts and self-motivation": "Positive thoughts and self-motivation",
+          "Something else that helped me":"Something else that helped me",
+
+"How successful were you in relieving your stress today?": "How successful were you in relieving your stress today?",
+"Very successful, I feel much more relaxed now":"Very successful, I feel much more relaxed now",
+"Good, I used my stress management strategies": "Good, I used my stress management strategies",
+"Partially, it helped a little":"Partially, it helped a little",
+"It was challenging, but I did my best": "It was challenging, but I did my best",
+"I didn’t quite succeed, but I’l try again tomorrow":"I didn’t quite succeed, but I’l try again tomorrow",
+
+  "How well did you maintain your motivation today?": "How well did you maintain your motivation today?",
+  "I fully utilized my motivation.":"I fully utilized my motivation.",
+  "I was motivated, but there were ups and downs.": "I was motivated, but there were ups and downs.",
+  "It was challenging, but I kept going.":"It was challenging, but I kept going.",
+  "I stayed motivated, even though it wasn't easy.": "I stayed motivated, even though it wasn't easy.",
+  "It was a calm day, but I gave it my best.":"It was a calm day, but I gave it my best.",
+
+
+  "What inspired you to give your best today?": "What inspired you to give your best today?",
+  "I maximized my full potential.":"I maximized my full potential.",
+  "I sought personal satisfaction.": "I sought personal satisfaction.",
+  "I created something positive.":"I created something positive.",
+  "I tried to make a difference.": "I tried to make a difference.",
+  "I aimed to be better than yesterday.":"I aimed to be better than yesterday.",
+
+  "How well did you conquer your challenge today?": "How well did you conquer your challenge today?",
+  "With great success and confidence":"With great success and confidence",
+  "Very well, I'm satisfied": "Very well, I'm satisfied",
+  "Well, but it was challenging":"Well, but it was challenging",
+  "It wasn't easy, but I gave my best": "It wasn't easy, but I gave my best",
+  "I gained valuable experience":"I gained valuable experience"
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

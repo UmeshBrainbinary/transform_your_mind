@@ -59,6 +59,8 @@ class StressQuestions extends StatelessWidget {
                           GestureDetector(
                             onTap: () {
                               controller.whatHelpedStress = -1;
+                              controller.whatCausing = -1;
+                              controller.houwCouldBool = -1;
 
                               controller.selectedOptionStress = "Yes";
                               controller.update();
@@ -96,6 +98,8 @@ class StressQuestions extends StatelessWidget {
                           GestureDetector(
                             onTap: () {
                               controller.whatHelpedStress = -1;
+                              controller.whatCausing = -1;
+                              controller.houwCouldBool = -1;
                               controller.selectedOptionStress = "No";
                               controller.update();
                             },
@@ -138,25 +142,19 @@ class StressQuestions extends StatelessWidget {
 
                 //___________________________________ 2. _________________________________
 
-                commonTextTitle(
-                    controller.selectedOptionStress == "No"
-                        ? "whatHelpsYouStart".tr
-                        : "whatCanYouDoToMinimize".tr,
-                    count: "2"),
+                controller.selectedOptionStress == "No"?  commonTextTitle(
+                   "whatHelpsYouStart".tr,
+                    count: "2"):const SizedBox(),
 
-                Dimens.d20.spaceHeight,
-                GetBuilder<HowFeelingsController>(
+                controller.selectedOptionStress == "No"?  Dimens.d20.spaceHeight:const SizedBox(),
+                controller.selectedOptionStress == "No"?   GetBuilder<HowFeelingsController>(
                   builder: (controller) => ListView.builder(
                     padding: EdgeInsets.zero,
-                    itemCount: controller.selectedOptionStress == "No"
-                        ? controller.whatHelpsYouStart.length
-                        : controller.whatCanDoMinimize.length,
+                    itemCount:  controller.whatHelpsYouStart.length,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
-                      var data = controller.selectedOptionStress == "No"
-                          ? controller.whatHelpsYouStart[index]
-                          : controller.whatCanDoMinimize[index];
+                      var data =controller.whatHelpsYouStart[index];
                       return GestureDetector(
                         onTap: () {
                           controller.whatHelpedStress = index;
@@ -200,9 +198,195 @@ class StressQuestions extends StatelessWidget {
                       );
                     },
                   ),
-                ),
+                ):const SizedBox(),
+            controller.selectedOptionStress == "No"? Dimens.d15.spaceHeight:const SizedBox(),
 
-                Dimens.d15.spaceHeight,
+                //___________________________________ 2. _________________________________
+
+                controller.selectedOptionStress == "Yes"?  commonTextTitle(
+                    "whatCanYouDoToMinimize".tr,
+                    count: "2"): const SizedBox(),
+
+                  controller.selectedOptionStress == "Yes"? Dimens.d20.spaceHeight: const SizedBox(),
+                 controller.selectedOptionStress == "Yes"?  GetBuilder<HowFeelingsController>(
+                  builder: (controller) => ListView.builder(
+                    padding: EdgeInsets.zero,
+                    itemCount: controller.whatCanDoMinimize.length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      var data = controller.whatCanDoMinimize[index];
+                      return GestureDetector(
+                        onTap: () {
+                          controller.whatHelpedStress = index;
+                          controller.update();
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(
+                              bottom: 15, left: 20, right: 20),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 13, vertical: 10),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: controller.whatHelpedStress == index
+                                      ? ColorConstant.themeColor
+                                      : Colors.transparent),
+                              color: themeController.isDarkMode.isTrue
+                                  ? ColorConstant.textfieldFillColor
+                                  : ColorConstant.white,
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Row(
+                            children: [
+                              commonText(data["title"]),
+                              const Spacer(),
+                              controller.whatHelpedStress == index
+                                  ? SvgPicture.asset(ImageConstant.check)
+                                  : Container(
+                                      height: 18,
+                                      width: 18,
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                              color: themeController
+                                                      .isDarkMode.isTrue
+                                                  ? ColorConstant.white
+                                                  : ColorConstant.black,
+                                              width: 1)),
+                                    )
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ): const SizedBox(),
+                 controller.selectedOptionStress == "Yes"?  Dimens.d15.spaceHeight: const SizedBox(),
+
+
+
+/// ---- 1-----
+                controller.selectedOptionStress == "Yes"? commonTextTitle(
+                   "What is causing your stress this morning?".tr,
+                    count: "3"): const SizedBox(),
+
+                controller.selectedOptionStress == "Yes"? Dimens.d20.spaceHeight: const SizedBox(),
+                controller.selectedOptionStress == "Yes"?   GetBuilder<HowFeelingsController>(
+                  builder: (controller) => ListView.builder(
+                    padding: EdgeInsets.zero,
+                    itemCount:  controller.whatIsCausing.length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      var data = controller.whatIsCausing[index];
+                      return GestureDetector(
+                        onTap: () {
+                          controller.whatCausing = index;
+                          controller.update();
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(
+                              bottom: 15, left: 20, right: 20),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 13, vertical: 10),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: controller.whatCausing == index
+                                      ? ColorConstant.themeColor
+                                      : Colors.transparent),
+                              color: themeController.isDarkMode.isTrue
+                                  ? ColorConstant.textfieldFillColor
+                                  : ColorConstant.white,
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Row(
+                            children: [
+                              commonText(data["title"]),
+                              const Spacer(),
+                              controller.whatCausing == index
+                                  ? SvgPicture.asset(ImageConstant.check)
+                                  : Container(
+                                height: 18,
+                                width: 18,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                        color: themeController
+                                            .isDarkMode.isTrue
+                                            ? ColorConstant.white
+                                            : ColorConstant.black,
+                                        width: 1)),
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ): const SizedBox(),
+                controller.selectedOptionStress == "Yes"?  Dimens.d15.spaceHeight: const SizedBox(),
+
+
+                /// ---- 2-----
+                controller.selectedOptionStress == "Yes"?commonTextTitle(
+                    "How could you relieve this stress?".tr,
+                    count: "4"): const SizedBox(),
+
+                controller.selectedOptionStress == "Yes"?  Dimens.d20.spaceHeight: const SizedBox(),
+                controller.selectedOptionStress == "Yes"?  GetBuilder<HowFeelingsController>(
+                  builder: (controller) => ListView.builder(
+                    padding: EdgeInsets.zero,
+                    itemCount:  controller.howCould.length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      var data = controller.howCould[index];
+                      return GestureDetector(
+                        onTap: () {
+                          controller.houwCouldBool = index;
+                          controller.update();
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(
+                              bottom: 15, left: 20, right: 20),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 13, vertical: 10),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: controller.houwCouldBool == index
+                                      ? ColorConstant.themeColor
+                                      : Colors.transparent),
+                              color: themeController.isDarkMode.isTrue
+                                  ? ColorConstant.textfieldFillColor
+                                  : ColorConstant.white,
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Row(
+                            children: [
+                              commonText(data["title"]),
+                              const Spacer(),
+                              controller.houwCouldBool == index
+                                  ? SvgPicture.asset(ImageConstant.check)
+                                  : Container(
+                                height: 18,
+                                width: 18,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                        color: themeController
+                                            .isDarkMode.isTrue
+                                            ? ColorConstant.white
+                                            : ColorConstant.black,
+                                        width: 1)),
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ): const SizedBox(),
+                controller.selectedOptionStress == "Yes"? Dimens.d15.spaceHeight: const SizedBox(),
+
+
+
                 commonTextSubtitle(controller.selectedOptionStress == "No"
                     ? "whatHabits".tr
                     : "whatRelaxation".tr),
@@ -292,7 +476,9 @@ class StressQuestions extends StatelessWidget {
   }
 
   commonText(String title, {String? count, double? fontSize}) {
-    return Text(title.tr, style: Style.nunMedium(fontSize: fontSize ?? 16));
+    return SizedBox(
+        width: Get.width *0.65,
+        child: Text(title.tr, style: Style.nunMedium(fontSize: fontSize ?? 16)));
   }
 
   commonTextSubtitle(title) {

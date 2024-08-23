@@ -217,28 +217,68 @@ class _PositiveStoryMomentState extends State<PositiveStoryMoment> {
                     if (_currentIndex == ( widget.data!.length - 1)) {
 
                       await positiveController.pause();
-                      Future.delayed(Duration(seconds: speedChange())).then(
-                            (value) {
-                          Get.back();
-                        },
-                      );
+                      // Future.delayed(Duration(seconds: speedChange())).then(
+                      //       (value) {
+                      //     Get.back();
+                      //   },
+                      // );
                     }
                   },
                   itemBuilder: (context, index) {
-                    return Center(
-                      child: Padding(
-                        padding:
-                        const EdgeInsets.only(left: 48, right: 48, top: 40),
-                        child: Text(
-                            "“${widget.data![index].description}”" ??
-                                "",
-                            textAlign: TextAlign.center,
-                            maxLines: 5,
-                            style: Style.gothamLight(
-                                fontSize: 23,
-                                color: ColorConstant.white,
-                                fontWeight: FontWeight.w600)),
-                      ),
+                    return Stack(
+                      alignment: Alignment.bottomCenter,
+                      children: [
+                        CachedNetworkImage(
+                          height: Get.height,
+                          width: Get.width,
+                          imageUrl: widget.data![index].image ?? '',
+                          imageBuilder: (context, imageProvider) => Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.circular(
+                                10.0,
+                              ),
+                              image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          placeholder: (context, url) => PlaceHolderCNI(
+                            height: Get.height,
+                            width: Get.width,
+                            borderRadius: 10.0,
+                          ),
+                          errorWidget: (context, url, error) => PlaceHolderCNI(
+                            height: Get.height,
+                            width: Get.width,
+                            isShowLoader: false,
+                            borderRadius: 8.0,
+                          ),
+                        ),
+                        Padding(
+                          padding:
+                          const EdgeInsets.only(bottom: 20,left: 40,right: 40),
+                          child: Container(
+                            decoration:BoxDecoration(
+                    color: Colors.black.withOpacity(0.3),
+                              borderRadius: BorderRadius.circular(20),
+
+                    ),
+                            padding:
+                            const EdgeInsets.all(10),
+                            child: Text(
+                                "“${widget.data![index].description}”" ??
+                                    "",
+                                textAlign: TextAlign.center,
+                                maxLines: 18,
+                                style: Style.gothamLight(
+                                    fontSize: 23,
+                                    color: ColorConstant.white,
+                                    fontWeight: FontWeight.w600)),
+                          ),
+                        ),
+                      ],
                     );
                   },
                 ),
