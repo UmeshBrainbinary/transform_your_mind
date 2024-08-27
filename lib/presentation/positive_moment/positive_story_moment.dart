@@ -30,13 +30,16 @@ class PositiveStoryMoment extends StatefulWidget {
   State<PositiveStoryMoment> createState() => _PositiveStoryMomentState();
 }
 
-class _PositiveStoryMomentState extends State<PositiveStoryMoment> {
+class _PositiveStoryMomentState extends State<PositiveStoryMoment> with SingleTickerProviderStateMixin{
   ThemeController themeController = Get.find<ThemeController>();
   PositiveController positiveController =
   Get.put(PositiveController());
   double _setVolumeValue = 0;
   Timer? _timer;
 
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _opacityAnimation;
   ScreenshotController screenshotController = ScreenshotController();
   int chooseImage = 0;
   bool showBottom = false;
@@ -45,17 +48,45 @@ class _PositiveStoryMomentState extends State<PositiveStoryMoment> {
 
   double _progress = 0.0;
   int _currentIndex = 0;
+  int _currentIndexNew = 0;
   bool loader = false;
 
   @override
   void initState() {
     super.initState();
-    setBackSounds();
 
+
+    setBackSounds();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 5),
+    );
+
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+
+    _opacityAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+
+    _startAnimation();
     _startProgress();
     VolumeController().listener((volume) {});
     VolumeController().getVolume().then((volume) => _setVolumeValue = volume);
   }
+  void _startAnimation() {
+    _controller.forward().then((_) {
+      setState(() {
+        _currentIndex = ((_currentIndexNew + 1) % widget.data!.length ).toInt();
+        _controller.reset();
+        _startAnimation();
+      });
+    });
+  }
+
+
+
 
   setBackSounds() async {
     positiveController.soundMute = false;
@@ -74,6 +105,7 @@ class _PositiveStoryMomentState extends State<PositiveStoryMoment> {
 
   @override
   void dispose() {
+    _controller.dispose();
     positiveController.timer?.cancel();
     super.dispose();
   }
@@ -204,7 +236,7 @@ class _PositiveStoryMomentState extends State<PositiveStoryMoment> {
                   ),
                 ),
                 //_________________________________ story list  _______________________
-                PageView.builder(
+               /* PageView.builder(
                   scrollDirection: Axis.vertical,
                   itemCount:
                   widget.data!.length ?? 0,
@@ -281,7 +313,57 @@ class _PositiveStoryMomentState extends State<PositiveStoryMoment> {
                       ],
                     );
                   },
+                ),*/
+                Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    Stack(
+                      children: [
+                        Positioned.fill(
+                                child: Image.network(
+                                  widget.data![_currentIndexNew].image,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              Positioned.fill(
+                                child: FadeTransition(
+                                  opacity: _opacityAnimation,
+                                  child: ScaleTransition(
+                    scale: _scaleAnimation,
+                    child: Image.network(
+                        widget.data![(_currentIndexNew + 1) % widget.data!.length].image,
+                      fit: BoxFit.cover,
+                    ),
+                                  ),
+                                ),
+                              ),
+                      ],
+                    ),
+                    Padding(
+                      padding:
+                      const EdgeInsets.only(bottom: 20,left: 40,right: 40),
+                      child: Container(
+                        decoration:BoxDecoration(
+                          color: Colors.black.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(20),
+
+                        ),
+                        padding:
+                        const EdgeInsets.all(10),
+                        child: Text(
+                            "“${widget.data![_currentIndexNew].description}”" ??
+                                "",
+                            textAlign: TextAlign.center,
+                            maxLines: 18,
+                            style: Style.gothamLight(
+                                fontSize: 23,
+                                color: ColorConstant.white,
+                                fontWeight: FontWeight.w600)),
+                      ),
+                    ),
+                  ],
                 ),
+
                 //_________________________________ close button  _______________________
 
                 Positioned(
