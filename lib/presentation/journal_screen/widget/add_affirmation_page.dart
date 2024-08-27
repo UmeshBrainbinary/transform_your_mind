@@ -169,7 +169,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
     request.fields.addAll({
       'created_by':PrefService.getString(PrefKey.userId),
       'description': descController.text.trim(),
-
+      "isDefault":_recordFilePath != null && _recordFilePath !=''?true.toString():false.toString(),
       'lang': PrefService.getString(PrefKey.language).isEmpty
           ? "english"
           : PrefService.getString(PrefKey.language) != "en-US"
@@ -177,7 +177,9 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
               : "english"
     });
 
-
+    if(_recordFilePath != null && _recordFilePath !=''){
+      request.files.add(await http.MultipartFile.fromPath('audioFile',_recordFilePath! ));
+    }
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
@@ -333,13 +335,25 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                   mainAxisAlignment: MainAxisAlignment.center,
 
                   children: [
-
+                    (widget.record ?? false)?Padding(
+                      padding: const EdgeInsets.all(30.0),
+                      child: Text(widget.des ?? '',
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 12,
+                        textAlign: TextAlign.center,style:  Style.nunitoSemiBold(
+                          fontSize: Dimens.d20,
+                          color: themeController.isDarkMode.value
+                              ? ColorConstant.white
+                              : ColorConstant.black),),
+                    ):const SizedBox(),
 
                     Row(
                       mainAxisAlignment:MainAxisAlignment.center,
                       children: [
                         Column(
                           children: [
+
+
                             GestureDetector(
                               onTap: () {
                                 if(recordFile) {
@@ -508,125 +522,212 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Dimens.d20.spaceHeight,
-                                    Stack(
+                                    Stack(alignment: Alignment.topRight,
                                       children: [
-                                  Stack(alignment: Alignment.topRight,
-                                    children: [
-                                      CommonTextField(addSuffix: true,
-                                        hintText: "typeYourDescription".tr,
-                                        labelText: "description".tr,
-                                        controller: descController,
-                                        focusNode: descFocus,
-                                        transform: Matrix4.translationValues(
-                                            0, -108.h, 0),
-                                        prefixLottieIcon:
-                                            ImageConstant.lottieDescription,
-                                        maxLines: 15,
-                                        maxLength: 2000,
-                                        validator: (value) {
-                                          if (value!.trim().isEmpty) {
-                                            return "pleaseEnterDescription".tr;
-                                          }else if (value.length > 2000) {
-                                            return "youCantMoreThan".tr;
-                                          }
-                                          return null;
-                                          },
-                                        onChanged: (value) => currentLength
-                                            .value = descController.text.length,
-                                      ),
-                                    /*  Padding(
-                                        padding: const EdgeInsets.only(top: 45,right: 20),
-                                        child: GestureDetector(
-                                            onLongPressStart: (details) async {
-                                              Vibration.vibrate(
-                                                pattern: [80, 80, 0, 0, 0, 0, 0, 0],
-                                                intensities: [
-                                                  20,
-                                                  20,
-                                                  0,
-                                                  0,
-                                                  0,
-                                                  0,
-                                                  0,
-                                                  0
-                                                ],
-                                              );
-                                              setState(() {
-                                                _isPressed = true;
-                                              });
-
-
-                                              if (!_isListening) {
-                                                bool available =
-                                                await _speech!.initialize(
-                                                  onStatus: (val) {
-                                                    debugPrint(
-                                                        "Status for speech recording $val");
-                                                    if (val == "done") {
-                                                      _isPressed = false;
-                                                      _isListening = false;
-                                                    } else if (val ==
-                                                        'notListening') {
-                                                      _isPressed = false;
-                                                      _isListening = false;
-                                                    }
-                                                  },
-                                                  onError: (val) {
-                                                    debugPrint(
-                                                        "Status for speech recording error $val");
-
-                                                    if (val.errorMsg ==
-                                                        "error_no_match") {
-                                                      _onLongPressEnd();
-                                                    }
-                                                  },
+                                        CommonTextField(addSuffix: true,
+                                          hintText: "typeYourDescription".tr,
+                                          labelText: "description".tr,
+                                          controller: descController,
+                                          focusNode: descFocus,
+                                          transform: Matrix4.translationValues(
+                                              0, -108.h, 0),
+                                          prefixLottieIcon:
+                                              ImageConstant.lottieDescription,
+                                          maxLines: 15,
+                                          maxLength: 2000,
+                                          validator: (value) {
+                                            if (value!.trim().isEmpty) {
+                                              return "pleaseEnterDescription".tr;
+                                            }else if (value.length > 2000) {
+                                              return "youCantMoreThan".tr;
+                                            }
+                                            return null;
+                                            },
+                                          onChanged: (value) => currentLength
+                                              .value = descController.text.length,
+                                        ),
+                                      /*  Padding(
+                                          padding: const EdgeInsets.only(top: 45,right: 20),
+                                          child: GestureDetector(
+                                              onLongPressStart: (details) async {
+                                                Vibration.vibrate(
+                                                  pattern: [80, 80, 0, 0, 0, 0, 0, 0],
+                                                  intensities: [
+                                                    20,
+                                                    20,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0
+                                                  ],
                                                 );
-                                                if (available) {
-                                                  _isListening = true;
-                                                  _startListening();
-                                                } else {
-                                                  _isPressed = false;
-                                                  _isListening = false;
+                                                setState(() {
+                                                  _isPressed = true;
+                                                });
+
+
+                                                if (!_isListening) {
+                                                  bool available =
+                                                  await _speech!.initialize(
+                                                    onStatus: (val) {
+                                                      debugPrint(
+                                                          "Status for speech recording $val");
+                                                      if (val == "done") {
+                                                        _isPressed = false;
+                                                        _isListening = false;
+                                                      } else if (val ==
+                                                          'notListening') {
+                                                        _isPressed = false;
+                                                        _isListening = false;
+                                                      }
+                                                    },
+                                                    onError: (val) {
+                                                      debugPrint(
+                                                          "Status for speech recording error $val");
+
+                                                      if (val.errorMsg ==
+                                                          "error_no_match") {
+                                                        _onLongPressEnd();
+                                                      }
+                                                    },
+                                                  );
+                                                  if (available) {
+                                                    _isListening = true;
+                                                    _startListening();
+                                                  } else {
+                                                    _isPressed = false;
+                                                    _isListening = false;
+                                                  }
                                                 }
-                                              }
-                                              setState(() {
+                                                setState(() {
 
-                                              });
-                                            },
-                                            onLongPressEnd: (details) {
-                                              _onLongPressEnd();
-                                              setState(() {
+                                                });
+                                              },
+                                              onLongPressEnd: (details) {
+                                                _onLongPressEnd();
+                                                setState(() {
 
 
-                                              });
-                                              Vibration.vibrate(
-                                                pattern: [80, 80, 0, 0, 0, 0, 0, 0],
-                                                intensities: [
-                                                  20,
-                                                  20,
-                                                  0,
-                                                  0,
-                                                  0,
-                                                  0,
-                                                  0,
-                                                  0
-                                                ],
-                                              );
+                                                });
+                                                Vibration.vibrate(
+                                                  pattern: [80, 80, 0, 0, 0, 0, 0, 0],
+                                                  intensities: [
+                                                    20,
+                                                    20,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0
+                                                  ],
+                                                );
 
-                                            },
-                                            child: _isListening
-                                                ? Lottie.asset(
-                                              ImageConstant.micAnimation,
-                                              height: Dimens.d50,
-                                              width: Dimens.d50,
-                                              fit: BoxFit.fill,
-                                              repeat: true,
-                                            )
-                                                : SvgPicture.asset(
-                                                ImageConstant.mic)),
-                                      ),*/
+                                              },
+                                              child: _isListening
+                                                  ? Lottie.asset(
+                                                ImageConstant.micAnimation,
+                                                height: Dimens.d50,
+                                                width: Dimens.d50,
+                                                fit: BoxFit.fill,
+                                                repeat: true,
+                                              )
+                                                  : SvgPicture.asset(
+                                                  ImageConstant.mic)),
+                                        ),*/
+                                      ],
+                                    ),
+                              Dimens.d20.spaceHeight,
+
+                              Row(
+
+                                mainAxisAlignment:MainAxisAlignment.center,
+                                children: [
+                                  Column(
+                                    children: [
+
+
+                                      GestureDetector(
+                                        onTap: () {
+                                          if(recordFile) {
+                                            setState(() {
+                                              _stopRecording();
+
+                                              recordFile = false;
+                                            });
+                                          }
+                                          else
+                                          {
+                                            setState(() {
+                                              _startRecording();
+                                              recordFile = true;
+                                            });
+                                          }
+                                        },
+                                        child: Container(
+                                          height: 68,
+                                          width: 68,
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(20),
+                                              color: ColorConstant.themeColor
+                                          ),
+                                          alignment: Alignment.center,
+                                          child: recordFile ?
+                                          const Icon(Icons.stop_circle_outlined, color: Colors.redAccent,size: 35,):
+                                          const Icon(Icons.mic_rounded,color: Colors.white,size: 35,),
+                                        ),
+                                      ),
+
+                                      Dimens.d10.spaceHeight,
+                                      Text(recordFile ?"Stop".tr:"Record".tr,style: Style.nunRegular(
+                                          fontSize: Dimens.d14,
+
+                                          color: ColorConstant.black),),
                                     ],
                                   ),
+                                  _recordFilePath!=null &&!recordFile?const SizedBox(width: 50,):const SizedBox(),
+                                  _recordFilePath!=null && !recordFile? Column(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () async {
+                                          if (audioPlayerVoices.playing) {
+                                            play = false;
+
+                                            audioPlayerVoices.pause();
+                                          } else {
+
+
+
+                                            await audioPlayerVoices.setFilePath(_recordFilePath!);
+                                            audioPlayerVoices.play();
+                                            play = true;
+
+                                          }
+
+                                          setState(() {
+
+                                          });
+                                        },
+                                        child: Container(
+                                          height: 68,
+                                          width: 68,
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(20),
+                                              color: ColorConstant.themeColor
+                                          ),
+                                          alignment: Alignment.center,
+                                          child:  Icon(play?Icons.pause:Icons.play_arrow,color: Colors.white,size: 35,),
+                                        ),
+                                      ),
+
+                                      Dimens.d10.spaceHeight,
+                                      Text("Test recording".tr,style: Style.nunRegular(
+                                          fontSize: Dimens.d14,
+                                          color: ColorConstant.black),),
+                                    ],
+                                  ):const SizedBox(),
                                 ],
                               ),
                               Dimens.d30.h.spaceHeight,

@@ -197,11 +197,15 @@ class _AddGratitudePageState extends State<AddGratitudePage>
       loader = false;
     });
   }
+
   void _startListening() {
     _speech!.listen(
       onResult: (result) {
         setState(() {
           addGratitudeText.text = "$_lastText ${result.recognizedWords}";
+
+          print("=== $_lastText");
+          print("&&&&&&&&&&& ${result.recognizedWords}");
         });
       },
       onSoundLevelChange: (level) {},
@@ -212,12 +216,18 @@ class _AddGratitudePageState extends State<AddGratitudePage>
     });
   }
 
-  void _stopListening() {
+  Future<void> _stopListening() async {
     _speech!.stop();
-    setState(() {
+    setState(()   {
       _isListening = false;
-      _lastText = addGratitudeText.text;
+
     });
+       await Future.delayed(Duration(seconds: 1),(){});
+      setState(() {
+      _lastText = addGratitudeText.text;
+
+      });
+
   }
 
 

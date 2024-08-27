@@ -57,9 +57,10 @@ class _PositiveStoryMomentState extends State<PositiveStoryMoment> with SingleTi
 
 
     setBackSounds();
+    _startProgress();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 5),
+      duration: const Duration(seconds: 5),
     );
 
     _scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
@@ -70,17 +71,40 @@ class _PositiveStoryMomentState extends State<PositiveStoryMoment> with SingleTi
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
 
-    _startAnimation();
-    _startProgress();
+  init();
     VolumeController().listener((volume) {});
     VolumeController().getVolume().then((volume) => _setVolumeValue = volume);
+  }
+
+  init() async {
+   await Future.delayed(Duration(seconds: 5),(){
+     _startAnimation();
+   });
   }
   void _startAnimation() {
     _controller.forward().then((_) {
       setState(() {
-        _currentIndex = ((_currentIndexNew + 1) % widget.data!.length ).toInt();
-        _controller.reset();
-        _startAnimation();
+
+
+        _currentIndexNew = ((_currentIndexNew + 1));
+
+
+        if (_currentIndexNew == ( widget.data!.length -1 )) {
+          _controller.reset();
+          _startAnimation();
+          Future.delayed(Duration(seconds: speedChange())).then(
+                (value) {
+              Get.back();
+        _controller.dispose();
+        positiveController.pause();
+            },
+          );
+        }
+        else {
+          _controller.reset();
+          _startAnimation();
+        }
+
       });
     });
   }
@@ -120,6 +144,34 @@ class _PositiveStoryMomentState extends State<PositiveStoryMoment> with SingleTi
   }
 
   void _startProgress() {
+    // _timer?.cancel(); // Cancel any existing timer
+    // int durationInSeconds = speedChange();
+    // int durationInMilliseconds = durationInSeconds * 1000;
+    // int intervalInMilliseconds = 30;
+    //
+    // _timer =
+    //     Timer.periodic(Duration(milliseconds: intervalInMilliseconds), (timer) {
+    //       _progress += 1.0 / (durationInMilliseconds / intervalInMilliseconds);
+    //       if (_progress >= 1.0) {
+    //         _progress = 0.0;
+    //         _currentIndex++;
+    //         if (_currentIndex >=
+    //             widget.data!.length) {
+    //           _timer!.cancel();
+    //           if (positiveController.filteredBookmarks!.length == 1) {
+    //             Get.back();
+    //             positiveController.pause();
+    //           }
+    //         } else {
+    //           _pageController.animateToPage(
+    //             _currentIndex,
+    //             duration: const Duration(milliseconds: 500),
+    //             curve: Curves.easeIn,
+    //           );
+    //         }
+    //       }
+    //       setState(() {});
+    //     });
     _timer?.cancel(); // Cancel any existing timer
     int durationInSeconds = speedChange();
     int durationInMilliseconds = durationInSeconds * 1000;
@@ -135,15 +187,15 @@ class _PositiveStoryMomentState extends State<PositiveStoryMoment> with SingleTi
                 widget.data!.length) {
               _timer!.cancel();
               if (positiveController.filteredBookmarks!.length == 1) {
-                Get.back();
-                positiveController.pause();
+                // Get.back();
+                // positiveController.pause();
               }
             } else {
-              _pageController.animateToPage(
-                _currentIndex,
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.easeIn,
-              );
+              // _pageController.animateToPage(
+              //   _currentIndex,
+              //   duration: const Duration(milliseconds: 500),
+              //   curve: Curves.easeIn,
+              // );
             }
           }
           setState(() {});
@@ -211,30 +263,7 @@ class _PositiveStoryMomentState extends State<PositiveStoryMoment> with SingleTi
                     ),
                   ],
                 ),
-                //_________________________________ story Progress indicators _______________________
-                Positioned(
-                  top: 40,
-                  left: 10,
-                  right: 10,
-                  child: Row(
-                    children: List.generate(positiveController.filteredBookmarks!.length, (index) {
-                      return Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                          child: LinearProgressIndicator(
-                            value: index == _currentIndex
-                                ? _progress
-                                : (index < _currentIndex ? 1.0 : 0.0),
-                            backgroundColor: Colors.grey,
-                            valueColor: const AlwaysStoppedAnimation<Color>(
-                              Colors.white,
-                            ),
-                          ),
-                        ),
-                      );
-                    }),
-                  ),
-                ),
+
                 //_________________________________ story list  _______________________
                /* PageView.builder(
                   scrollDirection: Axis.vertical,
@@ -319,19 +348,24 @@ class _PositiveStoryMomentState extends State<PositiveStoryMoment> with SingleTi
                   children: [
                     Stack(
                       children: [
-                        Positioned.fill(
+                        (_currentIndexNew +1 < widget.data!.length)?Positioned.fill(
                                 child: Image.network(
-                                  widget.data![_currentIndexNew].image,
+                                  widget.data![(_currentIndexNew + 1)].image,
                                   fit: BoxFit.cover,
                                 ),
-                              ),
+                              ):Positioned.fill(
+                          child: Image.network(
+                            widget.data![(_currentIndexNew)].image,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                               Positioned.fill(
                                 child: FadeTransition(
                                   opacity: _opacityAnimation,
                                   child: ScaleTransition(
                     scale: _scaleAnimation,
                     child: Image.network(
-                        widget.data![(_currentIndexNew + 1) % widget.data!.length].image,
+                        widget.data![(_currentIndexNew )].image,
                       fit: BoxFit.cover,
                     ),
                                   ),
@@ -339,31 +373,54 @@ class _PositiveStoryMomentState extends State<PositiveStoryMoment> with SingleTi
                               ),
                       ],
                     ),
-                    Padding(
-                      padding:
-                      const EdgeInsets.only(bottom: 20,left: 40,right: 40),
-                      child: Container(
-                        decoration:BoxDecoration(
-                          color: Colors.black.withOpacity(0.3),
-                          borderRadius: BorderRadius.circular(20),
+      Padding(
+        padding:
+        const EdgeInsets.only(bottom: 20,left: 40,right: 40),
+        child: Container(
+          decoration:BoxDecoration(
+            color: Colors.black.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(20),
 
-                        ),
-                        padding:
-                        const EdgeInsets.all(10),
-                        child: Text(
-                            "“${widget.data![_currentIndexNew].description}”" ??
-                                "",
-                            textAlign: TextAlign.center,
-                            maxLines: 18,
-                            style: Style.gothamLight(
-                                fontSize: 23,
-                                color: ColorConstant.white,
-                                fontWeight: FontWeight.w600)),
-                      ),
-                    ),
+          ),
+          padding:
+          const EdgeInsets.all(10),
+          child: Text(
+              "“${widget.data![(_currentIndexNew )].description}”" ??
+                  "",
+              textAlign: TextAlign.center,
+              maxLines: 18,
+              style: Style.gothamLight(
+                  fontSize: 23,
+                  color: ColorConstant.white,
+                  fontWeight: FontWeight.w600)),
+        ),
+      ),
                   ],
                 ),
-
+                //_________________________________ story Progress indicators _______________________
+                Positioned(
+                  top: 40,
+                  left: 10,
+                  right: 10,
+                  child: Row(
+                    children: List.generate(positiveController.filteredBookmarks!.length, (index) {
+                      return Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                          child: LinearProgressIndicator(
+                            value: index == _currentIndex
+                                ? _progress
+                                : (index < _currentIndex ? 1.0 : 0.0),
+                            backgroundColor: Colors.grey,
+                            valueColor: const AlwaysStoppedAnimation<Color>(
+                              Colors.white,
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+                  ),
+                ),
                 //_________________________________ close button  _______________________
 
                 Positioned(
