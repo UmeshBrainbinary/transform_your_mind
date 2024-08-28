@@ -225,138 +225,77 @@ class _HomeScreenState extends State<HomeScreen>
                 builder: (controller) {
                   return Stack(
                     children: [
-                      CustomScrollViewWidget(
-                        controller: scrollController,
-                        physics: const ClampingScrollPhysics(),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Dimens.d50.spaceHeight,
+                      Padding(
+                        padding:  EdgeInsets.only(top:  30.0),
+                        child: CustomScrollViewWidget(
+                          controller: scrollController,
+                          physics: const ClampingScrollPhysics(),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Dimens.d20.spaceHeight,
 
-                            //__________________________ top view ____________________
-                            topView(controller
-                                    .getUserModel.data?.motivationalMessage ??
-                                "Believe in yourself, even when doubt creeps in. Today's progress is a step towards your dreams."),
-                            Dimens.d25.spaceHeight,
-                            Align(
-                              alignment: Alignment.center,
-                              child: Padding(
+                              //__________________________ top view ____________________
+                              topView(controller
+                                      .getUserModel.data?.motivationalMessage ??
+                                  "Believe in yourself, even when doubt creeps in. Today's progress is a step towards your dreams."),
+                              Dimens.d25.spaceHeight,
+                              Align(
+                                alignment: Alignment.center,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: Dimens.d20),
+                                  child: Text(
+                                      "${greeting.tr}, ${capitalizeFirstLetter(PrefService.getString(PrefKey.name).toString())}",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: themeController.isDarkMode.isTrue
+                                              ? ColorConstant.white
+                                              : ColorConstant.black,
+                                          fontFamily: FontFamily.nunitoBold,
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 24,
+                                          letterSpacing: 1)),
+                                ),
+                              ),
+
+                              Dimens.d30.spaceHeight,
+
+                              yourGratitude(),
+                              Dimens.d30.spaceHeight,
+                              yourAffirmation(),
+                              Dimens.d30.spaceHeight,
+
+                              //______________________________ yourDaily Recommendations _______________________
+
+                              Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: Dimens.d20),
                                 child: Text(
-                                    "${greeting.tr}, ${capitalizeFirstLetter(PrefService.getString(PrefKey.name).toString())}",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        color: themeController.isDarkMode.isTrue
-                                            ? ColorConstant.white
-                                            : ColorConstant.black,
-                                        fontFamily: FontFamily.nunitoBold,
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 24,
-                                        letterSpacing: 1)),
+                                  "meditations".tr,
+                                  textAlign: TextAlign.center,
+                                  style: Style.nunitoBold(fontSize: Dimens.d22),
+                                ),
                               ),
-                            ),
-
-                            Dimens.d30.spaceHeight,
-
-                            yourGratitude(),
-                            Dimens.d30.spaceHeight,
-                            yourAffirmation(),
-                            Dimens.d30.spaceHeight,
-
-                            //______________________________ yourDaily Recommendations _______________________
-
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: Dimens.d20),
-                              child: Text(
-                                "meditations".tr,
-                                textAlign: TextAlign.center,
-                                style: Style.nunitoBold(fontSize: Dimens.d22),
-                              ),
-                            ),
-                            Dimens.d20.spaceHeight,
-                            recentlyView(),
-                            positiveController.positiveMomentList.isEmpty
-                                ? const SizedBox()
-                                : Dimens.d40.spaceHeight,
-                            positiveController.positiveMomentList.isEmpty
-                                ? const SizedBox()
-                                : Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: Dimens.d20),
-                                    child: Row(children: [
-                                      Text(
-                                        "positiveMomentH".tr,
-                                        textAlign: TextAlign.center,
-                                        style: Style.nunitoBold(
-                                            fontSize: Dimens.d22),
-                                      ),
-                                      const Spacer(),
-                                      GestureDetector(
-                                          onTap: () {
-                                            Navigator.push(context,
-                                                MaterialPageRoute(
-                                              builder: (context) {
-                                                return const PositiveScreen();
-                                              },
-                                            )).then(
-                                              (value) {
-                                                if (themeController
-                                                    .isDarkMode.isTrue) {
-                                                  SystemChrome
-                                                      .setSystemUIOverlayStyle(
-                                                          const SystemUiOverlayStyle(
-                                                    statusBarBrightness:
-                                                        Brightness.dark,
-                                                    statusBarIconBrightness:
-                                                        Brightness.light,
-                                                  ));
-                                                } else {
-                                                  SystemChrome
-                                                      .setSystemUIOverlayStyle(
-                                                          const SystemUiOverlayStyle(
-                                                    statusBarBrightness:
-                                                        Brightness.light,
-                                                    statusBarIconBrightness:
-                                                        Brightness.dark,
-                                                  ));
-                                                }
-                                                Future.delayed(const Duration(
-                                                        seconds: 1))
-                                                    .then(
-                                                  (value) {
-                                                    setState(() {});
-                                                  },
-                                                );
-                                              },
-                                            );
-                                          },
-                                          child: Text(
-                                            "seeAll".tr,
-                                            style: Style.gothamLight(
-                                                color:
-                                                    ColorConstant.color5A7681,
-                                                fontSize: 12),
-                                          )),
-                                      Dimens.d4.spaceWidth,
-                                      SvgPicture.asset(ImageConstant.seeAll)
-                                    ]),
-                                  ),
-                            positiveController.positiveMomentList.isEmpty
-                                ? const SizedBox()
-                                : Dimens.d24.spaceHeight,
-                            positiveController.positiveMomentList.isEmpty
-                                ? const SizedBox()
-                                : SizedBox(
-                                    height: 156,
-                                    child: ListView.builder(
-                                      padding: const EdgeInsets.only(left: 22),
-                                      itemCount: positiveController
-                                          .positiveMomentList.length,
-                                      scrollDirection: Axis.horizontal,
-                                      itemBuilder: (context, index) {
-                                        return GestureDetector(
+                              Dimens.d20.spaceHeight,
+                              recentlyView(),
+                              positiveController.positiveMomentList.isEmpty
+                                  ? const SizedBox()
+                                  : Dimens.d40.spaceHeight,
+                              positiveController.positiveMomentList.isEmpty
+                                  ? const SizedBox()
+                                  : Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: Dimens.d20),
+                                      child: Row(children: [
+                                        Text(
+                                          "positiveMomentH".tr,
+                                          textAlign: TextAlign.center,
+                                          style: Style.nunitoBold(
+                                              fontSize: Dimens.d22),
+                                        ),
+                                        const Spacer(),
+                                        GestureDetector(
                                             onTap: () {
                                               Navigator.push(context,
                                                   MaterialPageRoute(
@@ -364,183 +303,247 @@ class _HomeScreenState extends State<HomeScreen>
                                                   return const PositiveScreen();
                                                 },
                                               )).then(
-                                                (value) async {
-                                                  await positiveController
-                                                      .getPositiveMoments();
-                                                  setState(() {});
+                                                (value) {
+                                                  if (themeController
+                                                      .isDarkMode.isTrue) {
+                                                    SystemChrome
+                                                        .setSystemUIOverlayStyle(
+                                                            const SystemUiOverlayStyle(
+                                                      statusBarBrightness:
+                                                          Brightness.dark,
+                                                      statusBarIconBrightness:
+                                                          Brightness.light,
+                                                    ));
+                                                  } else {
+                                                    SystemChrome
+                                                        .setSystemUIOverlayStyle(
+                                                            const SystemUiOverlayStyle(
+                                                      statusBarBrightness:
+                                                          Brightness.light,
+                                                      statusBarIconBrightness:
+                                                          Brightness.dark,
+                                                    ));
+                                                  }
+                                                  Future.delayed(const Duration(
+                                                          seconds: 1))
+                                                      .then(
+                                                    (value) {
+                                                      setState(() {});
+                                                    },
+                                                  );
                                                 },
                                               );
                                             },
-                                            child: PositiveMoment(
-                                              index: index,
-                                            ));
-                                      },
+                                            child: Text(
+                                              "seeAll".tr,
+                                              style: Style.gothamLight(
+                                                  color:
+                                                      ColorConstant.color5A7681,
+                                                  fontSize: 12),
+                                            )),
+                                        Dimens.d4.spaceWidth,
+                                        SvgPicture.asset(ImageConstant.seeAll)
+                                      ]),
                                     ),
-                                  ),
-
-                            Dimens.d30.spaceHeight,
-                            //___________________________________________ recommendation _____________________
-
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: Dimens.d20),
-                              child: Text(
-                                "yourRecommendations".tr,
-                                textAlign: TextAlign.center,
-                                style: Style.nunitoBold(
-                                  fontSize: Dimens.d22,
-                                ),
-                              ),
-                            ),
-                            Dimens.d30.spaceHeight,
-                            recommendation(),
-                            Dimens.d30.spaceHeight,
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: Dimens.d20),
-                              child: Text(
-                                "quickAccess".tr,
-                                textAlign: TextAlign.center,
-                                style: Style.nunitoBold(
-                                  fontSize: Dimens.d22,
-                                ),
-                              ),
-                            ),
-                            Dimens.d30.spaceHeight,
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: Dimens.d20),
-                              child: GridView.builder(
-                                physics: const NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                padding: EdgeInsets.zero,
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 3,
-                                        childAspectRatio: 1.5,
-                                        crossAxisSpacing: 30,
-                                        mainAxisSpacing:
-                                            30 // Set the aspect ratio as needed
-                                        ),
-                                itemCount: g.quickAccessList.length,
-                                // Total number of items
-                                itemBuilder: (BuildContext context, int index) {
-                                  // Generating items for the GridView
-                                  return GestureDetector(
-                                    onTap: () {
-                                      if (g.quickAccessList[index]["title"] ==
-                                          "motivationalQ") {
-                                        Get.to(() => const MotivationScreen())!
-                                            .then((value) async {
-                                          MotivationalController moti = Get
-                                              .find<MotivationalController>();
-                                          await moti.audioPlayer.dispose();
-                                          await moti.audioPlayer.pause();
-                                          setState(() {});
-                                        });
-                                      } else if (g.quickAccessList[index]
-                                              ["title"] ==
-                                          "transformAudiosQ") {
-                                        Navigator.push(context,
-                                            MaterialPageRoute(
-                                          builder: (context) {
-                                            return const TransformPodsScreen();
-                                          },
-                                        )).then(
-                                          (value) {
-                                            setState(() {});
-                                          },
-                                        );
-                                      } else if (g.quickAccessList[index]
-                                              ["title"] ==
-                                          "gratitudeJournalQ") {
-                                        Navigator.pushNamed(context,
-                                                AppRoutes.myGratitudePage)
-                                            .then((value) {
-                                          setState(() {});
-                                        });
-                                      } else if (g.quickAccessList[index]
-                                              ["title"] ==
-                                          "positiveMomentsQ") {
-                                        Navigator.push(context,
-                                            MaterialPageRoute(
-                                          builder: (context) {
-                                            return const PositiveScreen();
-                                          },
-                                        )).then(
-                                          (value) {
-                                            setState(() {});
-                                          },
-                                        );
-                                      } else if (g.quickAccessList[index]
-                                              ["title"] ==
-                                          "affirmationeQ") {
-                                        Navigator.push(context,
-                                            MaterialPageRoute(
-                                          builder: (context) {
-                                            return const MyAffirmationPage();
-                                          },
-                                        )).then(
-                                          (value) async {
-                                            await g.getTodayAffirmation();
-                                            setState(() {});
-                                          },
-                                        );
-                                      } else {
-                                        Navigator.push(context,
-                                            MaterialPageRoute(
-                                          builder: (context) {
-                                            return BreathScreen(
-                                              skip: false,
-                                            );
-                                          },
-                                        )).then(
-                                          (value) {
-                                            setState(() {});
-                                          },
-                                        );
-                                      }
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(9),
-                                          color: themeController
-                                                  .isDarkMode.value
-                                              ? ColorConstant.textfieldFillColor
-                                              : const Color(0xffD7E2E4)),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          SvgPicture.asset(
-                                            g.quickAccessList[index]["icon"],
-                                            height: 30,
-                                            width: 30,
-                                            color: ColorConstant.color5A7681,
-                                          ),
-                                          Dimens.d5.spaceHeight,
-                                          Text(
-                                            "${g.quickAccessList[index]["title"]}"
-                                                .tr,
-                                            style: Style.montserratSemiBold(
-                                                fontSize: 8,
-                                                color: themeController
-                                                        .isDarkMode.isTrue
-                                                    ? ColorConstant.white
-                                                    : ColorConstant.black),
-                                          ),
-                                        ],
+                              positiveController.positiveMomentList.isEmpty
+                                  ? const SizedBox()
+                                  : Dimens.d24.spaceHeight,
+                              positiveController.positiveMomentList.isEmpty
+                                  ? const SizedBox()
+                                  : SizedBox(
+                                      height: 156,
+                                      child: ListView.builder(
+                                        padding: const EdgeInsets.only(left: 22),
+                                        itemCount: positiveController
+                                            .positiveMomentList.length,
+                                        scrollDirection: Axis.horizontal,
+                                        itemBuilder: (context, index) {
+                                          return GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(context,
+                                                    MaterialPageRoute(
+                                                  builder: (context) {
+                                                    return const PositiveScreen();
+                                                  },
+                                                )).then(
+                                                  (value) async {
+                                                    await positiveController
+                                                        .getPositiveMoments();
+                                                    setState(() {});
+                                                  },
+                                                );
+                                              },
+                                              child: PositiveMoment(
+                                                index: index,
+                                              ));
+                                        },
                                       ),
                                     ),
-                                  );
-                                },
+
+                              Dimens.d30.spaceHeight,
+                              //___________________________________________ recommendation _____________________
+
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: Dimens.d20),
+                                child: Text(
+                                  "yourRecommendations".tr,
+                                  textAlign: TextAlign.center,
+                                  style: Style.nunitoBold(
+                                    fontSize: Dimens.d22,
+                                  ),
+                                ),
                               ),
-                            ),
-                            Dimens.d110.spaceHeight,
-                          ],
+                              Dimens.d30.spaceHeight,
+                              recommendation(),
+                              Dimens.d30.spaceHeight,
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: Dimens.d20),
+                                child: Text(
+                                  "quickAccess".tr,
+                                  textAlign: TextAlign.center,
+                                  style: Style.nunitoBold(
+                                    fontSize: Dimens.d22,
+                                  ),
+                                ),
+                              ),
+                              Dimens.d30.spaceHeight,
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: Dimens.d20),
+                                child: GridView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  padding: EdgeInsets.zero,
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 3,
+                                          childAspectRatio: 1.5,
+                                          crossAxisSpacing: 30,
+                                          mainAxisSpacing:
+                                              30 // Set the aspect ratio as needed
+                                          ),
+                                  itemCount: g.quickAccessList.length,
+                                  // Total number of items
+                                  itemBuilder: (BuildContext context, int index) {
+                                    // Generating items for the GridView
+                                    return GestureDetector(
+                                      onTap: () {
+                                        if (g.quickAccessList[index]["title"] ==
+                                            "motivationalQ") {
+                                          Get.to(() => const MotivationScreen())!
+                                              .then((value) async {
+                                            MotivationalController moti = Get
+                                                .find<MotivationalController>();
+                                            await moti.audioPlayer.dispose();
+                                            await moti.audioPlayer.pause();
+                                            setState(() {});
+                                          });
+                                        } else if (g.quickAccessList[index]
+                                                ["title"] ==
+                                            "transformAudiosQ") {
+                                          Navigator.push(context,
+                                              MaterialPageRoute(
+                                            builder: (context) {
+                                              return const TransformPodsScreen();
+                                            },
+                                          )).then(
+                                            (value) {
+                                              setState(() {});
+                                            },
+                                          );
+                                        } else if (g.quickAccessList[index]
+                                                ["title"] ==
+                                            "gratitudeJournalQ") {
+                                          Navigator.pushNamed(context,
+                                                  AppRoutes.myGratitudePage)
+                                              .then((value) {
+                                            setState(() {});
+                                          });
+                                        } else if (g.quickAccessList[index]
+                                                ["title"] ==
+                                            "positiveMomentsQ") {
+                                          Navigator.push(context,
+                                              MaterialPageRoute(
+                                            builder: (context) {
+                                              return const PositiveScreen();
+                                            },
+                                          )).then(
+                                            (value) {
+                                              setState(() {});
+                                            },
+                                          );
+                                        } else if (g.quickAccessList[index]
+                                                ["title"] ==
+                                            "affirmationeQ") {
+                                          Navigator.push(context,
+                                              MaterialPageRoute(
+                                            builder: (context) {
+                                              return const MyAffirmationPage();
+                                            },
+                                          )).then(
+                                            (value) async {
+                                              await g.getTodayAffirmation();
+                                              setState(() {});
+                                            },
+                                          );
+                                        } else {
+                                          Navigator.push(context,
+                                              MaterialPageRoute(
+                                            builder: (context) {
+                                              return BreathScreen(
+                                                skip: false,
+                                              );
+                                            },
+                                          )).then(
+                                            (value) {
+                                              setState(() {});
+                                            },
+                                          );
+                                        }
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(9),
+                                            color: themeController
+                                                    .isDarkMode.value
+                                                ? ColorConstant.textfieldFillColor
+                                                : const Color(0xffD7E2E4)),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            SvgPicture.asset(
+                                              g.quickAccessList[index]["icon"],
+                                              height: 30,
+                                              width: 30,
+                                              color: ColorConstant.color5A7681,
+                                            ),
+                                            Dimens.d5.spaceHeight,
+                                            Text(
+                                              "${g.quickAccessList[index]["title"]}"
+                                                  .tr,
+                                              style: Style.montserratSemiBold(
+                                                  fontSize: 8,
+                                                  color: themeController
+                                                          .isDarkMode.isTrue
+                                                      ? ColorConstant.white
+                                                      : ColorConstant.black),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              Dimens.d110.spaceHeight,
+                            ],
+                          ),
                         ),
                       ),
                       Obx(() {
@@ -1268,9 +1271,12 @@ class _HomeScreenState extends State<HomeScreen>
                         color: ColorConstant.white),
                     title: "empowerMindset".tr,
                     onTap: () {
-                      Get.to(const AddAffirmationPage(
-                        isFromMyAffirmation: true,
-                        isEdit: false,
+                      // Get.to(const AddAffirmationPage(
+                      //   isFromMyAffirmation: true,
+                      //   isEdit: false,
+                      // ))!
+                      Get.to(const MyAffirmationPage(
+
                       ))!
                           .then(
                         (value) async {

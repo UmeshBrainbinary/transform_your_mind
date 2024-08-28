@@ -222,7 +222,7 @@ class _AddGratitudePageState extends State<AddGratitudePage>
       _isListening = false;
 
     });
-       await Future.delayed(Duration(seconds: 1),(){});
+       await Future.delayed(const Duration(seconds: 1),(){});
       setState(() {
       _lastText = addGratitudeText.text;
 

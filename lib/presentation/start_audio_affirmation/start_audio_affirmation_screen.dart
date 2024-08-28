@@ -407,22 +407,22 @@ double value =  0;
 
 
                             )),
-                            GaugeAnnotation(
-                                widget: Container(
-                              height: 250,
-                              width: 250,
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                image: DecorationImage(image: AssetImage(
-                                  ImageConstant.logoSplashRemoved,
-                                ),
-                                opacity: 0.5
-                                ),
-                                ),
-                              alignment: Alignment.center,
-
-
-                            )),
+                            // GaugeAnnotation(
+                            //     widget: Container(
+                            //   height: 250,
+                            //   width: 250,
+                            //   decoration: BoxDecoration(
+                            //       shape: BoxShape.circle,
+                            //     image: DecorationImage(image: AssetImage(
+                            //       ImageConstant.logoSplashRemoved,
+                            //     ),
+                            //     opacity: 0.5
+                            //     ),
+                            //     ),
+                            //   alignment: Alignment.center,
+                            //
+                            //
+                            // )),
                           ],
                         )
                       ]),
