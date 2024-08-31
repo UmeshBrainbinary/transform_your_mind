@@ -13,11 +13,13 @@ class StartAudioAffirmationController extends GetxController{
   List<String> speedList = ["Auto", "20 sec", "15 sec", "10 sec", "5 sec"];
   List soundList = [
     {"title": "None","audio":""},
-    {"title": "Rk","audio":ImageConstant.audioPath1},
-    {"title": "Mk","audio": ImageConstant.audioPath2},
-    {"title": "Fk","audio":ImageConstant.audioPath3},
-    {"title": "Gk","audio": ImageConstant.audioPath4},
-    {"title": "Yk","audio":ImageConstant.audioPath5},
+    {"title": "Rk","audio":ImageConstant.bgAudio1},
+    {"title": "Mk","audio":ImageConstant.bgAudio2},
+    // {"title": "Rk","audio":ImageConstant.audioPath1},
+    // {"title": "Mk","audio": ImageConstant.audioPath2},
+    // {"title": "Fk","audio":ImageConstant.audioPath3},
+    // {"title": "Gk","audio": ImageConstant.audioPath4},
+    // {"title": "Yk","audio":ImageConstant.audioPath5},
   ];
   // List soundList = [
   //   {"title": "None","audio":""},

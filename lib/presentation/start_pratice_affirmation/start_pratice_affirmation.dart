@@ -118,7 +118,7 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
   setBackSounds() async {
     startC.soundMute = false;
     startC.player.setVolume(1);
-    await startC.player.setUrl(startC.soundList[1]["audio"]);
+    await startC.player.setAsset(startC.soundList[1]["audio"]);
     await startC.player.play();
   }
   void _startScrolling() {
@@ -877,7 +877,7 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
                                   currentIndex = index;
                                 });
                                 await startC.player
-                                    .setUrl(startC.soundList[index]["audio"]);
+                                    .setAsset(startC.soundList[index]["audio"]);
                                 await startC.player.play();
 
                               },

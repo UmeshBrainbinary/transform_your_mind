@@ -621,7 +621,7 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
                                 currentIndex = index;
                               });
                               await startC.audioPlayer
-                                  .setUrl(startC.soundList[index]["audio"]);
+                                  .setAsset(startC.soundList[index]["audio"]);
                               await startC.play();
 
                             },

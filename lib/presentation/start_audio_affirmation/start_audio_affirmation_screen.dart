@@ -14,6 +14,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:numberpicker/numberpicker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
@@ -1054,7 +1055,7 @@ double value =  0;
                                 ),
                                 title: "save".tr,
                                 onTap: () async {
-                                  _setAlarm(widget.data?[_currentIndex].alarmId??0);
+                                  _setAlarm(widget.data?[_currentIndex].alarmId??1);
                                   await createAlarm(widget.id);
                                 },
                               ),
@@ -1138,13 +1139,14 @@ double value =  0;
   void _setAlarm(id) async {
     DateTime alarmTime = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day,
         selectedHour,selectedMinute,selectedSeconds);
+   File filePath =  await downloadAudioFile(widget.data![0].audioFile ?? 'assets/audio/audio.mp3');
     final alarmSettings = AlarmSettings(
         id: id,
         dateTime: alarmTime,
-        assetAudioPath: widget.data?[0].audioFile ?? 'assets/audio/audio.mp3',
+        assetAudioPath: filePath.path !=""?filePath.path: 'assets/audio/audio.mp3',
         loopAudio: true,
-        vibrate: false,
-        volume: 0.2,
+        vibrate: true,
+        volume: 0.8,
         androidFullScreenIntent: true,
         fadeDuration: 3.0,
         notificationTitle: 'TransformYourMind',
@@ -1153,6 +1155,30 @@ double value =  0;
     await Alarm.set(
       alarmSettings: alarmSettings,
     );
+
+  }
+
+
+  Future<File> downloadAudioFile(String url) async {
+    // Get the download path
+    final directory = await getApplicationDocumentsDirectory();
+    final filePath = '${directory.path}/${DateTime.now().millisecond}.aac';
+
+    // Download the file
+    final response = await http.get(Uri.parse(url));
+
+    // Check if the file was downloaded successfully
+    if (response.statusCode == 200) {
+      // Save the file to the download path
+      response.bodyBytes.first;
+      final file = File(filePath);
+      await file.writeAsBytes(response.bodyBytes);
+      print('Audio file downloaded and saved to $filePath');
+   return file;
+    } else {
+      print('Failed to download audio file');
+      return File("");
+    }
   }
   Future<void> navigateToRingScreen(AlarmSettings alarmSettings) async {
     await Navigator.push(

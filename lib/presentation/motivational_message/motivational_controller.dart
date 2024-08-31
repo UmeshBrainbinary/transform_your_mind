@@ -8,6 +8,7 @@ import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/http_service.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/end_points.dart';
+import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/model_class/motivational_model.dart';
 
@@ -133,31 +134,33 @@ class MotivationalController extends GetxController {
 
   List soundList = [
     {"title": "None", "audio": ""},
-    {
-      "title": "Rk",
-      "audio":
-          "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3"
-    },
-    {
-      "title": "Mk",
-      "audio":
-          "https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/theme_01.mp3"
-    },
-    {
-      "title": "Fk",
-      "audio":
-          "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3"
-    },
-    {
-      "title": "Gk",
-      "audio":
-          "https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/theme_01.mp3"
-    },
-    {
-      "title": "Yk",
-      "audio":
-          "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3"
-    },
+    {"title": "Rk","audio":ImageConstant.bgAudio1},
+    {"title": "Mk","audio":ImageConstant.bgAudio2},
+    // {
+    //   "title": "Rk",
+    //   "audio":
+    //       "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3"
+    // },
+    // {
+    //   "title": "Mk",
+    //   "audio":
+    //       "https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/theme_01.mp3"
+    // },
+    // {
+    //   "title": "Fk",
+    //   "audio":
+    //       "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3"
+    // },
+    // {
+    //   "title": "Gk",
+    //   "audio":
+    //       "https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/theme_01.mp3"
+    // },
+    // {
+    //   "title": "Yk",
+    //   "audio":
+    //       "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3"
+    // },
   ];
 
   List<String> themeList = [
@@ -191,7 +194,7 @@ class MotivationalController extends GetxController {
       String? img}) async {
     update();
 
-    await _audioPlayer.setUrl(url);
+    await _audioPlayer.setAsset(url);
   }
 
   Future<void> play() async {

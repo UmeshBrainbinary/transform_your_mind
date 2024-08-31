@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -169,7 +170,6 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
     request.fields.addAll({
       'created_by':PrefService.getString(PrefKey.userId),
       'description': descController.text.trim(),
-      "isDefault":_recordFilePath != null && _recordFilePath !=''?true.toString():false.toString(),
       'lang': PrefService.getString(PrefKey.language).isEmpty
           ? "english"
           : PrefService.getString(PrefKey.language) != "en-US"
@@ -177,18 +177,25 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
               : "english"
     });
 
-    if(_recordFilePath != null && _recordFilePath !=''){
-      request.files.add(await http.MultipartFile.fromPath('audioFile',_recordFilePath! ));
-    }
+
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       loader = false;
+      var d = (await response.stream.bytesToString());
       //showSnackBarSuccess(context, "successfullyAffirmation".tr);
       setState(() {});
-      Get.back();
+      if(_recordFilePath != null && _recordFilePath !=''){
+       await  updateAffirmationRecord(
+          id: jsonDecode(d)['affirmation']['_id'] ?? '',
+          description: descController.text.trim(),
+        );
+      }
+      else {
+        Get.back();
+      }
     }
     else {
       setState(() {
@@ -214,6 +221,53 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
     var request = http.MultipartRequest('POST', Uri.parse('${EndPoints.baseUrl}${EndPoints.updateAffirmation}${widget.id}'));
     request.fields.addAll({
       "description": descController.text,
+      "created_by": PrefService.getString(PrefKey.userId),
+      "isDefault":_recordFilePath != null && _recordFilePath !=''?true.toString():false.toString(),
+      'lang': PrefService.getString(PrefKey.language).isEmpty
+          ? "english"
+          : PrefService.getString(PrefKey.language) != "en-US"
+              ? "german"
+              : "english"
+    });
+    if(_recordFilePath != null && _recordFilePath !=''){
+      request.files.add(await http.MultipartFile.fromPath('audioFile',_recordFilePath! ));
+    }
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      setState(() {
+        loader = false;
+      });
+      // showSnackBarSuccess(context, "affirmationSuccessfully".tr);
+      setState(() {});
+      Get.back();
+    }
+    else {
+              final responseBody = await response.stream.bytesToString();
+    commonModel = commonModelFromJson(responseBody);
+      showSnackBarError(context, commonModel.message.toString());
+      setState(() {
+        loader = false;
+      });
+      debugPrint(response.reasonPhrase);
+    }
+
+  }
+  updateAffirmationRecord({required String id,required String description}) async {
+    setState(() {
+      loader = true;
+    });
+    debugPrint("User Id ${PrefService.getString(PrefKey.userId)}");
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+    };
+    var request = http.MultipartRequest('POST', Uri.parse('${EndPoints.baseUrl}${EndPoints.updateAffirmation}$id'));
+    request.fields.addAll({
+      "description":description,
       "created_by": PrefService.getString(PrefKey.userId),
       "isDefault":_recordFilePath != null && _recordFilePath !=''?true.toString():false.toString(),
       'lang': PrefService.getString(PrefKey.language).isEmpty

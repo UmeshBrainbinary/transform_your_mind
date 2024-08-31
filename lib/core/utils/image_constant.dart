@@ -11,6 +11,8 @@ class ImageConstant {
   static String audioPath3 = 'assets/audio/3.mp3';
   static String audioPath4 = 'assets/audio/4.mp3';
   static String audioPath5 = 'assets/audio/5.mp3';
+  static String bgAudio1 = 'assets/audio/bg_audio1.mpeg';
+  static String bgAudio2 = 'assets/audio/bg_audio2.mpeg';
 
   static String iconDashboardPath = '$iconPath/dashboard';
   static String iconExplorePath = '$iconPath/explore';

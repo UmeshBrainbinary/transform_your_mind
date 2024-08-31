@@ -428,10 +428,13 @@ class _MotivationalMessageScreenState extends State<MotivationalMessageScreen> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  widget.userName ?? "",
-                                  style: Style.nunitoBold(
-                                      fontSize: 18, color: ColorConstant.white),
+                                SizedBox(
+                                  width: Get.width *0.75,
+                                  child: Text(
+                                    widget.userName ?? "",
+                                    style: Style.nunitoBold(
+                                        fontSize: 18, color: ColorConstant.white),
+                                  ),
                                 ),
                                 Dimens.d4.spaceHeight,
                                 Text(
@@ -441,7 +444,7 @@ class _MotivationalMessageScreenState extends State<MotivationalMessageScreen> {
                                 ),
                               ],
                             ),
-                            Dimens.d120.spaceWidth,
+                            Dimens.d20.spaceWidth,
                             GestureDetector(
                                 onTap: () async {
                                   await motivationalController.pause();
@@ -701,7 +704,7 @@ class _MotivationalMessageScreenState extends State<MotivationalMessageScreen> {
                                   setState.call(() {
                                     currentIndex = index;
                                   });
-                                  await motivationalController.audioPlayer.setUrl(
+                                  await motivationalController.audioPlayer.setAsset(
                                       motivationalController.soundList[index]
                                           ["audio"]);
                                   await motivationalController.play();

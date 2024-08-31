@@ -136,13 +136,16 @@ class _GreatWorkState extends State<GreatWork> {
       backgroundColor: Colors.black.withOpacity(0.5),
       body: ConfettiWidget(
         blastDirectionality: BlastDirectionality.explosive,
-        shouldLoop: false,
+        createParticlePath: (size) {
+          final random = Random();
+          return random.nextBool() ? _starPath(size) : _ribbonPath(size); // Randomly choose between star and ribbon
+        },
+        emissionFrequency: 0.05,
+        numberOfParticles: 10,
         colors: const [
-          Colors.green,
-          Colors.blue,
-          Colors.yellow,
-          Colors.red,
-        ],
+          Color(0xffB8860B),
+          Color(0xffC0C0C0),
+          Color(0xffD3D3D3)],
         confettiController: _controllerCenter,
         child: GestureDetector(
           onTap: () {},
@@ -388,5 +391,43 @@ class _GreatWorkState extends State<GreatWork> {
           fontSize: 14,
           color: ColorConstant.white),
     );
+  }
+
+  Path _starPath(Size size) {
+    final path = Path();
+    final points = 5; // Number of points on the star
+    final radius = size.width / 2;
+    final center = Offset(size.width / 2, size.height / 2);
+
+    for (int i = 0; i < points * 2; i++) {
+      final isOuter = i % 2 == 0;
+      final angle = (i * 360 / (points * 2)) * (3.1415927 / 180);
+      final radiusOffset = isOuter ? radius : radius * 0.5;
+      final x = center.dx + radiusOffset * cos(angle);
+      final y = center.dy + radiusOffset * sin(angle);
+      if (i == 0) {
+        path.moveTo(x, y);
+      } else {
+        path.lineTo(x, y);
+      }
+    }
+    path.close();
+    return path;
+  }
+
+  Path _ribbonPath(Size size) {
+    final path = Path();
+    final width = size.width;
+    final height = size.height;
+    final ribbonWidth = width / 6;
+
+    // Draw a ribbon-like shape
+    path.moveTo(0, height / 2);
+    path.lineTo(width, height / 2);
+    path.lineTo(width - ribbonWidth, height / 2 + ribbonWidth);
+    path.lineTo(ribbonWidth, height / 2 + ribbonWidth);
+    path.close();
+
+    return path;
   }
 }

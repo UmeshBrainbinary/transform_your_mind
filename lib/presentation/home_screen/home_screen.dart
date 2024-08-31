@@ -226,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen>
                   return Stack(
                     children: [
                       Padding(
-                        padding:  EdgeInsets.only(top:  30.0),
+                        padding:  const EdgeInsets.only(top:  30.0),
                         child: CustomScrollViewWidget(
                           controller: scrollController,
                           physics: const ClampingScrollPhysics(),

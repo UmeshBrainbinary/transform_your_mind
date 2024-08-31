@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:transform_your_mind/core/utils/image_constant.dart';
 
 class StartPracticeAffirmationController extends GetxController {
   int selectedSpeedIndex = 0; // Initialize with -1 or any default value
@@ -12,14 +13,25 @@ class StartPracticeAffirmationController extends GetxController {
   RxBool setSpeed = false.obs;
 
   List<String> speedList = ["Auto", "20 sec", "15 sec", "10 sec", "5 sec"];
+  // List soundList = [
+  //   {"title": "None","audio":""},
+  //   {"title": "Rk","audio":"https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3"},
+  //   {"title": "Mk","audio":"https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/theme_01.mp3"},
+  //   {"title": "Fk","audio":"https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3"},
+  //   {"title": "Gk","audio":"https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/theme_01.mp3"},
+  //   {"title": "Yk","audio":"https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3"},
+  //
+  // ];
+
   List soundList = [
     {"title": "None","audio":""},
-    {"title": "Rk","audio":"https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3"},
-    {"title": "Mk","audio":"https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/theme_01.mp3"},
-    {"title": "Fk","audio":"https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3"},
-    {"title": "Gk","audio":"https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/theme_01.mp3"},
-    {"title": "Yk","audio":"https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3"},
-
+    {"title": "Rk","audio":ImageConstant.bgAudio1},
+    {"title": "Mk","audio":ImageConstant.bgAudio2},
+    // {"title": "Rk","audio":ImageConstant.audioPath1},
+    // {"title": "Mk","audio": ImageConstant.audioPath2},
+    // {"title": "Fk","audio":ImageConstant.audioPath3},
+    // {"title": "Gk","audio": ImageConstant.audioPath4},
+    // {"title": "Yk","audio":ImageConstant.audioPath5},
   ];
   int currentDayIndex = DateTime.now().weekday % 7;
 
