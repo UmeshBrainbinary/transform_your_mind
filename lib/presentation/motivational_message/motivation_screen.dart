@@ -164,7 +164,7 @@ class _MotivationScreenState extends State<MotivationScreen> {
                                                 "",
                                         textAlign: TextAlign.center,
                                         maxLines: 4,
-                                        style: Style.nunRegular(
+                                        style: Style.nunitoBold(
                                             fontSize: 18, color: Colors.white),
                                       ),
                                     ),

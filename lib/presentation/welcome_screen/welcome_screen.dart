@@ -108,7 +108,7 @@ class _WelcomeScreenState extends State<WelcomeHomeScreen>
       _showText = true;
       _stopE = false;
     });
-    Future.delayed(const Duration(seconds: 2)).then(
+    Future.delayed(const Duration(seconds: 5)).then(
       (value) async {
         if (_isLongPressed) {
           _controller.forward();
