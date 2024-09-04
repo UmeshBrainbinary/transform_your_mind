@@ -276,7 +276,207 @@ getData() async {
                               builder: (controller) {
                                 return Expanded(
                                   child: controller.audioData.isNotEmpty
-                                      ? GridView.builder(
+                                      ? (PrefService.getBool(PrefKey.isSubscribed) ==true)?
+
+                                  GridView.builder(
+                                      controller: scrollController,
+                                      padding: const EdgeInsets.only(
+                                          bottom: Dimens.d100),
+                                      physics: const BouncingScrollPhysics(),
+                                      gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                        childAspectRatio: 0.78,
+                                        crossAxisCount: 2,
+                                        crossAxisSpacing: 22,
+                                        mainAxisSpacing: 20,
+                                      ),
+                                      itemCount: controller.audioData.length,
+                                      itemBuilder: (context, index) {
+                                        return GestureDetector(
+                                          onTap: () {
+                                            audioContentController
+                                                .searchFocusNode
+                                                .unfocus();
+
+                                              _onTileClick(
+                                                  audioContent: controller
+                                                      .audioData[index],
+                                                  context);
+
+
+                                          },
+                                          child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Stack(
+                                                alignment: Alignment.topRight,
+                                                children: [
+                                                  CommonLoadImage(
+                                                    borderRadius: 10,
+                                                    url: controller
+                                                        .audioData[index]
+                                                        .image ??
+                                                        "",
+                                                    width: Dimens.d170,
+                                                    height: Dimens.d113,
+                                                  ),
+                                                  Align(
+                                                    alignment:
+                                                    Alignment.topRight,
+                                                    child: Padding(
+                                                      padding:
+                                                      const EdgeInsets
+                                                          .only(
+                                                          right: 10,
+                                                          top: 10),
+                                                      child: SvgPicture.asset(
+                                                          ImageConstant.play),
+                                                    ),
+                                                  ),
+                                                  Positioned(
+                                                    bottom: 6.0,
+                                                    right: 6.0,
+                                                    child: Container(
+                                                      padding:
+                                                      EdgeInsets
+                                                          .only(
+                                                          top:Platform.isIOS?0: 1),
+                                                      height: 12,
+                                                      width: 30,
+                                                      decoration: BoxDecoration(
+                                                          color: Colors
+                                                              .black
+                                                              .withOpacity(
+                                                              0.5),
+                                                          borderRadius:
+                                                          BorderRadius
+                                                              .circular(
+                                                              13)),
+                                                      child: Center(
+                                                        child: Text(
+                                                          controller.audioListDuration.length > index ? _formatDuration( controller.audioListDuration[index]) : 'Loading...',
+                                                          style: Style.nunRegular(
+                                                              fontSize:
+                                                              6,
+                                                              color: Colors
+                                                                  .white),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                              Dimens.d10.spaceHeight,
+                                              Row(
+                                                mainAxisAlignment:
+                                                MainAxisAlignment
+                                                    .spaceBetween,
+                                                children: [
+                                                  SizedBox(
+                                                    width: 72,
+                                                    child: Text(
+                                                      currentLanguage!="en-US"?controller
+                                                          .audioData[index]
+                                                          .gName
+                                                          .toString():controller
+                                                          .audioData[index]
+                                                          .name
+                                                          .toString(),
+                                                      // "Motivational",
+                                                      style: Style
+                                                          .nunitoBold(
+                                                        fontSize:
+                                                        Dimens.d10,
+                                                      ),
+                                                      overflow: TextOverflow
+                                                          .ellipsis,
+                                                      maxLines: 1,
+                                                    ),
+                                                  ),
+                                                  const CircleAvatar(
+                                                    radius: 2,
+                                                    backgroundColor:
+                                                    ColorConstant
+                                                        .colorD9D9D9,
+                                                  ),
+                                                  Dimens.d10.spaceWidth,
+                                                  Row(
+                                                    children: [
+                                                      SvgPicture.asset(
+                                                        ImageConstant.rating,
+                                                        color: ColorConstant
+                                                            .colorFFC700,
+                                                        height: 10,
+                                                        width: 10,
+                                                      ),
+                                                      Dimens.d3
+                                                          .spaceWidth,
+                                                      Text(
+                                                        "${controller.audioData[index].rating.toString()}.0",
+                                                        style: Style
+                                                            .nunLight(
+                                                          fontSize:
+                                                          Dimens.d12,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  controller.audioData[index]
+                                                      .download ==
+                                                      false
+                                                      ? GestureDetector(
+                                                    onTap: () async {
+
+                                                      controller.setDownloadView(
+                                                          fileName: controller
+                                                              .audioData[
+                                                          index].name,
+                                                          index: index,
+                                                          context:
+                                                          context,
+                                                          url: controller
+                                                              .audioData[
+                                                          index]
+                                                              .audioFile);
+                                                      setState(() {
+
+                                                      });
+                                                    },
+                                                    child: SvgPicture.asset(
+                                                        ImageConstant
+                                                            .downloadCircle,
+                                                        height:
+                                                        Dimens.d25,
+                                                        width:
+                                                        Dimens.d25),
+                                                  )
+                                                      : SvgPicture.asset(
+                                                      ImageConstant
+                                                          .checkMark,
+                                                      height:
+                                                      Dimens
+                                                          .d25,
+                                                      width: Dimens
+                                                          .d25)
+                                                ],
+                                              ),
+                                              Dimens.d7.spaceHeight,
+                                              Text(
+                                                currentLanguage!="en-US"?controller.audioData[index]
+                                                    .gDescription
+                                                    .toString():controller.audioData[index]
+                                                    .description
+                                                    .toString(),
+                                                maxLines: Dimens.d2.toInt(),
+                                                style: Style.nunMedium(
+                                                    fontSize: Dimens.d14),
+                                                overflow:
+                                                TextOverflow.ellipsis,
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      })
+                                      :GridView.builder(
                                           controller: scrollController,
                                           padding: const EdgeInsets.only(
                                               bottom: Dimens.d100),

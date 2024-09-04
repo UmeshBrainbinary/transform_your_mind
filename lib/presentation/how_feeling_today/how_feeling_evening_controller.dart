@@ -11,6 +11,7 @@ import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/presentation/dash_board_screen/dash_board_screen.dart';
 import 'package:transform_your_mind/presentation/how_feeling_today/evening_motivational.dart';
 import 'package:transform_your_mind/presentation/how_feeling_today/evening_stress.dart';
+import 'package:transform_your_mind/presentation/subscription_screen/subscription_screen.dart';
 
 class HowFeelingEveningController extends GetxController {
   TextEditingController whatCanYouDo = TextEditingController();
@@ -394,8 +395,18 @@ class HowFeelingEveningController extends GetxController {
           Get.to(() => EveningMotivational());
         } else {
           updateApi(context, pKey: "eveningMotivationQuestions");
-
           Get.offAll(() => const DashBoardScreen());
+
+        /*  if((PrefService.getBool(PrefKey.isFreeUser) == false && PrefService.getBool(PrefKey.isSubscribed) == false))
+          {
+            Get.offAll(() =>  SubscriptionScreen(skip: true,));
+
+          }
+          else
+          {
+
+            Get.offAll(() => const DashBoardScreen());
+          }*/
         }
       } else {
         debugPrint(response.reasonPhrase);

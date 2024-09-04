@@ -118,7 +118,155 @@ class _SelfHypnoticState extends State<SelfHypnotic> {
                           builder: (controller) {
                             return Expanded(
                               child: controller.audioDataSelfHypnotic.isNotEmpty
-                                  ? GridView.builder(
+                                  ?   (PrefService.getBool(PrefKey.isSubscribed) ==true && PrefService.getString(PrefKey.subId) =="transform_yearly")?
+                              GridView.builder(
+                                  controller: scrollController,
+                                  padding: const EdgeInsets.only(
+                                      bottom: Dimens.d20),
+                                  physics: const BouncingScrollPhysics(),
+                                  gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                    childAspectRatio: 0.78,
+                                    crossAxisCount: 2,
+                                    // Number of columns
+                                    crossAxisSpacing: 20,
+                                    // Spacing between columns
+                                    mainAxisSpacing:
+                                    20, // Spacing between rows
+                                  ),
+                                  itemCount: controller.audioDataSelfHypnotic.length,
+                                  itemBuilder: (context, index) {
+                                    return GestureDetector(
+                                      onTap: () {
+
+
+                                          _onTileClick(index: index,
+                                              audioContent: controller
+                                                  .audioData[index],
+                                              context: context,controller: controller);
+
+                                      },
+                                      child: Stack(
+                                        alignment: Alignment.topLeft,
+                                        children: [
+                                          Column(
+                                            children: [
+                                              Stack(
+                                                alignment:
+                                                Alignment.topRight,
+                                                children: [
+                                                  CommonLoadImage(
+                                                    borderRadius: 10,
+                                                    url: controller
+                                                        .audioDataSelfHypnotic[
+                                                    index]
+                                                        .image ??
+                                                        "",
+                                                    width: Dimens.d170,
+                                                    height: Dimens.d113,
+                                                  ),
+                                                  Align(
+                                                    alignment:
+                                                    Alignment.topRight,
+                                                    child: Padding(
+                                                      padding:
+                                                      const EdgeInsets
+                                                          .only(
+                                                          right: 10,
+                                                          top: 10),
+                                                      child:
+                                                      SvgPicture.asset(
+                                                          ImageConstant
+                                                              .play),
+                                                    ),
+                                                  ),
+                                                  Positioned( bottom: 6.0,
+                                                    right: 6.0,
+                                                    child: Container(padding:  EdgeInsets.only(  top:Platform.isIOS?0: 1),
+                                                      height: 12,width: 30,decoration: BoxDecoration(color: Colors.black.withOpacity(0.5),
+                                                          borderRadius: BorderRadius.circular(13)),
+                                                      child: Center(child: Text( controller.audioDataSelfHypnotic.length > index ? _formatDuration( controller.audioListDurationSelf[index]) : '8:00',style: Style.nunRegular(fontSize: 6,color: Colors.white),),) ,),
+                                                  )
+                                                ],
+                                              ),
+                                              Dimens.d10.spaceHeight,
+                                              Row(
+                                                mainAxisAlignment:
+                                                MainAxisAlignment
+                                                    .spaceBetween,
+                                                children: [
+                                                  SizedBox(
+                                                    width: 90,
+                                                    child: Text(
+                                                      currentLanguage=="en-US"?controller
+                                                          .audioDataSelfHypnotic[index]
+                                                          .name
+                                                          .toString():controller
+                                                          .audioDataSelfHypnotic[index]
+                                                          .gName
+                                                          .toString(),
+                                                      // "Motivational",
+                                                      style:
+                                                      Style.nunMedium(
+                                                        fontSize:
+                                                        Dimens.d12,
+                                                      ),
+                                                      overflow: TextOverflow
+                                                          .ellipsis,
+                                                      maxLines: 1,
+                                                    ),
+                                                  ),
+                                                  const CircleAvatar(
+                                                    radius: 2,
+                                                    backgroundColor:
+                                                    ColorConstant
+                                                        .colorD9D9D9,
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      SvgPicture.asset(
+                                                        ImageConstant
+                                                            .rating,
+                                                        color: ColorConstant
+                                                            .colorFFC700,
+                                                        height: 10,
+                                                        width: 10,
+                                                      ),
+                                                      Dimens.d3.spaceWidth,
+                                                      Text(
+                                                        "${controller.audioDataSelfHypnotic[index].rating.toString()}.0",
+                                                        style:
+                                                        Style.nunMedium(
+                                                          fontSize:
+                                                          Dimens.d12,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                              Dimens.d7.spaceHeight,
+                                              Text(
+                                                currentLanguage=="en-US"? controller.audioDataSelfHypnotic[index]
+                                                    .description
+                                                    .toString():controller.audioDataSelfHypnotic[index]
+                                                    .gDescription
+                                                    .toString(),
+                                                maxLines: Dimens.d2.toInt(),
+                                                style: Style.nunMedium(
+                                                    fontSize: Dimens.d14),
+                                                overflow:
+                                                TextOverflow.ellipsis,
+                                              ),
+                                            ],
+                                          ),
+
+
+                                        ],
+                                      ),
+                                    );
+                                  })
+                                  :GridView.builder(
                                   controller: scrollController,
                                   padding: const EdgeInsets.only(
                                       bottom: Dimens.d20),

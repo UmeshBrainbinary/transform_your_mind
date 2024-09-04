@@ -32,6 +32,7 @@ import 'package:transform_your_mind/presentation/how_feeling_today/motivational_
 import 'package:transform_your_mind/presentation/how_feeling_today/sleep_questions.dart';
 import 'package:transform_your_mind/presentation/how_feeling_today/stress_questions.dart';
 import 'package:transform_your_mind/presentation/motivational_message/motivational_controller.dart';
+import 'package:transform_your_mind/presentation/subscription_screen/subscription_screen.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:volume_controller/volume_controller.dart';
@@ -488,6 +489,16 @@ class _MotivationalMessageScreenState extends State<MotivationalMessageScreen> {
                                     await motivationalController.pause();
 
                                     Get.offAll(() => const DashBoardScreen());
+                                    /*if((PrefService.getBool(PrefKey.isFreeUser) == false && PrefService.getBool(PrefKey.isSubscribed) == false))
+                                    {
+                                      Get.offAll(() =>  SubscriptionScreen(skip: true,));
+
+                                    }
+                                    else
+                                    {
+
+                                      Get.offAll(() => const DashBoardScreen());
+                                    }*/
                                   }
                                 },
                                 child: Text(

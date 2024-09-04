@@ -90,6 +90,12 @@ class LoginController extends GetxController {
         PrefService.setValue(PrefKey.userId, loginModel.data!.id);
         PrefService.setValue(PrefKey.name,loginModel.data?.name??"");
         PrefService.setValue(PrefKey.userImage,loginModel.data?.userProfile??"");
+        await PrefService.setValue(
+            PrefKey.isFreeUser, getUserModel.data?.isFreeVersion ?? false);
+        await PrefService.setValue(
+            PrefKey.isSubscribed, getUserModel.data?.isSubscribed ?? false);
+        await PrefService.setValue(
+            PrefKey.subId, getUserModel.data?.subscriptionId ?? '');
         await updateUser(context);
         await getUSer(context, greeting);
       } else if (response.statusCode == 400) {
@@ -151,6 +157,12 @@ class LoginController extends GetxController {
         update();
         await PrefService.setValue(
             PrefKey.userImage, getUserModel.data?.userProfile ?? "");
+        await PrefService.setValue(
+            PrefKey.isFreeUser, getUserModel.data?.isFreeVersion ?? false);
+        await PrefService.setValue(
+            PrefKey.isSubscribed, getUserModel.data?.isSubscribed ?? false);
+        await PrefService.setValue(
+            PrefKey.subId, getUserModel.data?.subscriptionId ?? '');
       } else {
         debugPrint(response.reasonPhrase);
       }

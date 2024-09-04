@@ -10,6 +10,7 @@ import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/presentation/how_feeling_today/motivational_questions.dart';
 import 'package:transform_your_mind/presentation/how_feeling_today/sleep_questions.dart';
 import 'package:transform_your_mind/presentation/how_feeling_today/stress_questions.dart';
+import 'package:transform_your_mind/presentation/subscription_screen/subscription_screen.dart';
 
 import '../../core/utils/end_points.dart';
 import '../dash_board_screen/dash_board_screen.dart';
@@ -415,8 +416,20 @@ print(moodData);
             Get.to(() => MotivationalQuestions());
           } else {
             updateApi(context,pKey: "eveningMotivationQuestions");
-
             Get.offAll(() => const DashBoardScreen());
+
+
+/*
+            if((PrefService.getBool(PrefKey.isFreeUser) == false && PrefService.getBool(PrefKey.isSubscribed) == false))
+            {
+              Get.offAll(() =>  SubscriptionScreen(skip: false,));
+
+            }
+            else
+            {
+
+              Get.offAll(() => const DashBoardScreen());
+            }*/
           }
         }
         else {

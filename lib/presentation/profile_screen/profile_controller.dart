@@ -69,6 +69,12 @@ class ProfileController extends GetxController {
         await PrefService.setValue(PrefKey.name, getUserModel.data?.name ?? "");
         await PrefService.setValue(
             PrefKey.userImage, getUserModel.data?.userProfile ?? "");
+        await PrefService.setValue(
+            PrefKey.isFreeUser, getUserModel.data?.isFreeVersion ?? false);
+        await PrefService.setValue(
+            PrefKey.isSubscribed, getUserModel.data?.isSubscribed ?? false);
+        await PrefService.setValue(
+            PrefKey.subId, getUserModel.data?.subscriptionId ?? '');
       } else {
         debugPrint(response.reasonPhrase);
       }

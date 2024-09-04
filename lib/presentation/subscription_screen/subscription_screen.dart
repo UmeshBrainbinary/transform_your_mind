@@ -427,6 +427,12 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
         await PrefService.setValue(
             PrefKey.userImage, getUserModel.data?.userProfile ?? "");
+        await PrefService.setValue(
+            PrefKey.isFreeUser, getUserModel.data?.isFreeVersion ?? false);
+        await PrefService.setValue(
+            PrefKey.isSubscribed, getUserModel.data?.isSubscribed ?? false);
+        await PrefService.setValue(
+            PrefKey.subId, getUserModel.data?.subscriptionId ?? '');
         setState(() {
 
         });

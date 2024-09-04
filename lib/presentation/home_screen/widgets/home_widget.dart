@@ -460,14 +460,16 @@ class SelfHypnoticScreen extends StatelessWidget {
               ),
             ],
           ),
-          if (dataList!.isPaid!) Align(alignment: Alignment.topLeft,
+       (PrefService.getBool(PrefKey.isSubscribed) ==true && PrefService.getString(PrefKey.subId) =="transform_yearly")?
+       const SizedBox()
+        :   (dataList!.isPaid!)? Align(alignment: Alignment.topLeft,
             child: Container(
               margin: const EdgeInsets.all(7.0),
               height: 14,width: 14,
               decoration: const BoxDecoration(color: Colors.black,shape: BoxShape.circle),
               child: Center(child: Image.asset(ImageConstant.lockHome,height: 7,width: 7,)),
             ),
-          ) else const SizedBox()
+          ) : const SizedBox()
         ],
       ),
     );

@@ -1,6 +1,8 @@
 class EndPoints {
+  /*static String baseUrl =
+      "https://transformyourmind-server.onrender.com/api/v1/"; */
   static String baseUrl =
-      "https://transformyourmind-server.onrender.com/api/v1/";
+      "https://transformyourmindapi.brainbinaryinfotech.com/api/v1/";
 
   static String registerApi = "signup";
   static String verifyOtp = "verify-otp";

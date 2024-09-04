@@ -27,6 +27,7 @@ import 'package:transform_your_mind/presentation/how_feeling_today/stress_questi
 import 'package:transform_your_mind/presentation/intro_screen/select_your_affirmation_focus_page.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/personalisations_screen/personalisations_controller.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/personalisations_screen/personalisations_screen.dart';
+import 'package:transform_your_mind/presentation/subscription_screen/subscription_screen.dart';
 import 'package:transform_your_mind/presentation/welcome_screen/welcome_screen.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 class SplashScreen extends StatefulWidget {
@@ -150,6 +151,12 @@ Future.delayed(const Duration(seconds: 1)).then((value) {
         }
         await PrefService.setValue(
             PrefKey.userImage, getUserModel.data?.userProfile ?? "");
+        await PrefService.setValue(
+            PrefKey.isFreeUser, getUserModel.data?.isFreeVersion ?? false);
+        await PrefService.setValue(
+            PrefKey.isSubscribed, getUserModel.data?.isSubscribed ?? false);
+        await PrefService.setValue(
+            PrefKey.subId, getUserModel.data?.subscriptionId ?? '');
       } else {
         debugPrint(response.reasonPhrase);
       }
@@ -198,6 +205,17 @@ Future.delayed(const Duration(seconds: 1)).then((value) {
       Get.offAll(() => EveningMotivational());
     } else {
       Get.offAll(() => const DashBoardScreen());
+
+      /*   if((getUserModel.data?.isFreeVersion ?? false) == false  && (getUserModel.data?.isSubscribed ?? false)== false)
+        {
+          Get.offAll(() =>  SubscriptionScreen(skip: false,));
+
+        }
+      else
+        {
+
+      Get.offAll(() => const DashBoardScreen());
+        }*/
     }
   }
 

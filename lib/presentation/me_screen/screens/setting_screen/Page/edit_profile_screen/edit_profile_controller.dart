@@ -55,6 +55,12 @@ class EditProfileController extends GetxController {
     if( getUserModel.data?.userProfile !=null){
       urlImage = getUserModel.data?.userProfile?? "";
     await PrefService.setValue(PrefKey.userImage,getUserModel.data?.userProfile);
+      await PrefService.setValue(
+          PrefKey.isFreeUser, getUserModel.data?.isFreeVersion ?? false);
+      await PrefService.setValue(
+          PrefKey.isSubscribed, getUserModel.data?.isSubscribed ?? false);
+      await PrefService.setValue(
+          PrefKey.subId, getUserModel.data?.subscriptionId ?? '');
     }
     update();
     update(["edit"]);
@@ -81,6 +87,12 @@ class EditProfileController extends GetxController {
         getUserModel = getUserModelFromJson(responseBody);
        await  PrefService.setValue(PrefKey.name, getUserModel.data?.name??"");
        await  PrefService.setValue(PrefKey.userImage, getUserModel.data?.userProfile??"");
+        await PrefService.setValue(
+            PrefKey.isFreeUser, getUserModel.data?.isFreeVersion ?? false);
+        await PrefService.setValue(
+            PrefKey.isSubscribed, getUserModel.data?.isSubscribed ?? false);
+        await PrefService.setValue(
+            PrefKey.subId, getUserModel.data?.subscriptionId ?? '');
       } else {
         debugPrint(response.reasonPhrase);
       }

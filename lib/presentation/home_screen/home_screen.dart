@@ -887,97 +887,192 @@ class _HomeScreenState extends State<HomeScreen>
                       controller.audioDataSelfHypnotic.length, (index) {
                     return GestureDetector(
                         onTap: () {
-                          if (!controller
-                              .audioDataSelfHypnotic[index].isPaid!) {
-                            showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(
-                                    Dimens.d24,
+                          if(PrefService.getBool(PrefKey.isSubscribed) ==true && PrefService.getString(PrefKey.subId) =="transform_yearly")
+                            {
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(
+                                      Dimens.d24,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              builder: (BuildContext context) {
-                                return NowPlayingScreen(
-                                  audioData: AudioData(
-                                    id: controller
-                                        .audioDataSelfHypnotic[index].id,
-                                    isPaid: controller
-                                        .audioDataSelfHypnotic[index].isPaid,
-                                    image: controller
-                                        .audioDataSelfHypnotic[index].image,
-                                    rating: controller
-                                        .audioDataSelfHypnotic[index].rating,
-                                    description: controller
-                                        .audioDataSelfHypnotic[index]
-                                        .description,
-                                    name: controller
-                                        .audioDataSelfHypnotic[index].name,
-                                    isBookmarked: controller
-                                        .audioDataSelfHypnotic[index]
-                                        .isBookmarked,
-                                    isRated: controller
-                                        .audioDataSelfHypnotic[index].isRated,
-                                    category: controller
-                                        .audioDataSelfHypnotic[index].category,
-                                    createdAt: controller
-                                        .audioDataSelfHypnotic[index].createdAt,
-                                    podsBy: controller
-                                        .audioDataSelfHypnotic[index].podsBy,
-                                    expertName: controller
-                                        .audioDataSelfHypnotic[index]
-                                        .expertName,
-                                    audioFile: controller
-                                        .audioDataSelfHypnotic[index].audioFile,
-                                    isRecommended: controller
-                                        .audioDataSelfHypnotic[index]
-                                        .isRecommended,
-                                    status: controller
-                                        .audioDataSelfHypnotic[index].status,
-                                    createdBy: controller
-                                        .audioDataSelfHypnotic[index].createdBy,
-                                    updatedAt: controller
-                                        .audioDataSelfHypnotic[index].updatedAt,
-                                    v: controller
-                                        .audioDataSelfHypnotic[index].v,
-                                    download: false,
-                                  ),
-                                );
-                              },
-                            ).then(
-                              (value) {
-                                if (themeController.isDarkMode.isTrue) {
-                                  SystemChrome.setSystemUIOverlayStyle(
-                                      const SystemUiOverlayStyle(
-                                    statusBarBrightness: Brightness.dark,
-                                    statusBarIconBrightness: Brightness.light,
-                                  ));
-                                } else {
-                                  SystemChrome.setSystemUIOverlayStyle(
-                                      const SystemUiOverlayStyle(
-                                    statusBarBrightness: Brightness.light,
-                                    statusBarIconBrightness: Brightness.dark,
-                                  ));
-                                }
-                                Future.delayed(const Duration(seconds: 1)).then(
-                                  (value) async {
-                                    await g.getSelfHypnoticApi();
+                                builder: (BuildContext context) {
+                                  return NowPlayingScreen(
+                                    audioData: AudioData(
+                                      id: controller
+                                          .audioDataSelfHypnotic[index].id,
+                                      isPaid: controller
+                                          .audioDataSelfHypnotic[index].isPaid,
+                                      image: controller
+                                          .audioDataSelfHypnotic[index].image,
+                                      rating: controller
+                                          .audioDataSelfHypnotic[index].rating,
+                                      description: controller
+                                          .audioDataSelfHypnotic[index]
+                                          .description,
+                                      name: controller
+                                          .audioDataSelfHypnotic[index].name,
+                                      isBookmarked: controller
+                                          .audioDataSelfHypnotic[index]
+                                          .isBookmarked,
+                                      isRated: controller
+                                          .audioDataSelfHypnotic[index].isRated,
+                                      category: controller
+                                          .audioDataSelfHypnotic[index].category,
+                                      createdAt: controller
+                                          .audioDataSelfHypnotic[index].createdAt,
+                                      podsBy: controller
+                                          .audioDataSelfHypnotic[index].podsBy,
+                                      expertName: controller
+                                          .audioDataSelfHypnotic[index]
+                                          .expertName,
+                                      audioFile: controller
+                                          .audioDataSelfHypnotic[index].audioFile,
+                                      isRecommended: controller
+                                          .audioDataSelfHypnotic[index]
+                                          .isRecommended,
+                                      status: controller
+                                          .audioDataSelfHypnotic[index].status,
+                                      createdBy: controller
+                                          .audioDataSelfHypnotic[index].createdBy,
+                                      updatedAt: controller
+                                          .audioDataSelfHypnotic[index].updatedAt,
+                                      v: controller
+                                          .audioDataSelfHypnotic[index].v,
+                                      download: false,
+                                    ),
+                                  );
+                                },
+                              ).then(
+                                    (value) {
+                                  if (themeController.isDarkMode.isTrue) {
+                                    SystemChrome.setSystemUIOverlayStyle(
+                                        const SystemUiOverlayStyle(
+                                          statusBarBrightness: Brightness.dark,
+                                          statusBarIconBrightness: Brightness.light,
+                                        ));
+                                  } else {
+                                    SystemChrome.setSystemUIOverlayStyle(
+                                        const SystemUiOverlayStyle(
+                                          statusBarBrightness: Brightness.light,
+                                          statusBarIconBrightness: Brightness.dark,
+                                        ));
+                                  }
+                                  Future.delayed(const Duration(seconds: 1)).then(
+                                        (value) async {
+                                      await g.getSelfHypnoticApi();
 
-                                    setState(() {});
-                                  },
-                                );
-                              },
-                            );
-                          } else {
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (context) {
-                                return SubscriptionScreen(
-                                  skip: false,
-                                );
-                              },
-                            ));
+                                      setState(() {});
+                                    },
+                                  );
+                                },
+                              );
+                            }
+                          else {
+                            if (!controller
+                                .audioDataSelfHypnotic[index].isPaid!) {
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(
+                                      Dimens.d24,
+                                    ),
+                                  ),
+                                ),
+                                builder: (BuildContext context) {
+                                  return NowPlayingScreen(
+                                    audioData: AudioData(
+                                      id: controller
+                                          .audioDataSelfHypnotic[index].id,
+                                      isPaid: controller
+                                          .audioDataSelfHypnotic[index].isPaid,
+                                      image: controller
+                                          .audioDataSelfHypnotic[index].image,
+                                      rating: controller
+                                          .audioDataSelfHypnotic[index].rating,
+                                      description: controller
+                                          .audioDataSelfHypnotic[index]
+                                          .description,
+                                      name: controller
+                                          .audioDataSelfHypnotic[index].name,
+                                      isBookmarked: controller
+                                          .audioDataSelfHypnotic[index]
+                                          .isBookmarked,
+                                      isRated: controller
+                                          .audioDataSelfHypnotic[index].isRated,
+                                      category: controller
+                                          .audioDataSelfHypnotic[index]
+                                          .category,
+                                      createdAt: controller
+                                          .audioDataSelfHypnotic[index]
+                                          .createdAt,
+                                      podsBy: controller
+                                          .audioDataSelfHypnotic[index].podsBy,
+                                      expertName: controller
+                                          .audioDataSelfHypnotic[index]
+                                          .expertName,
+                                      audioFile: controller
+                                          .audioDataSelfHypnotic[index]
+                                          .audioFile,
+                                      isRecommended: controller
+                                          .audioDataSelfHypnotic[index]
+                                          .isRecommended,
+                                      status: controller
+                                          .audioDataSelfHypnotic[index].status,
+                                      createdBy: controller
+                                          .audioDataSelfHypnotic[index]
+                                          .createdBy,
+                                      updatedAt: controller
+                                          .audioDataSelfHypnotic[index]
+                                          .updatedAt,
+                                      v: controller
+                                          .audioDataSelfHypnotic[index].v,
+                                      download: false,
+                                    ),
+                                  );
+                                },
+                              ).then(
+                                    (value) {
+                                  if (themeController.isDarkMode.isTrue) {
+                                    SystemChrome.setSystemUIOverlayStyle(
+                                        const SystemUiOverlayStyle(
+                                          statusBarBrightness: Brightness.dark,
+                                          statusBarIconBrightness: Brightness
+                                              .light,
+                                        ));
+                                  } else {
+                                    SystemChrome.setSystemUIOverlayStyle(
+                                        const SystemUiOverlayStyle(
+                                          statusBarBrightness: Brightness.light,
+                                          statusBarIconBrightness: Brightness
+                                              .dark,
+                                        ));
+                                  }
+                                  Future.delayed(const Duration(seconds: 1))
+                                      .then(
+                                        (value) async {
+                                      await g.getSelfHypnoticApi();
+
+                                      setState(() {});
+                                    },
+                                  );
+                                },
+                              );
+                            }
+                            else {
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) {
+                                  return SubscriptionScreen(
+                                    skip: false,
+                                  );
+                                },
+                              ));
+                            }
                           }
                         },
                         child: Padding(
@@ -1122,7 +1217,7 @@ class _HomeScreenState extends State<HomeScreen>
               itemBuilder: (context, index) {
                 return InkWell(
                   onTap: () {
-                    if (controller.audioData[index].isPaid!) {
+                    if(PrefService.getBool(PrefKey.isSubscribed) ==true){
                       showModalBottomSheet(
                         context: context,
                         isScrollControlled: true,
@@ -1139,8 +1234,28 @@ class _HomeScreenState extends State<HomeScreen>
                           );
                         },
                       );
-                    } else {
-                      Get.toNamed(AppRoutes.subscriptionScreen);
+                    }
+                    else {
+                      if (controller.audioData[index].isPaid!) {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(
+                                Dimens.d24,
+                              ),
+                            ),
+                          ),
+                          builder: (BuildContext context) {
+                            return NowPlayingScreen(
+                              audioData: controller.audioData[index],
+                            );
+                          },
+                        );
+                      } else {
+                        Get.toNamed(AppRoutes.subscriptionScreen);
+                      }
                     }
                   },
                   child: Container(
@@ -1187,7 +1302,8 @@ class _HomeScreenState extends State<HomeScreen>
                               borderRadius: 8.0,
                             ),
                           ),
-                          controller.audioData[index].isPaid!
+                          PrefService.getBool(PrefKey.isSubscribed) ==true ? const SizedBox()
+                              :     controller.audioData[index].isPaid!
                               ? const SizedBox()
                               : Container(
                                   margin: const EdgeInsets.all(6.0),
