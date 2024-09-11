@@ -186,8 +186,11 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
         );
 
       } else {
-        timer.cancel(); // Stop the timer
+        timer.cancel();
+        if(_progressController?.isAnimating  ?? false){
+
         _onComplete(); // Handle completion
+        }// Stop the timer
       }
     });
   }
@@ -546,7 +549,11 @@ int index =0;
                             setState(() {
                               showBottom = true;
                             });
-                            sheetSound();
+                            _progressController?.stop();
+                            sheetSound().then((v){
+                              _progressController?.forward();
+
+                            });
                           },
                           child: Container(
                             height: 42,
@@ -579,7 +586,11 @@ int index =0;
                             setState(() {
                               showBottom = true;
                             });
-                            sheetTheme();
+                            _progressController?.stop();
+                            sheetTheme().then((v){
+                              _progressController?.forward();
+
+                            });
                           },
                           child: Container(
                             height: 42,
@@ -632,7 +643,10 @@ int index =0;
                               setState(() {
                                 showBottom = true;
                               });
-                              sheetAlarm();
+                          _progressController?.stop();
+                              sheetAlarm().then((v){
+                                _progressController?.forward();
+                              });
                             },
                         child: SvgPicture.asset(ImageConstant.alarm,
                             color: ColorConstant.white, height: 20, width: 20),
@@ -827,6 +841,7 @@ int index =0;
     return showModalBottomSheet(
       barrierColor: Colors.transparent,
       backgroundColor: Colors.transparent,
+
       context: context,
       builder: (context) {
         return StatefulBuilder(
