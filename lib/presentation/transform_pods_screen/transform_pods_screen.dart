@@ -167,16 +167,30 @@ class _TransformPodsScreenState extends State<TransformPodsScreen>
                               return GestureDetector(
                                 onTap: () {
                                   searchFocusNode.unfocus();
-                                  if (controller.audioData[index].isPaid!) {
-                                    Get.toNamed(AppRoutes.subscriptionScreen);
-
-                                  } else {
+                                  if((PrefService.getBool(PrefKey.isSubscribed) ==true && PrefService.getString(PrefKey.subId) =="transform_yearly")
+                                  || (PrefService.getBool(PrefKey.isSubscribed) ==true && PrefService.getString(PrefKey.subId) =="transform_monthly")
+                                  ){
                                     _onTileClick(
                                       context: context,
                                       index: index,
                                       audioContent: controller.audioData[index],
                                     );
                                   }
+                                  else
+                                    {
+                                      if (controller.audioData[index].isPaid!) {
+                                        Get.toNamed(AppRoutes.subscriptionScreen);
+
+                                      } else {
+
+                                        _onTileClick(
+                                          context: context,
+                                          index: index,
+                                          audioContent: controller.audioData[index],
+                                        );
+                                      }
+                                    }
+
                                 },
                                 child: Stack(
                                   children: [

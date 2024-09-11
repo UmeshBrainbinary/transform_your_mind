@@ -158,7 +158,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           handleError(purchaseDetails.error!);
         }
         else if (purchaseDetails.status == PurchaseStatus.purchased ||
-            purchaseDetails.status == PurchaseStatus.restored) {
+            purchaseDetails.status == PurchaseStatus.restored  || purchaseDetails.status == PurchaseStatus.error ) {
           debugPrint("purchase details =========+++++$purchaseDetails");
 
           try {
@@ -453,7 +453,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
         getUserModel = getUserModelFromJson(responseBody);
         isSubscribed = getUserModel.data?.isSubscribed ?? false;
-
+Get.back();
         await PrefService.setValue(
             PrefKey.userImage, getUserModel.data?.userProfile ?? "");
         await PrefService.setValue(
@@ -821,12 +821,49 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
       } else {
         print("Purchase unsuccessful");
+     await api();
 
         checkData();
       }
     } catch (e) {
       // Handle any errors
       print("Error purchasing plan: $e");
+    }
+  }
+  api() async {
+    try {
+      var headers = {
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+      };
+      var request = http.MultipartRequest(
+          'POST',
+          Uri.parse(
+              '${EndPoints.baseUrl}${EndPoints.updateUser}${PrefService.getString(PrefKey.userId)}'));
+      request.fields.addAll({
+        'isSubscribed': "true",
+        'subscriptionId':  subscriptionController.plan[1].toString() == true.toString()?"transform_yearly":"transform_monthly",
+        'subscriptionTitle':
+        subscriptionController.plan[1].toString() == true.toString()?"Premium Yearly":"Premium Monthly",
+        'subscriptionDescription': "",
+        'price': "€"+ subscriptionController.plan[1].toString() == true.toString()?"49.99":"6.99",
+        'rawPrice': "",
+        'currencyCode': "",
+        'subscriptionDate': DateTime.now().toString(),
+        'expiryDate': "",
+      });
+
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        showSnackBarSuccess(context, "Subscription set successful");
+        await getUSer();
+      } else {
+        debugPrint(response.reasonPhrase);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 }

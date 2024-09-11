@@ -309,6 +309,7 @@ class _SelectYourAffirmationFocusPageState
 
       if (response.statusCode == 200) {
         await PrefService.setValue(PrefKey.affirmation, true);
+        await getData();
         setState(() {
           loader = false;
         });

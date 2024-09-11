@@ -601,14 +601,16 @@ getUSer(context, greeting);
               Text(
                 "TransformYourMind - Free Version".tr,
                 style: Style.nunMedium(
-                    fontSize: Dimens.d16, fontWeight: FontWeight.w700),
+                    fontSize: Dimens.d16, fontWeight: FontWeight.w700,color: Colors.black
+                ),
                 textAlign: TextAlign.center,
               ),
               Dimens.d20.spaceHeight,
               Text(
                 "The free version of TransformYourMind is the perfect introduction to fostering meaningful change in your life.".tr,
                 style: Style.nunMedium(
-                    fontSize: Dimens.d14, fontWeight: FontWeight.w400),
+                    fontSize: Dimens.d14, fontWeight: FontWeight.w400,color: Colors.black
+                ),
                 textAlign: TextAlign.center,
               ),
               Dimens.d10.spaceHeight,
@@ -619,12 +621,14 @@ getUSer(context, greeting);
                     TextSpan(children: [
                       TextSpan(text:  "Guided Meditations:".tr,
                         style: Style.nunMedium(
-                            fontSize: Dimens.d14, fontWeight: FontWeight.w700),),
+                            fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
+                        ),),
                       const TextSpan(text: " "),
                       TextSpan(text:  "Experience calming, supportive meditations designed to reduce stress and promote inner peace, helping you take the first step toward a more balanced and harmonious mind.".tr,
                         style: Style.nunRegular(
                           fontSize: Dimens.d14,
                           fontWeight: FontWeight.w400,
+                            color: Colors.black
 
 
 
@@ -638,13 +642,14 @@ getUSer(context, greeting);
                     children: [
                       TextSpan(text:  "Daily Affirmations:".tr,
                         style: Style.nunMedium(
-                            fontSize: Dimens.d14, fontWeight: FontWeight.w700),),
+                            fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
+                        ),),
                       const TextSpan(text: " "),
                       TextSpan(text:  "Start each day with a curated selection of powerful affirmations to cultivate a positive mindset and set the tone for success.".tr,
                         style: Style.nunRegular(
                           fontSize: Dimens.d14,
                           fontWeight: FontWeight.w400,
-
+color: Colors.black
 
 
                         ),),
@@ -702,14 +707,16 @@ getUSer(context, greeting);
                       Text(
                         "TransformYourMind - Monthly Premium Version".tr,
                         style: Style.nunMedium(
-                            fontSize: Dimens.d16, fontWeight: FontWeight.w700),
+                            fontSize: Dimens.d16, fontWeight: FontWeight.w700,color: Colors.black
+                        ),
                         textAlign: TextAlign.center,
                       ),
                       Dimens.d20.spaceHeight,
                       Text(
                         "Experience the full benefits of TransformYourMind with the Premium Version, available for just 5.90 CHF per month. Start with a 7-day free trial and discover how our advanced tools can transform your mental well-being. Designed to support long-term growth, the Premium plan helps you cultivate mindfulness, positivity, and emotional resilience.".tr,
                         style: Style.nunMedium(
-                            fontSize: Dimens.d14, fontWeight: FontWeight.w400),
+                            fontSize: Dimens.d14, fontWeight: FontWeight.w400,color: Colors.black
+                        ),
                         textAlign: TextAlign.center,
                       ),
                       Dimens.d10.spaceHeight,
@@ -720,15 +727,17 @@ getUSer(context, greeting);
                             TextSpan(children: [
                               TextSpan(text: "Gratitude Journal:".tr,
                                 style: Style.nunMedium(
-                                    fontSize: Dimens.d14, fontWeight: FontWeight.w700),),
+                                    fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
+                                ),),
                               const TextSpan(text: " "),
                               TextSpan(text:  "Key features include the Gratitude Journal, which allows you to document daily reflections, and Extended Daily Affirmations, giving you access to a vast library or the option to create your own. The Customizable Affirmations Alarm Clock helps you start each day with positive, personalized affirmations.".tr,
                                 style: Style.nunRegular(
                                   fontSize: Dimens.d14,
                                   fontWeight: FontWeight.w400,
-                  
-                  
-                  
+
+                                    color: Colors.black
+
+
                                 ),),
                             ])),
                       ),
@@ -739,15 +748,17 @@ getUSer(context, greeting);
                             children: [
                               TextSpan(text:  "Mindfulness Training:".tr,
                                 style: Style.nunMedium(
-                                    fontSize: Dimens.d14, fontWeight: FontWeight.w700),),
+                                    fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
+                                ),),
                               const TextSpan(text: " "),
                               TextSpan(text:  "Additionally, Mindfulness Training enables you to capture and replay positive moments, while Daily Psychological Questions promote self-awareness by tracking your emotional patterns and progress through visual charts. Together, these tools empower you to lead a more mindful, balanced, and fulfilling life.".tr,
                                 style: Style.nunRegular(
                                   fontSize: Dimens.d14,
                                   fontWeight: FontWeight.w400,
-                  
-                  
-                  
+
+                                    color: Colors.black
+
+
                                 ),),
                   
                             ]
@@ -807,14 +818,16 @@ getUSer(context, greeting);
                       Text(
                         "TransformYourMind - Annually Premium Version".tr,
                         style: Style.nunMedium(
-                            fontSize: Dimens.d16, fontWeight: FontWeight.w700),
+                            fontSize: Dimens.d16, fontWeight: FontWeight.w700,color: Colors.black
+                        ),
                         textAlign: TextAlign.center,
                       ),
                       Dimens.d20.spaceHeight,
                       Text(
                         "For just 59.90 CHF per year, the Premium Version offers a wealth of advanced features designed to elevate your mental well-being. Start with a 7-day free trial to explore how TransformYourMind can enrich your life.".tr,
                         style: Style.nunMedium(
-                            fontSize: Dimens.d14, fontWeight: FontWeight.w400),
+                            fontSize: Dimens.d14, fontWeight: FontWeight.w400,color: Colors.black
+                        ),
                         textAlign: TextAlign.center,
                       ),
                       Dimens.d10.spaceHeight,
@@ -825,15 +838,17 @@ getUSer(context, greeting);
                             TextSpan(children: [
                               TextSpan(text:  "Extended Daily Affirmations:".tr,
                                 style: Style.nunMedium(
-                                    fontSize: Dimens.d14, fontWeight: FontWeight.w700),),
+                                    fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
+                                ),),
                               const TextSpan(text: " "),
                               TextSpan(text:  "Features include the Gratitude Journal to track daily reflections and Extended Daily Affirmations, providing a wide library or the option to create personalized affirmations. The Customizable Affirmations Alarm Clock sets a positive tone for your day with tailored messages.".tr,
                                 style: Style.nunRegular(
                                   fontSize: Dimens.d14,
                                   fontWeight: FontWeight.w400,
-                  
-                  
-                  
+
+                                    color: Colors.black
+
+
                                 ),),
                             ])),
                       ),
@@ -844,15 +859,17 @@ getUSer(context, greeting);
                             children: [
                               TextSpan(text:  "Self-Hypnosis Audios:".tr,
                                 style: Style.nunMedium(
-                                    fontSize: Dimens.d14, fontWeight: FontWeight.w700),),
+                                    fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
+                                ),),
                               const TextSpan(text: " "),
                               TextSpan(text:  "A standout feature is the regularly updated Self-Hypnosis Audios, designed to target specific areas of personal growth. Whether you want to overcome anxiety, boost self-confidence, or conquer fears like flying, these audios use the power of self-hypnosis to help you make profound mental shifts. ".tr,
                                 style: Style.nunRegular(
                                   fontSize: Dimens.d14,
                                   fontWeight: FontWeight.w400,
-                  
-                  
-                  
+
+                                    color: Colors.black
+
+
                                 ),),
                   
                             ]

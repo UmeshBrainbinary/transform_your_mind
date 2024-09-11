@@ -2,19 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/common_widget/common_gradiant_container.dart';
+import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
+import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/prefKeys.dart';
+import 'package:transform_your_mind/model_class/get_user_model.dart';
 import 'package:transform_your_mind/presentation/auth/login_screen/login_controller.dart';
 import 'package:transform_your_mind/presentation/intro_screen/select_your_affirmation_focus_page.dart';
 import 'package:transform_your_mind/presentation/motivational_message/motivational_controller.dart';
+import 'package:transform_your_mind/presentation/subscription_screen/subscription_screen.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 import '../../core/utils/style.dart';
-
+import 'package:http/http.dart' as http;
 class JournalScreen extends StatefulWidget {
   const JournalScreen({super.key});
 
@@ -29,7 +34,6 @@ class _JournalScreenState extends State<JournalScreen>
   late AnimationController _controller;
   ScrollController scrollController = ScrollController();
   bool _isScrollingOrNot = false;
-LoginController l=Get.put(LoginController());
   @override
   void initState() {
     super.initState();
@@ -87,7 +91,44 @@ LoginController l=Get.put(LoginController());
     _controller.dispose();
     super.dispose();
   }
+  GetUserModel getUserModel =GetUserModel();
+  getUSer() async {
 
+    try {
+      var headers = {
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+      };
+      var request = http.Request(
+        'GET',
+        Uri.parse(
+          "${EndPoints.getUser}${PrefService.getString(PrefKey.userId)}",
+        ),
+      );
+
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        final responseBody = await response.stream.bytesToString();
+
+        getUserModel = getUserModelFromJson(responseBody);
+        await PrefService.setValue(
+            PrefKey.userImage, getUserModel.data?.userProfile ?? "");
+        await PrefService.setValue(
+            PrefKey.isFreeUser, getUserModel.data?.isFreeVersion ?? false);
+        await PrefService.setValue(
+            PrefKey.isSubscribed, getUserModel.data?.isSubscribed ?? false);
+        await PrefService.setValue(
+            PrefKey.subId, getUserModel.data?.subscriptionId ?? '');
+      } else {
+        debugPrint(response.reasonPhrase);
+      }
+    } catch (e) {
+
+      debugPrint(e.toString());
+    }
+
+  }
   int initialRating = 0;
 
   @override
@@ -167,11 +208,12 @@ LoginController l=Get.put(LoginController());
                                         itemBuilder: (BuildContext context,
                                             int index) {
                                           return GestureDetector(
-                                            onTap: () {
+                                            onTap: () async {
 
                                               if( journalList[index].route == '/myAffirmationPage')
                                                 {
-                                                  if ((l.getUserModel.data?.affirmationCreated ?? false) ==
+                                                  await getUSer();
+                                                  if ((getUserModel.data?.affirmationCreated ?? false) ==
                                                       false) {
                                                     Navigator.push(context,
                                                         MaterialPageRoute(
@@ -187,23 +229,153 @@ LoginController l=Get.put(LoginController());
                                                       },
                                                     );
                                                   }
-                                                  else
-                                                    {
-                                                      Navigator.pushNamed(
-                                                        context,
-                                                        journalList[index].route ??
-                                                            "",
-                                                      ).then(
+                                                  else {
+                                                    if (PrefService.getBool(
+                                                        PrefKey.isSubscribed) ==
+                                                        false) {
+                                                      Navigator.push(context,
+                                                          MaterialPageRoute(
+                                                            builder: (context) {
+                                                              return SubscriptionScreen(
+                                                                skip: false,
+                                                              );
+                                                            },
+                                                          )).then(
                                                             (value) async {
-                                                          MotivationalController moti = Get.find<MotivationalController>();
-                                                          await moti.audioPlayer.dispose();
-                                                          await moti.audioPlayer.pause();
+                                                          MotivationalController moti = Get
+                                                              .find<
+                                                              MotivationalController>();
+                                                          await moti.audioPlayer
+                                                              .dispose();
+                                                          await moti.audioPlayer
+                                                              .pause();
                                                           setState(() {
                                                             getStatusBar();
                                                           });
                                                         },
                                                       );
                                                     }
+                                                    else {
+                                                      Navigator.pushNamed(
+                                                        context,
+                                                        journalList[index]
+                                                            .route ??
+                                                            "",
+                                                      ).then(
+                                                            (value) async {
+                                                          MotivationalController moti = Get
+                                                              .find<
+                                                              MotivationalController>();
+                                                          await moti.audioPlayer
+                                                              .dispose();
+                                                          await moti.audioPlayer
+                                                              .pause();
+                                                          setState(() {
+                                                            getStatusBar();
+                                                          });
+                                                        },
+                                                      );
+                                                    }
+                                                  }
+                                                }
+
+                                              else if(journalList[index].route == '/myGratitudePage')
+                                                {
+                                                  if (PrefService.getBool(
+                                                      PrefKey.isSubscribed) ==
+                                                      false) {
+                                                    Navigator.push(context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) {
+                                                            return SubscriptionScreen(
+                                                              skip: false,
+                                                            );
+                                                          },
+                                                        )).then(
+                                                          (value) async {
+                                                        MotivationalController moti = Get
+                                                            .find<
+                                                            MotivationalController>();
+                                                        await moti.audioPlayer
+                                                            .dispose();
+                                                        await moti.audioPlayer
+                                                            .pause();
+                                                        setState(() {
+                                                          getStatusBar();
+                                                        });
+                                                      },
+                                                    );
+                                                  }
+                                                  else {
+                                                    Navigator.pushNamed(
+                                                      context,
+                                                      journalList[index]
+                                                          .route ??
+                                                          "",
+                                                    ).then(
+                                                          (value) async {
+                                                        MotivationalController moti = Get
+                                                            .find<
+                                                            MotivationalController>();
+                                                        await moti.audioPlayer
+                                                            .dispose();
+                                                        await moti.audioPlayer
+                                                            .pause();
+                                                        setState(() {
+                                                          getStatusBar();
+                                                        });
+                                                      },
+                                                    );
+                                                  }
+                                                }
+                                              else if(journalList[index].route == '/positiveScreen')
+                                                {
+                                                  if (PrefService.getBool(
+                                                      PrefKey.isSubscribed) ==
+                                                      false) {
+                                                    Navigator.push(context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) {
+                                                            return SubscriptionScreen(
+                                                              skip: false,
+                                                            );
+                                                          },
+                                                        )).then(
+                                                          (value) async {
+                                                        MotivationalController moti = Get
+                                                            .find<
+                                                            MotivationalController>();
+                                                        await moti.audioPlayer
+                                                            .dispose();
+                                                        await moti.audioPlayer
+                                                            .pause();
+                                                        setState(() {
+                                                          getStatusBar();
+                                                        });
+                                                      },
+                                                    );
+                                                  }
+                                                  else {
+                                                    Navigator.pushNamed(
+                                                      context,
+                                                      journalList[index]
+                                                          .route ??
+                                                          "",
+                                                    ).then(
+                                                          (value) async {
+                                                        MotivationalController moti = Get
+                                                            .find<
+                                                            MotivationalController>();
+                                                        await moti.audioPlayer
+                                                            .dispose();
+                                                        await moti.audioPlayer
+                                                            .pause();
+                                                        setState(() {
+                                                          getStatusBar();
+                                                        });
+                                                      },
+                                                    );
+                                                  }
                                                 }
                                               else
                                                 {

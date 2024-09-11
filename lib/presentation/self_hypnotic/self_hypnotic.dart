@@ -286,13 +286,9 @@ class _SelfHypnoticState extends State<SelfHypnotic> {
                                     return GestureDetector(
                                       onTap: () {
 
-                                        if (!controller
-                                            .audioData[index].isPaid!) {
-                                          _onTileClick(index: index,
-                                              audioContent: controller
-                                                  .audioData[index],
-                                              context: context,controller: controller);
-                                        } else {
+                                        if (controller
+                                            .audioDataSelfHypnotic[index].isPaid!) {
+
                                           Navigator.push(context,
                                               MaterialPageRoute(
                                                 builder: (context) {
@@ -301,6 +297,11 @@ class _SelfHypnoticState extends State<SelfHypnotic> {
                                                   );
                                                 },
                                               ));
+                                        } else {
+                                          _onTileClick(index: index,
+                                              audioContent: controller
+                                                  .audioData[index],
+                                              context: context,controller: controller);
                                         }
                                       },
                                       child: Stack(
@@ -337,13 +338,14 @@ class _SelfHypnoticState extends State<SelfHypnotic> {
                                                               .play),
                                                     ),
                                                   ),
+                                                  controller.audioListDurationSelf.length !=0?
                                                   Positioned( bottom: 6.0,
                                                     right: 6.0,
                                                     child: Container(padding:  EdgeInsets.only(  top:Platform.isIOS?0: 1),
                                                       height: 12,width: 30,decoration: BoxDecoration(color: Colors.black.withOpacity(0.5),
                                                           borderRadius: BorderRadius.circular(13)),
                                                       child: Center(child: Text( controller.audioDataSelfHypnotic.length > index ? _formatDuration( controller.audioListDurationSelf[index]) : '8:00',style: Style.nunRegular(fontSize: 6,color: Colors.white),),) ,),
-                                                  )
+                                                  ):const SizedBox()
                                                 ],
                                               ),
                                               Dimens.d10.spaceHeight,

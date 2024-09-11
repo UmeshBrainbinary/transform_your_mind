@@ -299,42 +299,58 @@ class _HomeScreenState extends State<HomeScreen>
                                         const Spacer(),
                                         GestureDetector(
                                             onTap: () {
-                                              Navigator.push(context,
-                                                  MaterialPageRoute(
-                                                builder: (context) {
-                                                  return const PositiveScreen();
-                                                },
-                                              )).then(
-                                                (value) {
-                                                  if (themeController
-                                                      .isDarkMode.isTrue) {
-                                                    SystemChrome
-                                                        .setSystemUIOverlayStyle(
-                                                            const SystemUiOverlayStyle(
-                                                      statusBarBrightness:
-                                                          Brightness.dark,
-                                                      statusBarIconBrightness:
-                                                          Brightness.light,
+
+                                              if (PrefService.getBool(
+                                                  PrefKey.isSubscribed) ==
+                                                  false) {
+                                                Navigator.push(context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) {
+                                                        return SubscriptionScreen(
+                                                          skip: false,
+                                                        );
+                                                      },
                                                     ));
-                                                  } else {
-                                                    SystemChrome
-                                                        .setSystemUIOverlayStyle(
-                                                            const SystemUiOverlayStyle(
-                                                      statusBarBrightness:
-                                                          Brightness.light,
-                                                      statusBarIconBrightness:
-                                                          Brightness.dark,
-                                                    ));
-                                                  }
-                                                  Future.delayed(const Duration(
-                                                          seconds: 1))
-                                                      .then(
-                                                    (value) {
-                                                      setState(() {});
-                                                    },
-                                                  );
-                                                },
-                                              );
+                                              }
+                                              else {
+                                                Navigator.push(context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) {
+                                                        return const PositiveScreen();
+                                                      },
+                                                    )).then(
+                                                      (value) {
+                                                    if (themeController
+                                                        .isDarkMode.isTrue) {
+                                                      SystemChrome
+                                                          .setSystemUIOverlayStyle(
+                                                          const SystemUiOverlayStyle(
+                                                            statusBarBrightness:
+                                                            Brightness.dark,
+                                                            statusBarIconBrightness:
+                                                            Brightness.light,
+                                                          ));
+                                                    } else {
+                                                      SystemChrome
+                                                          .setSystemUIOverlayStyle(
+                                                          const SystemUiOverlayStyle(
+                                                            statusBarBrightness:
+                                                            Brightness.light,
+                                                            statusBarIconBrightness:
+                                                            Brightness.dark,
+                                                          ));
+                                                    }
+                                                    Future.delayed(const Duration(
+                                                        seconds: 1))
+                                                        .then(
+                                                          (value) {
+                                                        setState(() {});
+                                                      },
+                                                    );
+                                                  },
+                                                );
+                                              }
+
                                             },
                                             child: Text(
                                               "seeAll".tr,
@@ -363,18 +379,33 @@ class _HomeScreenState extends State<HomeScreen>
                                         itemBuilder: (context, index) {
                                           return GestureDetector(
                                               onTap: () {
-                                                Navigator.push(context,
-                                                    MaterialPageRoute(
-                                                  builder: (context) {
-                                                    return const PositiveScreen();
-                                                  },
-                                                )).then(
-                                                  (value) async {
-                                                    await positiveController
-                                                        .getPositiveMoments();
-                                                    setState(() {});
-                                                  },
-                                                );
+                                                if (PrefService.getBool(
+                                                    PrefKey.isSubscribed) ==
+                                                    false) {
+                                                  Navigator.push(context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) {
+                                                          return SubscriptionScreen(
+                                                            skip: false,
+                                                          );
+                                                        },
+                                                      ));
+                                                }
+                                                else {
+                                                  Navigator.push(context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) {
+                                                          return const PositiveScreen();
+                                                        },
+                                                      )).then(
+                                                        (value) async {
+                                                      await positiveController
+                                                          .getPositiveMoments();
+                                                      setState(() {});
+                                                    },
+                                                  );
+                                                }
+
                                               },
                                               child: PositiveMoment(
                                                 index: index,
@@ -433,7 +464,7 @@ class _HomeScreenState extends State<HomeScreen>
                                       (BuildContext context, int index) {
                                     // Generating items for the GridView
                                     return GestureDetector(
-                                      onTap: () {
+                                      onTap: () async {
                                         if (g.quickAccessList[index]["title"] ==
                                             "motivationalQ") {
                                           Get.to(() =>
@@ -461,29 +492,63 @@ class _HomeScreenState extends State<HomeScreen>
                                         } else if (g.quickAccessList[index]
                                                 ["title"] ==
                                             "gratitudeJournalQ") {
-                                          Navigator.pushNamed(context,
-                                                  AppRoutes.myGratitudePage)
-                                              .then((value) {
-                                            setState(() {});
-                                          });
+
+                                          if (PrefService.getBool(
+                                              PrefKey.isSubscribed) ==
+                                              false) {
+                                            Navigator.push(context,
+                                                MaterialPageRoute(
+                                                  builder: (context) {
+                                                    return SubscriptionScreen(
+                                                      skip: false,
+                                                    );
+                                                  },
+                                                ));
+                                          }
+                                          else {
+                                            Navigator.pushNamed(context,
+                                                AppRoutes.myGratitudePage)
+                                                .then((value) {
+                                              setState(() {});
+                                            });
+                                          }
+
                                         } else if (g.quickAccessList[index]
                                                 ["title"] ==
                                             "positiveMomentsQ") {
-                                          Navigator.push(context,
-                                              MaterialPageRoute(
-                                            builder: (context) {
-                                              return const PositiveScreen();
-                                            },
-                                          )).then(
-                                            (value) {
-                                              setState(() {});
-                                            },
-                                          );
+
+                                          if (PrefService.getBool(
+                                              PrefKey.isSubscribed) ==
+                                              false) {
+                                            Navigator.push(context,
+                                                MaterialPageRoute(
+                                                  builder: (context) {
+                                                    return SubscriptionScreen(
+                                                      skip: false,
+                                                    );
+                                                  },
+                                                ));
+                                          }
+                                          else {
+                                            Navigator.push(context,
+                                                MaterialPageRoute(
+                                                  builder: (context) {
+                                                    return const PositiveScreen();
+                                                  },
+                                                )).then(
+                                                  (value) {
+                                                setState(() {});
+                                              },
+                                            );
+                                          }
+
                                         } else if (g.quickAccessList[index]
                                                 ["title"] ==
                                             "affirmationeQ") {
+                                          await g.getUSer();
                                           if ((g.getUserModel.data?.affirmationCreated ?? false) ==
                                               false) {
+
                                             Navigator.push(context,
                                                 MaterialPageRoute(
                                               builder: (context) {
@@ -498,17 +563,31 @@ class _HomeScreenState extends State<HomeScreen>
                                               },
                                             );
                                           } else {
-                                            Navigator.push(context,
-                                                MaterialPageRoute(
-                                              builder: (context) {
-                                                return const MyAffirmationPage();
-                                              },
-                                            )).then(
-                                              (value) async {
-                                                await g.getTodayAffirmation();
-                                                setState(() {});
-                                              },
-                                            );
+                                            if (PrefService.getBool(
+                                                PrefKey.isSubscribed) ==
+                                                false) {
+                                              Navigator.push(context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) {
+                                                      return SubscriptionScreen(
+                                                        skip: false,
+                                                      );
+                                                    },
+                                                  ));
+                                            }
+                                            else {
+                                              Navigator.push(context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) {
+                                                      return const MyAffirmationPage();
+                                                    },
+                                                  )).then(
+                                                    (value) async {
+                                                  await g.getTodayAffirmation();
+                                                  setState(() {});
+                                                },
+                                              );
+                                            }
                                           }
                                         } else {
                                           Navigator.push(context,
@@ -1426,12 +1505,28 @@ class _HomeScreenState extends State<HomeScreen>
                           },
                         );
                       } else {
-                        Get.to(const MyAffirmationPage())!.then(
-                          (value) async {
-                            await g.getTodayAffirmation();
-                            setState(() {});
-                          },
-                        );
+                       if(PrefService.getBool(PrefKey.isSubscribed) ==false)
+                         {
+                           Navigator.push(context,
+                               MaterialPageRoute(
+                                 builder: (context) {
+                                   return SubscriptionScreen(
+                                     skip: false,
+                                   );
+                                 },
+                               ));
+                         }
+                       else
+                         {
+                           Get.to(const MyAffirmationPage())!.then(
+                                 (value) async {
+                               await g.getTodayAffirmation();
+                               setState(() {});
+                             },
+                           );
+                         }
+
+
                       }
                     },
                   )
@@ -1445,6 +1540,7 @@ class _HomeScreenState extends State<HomeScreen>
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: () async {
+                              await g.getUSer();
                               if ((g.getUserModel.data?.affirmationCreated ?? false) ==
                                   false) {
                                 Navigator.push(context, MaterialPageRoute(
@@ -1459,12 +1555,25 @@ class _HomeScreenState extends State<HomeScreen>
                                   },
                                 );
                               } else {
-                                Get.to(() => const MyAffirmationPage())!.then(
-                                  (value) async {
-                                    await g.getTodayAffirmation();
-                                    setState(() {});
-                                  },
-                                );
+                                if (PrefService.getBool(PrefKey.isSubscribed) ==
+                                    false) {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(
+                                        builder: (context) {
+                                          return SubscriptionScreen(
+                                            skip: false,
+                                          );
+                                        },
+                                      ));
+                                }
+                                else {
+                                  Get.to(() => const MyAffirmationPage())!.then(
+                                        (value) async {
+                                      await g.getTodayAffirmation();
+                                      setState(() {});
+                                    },
+                                  );
+                                }
                               }
                             },
                             child: Container(
