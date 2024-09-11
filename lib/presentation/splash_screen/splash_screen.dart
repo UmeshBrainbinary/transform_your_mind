@@ -136,15 +136,15 @@ Future.delayed(const Duration(seconds: 1)).then((value) {
           const Duration(seconds: 3),
               () {
                 Get.offAll(const WelcomeScreen());
-            // PrefService.getBool(PrefKey.isLoginOrRegister) == true
-            //     ? getUserModel.data?.welcomeScreen == false
-            //     ? Get.offAll(const WelcomeHomeScreen())
-            //     : setScreens()
-            //     : PrefService.getBool(PrefKey.introSkip) == true
-            //     ? Get.offAllNamed(AppRoutes.loginScreen)
-            //     : Get.offAll(const PersonalizationScreenScreen(
-            //   intro: true,
-            // ));
+            PrefService.getBool(PrefKey.isLoginOrRegister) == true
+                ? getUserModel.data?.welcomeScreen == false
+                ? Get.offAll(const WelcomeHomeScreen())
+                : setScreens()
+                : PrefService.getBool(PrefKey.introSkip) == true
+                ? Get.offAllNamed(AppRoutes.loginScreen)
+                : Get.offAll(const PersonalizationScreenScreen(
+              intro: true,
+            ));
           },
         );
 

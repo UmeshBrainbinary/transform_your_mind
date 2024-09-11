@@ -27,6 +27,7 @@ class GetUserModel {
 class Data {
   String? id;
   bool? isFreeVersion;
+  bool? affirmationCreated;
   String? name;
   String? email;
   String? password;
@@ -70,6 +71,7 @@ class Data {
   Data({
     this.id,
     this.isFreeVersion,
+    this.affirmationCreated,
     this.name,
     this.email,
     this.password,
@@ -114,6 +116,7 @@ class Data {
   factory Data.fromJson(Map<String, dynamic> json) => Data(
     id: json["_id"],
     isFreeVersion: json["isFreeVersion"],
+    affirmationCreated: json["affirmationCreated"],
     name: json["name"],
     email: json["email"],
     password: json["password"],
@@ -158,6 +161,7 @@ class Data {
   Map<String, dynamic> toJson() => {
     "_id": id,
     "isFreeVersion": isFreeVersion,
+    "affirmationCreated": affirmationCreated,
     "name": name,
     "email": email,
     "password": password,

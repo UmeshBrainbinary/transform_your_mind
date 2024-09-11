@@ -5,15 +5,25 @@ import 'package:get/get.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
+import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/model_class/get_user_model.dart';
+import 'package:transform_your_mind/presentation/dash_board_screen/dash_board_screen.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/evening_motivational.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/evening_stress.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/how_feeling_today_screen.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/how_feelings_evening.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/motivational_questions.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/sleep_questions.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/stress_questions.dart';
 import 'package:transform_your_mind/presentation/welcome_screen/welcome_screen.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
-
+import 'package:http/http.dart' as http;
 class FreeTrialPage extends StatefulWidget {
   const FreeTrialPage({super.key});
   static const freeTrial = '/freeTrial';
@@ -27,10 +37,12 @@ class _FreeTrialPageState extends State<FreeTrialPage>
   late final AnimationController _lottieBgController;
   late final AnimationController _lottieFWController;
 List plans = [false,false,false];
+  String greeting = "";
   @override
   void initState() {
     super.initState();
-
+    _setGreetingBasedOnTime();
+getUSer(context, greeting);
     _lottieBgController = AnimationController(vsync: this);
     _lottieFWController = AnimationController(vsync: this);
   }
@@ -400,11 +412,67 @@ List plans = [false,false,false];
                       await PrefService.setValue(
                           PrefKey.firstTimeRegister, true);
                       await PrefService.setValue(PrefKey.addGratitude, true);
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (context) {
-                          return const WelcomeHomeScreen();
-                        },
-                      ));
+                      // Navigator.push(context, MaterialPageRoute(
+                      //   builder: (context) {
+                      //     return const WelcomeHomeScreen();
+                      //   },
+                      // ));
+
+
+
+                      if (getUserModel.data
+                          ?.morningMoodQuestions ??
+                          false == false &&
+                              greeting == "goodMorning") {
+                        Get.offAll(() =>  SleepQuestions());
+                      }
+                      else if (getUserModel.data
+                          ?.morningSleepQuestions ??
+                          false == false &&
+                              greeting == "goodMorning") {
+                        Get.offAll(() => StressQuestions());
+                      } else if (getUserModel.data
+                          ?.morningStressQuestions ??
+                          false == false &&
+                              greeting == "goodMorning") {
+                        Get.offAll(() => const HowFeelingTodayScreen());
+                      } else if (getUserModel.data
+                          ?.morningMotivationQuestions ??
+                          false == false &&
+                              greeting == "goodMorning") {
+                        Get.offAll(() => MotivationalQuestions());
+                      } else if (getUserModel.data
+                          ?.eveningMoodQuestions ??
+                          false == false &&
+                              greeting == "goodEvening") {
+                        Get.offAll(() => const HowFeelingsEvening());
+                      } else if (getUserModel.data
+                          ?.eveningStressQuestions ??
+                          false == false &&
+                              greeting == "goodEvening") {
+                        Get.offAll(() => EveningStress());
+                      } else if (getUserModel.data
+                          ?.eveningMotivationQuestions ??
+                          false == false &&
+                              greeting == "goodEvening") {
+                        Get.offAll(() => EveningMotivational());
+                      } else {
+
+
+                        Get.offAll(() => const DashBoardScreen());
+                        /*if((PrefService.getBool(PrefKey.isFreeUser) == false && PrefService.getBool(PrefKey.isSubscribed) == false))
+                                    {
+                                      Get.offAll(() =>  SubscriptionScreen(skip: true,));
+
+                                    }
+                                    else
+                                    {
+
+                                      Get.offAll(() => const DashBoardScreen());
+                                    }*/
+                      }
+
+
                     },
                   ),
                 ),
@@ -430,6 +498,70 @@ List plans = [false,false,false];
         ],
       ),
     );
+  }
+
+  GetUserModel getUserModel = GetUserModel();
+  void _setGreetingBasedOnTime() {
+    greeting = _getGreetingBasedOnTime();
+    setState(() {});
+  }
+
+  String _getGreetingBasedOnTime() {
+    final now = DateTime.now();
+    final hour = now.hour;
+
+    if (hour >= 0 && hour < 12) {
+      return 'goodMorning';
+    } else if (hour >= 12 && hour < 17) {
+      return 'goodAfternoon';
+    } else if (hour >= 17 && hour < 21) {
+      return 'goodEvening';
+    } else {
+      return 'goodNight';
+    }
+  }
+  getUSer(BuildContext context, greeting) async {
+    try {
+      var headers = {
+        'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
+      };
+      var request = http.Request(
+        'GET',
+        Uri.parse(
+          "${EndPoints.getUser}${PrefService.getString(PrefKey.userId)}",
+        ),
+      );
+
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        final responseBody = await response.stream.bytesToString();
+
+        getUserModel = getUserModelFromJson(responseBody);
+
+        if(getUserModel.data!.language !=null) {
+          await PrefService.setValue(PrefKey.language,
+              getUserModel.data!.language == "english" ? "en-US" : "de-DE");
+        }
+
+
+        await PrefService.setValue(
+            PrefKey.userImage, getUserModel.data?.userProfile ?? "");
+        await PrefService.setValue(
+            PrefKey.isFreeUser, getUserModel.data?.isFreeVersion ?? false);
+        await PrefService.setValue(
+            PrefKey.isSubscribed, getUserModel.data?.isSubscribed ?? false);
+        await PrefService.setValue(
+            PrefKey.subId, getUserModel.data?.subscriptionId ?? '');
+      } else {
+        debugPrint(response.reasonPhrase);
+      }
+    } catch (e) {
+
+      debugPrint(e.toString());
+    }
+
   }
 
   showBottomSheetFree({required BuildContext context}){

@@ -6,6 +6,8 @@ import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/presentation/auth/login_screen/login_controller.dart';
+import 'package:transform_your_mind/presentation/intro_screen/select_your_affirmation_focus_page.dart';
 import 'package:transform_your_mind/presentation/motivational_message/motivational_controller.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
@@ -27,7 +29,7 @@ class _JournalScreenState extends State<JournalScreen>
   late AnimationController _controller;
   ScrollController scrollController = ScrollController();
   bool _isScrollingOrNot = false;
-
+LoginController l=Get.put(LoginController());
   @override
   void initState() {
     super.initState();
@@ -167,20 +169,59 @@ class _JournalScreenState extends State<JournalScreen>
                                           return GestureDetector(
                                             onTap: () {
 
-                                              Navigator.pushNamed(
-                                                context,
-                                                journalList[index].route ??
-                                                    "",
-                                              ).then(
-                                                (value) async {
-                                                  MotivationalController moti = Get.find<MotivationalController>();
-                                                  await moti.audioPlayer.dispose();
-                                                  await moti.audioPlayer.pause();
-                                                  setState(() {
-                                                    getStatusBar();
-                                                  });
-                                                },
-                                              );
+                                              if( journalList[index].route == '/myAffirmationPage')
+                                                {
+                                                  if ((l.getUserModel.data?.affirmationCreated ?? false) ==
+                                                      false) {
+                                                    Navigator.push(context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) {
+                                                            return  SelectYourAffirmationFocusPage(
+                                                                setting: true,
+                                                                isFromMe: false);
+                                                          },
+                                                        )).then(
+                                                          (value) async {
+
+                                                        setState(() {});
+                                                      },
+                                                    );
+                                                  }
+                                                  else
+                                                    {
+                                                      Navigator.pushNamed(
+                                                        context,
+                                                        journalList[index].route ??
+                                                            "",
+                                                      ).then(
+                                                            (value) async {
+                                                          MotivationalController moti = Get.find<MotivationalController>();
+                                                          await moti.audioPlayer.dispose();
+                                                          await moti.audioPlayer.pause();
+                                                          setState(() {
+                                                            getStatusBar();
+                                                          });
+                                                        },
+                                                      );
+                                                    }
+                                                }
+                                              else
+                                                {
+                                                  Navigator.pushNamed(
+                                                    context,
+                                                    journalList[index].route ??
+                                                        "",
+                                                  ).then(
+                                                        (value) async {
+                                                      MotivationalController moti = Get.find<MotivationalController>();
+                                                      await moti.audioPlayer.dispose();
+                                                      await moti.audioPlayer.pause();
+                                                      setState(() {
+                                                        getStatusBar();
+                                                      });
+                                                    },
+                                                  );
+                                                }
                                             },
                                             child: Column(
                                               children: [

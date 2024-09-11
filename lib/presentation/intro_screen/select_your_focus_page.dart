@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:transform_your_mind/core/common_widget/custom_chip.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
+import 'package:transform_your_mind/core/common_widget/free_trial_page.dart';
 import 'package:transform_your_mind/core/common_widget/select_focus_button.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/http_service.dart';
@@ -124,12 +125,17 @@ class _SelectYourFocusPageState extends State<SelectYourFocusPage> {
           showSnackBarSuccess(context, "yourFocusHasBeenSelected".tr);
           Get.back();
         } else {
+          // Navigator.push(context, MaterialPageRoute(
+          //   builder: (context) {
+          //     return SelectYourAffirmationFocusPage(
+          //       isFromMe: false,
+          //       setting: false,
+          //     );
+          //   },
+          // ));
           Navigator.push(context, MaterialPageRoute(
             builder: (context) {
-              return SelectYourAffirmationFocusPage(
-                isFromMe: false,
-                setting: false,
-              );
+              return const FreeTrialPage();
             },
           ));
         }

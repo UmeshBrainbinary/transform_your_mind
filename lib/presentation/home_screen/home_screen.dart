@@ -32,6 +32,7 @@ import 'package:transform_your_mind/presentation/home_screen/home_message_page.d
 import 'package:transform_your_mind/presentation/home_screen/widgets/home_widget.dart';
 import 'package:transform_your_mind/presentation/how_feeling_today/how_feeling_today_screen.dart';
 import 'package:transform_your_mind/presentation/how_feeling_today/how_feelings_evening.dart';
+import 'package:transform_your_mind/presentation/intro_screen/select_your_affirmation_focus_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_affirmation_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_gratitude_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/my_affirmation_page.dart';
@@ -226,7 +227,7 @@ class _HomeScreenState extends State<HomeScreen>
                   return Stack(
                     children: [
                       Padding(
-                        padding:  const EdgeInsets.only(top:  30.0),
+                        padding: const EdgeInsets.only(top: 30.0),
                         child: CustomScrollViewWidget(
                           controller: scrollController,
                           physics: const ClampingScrollPhysics(),
@@ -249,9 +250,10 @@ class _HomeScreenState extends State<HomeScreen>
                                       "${greeting.tr}, ${capitalizeFirstLetter(PrefService.getString(PrefKey.name).toString())}",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                          color: themeController.isDarkMode.isTrue
-                                              ? ColorConstant.white
-                                              : ColorConstant.black,
+                                          color:
+                                              themeController.isDarkMode.isTrue
+                                                  ? ColorConstant.white
+                                                  : ColorConstant.black,
                                           fontFamily: FontFamily.nunitoBold,
                                           fontWeight: FontWeight.w700,
                                           fontSize: 24,
@@ -353,7 +355,8 @@ class _HomeScreenState extends State<HomeScreen>
                                   : SizedBox(
                                       height: 156,
                                       child: ListView.builder(
-                                        padding: const EdgeInsets.only(left: 22),
+                                        padding:
+                                            const EdgeInsets.only(left: 22),
                                         itemCount: positiveController
                                             .positiveMomentList.length,
                                         scrollDirection: Axis.horizontal,
@@ -426,13 +429,15 @@ class _HomeScreenState extends State<HomeScreen>
                                           ),
                                   itemCount: g.quickAccessList.length,
                                   // Total number of items
-                                  itemBuilder: (BuildContext context, int index) {
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
                                     // Generating items for the GridView
                                     return GestureDetector(
                                       onTap: () {
                                         if (g.quickAccessList[index]["title"] ==
                                             "motivationalQ") {
-                                          Get.to(() => const MotivationScreen())!
+                                          Get.to(() =>
+                                                  const MotivationScreen())!
                                               .then((value) async {
                                             MotivationalController moti = Get
                                                 .find<MotivationalController>();
@@ -477,17 +482,34 @@ class _HomeScreenState extends State<HomeScreen>
                                         } else if (g.quickAccessList[index]
                                                 ["title"] ==
                                             "affirmationeQ") {
-                                          Navigator.push(context,
-                                              MaterialPageRoute(
-                                            builder: (context) {
-                                              return const MyAffirmationPage();
-                                            },
-                                          )).then(
-                                            (value) async {
-                                              await g.getTodayAffirmation();
-                                              setState(() {});
-                                            },
-                                          );
+                                          if ((g.getUserModel.data?.affirmationCreated ?? false) ==
+                                              false) {
+                                            Navigator.push(context,
+                                                MaterialPageRoute(
+                                              builder: (context) {
+                                                return  SelectYourAffirmationFocusPage(
+                                                    setting: true,
+                                                    isFromMe: false);
+                                              },
+                                            )).then(
+                                              (value) async {
+                                                await g.getTodayAffirmation();
+                                                setState(() {});
+                                              },
+                                            );
+                                          } else {
+                                            Navigator.push(context,
+                                                MaterialPageRoute(
+                                              builder: (context) {
+                                                return const MyAffirmationPage();
+                                              },
+                                            )).then(
+                                              (value) async {
+                                                await g.getTodayAffirmation();
+                                                setState(() {});
+                                              },
+                                            );
+                                          }
                                         } else {
                                           Navigator.push(context,
                                               MaterialPageRoute(
@@ -507,10 +529,11 @@ class _HomeScreenState extends State<HomeScreen>
                                         decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(9),
-                                            color: themeController
-                                                    .isDarkMode.value
-                                                ? ColorConstant.textfieldFillColor
-                                                : const Color(0xffD7E2E4)),
+                                            color:
+                                                themeController.isDarkMode.value
+                                                    ? ColorConstant
+                                                        .textfieldFillColor
+                                                    : const Color(0xffD7E2E4)),
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
@@ -887,91 +910,92 @@ class _HomeScreenState extends State<HomeScreen>
                       controller.audioDataSelfHypnotic.length, (index) {
                     return GestureDetector(
                         onTap: () {
-                          if(PrefService.getBool(PrefKey.isSubscribed) ==true && PrefService.getString(PrefKey.subId) =="transform_yearly")
-                            {
-                              showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(
-                                      Dimens.d24,
-                                    ),
+                          if (PrefService.getBool(PrefKey.isSubscribed) ==
+                                  true &&
+                              PrefService.getString(PrefKey.subId) ==
+                                  "transform_yearly") {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(
+                                    Dimens.d24,
                                   ),
                                 ),
-                                builder: (BuildContext context) {
-                                  return NowPlayingScreen(
-                                    audioData: AudioData(
-                                      id: controller
-                                          .audioDataSelfHypnotic[index].id,
-                                      isPaid: controller
-                                          .audioDataSelfHypnotic[index].isPaid,
-                                      image: controller
-                                          .audioDataSelfHypnotic[index].image,
-                                      rating: controller
-                                          .audioDataSelfHypnotic[index].rating,
-                                      description: controller
-                                          .audioDataSelfHypnotic[index]
-                                          .description,
-                                      name: controller
-                                          .audioDataSelfHypnotic[index].name,
-                                      isBookmarked: controller
-                                          .audioDataSelfHypnotic[index]
-                                          .isBookmarked,
-                                      isRated: controller
-                                          .audioDataSelfHypnotic[index].isRated,
-                                      category: controller
-                                          .audioDataSelfHypnotic[index].category,
-                                      createdAt: controller
-                                          .audioDataSelfHypnotic[index].createdAt,
-                                      podsBy: controller
-                                          .audioDataSelfHypnotic[index].podsBy,
-                                      expertName: controller
-                                          .audioDataSelfHypnotic[index]
-                                          .expertName,
-                                      audioFile: controller
-                                          .audioDataSelfHypnotic[index].audioFile,
-                                      isRecommended: controller
-                                          .audioDataSelfHypnotic[index]
-                                          .isRecommended,
-                                      status: controller
-                                          .audioDataSelfHypnotic[index].status,
-                                      createdBy: controller
-                                          .audioDataSelfHypnotic[index].createdBy,
-                                      updatedAt: controller
-                                          .audioDataSelfHypnotic[index].updatedAt,
-                                      v: controller
-                                          .audioDataSelfHypnotic[index].v,
-                                      download: false,
-                                    ),
-                                  );
-                                },
-                              ).then(
-                                    (value) {
-                                  if (themeController.isDarkMode.isTrue) {
-                                    SystemChrome.setSystemUIOverlayStyle(
-                                        const SystemUiOverlayStyle(
-                                          statusBarBrightness: Brightness.dark,
-                                          statusBarIconBrightness: Brightness.light,
-                                        ));
-                                  } else {
-                                    SystemChrome.setSystemUIOverlayStyle(
-                                        const SystemUiOverlayStyle(
-                                          statusBarBrightness: Brightness.light,
-                                          statusBarIconBrightness: Brightness.dark,
-                                        ));
-                                  }
-                                  Future.delayed(const Duration(seconds: 1)).then(
-                                        (value) async {
-                                      await g.getSelfHypnoticApi();
+                              ),
+                              builder: (BuildContext context) {
+                                return NowPlayingScreen(
+                                  audioData: AudioData(
+                                    id: controller
+                                        .audioDataSelfHypnotic[index].id,
+                                    isPaid: controller
+                                        .audioDataSelfHypnotic[index].isPaid,
+                                    image: controller
+                                        .audioDataSelfHypnotic[index].image,
+                                    rating: controller
+                                        .audioDataSelfHypnotic[index].rating,
+                                    description: controller
+                                        .audioDataSelfHypnotic[index]
+                                        .description,
+                                    name: controller
+                                        .audioDataSelfHypnotic[index].name,
+                                    isBookmarked: controller
+                                        .audioDataSelfHypnotic[index]
+                                        .isBookmarked,
+                                    isRated: controller
+                                        .audioDataSelfHypnotic[index].isRated,
+                                    category: controller
+                                        .audioDataSelfHypnotic[index].category,
+                                    createdAt: controller
+                                        .audioDataSelfHypnotic[index].createdAt,
+                                    podsBy: controller
+                                        .audioDataSelfHypnotic[index].podsBy,
+                                    expertName: controller
+                                        .audioDataSelfHypnotic[index]
+                                        .expertName,
+                                    audioFile: controller
+                                        .audioDataSelfHypnotic[index].audioFile,
+                                    isRecommended: controller
+                                        .audioDataSelfHypnotic[index]
+                                        .isRecommended,
+                                    status: controller
+                                        .audioDataSelfHypnotic[index].status,
+                                    createdBy: controller
+                                        .audioDataSelfHypnotic[index].createdBy,
+                                    updatedAt: controller
+                                        .audioDataSelfHypnotic[index].updatedAt,
+                                    v: controller
+                                        .audioDataSelfHypnotic[index].v,
+                                    download: false,
+                                  ),
+                                );
+                              },
+                            ).then(
+                              (value) {
+                                if (themeController.isDarkMode.isTrue) {
+                                  SystemChrome.setSystemUIOverlayStyle(
+                                      const SystemUiOverlayStyle(
+                                    statusBarBrightness: Brightness.dark,
+                                    statusBarIconBrightness: Brightness.light,
+                                  ));
+                                } else {
+                                  SystemChrome.setSystemUIOverlayStyle(
+                                      const SystemUiOverlayStyle(
+                                    statusBarBrightness: Brightness.light,
+                                    statusBarIconBrightness: Brightness.dark,
+                                  ));
+                                }
+                                Future.delayed(const Duration(seconds: 1)).then(
+                                  (value) async {
+                                    await g.getSelfHypnoticApi();
 
-                                      setState(() {});
-                                    },
-                                  );
-                                },
-                              );
-                            }
-                          else {
+                                    setState(() {});
+                                  },
+                                );
+                              },
+                            );
+                          } else {
                             if (!controller
                                 .audioDataSelfHypnotic[index].isPaid!) {
                               showModalBottomSheet(
@@ -1037,25 +1061,23 @@ class _HomeScreenState extends State<HomeScreen>
                                   );
                                 },
                               ).then(
-                                    (value) {
+                                (value) {
                                   if (themeController.isDarkMode.isTrue) {
                                     SystemChrome.setSystemUIOverlayStyle(
                                         const SystemUiOverlayStyle(
-                                          statusBarBrightness: Brightness.dark,
-                                          statusBarIconBrightness: Brightness
-                                              .light,
-                                        ));
+                                      statusBarBrightness: Brightness.dark,
+                                      statusBarIconBrightness: Brightness.light,
+                                    ));
                                   } else {
                                     SystemChrome.setSystemUIOverlayStyle(
                                         const SystemUiOverlayStyle(
-                                          statusBarBrightness: Brightness.light,
-                                          statusBarIconBrightness: Brightness
-                                              .dark,
-                                        ));
+                                      statusBarBrightness: Brightness.light,
+                                      statusBarIconBrightness: Brightness.dark,
+                                    ));
                                   }
                                   Future.delayed(const Duration(seconds: 1))
                                       .then(
-                                        (value) async {
+                                    (value) async {
                                       await g.getSelfHypnoticApi();
 
                                       setState(() {});
@@ -1063,8 +1085,7 @@ class _HomeScreenState extends State<HomeScreen>
                                   );
                                 },
                               );
-                            }
-                            else {
+                            } else {
                               Navigator.push(context, MaterialPageRoute(
                                 builder: (context) {
                                   return SubscriptionScreen(
@@ -1217,7 +1238,7 @@ class _HomeScreenState extends State<HomeScreen>
               itemBuilder: (context, index) {
                 return InkWell(
                   onTap: () {
-                    if(PrefService.getBool(PrefKey.isSubscribed) ==true){
+                    if (PrefService.getBool(PrefKey.isSubscribed) == true) {
                       showModalBottomSheet(
                         context: context,
                         isScrollControlled: true,
@@ -1234,8 +1255,7 @@ class _HomeScreenState extends State<HomeScreen>
                           );
                         },
                       );
-                    }
-                    else {
+                    } else {
                       if (controller.audioData[index].isPaid!) {
                         showModalBottomSheet(
                           context: context,
@@ -1302,23 +1322,24 @@ class _HomeScreenState extends State<HomeScreen>
                               borderRadius: 8.0,
                             ),
                           ),
-                          PrefService.getBool(PrefKey.isSubscribed) ==true ? const SizedBox()
-                              :     controller.audioData[index].isPaid!
+                          PrefService.getBool(PrefKey.isSubscribed) == true
                               ? const SizedBox()
-                              : Container(
-                                  margin: const EdgeInsets.all(6.0),
-                                  height: 10,
-                                  width: 10,
-                                  decoration: const BoxDecoration(
-                                      color: Colors.black,
-                                      shape: BoxShape.circle),
-                                  child: Center(
-                                      child: Image.asset(
-                                    ImageConstant.lockHome,
-                                    height: 5,
-                                    width: 5,
-                                  )),
-                                )
+                              : controller.audioData[index].isPaid!
+                                  ? const SizedBox()
+                                  : Container(
+                                      margin: const EdgeInsets.all(6.0),
+                                      height: 10,
+                                      width: 10,
+                                      decoration: const BoxDecoration(
+                                          color: Colors.black,
+                                          shape: BoxShape.circle),
+                                      child: Center(
+                                          child: Image.asset(
+                                        ImageConstant.lockHome,
+                                        height: 5,
+                                        width: 5,
+                                      )),
+                                    )
                         ],
                       ),
                       Dimens.d25.spaceWidth,
@@ -1391,15 +1412,26 @@ class _HomeScreenState extends State<HomeScreen>
                       //   isFromMyAffirmation: true,
                       //   isEdit: false,
                       // ))!
-                      Get.to(const MyAffirmationPage(
-
-                      ))!
-                          .then(
-                        (value) async {
-                          await g.getTodayAffirmation();
-                          setState(() {});
-                        },
-                      );
+                      if ((g.getUserModel.data?.affirmationCreated ?? false) == false) {
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            return SelectYourAffirmationFocusPage(
+                                setting: true, isFromMe: false);
+                          },
+                        )).then(
+                          (value) async {
+                            await g.getTodayAffirmation();
+                            setState(() {});
+                          },
+                        );
+                      } else {
+                        Get.to(const MyAffirmationPage())!.then(
+                          (value) async {
+                            await g.getTodayAffirmation();
+                            setState(() {});
+                          },
+                        );
+                      }
                     },
                   )
                 : Column(
@@ -1412,12 +1444,27 @@ class _HomeScreenState extends State<HomeScreen>
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: () async {
-                              Get.to(() => const MyAffirmationPage())!.then(
-                                (value) async {
-                                  await g.getTodayAffirmation();
-                                  setState(() {});
-                                },
-                              );
+                              if ((g.getUserModel.data?.affirmationCreated ?? false) ==
+                                  false) {
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) {
+                                    return  SelectYourAffirmationFocusPage(
+                                        setting: true, isFromMe: false);
+                                  },
+                                )).then(
+                                  (value) async {
+                                    await g.getTodayAffirmation();
+                                    setState(() {});
+                                  },
+                                );
+                              } else {
+                                Get.to(() => const MyAffirmationPage())!.then(
+                                  (value) async {
+                                    await g.getTodayAffirmation();
+                                    setState(() {});
+                                  },
+                                );
+                              }
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -1520,7 +1567,8 @@ class _HomeScreenState extends State<HomeScreen>
                                   InkWell(
                                       onTap: () {
                                         Navigator.push(context,
-                                            MaterialPageRoute(builder: (context) {
+                                            MaterialPageRoute(
+                                                builder: (context) {
                                           return StartPracticeAffirmation(
                                             id: g.todayAList?[0].id,
                                             data: g.todayAList!,

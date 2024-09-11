@@ -21,6 +21,7 @@ import 'package:transform_your_mind/presentation/feedback_screen/binding/feedbac
 import 'package:transform_your_mind/presentation/feedback_screen/feedback_screen.dart';
 import 'package:transform_your_mind/presentation/home_screen/binding/home_binding.dart';
 import 'package:transform_your_mind/presentation/home_screen/home_screen.dart';
+import 'package:transform_your_mind/presentation/intro_screen/select_your_affirmation_focus_page.dart';
 import 'package:transform_your_mind/presentation/intro_screen/select_your_focus_page.dart';
 import 'package:transform_your_mind/presentation/intro_screen/welcome_screen.dart';
 import 'package:transform_your_mind/presentation/journal_screen/binding/journal_binding.dart';
@@ -90,6 +91,7 @@ class AppRoutes {
   static const String editProfileScreen = '/edit_profile_screen';
   static const String fullScreenImage = '/fullScreenImage';
   static const String selectYourFocusPage = '/selectYourFocusPage';
+  static const String selectYourAffirmationFocusPage = '/SelectYourAffirmationFocusPage';
   static const String myNotesPage = '/myNotesPage';
   static const String changePassword = '/change_password_screen';
   static const String notificationSetting = '/notification_setting_screen';
@@ -332,6 +334,14 @@ class AppRoutes {
       page: () =>   SelectYourFocusPage(isFromMe: false,setting: false,),
       bindings: [
        DashBoardBinding()
+      ],
+    ),
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: selectYourAffirmationFocusPage,
+      page: () =>   SelectYourAffirmationFocusPage(isFromMe: false,setting: false,),
+      bindings: [
+        DashBoardBinding()
       ],
     ),
 

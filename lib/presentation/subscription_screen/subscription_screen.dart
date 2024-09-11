@@ -21,6 +21,14 @@ import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/main.dart';
 import 'package:transform_your_mind/model_class/get_user_model.dart';
+import 'package:transform_your_mind/presentation/dash_board_screen/dash_board_screen.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/evening_motivational.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/evening_stress.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/how_feeling_today_screen.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/how_feelings_evening.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/motivational_questions.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/sleep_questions.dart';
+import 'package:transform_your_mind/presentation/how_feeling_today/stress_questions.dart';
 import 'package:transform_your_mind/presentation/subscription_screen/subscription_controller.dart';
 import 'package:transform_your_mind/presentation/welcome_screen/welcome_screen.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
@@ -65,13 +73,34 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   DateTime now = DateTime.now(); // Current date and time
   DateTime? futureDate;
   bool valueChecked = false;
+  String greeting = "";
   @override
   void initState() {
     super.initState();
+    _setGreetingBasedOnTime();
     getUserData();
 
     print('Current Date: $now');
     print('Future Date: $futureDate');
+  }
+  void _setGreetingBasedOnTime() {
+    greeting = _getGreetingBasedOnTime();
+    setState(() {});
+  }
+
+  String _getGreetingBasedOnTime() {
+    final now = DateTime.now();
+    final hour = now.hour;
+
+    if (hour >= 0 && hour < 12) {
+      return 'goodMorning';
+    } else if (hour >= 12 && hour < 17) {
+      return 'goodAfternoon';
+    } else if (hour >= 17 && hour < 21) {
+      return 'goodEvening';
+    } else {
+      return 'goodNight';
+    }
   }
   getUserData() async {
     await getUSer();
@@ -474,11 +503,62 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 await PrefService.setValue(PrefKey.subscription, true);
                 await PrefService.setValue(PrefKey.firstTimeRegister, true);
                 await PrefService.setValue(PrefKey.addGratitude, true);
-                Navigator.push(context, MaterialPageRoute(
+               /* Navigator.push(context, MaterialPageRoute(
                   builder: (context) {
                     return const WelcomeHomeScreen();
                   },
-                ));
+                ));*/
+                if (getUserModel.data
+                    ?.morningMoodQuestions ??
+                    false == false &&
+                        greeting == "goodMorning") {
+                  Get.offAll(() =>  SleepQuestions());
+                }
+                else if (getUserModel.data
+                    ?.morningSleepQuestions ??
+                    false == false &&
+                        greeting == "goodMorning") {
+                  Get.offAll(() => StressQuestions());
+                } else if (getUserModel.data
+                    ?.morningStressQuestions ??
+                    false == false &&
+                        greeting == "goodMorning") {
+                  Get.offAll(() => const HowFeelingTodayScreen());
+                } else if (getUserModel.data
+                    ?.morningMotivationQuestions ??
+                    false == false &&
+                        greeting == "goodMorning") {
+                  Get.offAll(() => MotivationalQuestions());
+                } else if (getUserModel.data
+                    ?.eveningMoodQuestions ??
+                    false == false &&
+                        greeting == "goodEvening") {
+                  Get.offAll(() => const HowFeelingsEvening());
+                } else if (getUserModel.data
+                    ?.eveningStressQuestions ??
+                    false == false &&
+                        greeting == "goodEvening") {
+                  Get.offAll(() => EveningStress());
+                } else if (getUserModel.data
+                    ?.eveningMotivationQuestions ??
+                    false == false &&
+                        greeting == "goodEvening") {
+                  Get.offAll(() => EveningMotivational());
+                } else {
+
+
+                  Get.offAll(() => const DashBoardScreen());
+                  /*if((PrefService.getBool(PrefKey.isFreeUser) == false && PrefService.getBool(PrefKey.isSubscribed) == false))
+                                    {
+                                      Get.offAll(() =>  SubscriptionScreen(skip: true,));
+
+                                    }
+                                    else
+                                    {
+
+                                      Get.offAll(() => const DashBoardScreen());
+                                    }*/
+                }
               },
               child: Text(
                 "skip".tr,

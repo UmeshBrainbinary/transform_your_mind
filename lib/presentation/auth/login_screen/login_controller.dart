@@ -140,11 +140,13 @@ class LoginController extends GetxController {
         isSubscribed = getUserModel.data?.isSubscribed??false;
         if ((getUserModel.data?.focuses ?? []).isEmpty) {
           Get.offAllNamed(AppRoutes.selectYourFocusPage);
-        } else if ((getUserModel.data?.affirmations ?? []).isEmpty) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-          return  SelectYourAffirmationFocusPage(isFromMe: false,setting: false,);
-        },));
-        } else {
+        }
+        // else if ((getUserModel.data?.affirmations ?? []).isEmpty) {
+        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+        //   return  SelectYourAffirmationFocusPage(isFromMe: false,setting: false,);
+        // },));
+        // }
+        else {
           getUserModel.data?.welcomeScreen  == false
               ? Get.offAll(const WelcomeHomeScreen())
               : Get.offAllNamed(AppRoutes.dashBoardScreen);
