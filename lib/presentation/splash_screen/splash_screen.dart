@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:transform_your_mind/core/app_export.dart';
+import 'package:transform_your_mind/core/common_widget/free_trial_page.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/http_service.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
@@ -135,7 +136,7 @@ Future.delayed(const Duration(seconds: 1)).then((value) {
         Future.delayed(
           const Duration(seconds: 3),
               () {
-                Get.offAll(const WelcomeScreen());
+
             PrefService.getBool(PrefKey.isLoginOrRegister) == true
                 ? getUserModel.data?.welcomeScreen == false
                 ? Get.offAll(const WelcomeHomeScreen())
@@ -145,6 +146,7 @@ Future.delayed(const Duration(seconds: 1)).then((value) {
                 : Get.offAll(const PersonalizationScreenScreen(
               intro: true,
             ));
+
           },
         );
 

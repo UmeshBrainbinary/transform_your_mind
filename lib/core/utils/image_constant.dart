@@ -274,6 +274,5 @@ class ImageConstant {
   static String image5 = "$backgroundPath/image5.png";
   static String image6 = "$backgroundPath/image6.png";
   static String image7 = "$backgroundPath/image7.png";
-  static String image8 = "$backgroundPath/image8.png";
 
 }

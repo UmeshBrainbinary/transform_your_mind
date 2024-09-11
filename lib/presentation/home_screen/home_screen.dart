@@ -1407,11 +1407,12 @@ class _HomeScreenState extends State<HomeScreen>
                             : Dimens.d15,
                         color: ColorConstant.white),
                     title: "empowerMindset".tr,
-                    onTap: () {
+                    onTap: () async {
                       // Get.to(const AddAffirmationPage(
                       //   isFromMyAffirmation: true,
                       //   isEdit: false,
                       // ))!
+                      await g.getUSer();
                       if ((g.getUserModel.data?.affirmationCreated ?? false) == false) {
                         Navigator.push(context, MaterialPageRoute(
                           builder: (context) {
@@ -1656,22 +1657,37 @@ class _HomeScreenState extends State<HomeScreen>
                             : Dimens.d15,
                         color: ColorConstant.white),
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (context) {
-                          return AddGratitudePage(
-                            isFromMyGratitude: true,
-                            registerUser: false,
-                            categoryListAll: [],
-                            previous: false,
-                            edit: false,
-                          );
-                        },
-                      )).then(
-                        (value) async {
-                          await getGratitude();
-                          setState(() {});
-                        },
-                      );
+                      if (PrefService.getBool(
+                          PrefKey.isSubscribed) ==
+                          false) {
+                        Navigator.push(context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return SubscriptionScreen(
+                                  skip: false,
+                                );
+                              },
+                            ));
+                      }
+                      else {
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            return AddGratitudePage(
+                              isFromMyGratitude: true,
+                              registerUser: false,
+                              categoryListAll: [],
+                              previous: false,
+                              edit: false,
+                            );
+                          },
+                        )).then(
+                              (value) async {
+                            await getGratitude();
+                            setState(() {});
+                          },
+                        );
+                      }
+
                     },
                   )
                 : Column(
@@ -1699,6 +1715,7 @@ class _HomeScreenState extends State<HomeScreen>
                       Dimens.d16.spaceHeight,
                       GestureDetector(
                         onTap: () {
+
                           Navigator.push(context, MaterialPageRoute(
                             builder: (context) {
                               return StartPracticeScreen(
