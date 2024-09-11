@@ -454,7 +454,7 @@ class _AddGratitudePageState extends State<AddGratitudePage>
                         controller: addGratitudeText,
                         focusNode: gratitudeFocus),
                     Dimens.d15.spaceHeight,
-                    GestureDetector(
+                    PrefService.getString(PrefKey.language) == "de-DE"?const SizedBox(): GestureDetector(
                         onLongPress: () async {
                           Vibration.vibrate(
                             pattern: [80, 80, 0, 0, 0, 0, 0, 0],

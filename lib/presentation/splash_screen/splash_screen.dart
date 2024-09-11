@@ -25,6 +25,7 @@ import 'package:transform_your_mind/presentation/how_feeling_today/motivational_
 import 'package:transform_your_mind/presentation/how_feeling_today/sleep_questions.dart';
 import 'package:transform_your_mind/presentation/how_feeling_today/stress_questions.dart';
 import 'package:transform_your_mind/presentation/intro_screen/select_your_affirmation_focus_page.dart';
+import 'package:transform_your_mind/presentation/intro_screen/welcome_screen.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/personalisations_screen/personalisations_controller.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/personalisations_screen/personalisations_screen.dart';
 import 'package:transform_your_mind/presentation/subscription_screen/subscription_screen.dart';
@@ -134,15 +135,16 @@ Future.delayed(const Duration(seconds: 1)).then((value) {
         Future.delayed(
           const Duration(seconds: 3),
               () {
-            PrefService.getBool(PrefKey.isLoginOrRegister) == true
-                ? getUserModel.data?.welcomeScreen == false
-                ? Get.offAll(const WelcomeHomeScreen())
-                : setScreens()
-                : PrefService.getBool(PrefKey.introSkip) == true
-                ? Get.offAllNamed(AppRoutes.loginScreen)
-                : Get.offAll(const PersonalizationScreenScreen(
-              intro: true,
-            ));
+                Get.offAll(const WelcomeScreen());
+            // PrefService.getBool(PrefKey.isLoginOrRegister) == true
+            //     ? getUserModel.data?.welcomeScreen == false
+            //     ? Get.offAll(const WelcomeHomeScreen())
+            //     : setScreens()
+            //     : PrefService.getBool(PrefKey.introSkip) == true
+            //     ? Get.offAllNamed(AppRoutes.loginScreen)
+            //     : Get.offAll(const PersonalizationScreenScreen(
+            //   intro: true,
+            // ));
           },
         );
 

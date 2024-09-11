@@ -353,14 +353,14 @@
   "downloadedPods": "Heruntergeladene Pods",
   "timeLeft": "Übrige Zeit",
   "pleaseAcceptTerms": "Bitte akzeptieren Sie die Allgemeinen Geschäftsbedingungen, um fortzufahren.",
-  "howNice": "Wie schön, dass Sie hier bei TransformYourMind sind.",
-  "powerfulExercise": "Beginnen wir mit einer schnellen, kraftvollen Übungsenergie",
-  "letsStart": "Lasst uns beginnen",
+  "howNice": "Schön, dass du bei TransformYourMind dabei bist. Lass uns direkt mit einer kraftvollen Atemübung starten, die dir frische Energie verleiht.",
+  "powerfulExercise": "Bereit? Drück einfach auf den Button und los geht's!",
+  "letsStart": "Lass uns beginnen",
   "breathingExercise": "Atemübung 4x4x4",
   "mayBeFlower": "Vielleicht eine Blume, die sich öffnet und schließt: Eine Blume, die sich beim Einatmen öffnet und beim Ausatmen schließt.\n",
   "breathDeeply": "Atmen Sie tief ein und zählen Sie langsam bis 4 – halten Sie den Atem bis 4 an und atmen Sie bis 4 aus – wiederholen Sie dies dreimal\n",
-  "noticeHowYouFeel": "Beachten Sie, wie Sie sich jetzt fühlen",
-  "allowYourSelf": "Gönnen Sie sich einen Moment der Ruhe und der Stille und spüren Sie tief in sich hinein. Wie fühlst du dich nach dieser kraftvollen Atemübung?\n" ,
+  "noticeHowYouFeel": "Wie fühlst du dich jetzt?",
+  "allowYourSelf": "Nimm dir einen Moment der Ruhe und spüre tief in dich hinein. Welche Wirkung hatte die Atemübung auf dich?\n" ,
   "dailyMindfulness": "Tägliche Achtsamkeit",
   "yourKey": "Ihr Schlüssel zu innerer Stärke" ,
   "scienceConfirms": "Die Wissenschaft bestätigt" ,
@@ -372,16 +372,16 @@
   "21Days": "21 Tage bis zum Erfolg",
   "thereAreNumerous": "Es gibt zahlreiche positive Erfahrungsberichte von Anwendern, die durch die RTT Transformation Audios bedeutende Veränderungen in ihrem Leben erlebt haben.\n",
   "explorer": "Forscher",
-  "veryRelaxed": "Sehr entspannt",
-  "relaxed": "Entspannt0",
-  "tense": "Zeitform",
-  "veryTense": "Sehr angespannt",
+  "veryRelaxed": "Tief entspannt",
+  "relaxed": "Ruhig",
+  "tense": "Ausbalanciert",
+  "veryTense": "Klar & fokussiert",
   "continue": "Weitermachen",
   "breathingExerciseTitle": "Atemübung",
-  "breathingMeditation": "Atemmeditation mit Fokus auf innere Ruhe und Entspannung",
+  "breathingMeditation": "Finde innere Ruhe und Entspannung durch gezielte Atemtechnik.",
   "breathTraining": "Atemtraining",
   "CouldLaunch": "Der Notruf konnte nicht gestartet werden.",
-  "out": "Aus",
+  "out": "Ausatmen",
   "hold": "Halten",
   "4sec": "4 Sek",
   "sound": "Klang",
@@ -430,7 +430,7 @@
   "Please5Focuses": "Bitte fügen Sie mehr als 1 Schwerpunkte hinzu",
   "Please5Affirmation": "Bitte wählen Sie mehr als 1 Bestätigungen aus",
   "yourSoundsSuccessfullyUnBookmarked": "Ihre Geräusche wurden erfolgreich aus den Lesezeichen entfernt.",
-  "breatheNote": "Atmen Sie tief ein und zählen Sie langsam bis 4 – halten Sie den Atem bis 4 an und atmen Sie bis 4 aus – wiederholen Sie dies dreimal",
+  "breatheNote": "Atme tief ein und zähle dabei langsam bis 4. Halte den Atem für 4 Sekunden an und atme dann in 4 Sekunden wieder aus. Wiederhole diese Übung viermal.",
   "accessToSelectedMeditations": "Zugang zu ausgewählten Meditationen",
   "accessToGratitudeJournal": "Zugang zu einem Dankbarkeitstagebuch (begrenzte Einträge pro Monat)",
   "basicVersionOfAlarmClock": "Basisversion des Weckers mit Standardaffirmationen",
@@ -565,7 +565,7 @@
     "whatCanYouDoToday": "Was können Sie heute tun, um Ihren Schlaf heute Nacht zu verbessern?",
   "whatMeasures": "Welche Maßnahmen würden Sie gerne ausprobieren, um besser zu schlafen?",
   "whatHasHelped": "Was hat Ihnen in der Vergangenheit geholfen, besser zu schlafen?",
-  "yourTransformBasic": "Ihr Transformations-Basispaket ist jetzt live.",
+  "yourTransformBasic": "Dein Transformations-Gratispaket ist jetzt live.",
   "eveningQuestions": "Abendliche Fragen",
   "howDoYouFeelEvening": "Wie fühlst du dich heute Abend?",
   "wasThereSomething": "Gab es heute etwas, das Ihre Stimmung positiv beeinflusst hat?",
@@ -738,7 +738,51 @@
 
 
 
-  "Hey": "Hey"
+  "Hey": "Hey",
+  "In": "Einatmen",
+  "Try it for free": "Kostenlos ausprobieren",
+  "Unlock your full potential with TransformYourMind!": "Entfalte dein volles Potenzial mit TransformYourMind!",
+  "Unlock all features - from powerful ones Affirmations and deep meditations to transforming self-hypnosis audios, yours personal well-being barometer and Mindfulness training."
+          : "Unlock all features - from powerful ones Affirmations and deep meditations to transforming self-hypnosis audios, yours personal well-being barometer and Mindfulness training.",
+  "Free": "Gratis",
+  "With selected functions": "Mit ausgewählten Funktionen",
+  "Premium / Monthly - 7 days free": "Premium / Monatlich - 7 Tage kostenlos",
+  "7 days free, then CHF 5.90 / month": "7 Tage kostenlos, dann CHF 5.90 / Monat",
+  "Premium Plus / Annually": "Premium Plus / Jährlich",
+  "CHF 59.90 / year": "CHF 59.90 / Jahr",
+  "Start your feel-good week": "Starte deine Wohlfühlwoche",
+  "Backed by the App Store. Can be canceled at any time.": "Abgesichert durch den App Store. Jederzeit kündbar.",
+
+  "TransformYourMind - Free Version": "\nTransformYourMind – Kostenlose Version",
+  "The free version of TransformYourMind is the perfect introduction to fostering meaningful change in your life.":
+  "Die kostenlose Version von TransformYourMind ist der perfekte Einstieg in die Förderung sinnvoller Veränderungen in Ihrem Leben.",
+  "Guided Meditations:": "Geführte Meditationen:",
+  "Experience calming, supportive meditations designed to reduce stress and promote inner peace, helping you take the first step toward a more balanced and harmonious mind.":
+  "Erleben Sie beruhigende, unterstützende Meditationen, die darauf abzielen, Stress abzubauen, inneren Frieden zu fördern und Ihnen dabei zu helfen, den ersten Schritt zu einem ausgeglicheneren und harmonischeren Geist zu machen.",
+  "Daily Affirmations:": "Tägliche Affirmationen:",
+  "Start each day with a curated selection of powerful affirmations to cultivate a positive mindset and set the tone for success.":
+  "Beginnen Sie jeden Tag mit einer kuratierten Auswahl kraftvoller Affirmationen, um eine positive Einstellung zu kultivieren und den Grundstein für den Erfolg zu legen.",
+
+  "TransformYourMind - Monthly Premium Version": "TransformYourMind – Monatliche Premium-Version",
+  "Experience the full benefits of TransformYourMind with the Premium Version, available for just 5.90 CHF per month. Start with a 7-day free trial and discover how our advanced tools can transform your mental well-being. Designed to support long-term growth, the Premium plan helps you cultivate mindfulness, positivity, and emotional resilience."
+  : "Erleben Sie alle Vorteile von TransformYourMind mit der Premium-Version, erhältlich für nur 5,90 CHF pro Monat. Beginnen Sie mit einer 7-tägigen kostenlosen Testversion und entdecken Sie, wie unsere fortschrittlichen Tools Ihr geistiges Wohlbefinden verbessern können. Der Premium-Plan ist darauf ausgelegt, langfristiges Wachstum zu unterstützen und hilft Ihnen dabei, Achtsamkeit, Positivität und emotionale Belastbarkeit zu fördern.",
+  "Key features include the Gratitude Journal, which allows you to document daily reflections, and Extended Daily Affirmations, giving you access to a vast library or the option to create your own. The Customizable Affirmations Alarm Clock helps you start each day with positive, personalized affirmations.":
+  "Zu den wichtigsten Funktionen gehören das Dankbarkeitsjournal, mit dem Sie Ihre täglichen Reflexionen dokumentieren können, und erweiterte tägliche Affirmationen, die Ihnen Zugriff auf eine umfangreiche Bibliothek oder die Möglichkeit geben, Ihre eigene zu erstellen. Der anpassbare Affirmations-Wecker hilft Ihnen, jeden Tag mit positiven, personalisierten Affirmationen zu beginnen.",
+  "Additionally, Mindfulness Training enables you to capture and replay positive moments, while Daily Psychological Questions promote self-awareness by tracking your emotional patterns and progress through visual charts. Together, these tools empower you to lead a more mindful, balanced, and fulfilling life."
+  : "Darüber hinaus ermöglicht Ihnen das Achtsamkeitstraining, positive Momente festzuhalten und wiederzugeben, während tägliche psychologische Fragen die Selbstwahrnehmung fördern, indem Sie Ihre emotionalen Muster und Fortschritte anhand visueller Diagramme verfolgen. Zusammen ermöglichen Ihnen diese Tools, ein achtsameres, ausgeglicheneres und erfüllteres Leben zu führen.",
+  "Gratitude Journal:": "Dankbarkeitstagebuch:",
+  "Mindfulness Training:":"Achtsamkeitstraining:",
+
+
+  "TransformYourMind - Annually Premium Version": "TransformYourMind – Jährliche Premium-Version",
+  "For just 59.90 CHF per year, the Premium Version offers a wealth of advanced features designed to elevate your mental well-being. Start with a 7-day free trial to explore how TransformYourMind can enrich your life."
+  : "Für nur 59,90 CHF pro Jahr bietet die Premium-Version eine Fülle erweiterter Funktionen, die Ihr geistiges Wohlbefinden steigern sollen. Beginnen Sie mit einer 7-tägigen kostenlosen Testversion und entdecken Sie, wie TransformYourMind Ihr Leben bereichern kann.",
+  "Features include the Gratitude Journal to track daily reflections and Extended Daily Affirmations, providing a wide library or the option to create personalized affirmations. The Customizable Affirmations Alarm Clock sets a positive tone for your day with tailored messages."
+  : "Zu den Funktionen gehören das Dankbarkeitsjournal zum Verfolgen täglicher Reflexionen und erweiterter täglicher Affirmationen, das eine umfangreiche Bibliothek oder die Möglichkeit bietet, personalisierte Affirmationen zu erstellen. Der anpassbare Affirmations-Wecker sorgt mit maßgeschneiderten Nachrichten für einen positiven Ton für Ihren Tag.",
+  "A standout feature is the regularly updated Self-Hypnosis Audios, designed to target specific areas of personal growth. Whether you want to overcome anxiety, boost self-confidence, or conquer fears like flying, these audios use the power of self-hypnosis to help you make profound mental shifts. "
+  : "Ein herausragendes Merkmal sind die regelmäßig aktualisierten Selbsthypnose-Audios, die auf bestimmte Bereiche der persönlichen Entwicklung abzielen. Ganz gleich, ob Sie Ängste überwinden, Ihr Selbstvertrauen stärken oder Ängste wie das Fliegen überwinden möchten – diese Audios nutzen die Kraft der Selbsthypnose, um Ihnen dabei zu helfen, tiefgreifende mentale Veränderungen herbeizuführen.",
+  "Self-Hypnosis Audios:": "Selbsthypnose-Audios:",
+  "Extended Daily Affirmations:": "Erweiterte tägliche Affirmationen:"
 }
 
 

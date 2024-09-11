@@ -291,7 +291,7 @@ alreadySkipped =true;
                     children: [
                       Row(
                         children: [
-                          Text("In",
+                          Text("In".tr,
                             style: Style.nunRegular(
                               fontSize: 16,
                             ),

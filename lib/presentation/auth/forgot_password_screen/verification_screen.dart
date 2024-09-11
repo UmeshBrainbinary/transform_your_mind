@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -168,43 +169,41 @@ class _VerificationsScreenState extends State<VerificationsScreen> {
                               ),
                               Dimens.d23.spaceHeight,
                               SizedBox(
-                                height: Dimens.d24,
                                 width: Dimens.d296,
-                                child: Row(
-                                  children: [
-                                    const Spacer(),
-                                    Text(
-                                        textAlign: TextAlign.center,
-                                        "notReceiveCode".tr,
-                                        style: Style.nunRegular(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w400,
-                                            color:
-                                            themeController.isDarkMode.isTrue?ColorConstant.colorBFBFBF:ColorConstant.color716B6B)),
-                                    Dimens.d5.spaceWidth,
-                                    GestureDetector(
-                                      onTap: () {
-                                        if (_start == 0) {
-                                          resendOtp(context);
-                                        }
-                                      },
-                                      child: Text(
-                                          textAlign: TextAlign.center,
-                                          "resend".tr,
+                                child: RichText(
+                textAlign:TextAlign.center,
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(text:  "notReceiveCode".tr,
+                                          style: Style.nunRegular(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w400,
+                                              color:
+                                              themeController.isDarkMode.isTrue?ColorConstant.colorBFBFBF:ColorConstant.color716B6B)),
+                                      const TextSpan(text: " "),
+                                      TextSpan(text:  "resend".tr,
                                           style: Style.nunRegular(
                                               fontSize: 14,
                                               fontWeight: FontWeight.w400,
                                               color: _start != 0
                                                   ? themeController
-                                                          .isDarkMode.isTrue
-                                                      ? Colors.grey
-                                                      : Colors.black
-                                                          .withOpacity(0.2)
+                                                  .isDarkMode.isTrue
+                                                  ? Colors.grey
+                                                  : Colors.black
+                                                  .withOpacity(0.2)
                                                   : ColorConstant
-                                                      .themeColor)),
-                                    ),
-                                    const Spacer(),
-                                  ],
+                                                  .themeColor),
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () {
+                                            if (_start == 0) {
+                                              resendOtp(context);
+                                            }
+                                          },
+
+                                      ),
+
+                                    ]
+                                  ),
                                 ),
                               ),
                               Dimens.d30.spaceHeight,

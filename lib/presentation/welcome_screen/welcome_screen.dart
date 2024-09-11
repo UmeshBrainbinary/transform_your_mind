@@ -121,14 +121,18 @@ class _WelcomeScreenState extends State<WelcomeHomeScreen>
           await welcomeHomeController.pause();
           await welcomeHomeController.audioPlayer.stop();
           await updateApi(context,pKey: "welcomeScreen");
-           Future.delayed(const Duration(seconds: 30)).then((value) {
-            return Get.offAll(MotivationalMessageScreen(
-              skip: true,
-              date: DateFormat('d MMMM yyyy').format(DateTime.now()),
-              userName:
-                  "${greeting.tr}, ${PrefService.getString(PrefKey.name).toString()}",
-            ));
-          });
+
+          if(isAlreadySkip == false) {
+            Future.delayed(const Duration(seconds: 30)).then((value) {
+              return Get.offAll(MotivationalMessageScreen(
+                skip: true,
+                date: DateFormat('d MMMM yyyy').format(DateTime.now()),
+                userName:
+                "${greeting.tr}, ${PrefService.getString(PrefKey.name)
+                    .toString()}",
+              ));
+            });
+          }
         }
       },
     );
@@ -150,7 +154,7 @@ class _WelcomeScreenState extends State<WelcomeHomeScreen>
     }
     _isLongPressed = false;
   }
-
+bool isAlreadySkip = false;
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -173,7 +177,10 @@ class _WelcomeScreenState extends State<WelcomeHomeScreen>
                           await welcomeHomeController.pause();
                           await welcomeHomeController.audioPlayer.stop();
                           await updateApi(context,pKey: "welcomeScreen");
+setState(() {
+isAlreadySkip =true;
 
+});
                           Get.offAll(MotivationalMessageScreen(
                             skip: true,
                             date: DateFormat('d MMMM yyyy')

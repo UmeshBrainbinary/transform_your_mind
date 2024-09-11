@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -25,7 +26,7 @@ class _FreeTrialPageState extends State<FreeTrialPage>
     with TickerProviderStateMixin {
   late final AnimationController _lottieBgController;
   late final AnimationController _lottieFWController;
-
+List plans = [false,false,false];
   @override
   void initState() {
     super.initState();
@@ -85,8 +86,293 @@ class _FreeTrialPageState extends State<FreeTrialPage>
                     textAlign: TextAlign.center,
                   ),
                 ),
-                Dimens.d30.spaceHeight,
-                const _DescriptionPoints(
+                Dimens.d10.spaceHeight,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                children: [
+                  // Text(
+                  //   "Premium",
+                  //   style: Style.nunMedium(
+                  //       fontSize: Dimens.d12, fontWeight: FontWeight.w400),
+                  //   textAlign: TextAlign.center,
+                  // ),
+                  // Dimens.d10.spaceHeight,
+                  // Text(
+                  //   "Try it for free".tr,
+                  //   style: Style.nunMedium(
+                  //       fontSize: Dimens.d12, fontWeight: FontWeight.w400),
+                  //   textAlign: TextAlign.center,
+                  // ),
+                  //Dimens.d10.spaceHeight,
+                  Text(
+                    "Unlock your full potential with TransformYourMind!".tr,
+                    style: Style.nunMedium(
+                        fontSize: Dimens.d15, fontWeight: FontWeight.w700),
+                    textAlign: TextAlign.center,
+                  ),
+                  Dimens.d10.spaceHeight,
+                  Text(
+                    "Unlock all features - from powerful ones Affirmations and deep meditations to transforming self-hypnosis audios, yours personal well-being barometer and Mindfulness training.".tr,
+                    style: Style.nunMedium(
+                        fontSize: Dimens.d12, fontWeight: FontWeight.w400),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+
+                Padding(
+                  padding: const EdgeInsets.only(left: 20,right: 20,bottom: 5,top: 10),
+                  child: GestureDetector(
+                    onTap: (){
+                      plans = [false,false,false];
+                      plans[0] =true;
+                      setState((){});
+                      showBottomSheetFree(context: context);
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 15),
+                      padding: const EdgeInsets.all(10.0),
+                      decoration: BoxDecoration(
+                        color:plans[0] == true
+                            ? ColorConstant.color7C9EA7.withOpacity(0.20)
+                            : themeController.isDarkMode.isTrue
+                            ? ColorConstant.textfieldFillColor
+                            : ColorConstant.white.withOpacity(0.9),
+                        border: Border.all(
+                          color: plans[0] == true
+                              ? themeController.isDarkMode.isTrue
+                              ? ColorConstant.themeColor
+                              : ColorConstant.themeColor
+                              : themeController.isDarkMode.isTrue
+                              ? ColorConstant.colorE3E1E1.withOpacity(0.2)
+                              : ColorConstant.colorE3E1E1,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              plans[0]
+                                  ? SvgPicture.asset(
+                                ImageConstant.subscriptionCheck,
+                                height: Dimens.d24,
+                                width: Dimens.d24,
+                              )
+                                  : Container(
+                                height: Dimens.d24,
+                                width: Dimens.d24,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: themeController.isDarkMode.isTrue
+                                        ? ColorConstant.white
+                                        : ColorConstant.colorE3E1E1,
+                                  ),
+                                ),
+                              ),
+                              Dimens.d10.spaceWidth,
+                              Text(
+                                "Free".tr,
+                                style: Style.montserratBold(fontSize: 14),
+                              ),
+                            ],
+                          ),
+                          Dimens.d5.spaceHeight,
+                          Padding(
+                            padding: const EdgeInsets.only(left: 35),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'With selected functions'.tr,
+                                  style: Style.nunRegular(
+                                    fontSize: 13,
+                                    color: ColorConstant.color797777,
+                                  ),
+                                ),
+
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20,right: 20,bottom: 5),
+                  child: GestureDetector(
+                    onTap: (){
+                      plans = [false,false,false];
+                      plans[1] =true;
+                      setState((){});
+                      showBottomSheetMonthly(context: context);
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 15),
+                      padding: const EdgeInsets.all(10.0),
+                      decoration: BoxDecoration(
+                        color:plans[1] == true
+                            ? ColorConstant.color7C9EA7.withOpacity(0.20)
+                            : themeController.isDarkMode.isTrue
+                            ? ColorConstant.textfieldFillColor
+                            : ColorConstant.white.withOpacity(0.9),
+                        border: Border.all(
+                          color: plans[1] == true
+                              ? themeController.isDarkMode.isTrue
+                              ? ColorConstant.themeColor
+                              : ColorConstant.themeColor
+                              : themeController.isDarkMode.isTrue
+                              ? ColorConstant.colorE3E1E1.withOpacity(0.2)
+                              : ColorConstant.colorE3E1E1,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              plans[1]
+                                  ? SvgPicture.asset(
+                                ImageConstant.subscriptionCheck,
+                                height: Dimens.d24,
+                                width: Dimens.d24,
+                              )
+                                  : Container(
+                                height: Dimens.d24,
+                                width: Dimens.d24,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: themeController.isDarkMode.isTrue
+                                        ? ColorConstant.white
+                                        : ColorConstant.colorE3E1E1,
+                                  ),
+                                ),
+                              ),
+                              Dimens.d10.spaceWidth,
+                              Text(
+                                "Premium / Monthly - 7 days free".tr,
+                                style: Style.montserratBold(fontSize: 14),
+                              ),
+                            ],
+                          ),
+                          Dimens.d5.spaceHeight,
+                          Padding(
+                            padding: const EdgeInsets.only(left: 35),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '7 days free, then CHF 5.90 / month'.tr,
+                                  style: Style.nunRegular(
+                                    fontSize: 13,
+                                    color: ColorConstant.color797777,
+                                  ),
+                                ),
+
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20,right: 20,bottom: 20),
+                  child: GestureDetector(
+
+                    onTap: (){
+                      plans = [false,false,false];
+                      plans[2] =true;
+                      setState((){});
+                      showBottomSheetYearly(context: context);
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 15),
+                      padding: const EdgeInsets.all(10.0),
+                      decoration: BoxDecoration(
+                        color:plans[2] == true
+                            ? ColorConstant.color7C9EA7.withOpacity(0.20)
+                            : themeController.isDarkMode.isTrue
+                            ? ColorConstant.textfieldFillColor
+                            : ColorConstant.white.withOpacity(0.9),
+                        border: Border.all(
+                          color: plans[2] == true
+                              ? themeController.isDarkMode.isTrue
+                              ? ColorConstant.themeColor
+                              : ColorConstant.themeColor
+                              : themeController.isDarkMode.isTrue
+                              ? ColorConstant.colorE3E1E1.withOpacity(0.2)
+                              : ColorConstant.colorE3E1E1,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              plans[2]
+                                  ? SvgPicture.asset(
+                                ImageConstant.subscriptionCheck,
+                                height: Dimens.d24,
+                                width: Dimens.d24,
+                              )
+                                  : Container(
+                                height: Dimens.d24,
+                                width: Dimens.d24,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: themeController.isDarkMode.isTrue
+                                        ? ColorConstant.white
+                                        : ColorConstant.colorE3E1E1,
+                                  ),
+                                ),
+                              ),
+                              Dimens.d10.spaceWidth,
+                              Text(
+                                "Premium Plus / Annually".tr,
+                                style: Style.montserratBold(fontSize: 14),
+                              ),
+                            ],
+                          ),
+                          Dimens.d5.spaceHeight,
+                          Padding(
+                            padding: const EdgeInsets.only(left: 35),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'CHF 59.90 / year'.tr,
+                                  style: Style.nunRegular(
+                                    fontSize: 13,
+                                    color: ColorConstant.color797777,
+                                  ),
+                                ),
+
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+               /* const _DescriptionPoints(
                   title: "journalInput",
                 ),
                 const _DescriptionPoints(
@@ -100,14 +386,14 @@ class _FreeTrialPageState extends State<FreeTrialPage>
                 ),
                 const _DescriptionPoints(
                   title: "dailyProvideReminder",
-                ),
-                Dimens.d64.spaceHeight,
+                ),*/
+                Dimens.d30.spaceHeight,
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: Dimens.d20),
                   child: CommonElevatedButton(
                     textStyle: Style.nunRegular(
                         fontSize: 17, color: ColorConstant.white),
-                    title: "premiumAccess".tr,
+                    title: "Start your feel-good week".tr,
                     onTap: () async {
                       await PrefService.setValue(PrefKey.premium, true);
                       await PrefService.setValue(PrefKey.subscription, true);
@@ -123,6 +409,17 @@ class _FreeTrialPageState extends State<FreeTrialPage>
                   ),
                 ),
                 Dimens.d10.spaceHeight,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(
+                    "Backed by the App Store. Can be canceled at any time.".tr,
+                    style: Style.nunMedium(
+                        fontSize: Dimens.d12, fontWeight: FontWeight.w400),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Dimens.d10.spaceHeight,
+
               ],
             ),
           ),
@@ -134,7 +431,315 @@ class _FreeTrialPageState extends State<FreeTrialPage>
       ),
     );
   }
+
+  showBottomSheetFree({required BuildContext context}){
+    showModalBottomSheet(context: context,
+        backgroundColor: Colors.white,
+        shape:  const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+        topRight: Radius.circular(30.0),
+    topLeft: Radius.circular(30.0),
+    ),
+    ),
+        builder: (context){
+      return SizedBox(
+        height: Get.height *0.8,
+        child:
+        Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: GestureDetector(
+                    onTap: () {
+                      Get.back();
+                    },
+                    child: Container(
+                      height: 35,
+                      width: 35,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(9),
+                          color: ColorConstant.black.withOpacity(0.15)),
+                      child: const Icon(Icons.close, color: Colors.black),
+                    ),),
+              ),
+              Dimens.d6.spaceHeight,
+
+              Text(
+                "TransformYourMind - Free Version".tr,
+                style: Style.nunMedium(
+                    fontSize: Dimens.d16, fontWeight: FontWeight.w700),
+                textAlign: TextAlign.center,
+              ),
+              Dimens.d20.spaceHeight,
+              Text(
+                "The free version of TransformYourMind is the perfect introduction to fostering meaningful change in your life.".tr,
+                style: Style.nunMedium(
+                    fontSize: Dimens.d14, fontWeight: FontWeight.w400),
+                textAlign: TextAlign.center,
+              ),
+              Dimens.d10.spaceHeight,
+
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text.rich(
+                    TextSpan(children: [
+                      TextSpan(text:  "Guided Meditations:".tr,
+                        style: Style.nunMedium(
+                            fontSize: Dimens.d14, fontWeight: FontWeight.w700),),
+                      const TextSpan(text: " "),
+                      TextSpan(text:  "Experience calming, supportive meditations designed to reduce stress and promote inner peace, helping you take the first step toward a more balanced and harmonious mind.".tr,
+                        style: Style.nunRegular(
+                          fontSize: Dimens.d14,
+                          fontWeight: FontWeight.w400,
+
+
+
+                        ),),
+                    ])),
+              ),
+              Dimens.d10.spaceHeight,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text.rich(TextSpan(
+                    children: [
+                      TextSpan(text:  "Daily Affirmations:".tr,
+                        style: Style.nunMedium(
+                            fontSize: Dimens.d14, fontWeight: FontWeight.w700),),
+                      const TextSpan(text: " "),
+                      TextSpan(text:  "Start each day with a curated selection of powerful affirmations to cultivate a positive mindset and set the tone for success.".tr,
+                        style: Style.nunRegular(
+                          fontSize: Dimens.d14,
+                          fontWeight: FontWeight.w400,
+
+
+
+                        ),),
+
+                    ]
+                ),),
+              )
+
+
+            ],
+          ),
+        ),
+      );
+    });
+  }
+  showBottomSheetMonthly({required BuildContext context}){
+    showModalBottomSheet(context: context,
+        backgroundColor: Colors.white,
+        shape:  const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+        topRight: Radius.circular(30.0),
+    topLeft: Radius.circular(30.0),
+    ),
+    ),
+        builder: (context){
+      return SizedBox(
+        height: Get.height *0.8,
+        child:
+        Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: GestureDetector(
+                  onTap: () {
+                    Get.back();
+                  },
+                  child: Container(
+                    height: 35,
+                    width: 35,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(9),
+                        color: ColorConstant.black.withOpacity(0.15)),
+                    child: const Icon(Icons.close, color: Colors.black),
+                  ),),
+              ),
+              Dimens.d6.spaceHeight,
+
+              SizedBox(
+                height: Get.height *0.4,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Text(
+                        "TransformYourMind - Monthly Premium Version".tr,
+                        style: Style.nunMedium(
+                            fontSize: Dimens.d16, fontWeight: FontWeight.w700),
+                        textAlign: TextAlign.center,
+                      ),
+                      Dimens.d20.spaceHeight,
+                      Text(
+                        "Experience the full benefits of TransformYourMind with the Premium Version, available for just 5.90 CHF per month. Start with a 7-day free trial and discover how our advanced tools can transform your mental well-being. Designed to support long-term growth, the Premium plan helps you cultivate mindfulness, positivity, and emotional resilience.".tr,
+                        style: Style.nunMedium(
+                            fontSize: Dimens.d14, fontWeight: FontWeight.w400),
+                        textAlign: TextAlign.center,
+                      ),
+                      Dimens.d10.spaceHeight,
+                  
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Text.rich(
+                            TextSpan(children: [
+                              TextSpan(text: "Gratitude Journal:".tr,
+                                style: Style.nunMedium(
+                                    fontSize: Dimens.d14, fontWeight: FontWeight.w700),),
+                              const TextSpan(text: " "),
+                              TextSpan(text:  "Key features include the Gratitude Journal, which allows you to document daily reflections, and Extended Daily Affirmations, giving you access to a vast library or the option to create your own. The Customizable Affirmations Alarm Clock helps you start each day with positive, personalized affirmations.".tr,
+                                style: Style.nunRegular(
+                                  fontSize: Dimens.d14,
+                                  fontWeight: FontWeight.w400,
+                  
+                  
+                  
+                                ),),
+                            ])),
+                      ),
+                      Dimens.d10.spaceHeight,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Text.rich(TextSpan(
+                            children: [
+                              TextSpan(text:  "Mindfulness Training:".tr,
+                                style: Style.nunMedium(
+                                    fontSize: Dimens.d14, fontWeight: FontWeight.w700),),
+                              const TextSpan(text: " "),
+                              TextSpan(text:  "Additionally, Mindfulness Training enables you to capture and replay positive moments, while Daily Psychological Questions promote self-awareness by tracking your emotional patterns and progress through visual charts. Together, these tools empower you to lead a more mindful, balanced, and fulfilling life.".tr,
+                                style: Style.nunRegular(
+                                  fontSize: Dimens.d14,
+                                  fontWeight: FontWeight.w400,
+                  
+                  
+                  
+                                ),),
+                  
+                            ]
+                        ),),
+                      )
+                  
+                    ],
+                  ),
+                ),
+              ),
+
+            ],
+          ),
+        ),
+      );
+    });
+  }
+  showBottomSheetYearly({required BuildContext context}){
+    showModalBottomSheet(context: context,
+        backgroundColor: Colors.white,
+        shape:  const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+        topRight: Radius.circular(30.0),
+    topLeft: Radius.circular(30.0),
+    ),
+    ),
+        builder: (context){
+      return SizedBox(
+        height: Get.height *0.8,
+        child:
+        Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: GestureDetector(
+                    onTap: () {
+                      Get.back();
+                    },
+                    child: Container(
+                      height: 35,
+                      width: 35,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(9),
+                          color: ColorConstant.black.withOpacity(0.15)),
+                      child: const Icon(Icons.close, color: Colors.black),
+                    ),),
+              ),
+              Dimens.d6.spaceHeight,
+
+              SizedBox(
+                height: Get.height *0.4,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Text(
+                        "TransformYourMind - Annually Premium Version".tr,
+                        style: Style.nunMedium(
+                            fontSize: Dimens.d16, fontWeight: FontWeight.w700),
+                        textAlign: TextAlign.center,
+                      ),
+                      Dimens.d20.spaceHeight,
+                      Text(
+                        "For just 59.90 CHF per year, the Premium Version offers a wealth of advanced features designed to elevate your mental well-being. Start with a 7-day free trial to explore how TransformYourMind can enrich your life.".tr,
+                        style: Style.nunMedium(
+                            fontSize: Dimens.d14, fontWeight: FontWeight.w400),
+                        textAlign: TextAlign.center,
+                      ),
+                      Dimens.d10.spaceHeight,
+                  
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Text.rich(
+                            TextSpan(children: [
+                              TextSpan(text:  "Extended Daily Affirmations:".tr,
+                                style: Style.nunMedium(
+                                    fontSize: Dimens.d14, fontWeight: FontWeight.w700),),
+                              const TextSpan(text: " "),
+                              TextSpan(text:  "Features include the Gratitude Journal to track daily reflections and Extended Daily Affirmations, providing a wide library or the option to create personalized affirmations. The Customizable Affirmations Alarm Clock sets a positive tone for your day with tailored messages.".tr,
+                                style: Style.nunRegular(
+                                  fontSize: Dimens.d14,
+                                  fontWeight: FontWeight.w400,
+                  
+                  
+                  
+                                ),),
+                            ])),
+                      ),
+                      Dimens.d10.spaceHeight,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Text.rich(TextSpan(
+                            children: [
+                              TextSpan(text:  "Self-Hypnosis Audios:".tr,
+                                style: Style.nunMedium(
+                                    fontSize: Dimens.d14, fontWeight: FontWeight.w700),),
+                              const TextSpan(text: " "),
+                              TextSpan(text:  "A standout feature is the regularly updated Self-Hypnosis Audios, designed to target specific areas of personal growth. Whether you want to overcome anxiety, boost self-confidence, or conquer fears like flying, these audios use the power of self-hypnosis to help you make profound mental shifts. ".tr,
+                                style: Style.nunRegular(
+                                  fontSize: Dimens.d14,
+                                  fontWeight: FontWeight.w400,
+                  
+                  
+                  
+                                ),),
+                  
+                            ]
+                        ),),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+
+
+            ],
+          ),
+        ),
+      );
+    });
+  }
 }
+
 
 class _DescriptionPoints extends StatelessWidget {
   final String title;

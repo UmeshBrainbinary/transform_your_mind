@@ -32,7 +32,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             Padding(
             padding: const EdgeInsets.symmetric(horizontal: Dimens.d36),
             child: Text(
-             "${"welcome".tr}, “ ${PrefService.getString(PrefKey.name)} ”!",
+             "${"Hey".tr}, “ ${PrefService.getString(PrefKey.name)} ”!",
               textAlign: TextAlign.center,
               style: Style.nunitoBold(fontSize: 28,fontWeight: FontWeight.w600),
             ),
