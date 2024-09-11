@@ -137,8 +137,10 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
         );
         _startProgressAnimation();
       } else {
-        timer.cancel(); // Stop the timer
-        _onComplete(); // Handle completion
+        timer.cancel();
+        if(_progressController?.isAnimating  ?? false) { // Stop the timer
+          _onComplete();
+        }// Handle completion
       }
     });
   }
@@ -350,7 +352,11 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
                             setState(() {
                               showBottom = true;
                             });
-                            sheetSound();
+                            _progressController?.stop();
+                            sheetSound().then((v){
+                                                   _progressController?.forward();
+
+                            });
                           },
                           child: Container(
                             height: 42,
@@ -383,7 +389,11 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
                             setState(() {
                               showBottom = true;
                             });
-                            sheetTheme();
+                            _progressController?.stop();
+                            sheetTheme().then((v){
+                              _progressController?.forward();
+
+                            });;
                           },
                           child: Container(
                             height: 42,
