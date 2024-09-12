@@ -158,7 +158,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           handleError(purchaseDetails.error!);
         }
         else if (purchaseDetails.status == PurchaseStatus.purchased ||
-            purchaseDetails.status == PurchaseStatus.restored  || purchaseDetails.status == PurchaseStatus.error ) {
+            purchaseDetails.status == PurchaseStatus.restored) {
           debugPrint("purchase details =========+++++$purchaseDetails");
 
           try {
@@ -189,6 +189,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             if (response.statusCode == 200) {
               showSnackBarSuccess(context, "Subscription set successful");
               await getUSer();
+              Get.back();
             } else {
               debugPrint(response.reasonPhrase);
             }
@@ -453,7 +454,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
         getUserModel = getUserModelFromJson(responseBody);
         isSubscribed = getUserModel.data?.isSubscribed ?? false;
-Get.back();
+
         await PrefService.setValue(
             PrefKey.userImage, getUserModel.data?.userProfile ?? "");
         await PrefService.setValue(
@@ -821,8 +822,7 @@ Get.back();
 
       } else {
         print("Purchase unsuccessful");
-     await api();
-
+await api();
         checkData();
       }
     } catch (e) {
