@@ -189,7 +189,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             if (response.statusCode == 200) {
               showSnackBarSuccess(context, "Subscription set successful");
               await getUSer();
-              Get.back();
             } else {
               debugPrint(response.reasonPhrase);
             }
@@ -822,8 +821,10 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
       } else {
         print("Purchase unsuccessful");
-await api();
+
+        await api();
         checkData();
+        Get.back();
       }
     } catch (e) {
       // Handle any errors
