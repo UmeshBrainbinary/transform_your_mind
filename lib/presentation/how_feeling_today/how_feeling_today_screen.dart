@@ -34,7 +34,7 @@ class _HowFeelingTodayScreenState extends State<HowFeelingTodayScreen> {
           ? ColorConstant.darkBackground
           : ColorConstant.backGround,
       appBar: CustomAppBar(
-        title: "MorningQuestions".tr,
+        title:  "${"Good morning".tr}, ${PrefService.getString(PrefKey.name)}",
         action: Row(
           children: [
             InkWell(
@@ -56,11 +56,11 @@ class _HowFeelingTodayScreenState extends State<HowFeelingTodayScreen> {
             children: [
               Dimens.d26.spaceHeight,
 
-              Text(
-                "moodQuestions".tr,
-                style: Style.nunitoBold(fontSize: 22),
-              ),
-              Dimens.d20.spaceHeight,
+              // Text(
+              //   "moodQuestions".tr,
+              //   style: Style.nunitoBold(fontSize: 22),
+              // ),
+              // Dimens.d20.spaceHeight,
               //___________________________________ 1. _________________________
               commonTextTitle("How are you feeling right now?".tr, count: "1"),
 
@@ -181,10 +181,10 @@ class _HowFeelingTodayScreenState extends State<HowFeelingTodayScreen> {
                   },
                 ),
               ),
-              Dimens.d15.spaceHeight,
+             // Dimens.d15.spaceHeight,
 
 
-              commonTextTitle(
+           /*   commonTextTitle(
                  "whatCanYouToday".tr
                     ,
                   count: "3"),
@@ -244,9 +244,9 @@ class _HowFeelingTodayScreenState extends State<HowFeelingTodayScreen> {
                   },
                 ),
               ),
-              Dimens.d15.spaceHeight,
+              Dimens.d15.spaceHeight,*/
 
-              commonTextSubtitle(controller.howDoYouIndex!=0 ||controller.howDoYouIndex==-1?"whatPositive".tr:"howCanYouMaintain".tr),
+            /*  commonTextSubtitle(controller.howDoYouIndex!=0 ||controller.howDoYouIndex==-1?"whatPositive".tr:"howCanYouMaintain".tr),
               Dimens.d20.spaceHeight,
               commonTextFiled("", controller.whatPositive),
               Dimens.d20.spaceHeight,
@@ -256,7 +256,7 @@ class _HowFeelingTodayScreenState extends State<HowFeelingTodayScreen> {
               Dimens.d20.spaceHeight,
               commonTextSubtitle(controller.howDoYouIndex!=0 || controller.howDoYouIndex==-1?"whatSmallSteps".tr:"howCanYouSpread".tr),
               Dimens.d20.spaceHeight,
-              commonTextFiled("", controller.whatSmallSteps),
+              commonTextFiled("", controller.whatSmallSteps),*/
               Dimens.d40.spaceHeight,
 
               CommonElevatedButton(
@@ -305,7 +305,9 @@ class _HowFeelingTodayScreenState extends State<HowFeelingTodayScreen> {
   }
 
   commonText(String title, {String? count, double? fontSize}) {
-    return Text(title.tr, style: Style.nunMedium(fontSize: fontSize ?? 16));
+    return SizedBox(
+        width: Get.width *0.6,
+        child: Text(title.tr, style: Style.nunMedium(fontSize: fontSize ?? 16)));
   }
 
   commonTextSubtitle(title) {

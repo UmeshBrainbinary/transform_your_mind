@@ -72,11 +72,11 @@ class HowFeelingEveningController extends GetxController {
     {"title": "B. ${"I felt good most of the time.".tr}", "check": false},
     {"title": "C. ${"My mood was up and down.".tr}", "check": false},
     {
-      "title": "C. ${"I was a bit tired, but I pushed through.".tr}",
+      "title": "D. ${"I was a bit tired, but I pushed through.".tr}",
       "check": false
     },
     {
-      "title": "C. ${"I stayed calm and focused throughout the day.".tr}",
+      "title": "E. ${"I stayed calm and focused throughout the day.".tr}",
       "check": false
     },
   ].obs;
@@ -85,10 +85,10 @@ class HowFeelingEveningController extends GetxController {
     {"title": "B. ${"A soothing activity or routine".tr}", "check": false},
     {"title": "C. ${"A healthy meal during the day".tr}", "check": false},
     {
-      "title": "C. ${"Positive thoughts and self-motivation".tr}",
+      "title": "D. ${"Positive thoughts and self-motivation".tr}",
       "check": false
     },
-    {"title": "C. ${"Something else that helped me".tr}", "check": false},
+    {"title": "E. ${"Something else that helped me".tr}", "check": false},
   ].obs;
   RxList whatHelpedYou = [
     {"title": "A. ${"Planning".tr}", "check": false},
@@ -112,7 +112,7 @@ class HowFeelingEveningController extends GetxController {
       "check": false
     },
     {
-      "title": "D. ${"It was a calm day, but I gave it my best.".tr}",
+      "title": "E. ${"It was a calm day, but I gave it my best.".tr}",
       "check": false
     },
   ].obs;
@@ -123,7 +123,7 @@ class HowFeelingEveningController extends GetxController {
     {"title": "C. ${"I created something positive.".tr}", "check": false},
     {"title": "D. ${"I tried to make a difference.".tr}", "check": false},
     {
-      "title": "D. ${"I aimed to be better than yesterday.".tr}",
+      "title": "E. ${"I aimed to be better than yesterday.".tr}",
       "check": false
     },
   ].obs;
@@ -132,7 +132,7 @@ class HowFeelingEveningController extends GetxController {
     {"title": "B. ${"Very well, I'm satisfied".tr}", "check": false},
     {"title": "C. ${"Well, but it was challenging".tr}", "check": false},
     {"title": "D. ${"It wasn't easy, but I gave my best".tr}", "check": false},
-    {"title": "D. ${"I gained valuable experience".tr}", "check": false},
+    {"title": "E. ${"I gained valuable experience".tr}", "check": false},
   ].obs;
 
   RxList whatPrevented = [
@@ -204,7 +204,7 @@ class HowFeelingEveningController extends GetxController {
     {"title": "A. ${"AGoal".tr}", "check": false},
     {"title": "B. ${"AWorkGoal".tr}", "check": false},
     {"title": "C. ${"LearnSkill".tr}", "check": false},
-    {"title": "C. ${"other".tr}", "check": false},
+    {"title": "D. ${"other".tr}", "check": false},
   ].obs;
 
   RxList whatNegatively = [

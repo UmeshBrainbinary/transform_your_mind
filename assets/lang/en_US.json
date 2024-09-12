@@ -539,7 +539,7 @@
     "BreathingTechnique": "Breathing technique",
     "SpendOutdoors": "Spend time outdoors",
     "TalkFrd": "Talk to a friend",
-    "doYouFeelStressed": "Do you feel stressed this morning?",
+    "doYouFeelStressed": "Are you feeling stressed this morning?",
     "whatCanYouDoToMinimize": "What can you do to minimize stress today?",
     "howCanYouSpread": "How can you spread your good mood to others today?",
     "isThereASpecific": "Is there a specific activity or goal you are especially looking forward to today?",
@@ -616,6 +616,7 @@
     "pleaseSelectDoYouFeel": "Please select do you feel stress?",
     "pleaseAddHowAreYouFeeling": "Please add how are you feeling this evening..",
     "pleaseSelectWhatDoYouAchieve": "Please select what do you want to achieve today?",
+    "pleaseSelectMotivation": "How motivated are you to make the most of today?",
     "pleaseSelectDidYouSleep": "Please select did you sleep well last night.",
     "pleaseSetDidYouFeelStressed": "Please set did you feel stressed today?",
     "pleaseAddDoYou": "Please add do you achieve your goal for today?",
@@ -712,6 +713,7 @@
 
 
   "What inspired you to give your best today?": "What inspired you to give your best today?",
+  "What inspired": "What inspired you to give your best today?",
   "I maximized my full potential.":"I maximized my full potential.",
   "I sought personal satisfaction.": "I sought personal satisfaction.",
   "I created something positive.":"I created something positive.",
@@ -773,7 +775,15 @@
   "A standout feature is the regularly updated Self-Hypnosis Audios, designed to target specific areas of personal growth. Whether you want to overcome anxiety, boost self-confidence, or conquer fears like flying, these audios use the power of self-hypnosis to help you make profound mental shifts. "
   : "A standout feature is the regularly updated Self-Hypnosis Audios, designed to target specific areas of personal growth. Whether you want to overcome anxiety, boost self-confidence, or conquer fears like flying, these audios use the power of self-hypnosis to help you make profound mental shifts. ",
 "Extended Daily Affirmations:": "Extended Daily Affirmations:",
-  "Self-Hypnosis Audios:": "Self-Hypnosis Audios:"
+  "Self-Hypnosis Audios:": "Self-Hypnosis Audios:",
+
+  "Good evening": "Good evening",
+  "Good morning": "Good morning",
+
+"Unleash your full potential with TransformYourMind!": "Unleash your full potential with TransformYourMind!",
+  "Unlock all functions": "Unlock all functions",
+  "From affirmations and deep meditation to transformative self-hypnosis audios, your personal well-being barometer and mindfulness training.": "From affirmations and deep meditation to transformative self-hypnosis audios, your personal well-being barometer and mindfulness training.",
+
 
 }
 

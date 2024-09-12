@@ -250,6 +250,7 @@ class ImageConstant {
   static String chooseBackEn = "$imagePath/choose_background_en.png";
   static String chooseBackGe = "$imagePath/choose_background_ge.png";
   static String chooseBack = "$imagePath/choose_background.png";
+  static String subImage = "$imagePath/subImage.png";
   static String box = "$imagePath/box.png";
   static String breathInhale = "$lottie/breath_inhale.json";
   static String settingArrowRight = "$iconPath/setting_arrow_right.svg";

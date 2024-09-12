@@ -130,7 +130,7 @@ class HowFeelingsController extends GetxController{
       {"title":"B. ${"I feel full of energy and drive.".tr}","check":false},
       {"title":"C. ${"I’m ready to start the day.".tr}","check":false},
       {"title":"D. ${"I’m taking my time to get going.".tr}","check":false},
-      {"title":"E. ${"I’m starting off a bit slower today".tr}","check":false},
+      {"title":"E. ${"I’m starting off a bit slower today.".tr}","check":false},
     ].obs;
     /// ---- 4-----
     RxList whatInspire = [

@@ -38,7 +38,7 @@ class _HowFeelingsEveningState extends State<HowFeelingsEvening> {
         ColorConstant.darkBackground
             :ColorConstant.backGround,
         appBar:  CustomAppBar(
-          title: "eveningQuestions".tr, action: Row(
+          title:  "${"Good evening".tr}, ${PrefService.getString(PrefKey.name)}", action: Row(
           children: [
             InkWell(
                 onTap: (){
@@ -60,11 +60,11 @@ class _HowFeelingsEveningState extends State<HowFeelingsEvening> {
                 children: [
                   Dimens.d26.spaceHeight,
 
-                  Text(
-                    "moodQuestions".tr,
-                    style: Style.nunitoBold(fontSize: 22),
-                  ),
-                  Dimens.d20.spaceHeight,
+                  // Text(
+                  //   "moodQuestions".tr,
+                  //   style: Style.nunitoBold(fontSize: 22),
+                  // ),
+                  // Dimens.d20.spaceHeight,
                   //___________________________________ 1. _________________________________
                   commonTextTitle("How did you feel throughout the day?".tr, count: "1"),
 
@@ -183,12 +183,12 @@ class _HowFeelingsEveningState extends State<HowFeelingsEvening> {
                       },
                     ),
                   ),
-                  Dimens.d15.spaceHeight,
+                  //Dimens.d15.spaceHeight,
                   /// =============== 2
 
                   //___________________________________ 2. _________________________________
 
-                  commonTextTitle(
+               /*   commonTextTitle(
                       howFeelingsController.howDoYouIndex != 0
                           ? "wasThereSomethingAffected".tr
                           : "wasThereSomething".tr,
@@ -274,9 +274,9 @@ class _HowFeelingsEveningState extends State<HowFeelingsEvening> {
                         ),
                       );
                     },
-                  ),
+                  ),*/
 
-                  Dimens.d20.spaceHeight,
+                 /* Dimens.d20.spaceHeight,
 
                   controller.selectedDidYouSleepWell=="No"? Column(children: [
                     commonTextSubtitle("isThereSomethingThat".tr),
@@ -288,7 +288,8 @@ class _HowFeelingsEveningState extends State<HowFeelingsEvening> {
                     commonTextFiled("", howFeelingsController.whatCouldHelpMaintain),
 
                     Dimens.d40.spaceHeight,
-                  ],):Column(children: [
+                  ],):
+                  Column(children: [
                     commonTextSubtitle("canYouDescribe".tr),
                     Dimens.d20.spaceHeight,
                     commonTextFiled("", howFeelingsController.canYouDescribe),
@@ -301,7 +302,8 @@ class _HowFeelingsEveningState extends State<HowFeelingsEvening> {
                     Dimens.d20.spaceHeight,
                     commonTextFiled("", howFeelingsController.whatCouldHelp),
                     Dimens.d40.spaceHeight,
-                  ],),
+                  ],),*/
+                  Dimens.d40.spaceHeight,
 
                   CommonElevatedButton(
                     title: "next".tr,

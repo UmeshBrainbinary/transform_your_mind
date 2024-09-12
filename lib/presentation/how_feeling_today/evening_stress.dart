@@ -30,7 +30,7 @@ class EveningStress extends StatelessWidget {
           ? ColorConstant.darkBackground
           : ColorConstant.backGround,
       appBar: CustomAppBar(
-        title: "eveningQuestions".tr,
+        title: "${"Good evening".tr}, ${PrefService.getString(PrefKey.name)}",
         action: Row(
           children: [
             InkWell(
@@ -53,11 +53,11 @@ class EveningStress extends StatelessWidget {
               children: [
                 Dimens.d26.spaceHeight,
 
-                Text(
+             /*   Text(
                   "stressQuestions".tr,
                   style: Style.nunitoBold(fontSize: 22),
                 ),
-                Dimens.d20.spaceHeight,
+                Dimens.d20.spaceHeight,*/
                 //___________________________________ 1. _________________________________
                 commonTextTitle("didYouFeel".tr, count: "1"),
 
@@ -150,10 +150,16 @@ class EveningStress extends StatelessWidget {
 
                 //___________________________________ 2. _________________________________
 
-                commonTextTitle(
+             /*   commonTextTitle(
                     controller.selectedOptionStress == "No"
                         ? "haveThereBeenStressful".tr
                         : "whatCausedStress".tr,
+                    count: "2"),  */
+
+                commonTextTitle(
+                    controller.selectedOptionStress == "No"
+                        ? "haveThereBeenStressful".tr
+                        : "How successful were you in relieving your stress today?".tr,
                     count: "2"),
 
                 controller.selectedOptionStress == "No"
@@ -254,19 +260,20 @@ class EveningStress extends StatelessWidget {
                               );
                             },
                           ),
-                          Dimens.d30.spaceHeight,
-                          commonTextSubtitle( "canYouDescribeHow".tr),
-                          Dimens.d20.spaceHeight,
-                          commonTextFiled("", controller.canYouDescribeHow),
-                          Dimens.d30.spaceHeight,
-                          commonTextSubtitle( "whatHelpedStay".tr),
-                          Dimens.d20.spaceHeight,
-                          commonTextFiled("", controller.whatHelpedStay),
+                          // Dimens.d30.spaceHeight,
+                          // commonTextSubtitle( "canYouDescribeHow".tr),
+                          // Dimens.d20.spaceHeight,
+                          // commonTextFiled("", controller.canYouDescribeHow),
+                          // Dimens.d30.spaceHeight,
+                          // commonTextSubtitle( "whatHelpedStay".tr),
+                          // Dimens.d20.spaceHeight,
+                          // commonTextFiled("", controller.whatHelpedStay),
                         ],
                       )
-                    : Column(
+                    :
+                Column(
                         children: [
-                          Dimens.d20.spaceHeight,
+                        /*  Dimens.d20.spaceHeight,
                           GetBuilder<HowFeelingEveningController>(
                             builder: (controller) => ListView.builder(
                               padding: EdgeInsets.zero,
@@ -386,10 +393,10 @@ class EveningStress extends StatelessWidget {
                               },
                             ),
                           ),
-
-
-                          Dimens.d15.spaceHeight,
-                          commonTextTitle("How successful were you in relieving your stress today?".tr, count: "4"),
+*/
+                          //
+                          // Dimens.d15.spaceHeight,
+                          // commonTextTitle("How successful were you in relieving your stress today?".tr, count: "4"),
 
                           Dimens.d20.spaceHeight,
                           GetBuilder<HowFeelingEveningController>(
@@ -452,7 +459,7 @@ class EveningStress extends StatelessWidget {
                           ),
 
 
-                          Dimens.d15.spaceHeight,
+                        /*  Dimens.d15.spaceHeight,
                           commonTextSubtitle(controller.whatHelpedStress != 0
                               ? "whatCouldHaveDone".tr
                               : "whatHelpedManage".tr),
@@ -470,7 +477,7 @@ class EveningStress extends StatelessWidget {
                           controller.whatHelpedStress != 0
                               ? const SizedBox()
                               : commonTextFiled(
-                                  "", controller.areThere),
+                                  "", controller.areThere),*/
                         ],
                       ),
 

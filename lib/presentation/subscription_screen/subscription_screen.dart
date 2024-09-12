@@ -77,6 +77,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   @override
   void initState() {
     super.initState();
+
     _setGreetingBasedOnTime();
     getUserData();
 
@@ -104,9 +105,41 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   }
   getUserData() async {
     await getUSer();
-    List.generate(2, (index) {
+    List.generate(3, (index) {
       subscriptionController.plan.add(false);
     },);
+    if(getUserModel.data!.isSubscribed==true){
+      if (getUserModel.data!.subscriptionId == "transform_yearly") {
+        setState(() {
+          subscriptionController.plan[2] = true.obs;
+        });
+      } else if (getUserModel.data!.subscriptionId ==
+          "transform_monthly") {
+        setState(() {
+          subscriptionController.plan[1] = true.obs;
+        });
+      }
+      else
+      {
+        setState(() {
+          subscriptionController.plan[0] = true.obs;
+        });
+      }
+    }
+    else
+    {
+      setState(() {
+        subscriptionController.plan[0] = true.obs;
+      });
+    }
+
+    for (int i = 0; i < subscriptionController.plan.length; i++) {
+      if (subscriptionController.plan[1] == true || subscriptionController.plan[2] == true) {
+        setState(() {
+          valueChecked = true;
+        });
+      }
+    }
     final Stream<List<PurchaseDetails>> purchaseUpdated =
         _inAppPurchase.purchaseStream;
     _subscription = purchaseUpdated.listen(
@@ -149,7 +182,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   Future<void> _listenToPurchaseUpdated(
       List<PurchaseDetails> purchaseDetailsList) async {
     final ProductDetailsResponse productDetailResponse =
-        await _inAppPurchase.queryProductDetails(_kProductIds.toSet());
+    await _inAppPurchase.queryProductDetails(_kProductIds.toSet());
     for (final PurchaseDetails purchaseDetails in purchaseDetailsList) {
       if (purchaseDetails.status == PurchaseStatus.pending) {
         showPendingUI();
@@ -171,11 +204,11 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     '${EndPoints.baseUrl}${EndPoints.updateUser}${PrefService.getString(PrefKey.userId)}'));
             request.fields.addAll({
               'isSubscribed': "true",
-              'subscriptionId':  subscriptionController.plan[1] == true?"transform_yearly":"transform_monthly",
+              'subscriptionId':  subscriptionController.plan[2] == true?"transform_yearly": subscriptionController.plan[1] == true?"transform_monthly":"Free",
               'subscriptionTitle':
-              subscriptionController.plan[1] == true?"Premium Yearly":"Premium Monthly",
+              subscriptionController.plan[2] == true?"Premium Yearly":subscriptionController.plan[1] == true?"Premium Monthly":"Free",
               'subscriptionDescription': "",
-              'price': "€"+ subscriptionController.plan[1] == true?"49.99":"6.99",
+              'price': "₣"+ subscriptionController.plan[2] == true?"49.99":subscriptionController.plan[1] == true?"6.99":"Free",
               'rawPrice': "",
               'currencyCode': "",
               'subscriptionDate': DateTime.now().toString(),
@@ -206,8 +239,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
         if (Platform.isAndroid) {
           if (!_kAutoConsume && purchaseDetails.productID == _kConsumableId) {
             final InAppPurchaseAndroidPlatformAddition androidAddition =
-                _inAppPurchase.getPlatformAddition<
-                    InAppPurchaseAndroidPlatformAddition>();
+            _inAppPurchase.getPlatformAddition<
+                InAppPurchaseAndroidPlatformAddition>();
             await androidAddition.consumePurchase(purchaseDetails);
           }
         }
@@ -277,8 +310,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
     if (Platform.isIOS) {
       final InAppPurchaseStoreKitPlatformAddition iosPlatformAddition =
-          _inAppPurchase
-              .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+      _inAppPurchase
+          .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
       await iosPlatformAddition.setDelegate(ExamplePaymentQueueDelegate());
     }else{
       final InAppPurchaseAndroidPlatformAddition androidAddition =
@@ -289,7 +322,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     }
 
     final ProductDetailsResponse productDetailResponse =
-        await _inAppPurchase.queryProductDetails(_kProductIds.toSet());
+    await _inAppPurchase.queryProductDetails(_kProductIds.toSet());
 
 
     print("plans checking ${ subscriptionController.plan}");
@@ -332,10 +365,16 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     if(getUserModel.data!.isSubscribed==true){
       if (getUserModel.data!.subscriptionId == "transform_yearly") {
         setState(() {
-          subscriptionController.plan[1] = true.obs;
+          subscriptionController.plan[2] = true.obs;
         });
       } else if (getUserModel.data!.subscriptionId ==
           "transform_monthly") {
+        setState(() {
+          subscriptionController.plan[1] = true.obs;
+        });
+      }
+      else
+      {
         setState(() {
           subscriptionController.plan[0] = true.obs;
         });
@@ -343,7 +382,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     }
 
     for (int i = 0; i < subscriptionController.plan.length; i++) {
-      if (subscriptionController.plan[i] == true) {
+      if (subscriptionController.plan[1] == true || subscriptionController.plan[2] == true) {
         setState(() {
           valueChecked = true;
         });
@@ -369,13 +408,13 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
     if (Platform.isIOS) {
       final InAppPurchaseStoreKitPlatformAddition iosPlatformAddition =
-          _inAppPurchase
-              .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+      _inAppPurchase
+          .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
       await iosPlatformAddition.setDelegate(ExamplePaymentQueueDelegate());
     }
 
     final ProductDetailsResponse productDetailResponse =
-        await _inAppPurchase.queryProductDetails(_kProductIds.toSet());
+    await _inAppPurchase.queryProductDetails(_kProductIds.toSet());
 
 
     print("plans checking ${ subscriptionController.plan}");
@@ -419,10 +458,16 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     if(getUserModel.data!.isSubscribed==true){
       if (getUserModel.data!.subscriptionId == "transform_yearly") {
         setState(() {
-          subscriptionController.plan[1] = true.obs;
+          subscriptionController.plan[2] = true.obs;
         });
       } else if (getUserModel.data!.subscriptionId ==
           "transform_monthly") {
+        setState(() {
+          subscriptionController.plan[1] = true.obs;
+        });
+      }
+      else
+      {
         setState(() {
           subscriptionController.plan[0] = true.obs;
         });
@@ -503,7 +548,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 await PrefService.setValue(PrefKey.subscription, true);
                 await PrefService.setValue(PrefKey.firstTimeRegister, true);
                 await PrefService.setValue(PrefKey.addGratitude, true);
-               /* Navigator.push(context, MaterialPageRoute(
+                /* Navigator.push(context, MaterialPageRoute(
                   builder: (context) {
                     return const WelcomeHomeScreen();
                   },
@@ -623,7 +668,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           Dimens.d20.spaceHeight,
           Obx(
                 () => subscriptionController.plan.length !=0?
-                ListView.builder(
+            ListView.builder(
               itemCount: subscriptionController.selectPlan.length,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -722,7 +767,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               },
             ):const SizedBox(),
           ),
-          Dimens.d40.spaceHeight,
+          Dimens.d20.spaceHeight,
           Text(
             "additionalInformation".tr,
             style: Style.nunitoBold(fontSize: 18),
@@ -739,14 +784,14 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             child: CommonElevatedButton(
               title: "purchase".tr,
               buttonColor:
-                  valueChecked ? Colors.grey : ColorConstant.themeColor,
+              valueChecked ? Colors.grey : ColorConstant.themeColor,
               onTap: () async {
 
 
                 if (!valueChecked) {
-                  if (subscriptionController.plan[0] == true) {
+                  if (subscriptionController.plan[1] == true) {
                     _purchasePlan("1 Month");
-                  } else if (subscriptionController.plan[1] == true) {
+                  } else if (subscriptionController.plan[2] == true) {
                     _purchasePlan("1 Year");
                   }
                   debugPrint("${subscriptionController.plan}");
@@ -766,14 +811,14 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           TextSpan(
             text: "$title: ",
             style: Style.nunitoBold(
-              fontSize: 11,
+              fontSize: 13,
               color: themeController.isDarkMode.isTrue ? ColorConstant.white : ColorConstant.black,
             ),
           ),
           TextSpan(
             text: des,
             style: Style.nunMedium(
-              fontSize: 11,
+              fontSize: 13,
               color: themeController.isDarkMode.isTrue ? ColorConstant.white : ColorConstant.black,
             ),
           ),
@@ -796,7 +841,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
       // Get the product details
       ProductDetails? selectedProduct = _products.firstWhereOrNull(
-        (product) => product.id == productId,
+            (product) => product.id == productId,
       );
 
       if (selectedProduct == null) {
@@ -813,7 +858,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       );
 
       bool success =
-          await _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
+      await _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
 
       if (!success) {
         // Handle unsuccessful purchase attempt
@@ -842,11 +887,11 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               '${EndPoints.baseUrl}${EndPoints.updateUser}${PrefService.getString(PrefKey.userId)}'));
       request.fields.addAll({
         'isSubscribed': "true",
-        'subscriptionId':  subscriptionController.plan[1].toString() == true.toString()?"transform_yearly":"transform_monthly",
+        'subscriptionId':  subscriptionController.plan[2].toString() == true.toString()?"transform_yearly":subscriptionController.plan[1] == true?"transform_monthly":"Free",
         'subscriptionTitle':
-        subscriptionController.plan[1].toString() == true.toString()?"Premium Yearly":"Premium Monthly",
+        subscriptionController.plan[2].toString() == true.toString()?"Premium Yearly":subscriptionController.plan[1] == true?"Premium Monthly":"Free",
         'subscriptionDescription': "",
-        'price': "€"+ subscriptionController.plan[1].toString() == true.toString()?"49.99":"6.99",
+        'price': "₣"+ subscriptionController.plan[2].toString() == true.toString()?"49.99":subscriptionController.plan[1] == true?"6.99":"Free",
         'rawPrice': "",
         'currencyCode': "",
         'subscriptionDate': DateTime.now().toString(),

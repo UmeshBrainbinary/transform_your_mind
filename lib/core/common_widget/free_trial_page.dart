@@ -78,29 +78,102 @@ getUSer(context, greeting);
               )),
           SingleChildScrollView(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Dimens.d90.spaceHeight,
+                Stack(
+                  alignment:Alignment.topCenter,
+                  children: [
+                    Container(
+                      child: Image.asset(ImageConstant.subImage),
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 30 ),
+                        child: InkWell(
+                          onTap: (){
+                            Get.back();
+                          },
+                          child: SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: Icon(Icons.close,  color: themeController.isDarkMode.isTrue?Colors.white:Colors.black,),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 20,top: 30),
+                        child: Text(
+                          "skip".tr,
+                          style: Style.nunRegular(
+                            fontSize: Dimens.d18,
+                            color: themeController.isDarkMode.isTrue
+                                ? ColorConstant.white
+                                : ColorConstant.black,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Dimens.d10.spaceHeight,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.star,color: ColorConstant.themeColor,),
+                    const SizedBox(width: 5,),
+                    Text(
+                      "PREMIUM",
+                      style: Style.nunitoBold(
+                        fontSize: Dimens.d16,
+                        color: ColorConstant.themeColor,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+                Dimens.d10.spaceHeight,
                 Text(
-                  "wT".tr,
+                  "Try it for free".tr,
                   style: Style.nunitoBold(
                     fontSize: Dimens.d28,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                Dimens.d28.spaceHeight,
+                Dimens.d10.spaceHeight,
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 43),
                   child: Text(
-                    "yourTransformBasic".tr,
+                    "Unleash your full potential with TransformYourMind!".tr,
                     style: Style.nunMedium(
-                        fontSize: Dimens.d18, fontWeight: FontWeight.w500),
+                        fontSize: Dimens.d14, fontWeight: FontWeight.w500),
                     textAlign: TextAlign.center,
                   ),
                 ),
                 Dimens.d10.spaceHeight,
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                Text(
+                  "Unlock all functions".tr,
+                  style: Style.nunitoBold(
+                    fontSize: Dimens.d24,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                Dimens.d10.spaceHeight,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 43),
+                  child: Text(
+                    "From affirmations and deep meditation to transformative self-hypnosis audios, your personal well-being barometer and mindfulness training.".tr,
+                    style: Style.nunMedium(
+                        fontSize: Dimens.d14, fontWeight: FontWeight.w500),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Dimens.d10.spaceHeight,
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.0),
               child: Column(
                 children: [
                   // Text(
@@ -117,19 +190,19 @@ getUSer(context, greeting);
                   //   textAlign: TextAlign.center,
                   // ),
                   //Dimens.d10.spaceHeight,
-                  Text(
-                    "Unlock your full potential with TransformYourMind!".tr,
-                    style: Style.nunMedium(
-                        fontSize: Dimens.d15, fontWeight: FontWeight.w700),
-                    textAlign: TextAlign.center,
-                  ),
-                  Dimens.d10.spaceHeight,
-                  Text(
-                    "Unlock all features - from powerful ones Affirmations and deep meditations to transforming self-hypnosis audios, yours personal well-being barometer and Mindfulness training.".tr,
-                    style: Style.nunMedium(
-                        fontSize: Dimens.d12, fontWeight: FontWeight.w400),
-                    textAlign: TextAlign.center,
-                  ),
+                  // Text(
+                  //   "Unlock your full potential with TransformYourMind!".tr,
+                  //   style: Style.nunMedium(
+                  //       fontSize: Dimens.d15, fontWeight: FontWeight.w700),
+                  //   textAlign: TextAlign.center,
+                  // ),
+                  // Dimens.d10.spaceHeight,
+                  // Text(
+                  //   "Unlock all features - from powerful ones Affirmations and deep meditations to transforming self-hypnosis audios, yours personal well-being barometer and Mindfulness training.".tr,
+                  //   style: Style.nunMedium(
+                  //       fontSize: Dimens.d12, fontWeight: FontWeight.w400),
+                  //   textAlign: TextAlign.center,
+                  // ),
                 ],
               ),
             ),
@@ -491,10 +564,10 @@ getUSer(context, greeting);
               ],
             ),
           ),
-          const SizedBox(
-            height: Dimens.d100,
-            child: CustomAppBar(title: ''),
-          )
+          // const SizedBox(
+          //   height: Dimens.d100,
+          //   child: CustomAppBar(title: ''),
+          // )
         ],
       ),
     );

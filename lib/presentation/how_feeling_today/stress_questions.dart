@@ -29,7 +29,7 @@ class StressQuestions extends StatelessWidget {
           ? ColorConstant.darkBackground
           : ColorConstant.backGround,
       appBar: CustomAppBar(
-        title: "MorningQuestions".tr,
+        title: "${"Good morning".tr}, ${PrefService.getString(PrefKey.name)}",
         action: Row(
           children: [
             InkWell(
@@ -51,11 +51,11 @@ class StressQuestions extends StatelessWidget {
               children: [
                 Dimens.d26.spaceHeight,
 
-                Text(
-                  "stressQuestions".tr,
-                  style: Style.nunitoBold(fontSize: 22),
-                ),
-                Dimens.d20.spaceHeight,
+                // Text(
+                //   "stressQuestions".tr,
+                //   style: Style.nunitoBold(fontSize: 22),
+                // ),
+                // Dimens.d20.spaceHeight,
                 //___________________________________ 1. _________________________________
                 commonTextTitle("doYouFeelStressed".tr, count: "1"),
 
@@ -152,7 +152,7 @@ class StressQuestions extends StatelessWidget {
 
                 //___________________________________ 2. _________________________________
 
-                controller.selectedOptionStress == "No"?  commonTextTitle(
+           /*     controller.selectedOptionStress == "No"?  commonTextTitle(
                    "whatHelpsYouStart".tr,
                     count: "2"):const SizedBox(),
 
@@ -209,11 +209,11 @@ class StressQuestions extends StatelessWidget {
                     },
                   ),
                 ):const SizedBox(),
-            controller.selectedOptionStress == "No"? Dimens.d15.spaceHeight:const SizedBox(),
+            controller.selectedOptionStress == "No"? Dimens.d15.spaceHeight:const SizedBox(),*/
 
                 //___________________________________ 2. _________________________________
 
-                controller.selectedOptionStress == "Yes"?  commonTextTitle(
+          /*      controller.selectedOptionStress == "Yes"?  commonTextTitle(
                     "whatCanYouDoToMinimize".tr,
                     count: "2"): const SizedBox(),
 
@@ -271,13 +271,13 @@ class StressQuestions extends StatelessWidget {
                   ),
                 ): const SizedBox(),
                  controller.selectedOptionStress == "Yes"?  Dimens.d15.spaceHeight: const SizedBox(),
-
+*/
 
 
 /// ---- 1-----
                 controller.selectedOptionStress == "Yes"? commonTextTitle(
                    "What is causing your stress this morning?".tr,
-                    count: "3"): const SizedBox(),
+                    count: "2"): const SizedBox(),
 
                 controller.selectedOptionStress == "Yes"? Dimens.d20.spaceHeight: const SizedBox(),
                 controller.selectedOptionStress == "Yes"?   GetBuilder<HowFeelingsController>(
@@ -338,7 +338,7 @@ class StressQuestions extends StatelessWidget {
                 /// ---- 2-----
                 controller.selectedOptionStress == "Yes"?commonTextTitle(
                     "How could you relieve this stress?".tr,
-                    count: "4"): const SizedBox(),
+                    count: "3"): const SizedBox(),
 
                 controller.selectedOptionStress == "Yes"?  Dimens.d20.spaceHeight: const SizedBox(),
                 controller.selectedOptionStress == "Yes"?  GetBuilder<HowFeelingsController>(
@@ -396,25 +396,25 @@ class StressQuestions extends StatelessWidget {
                 controller.selectedOptionStress == "Yes"? Dimens.d15.spaceHeight: const SizedBox(),
 
 
-
-                commonTextSubtitle(controller.selectedOptionStress == "No"
-                    ? "whatHabits".tr
-                    : "whatRelaxation".tr),
-
-                Dimens.d20.spaceHeight,
-                commonTextFiled("", controller.whatRelaxation),
-                Dimens.d20.spaceHeight,
-                commonTextSubtitle(controller.selectedOptionStress == "No"
-                    ? "howCanEncourage".tr
-                    :"howCanYouYourSelf".tr),
-
-                Dimens.d20.spaceHeight,
-                commonTextFiled("", controller.howCanYouYourSelf),
-                controller.selectedOptionStress == "No"?const SizedBox():Dimens.d20.spaceHeight,
-                controller.selectedOptionStress == "No"?const SizedBox():commonTextSubtitle("whatPositiveThought".tr),
-
-                controller.selectedOptionStress == "No"?const SizedBox():Dimens.d20.spaceHeight,
-                controller.selectedOptionStress == "No"?const SizedBox():commonTextFiled("", controller.whatPositiveThought),
+                //
+                // commonTextSubtitle(controller.selectedOptionStress == "No"
+                //     ? "whatHabits".tr
+                //     : "whatRelaxation".tr),
+                //
+                // Dimens.d20.spaceHeight,
+                // commonTextFiled("", controller.whatRelaxation),
+                // Dimens.d20.spaceHeight,
+                // commonTextSubtitle(controller.selectedOptionStress == "No"
+                //     ? "howCanEncourage".tr
+                //     :"howCanYouYourSelf".tr),
+                //
+                // Dimens.d20.spaceHeight,
+                // commonTextFiled("", controller.howCanYouYourSelf),
+                // controller.selectedOptionStress == "No"?const SizedBox():Dimens.d20.spaceHeight,
+                // controller.selectedOptionStress == "No"?const SizedBox():commonTextSubtitle("whatPositiveThought".tr),
+                //
+                // controller.selectedOptionStress == "No"?const SizedBox():Dimens.d20.spaceHeight,
+                // controller.selectedOptionStress == "No"?const SizedBox():commonTextFiled("", controller.whatPositiveThought),
                 Dimens.d40.spaceHeight,
 
                 CommonElevatedButton(

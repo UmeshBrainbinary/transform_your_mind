@@ -135,17 +135,24 @@ Future.delayed(const Duration(seconds: 1)).then((value) {
         getUserModel = getUserModelFromJson(responseBody);
         Future.delayed(
           const Duration(seconds: 3),
-              () {
+              () async {
+                Locale newLocale;
+                newLocale = const Locale('en', 'En');
 
-            PrefService.getBool(PrefKey.isLoginOrRegister) == true
-                ? getUserModel.data?.welcomeScreen == false
-                ? Get.offAll(const WelcomeHomeScreen())
-                : setScreens()
-                : PrefService.getBool(PrefKey.introSkip) == true
-                ? Get.offAllNamed(AppRoutes.loginScreen)
-                : Get.offAll(const PersonalizationScreenScreen(
-              intro: true,
-            ));
+                Get.updateLocale(newLocale);
+                await PrefService.setValue(
+                    PrefKey.language,
+                    newLocale.toLanguageTag());
+                Get.offAll(() =>  FreeTrialPage());
+            // PrefService.getBool(PrefKey.isLoginOrRegister) == true
+            //     ? getUserModel.data?.welcomeScreen == false
+            //     ? Get.offAll(const WelcomeHomeScreen())
+            //     : setScreens()
+            //     : PrefService.getBool(PrefKey.introSkip) == true
+            //     ? Get.offAllNamed(AppRoutes.loginScreen)
+            //     : Get.offAll(const PersonalizationScreenScreen(
+            //   intro: true,
+            // ));
 
           },
         );
@@ -179,6 +186,7 @@ Future.delayed(const Duration(seconds: 1)).then((value) {
       Future.delayed(
         const Duration(seconds: 3),
         () {
+
           PrefService.getBool(PrefKey.isLoginOrRegister) == true
               ? PrefService.getBool(PrefKey.welcomeScreen) == false
                   ? Get.offAll(const WelcomeHomeScreen())

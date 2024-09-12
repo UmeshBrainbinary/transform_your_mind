@@ -33,7 +33,7 @@ class MotivationalQuestions extends StatelessWidget {
             ? ColorConstant.darkBackground
             : ColorConstant.backGround,
         appBar: CustomAppBar(
-          title: "MorningQuestions".tr,
+          title:  "${"Good morning".tr}, ${PrefService.getString(PrefKey.name)}",
           action: Row(
             children: [
               InkWell(
@@ -53,14 +53,14 @@ class MotivationalQuestions extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Dimens.d26.spaceHeight,
-
-                Text(
-                  "motivationQuestions".tr,
-                  style: Style.nunitoBold(fontSize: 22),
-                ),
-                Dimens.d20.spaceHeight,
+                //
+                // Text(
+                //   "motivationQuestions".tr,
+                //   style: Style.nunitoBold(fontSize: 22),
+                // ),
+                // Dimens.d20.spaceHeight,
                 //___________________________________ 1. _________________________________
-                commonTextTitle("whatDoYouWant".tr, count: "1"),
+               /* commonTextTitle("whatDoYouWant".tr, count: "1"),
 
                 Dimens.d20.spaceHeight,
                 GetBuilder<HowFeelingsController>(
@@ -115,11 +115,11 @@ class MotivationalQuestions extends StatelessWidget {
                     },
                   ),
                 ),
-                Dimens.d15.spaceHeight,
+                Dimens.d15.spaceHeight,*/
 
                 //___________________________________ 2. _________________________________
 
-                commonTextTitle("whatStepCanYou".tr, count: "2"),
+               /* commonTextTitle("whatStepCanYou".tr, count: "2"),
 
                 Dimens.d20.spaceHeight,
                 GetBuilder<HowFeelingsController>(
@@ -174,14 +174,14 @@ class MotivationalQuestions extends StatelessWidget {
                       );
                     },
                   ),
-                ),
+                ),*/
 
 
 
                 /// ---- 3-----
                 commonTextTitle(
                     "How motivated are you to make the most of today?".tr,
-                    count: "3"),
+                    count: "1"),
 
                 Dimens.d20.spaceHeight,
                 GetBuilder<HowFeelingsController>(
@@ -242,7 +242,7 @@ class MotivationalQuestions extends StatelessWidget {
                 /// ---- 4-----
                  commonTextTitle(
                     "What inspired you to give your best today?".tr,
-                    count: "4"),
+                    count: "2"),
 
                 Dimens.d20.spaceHeight,
                 GetBuilder<HowFeelingsController>(
@@ -303,7 +303,7 @@ class MotivationalQuestions extends StatelessWidget {
                 /// ---- 5-----
                commonTextTitle(
                     "Which challenge do you want to conquer today?".tr,
-                    count: "5"),
+                    count: "3"),
 
                 Dimens.d20.spaceHeight,
                GetBuilder<HowFeelingsController>(
@@ -358,7 +358,7 @@ class MotivationalQuestions extends StatelessWidget {
                     },
                   ),
                 ),
-                Dimens.d15.spaceHeight,
+              /*  Dimens.d15.spaceHeight,
 
 
                 Dimens.d15.spaceHeight,
@@ -375,8 +375,8 @@ class MotivationalQuestions extends StatelessWidget {
                 commonTextSubtitle("howCanEnsure".tr),
 
                 Dimens.d20.spaceHeight,
-                commonTextFiled("", feelController.howCanEnsure),
-                Dimens.d50.spaceHeight,
+                commonTextFiled("", feelController.howCanEnsure),*/
+                Dimens.d40.spaceHeight,
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 27),
                   child: Text(
@@ -392,10 +392,10 @@ class MotivationalQuestions extends StatelessWidget {
                   onTap: () async {
                     FocusScope.of(context).unfocus();
                     PrefService.setValue(PrefKey.morningQuestion, true);
-                    if(feelController.whatDoYouWantToAchieve!=-1){
+                    if(feelController.howMotivateBool!=-1){
                       feelController.setQuestions("motivation",context);
                     }else{
-                      showSnackBarError(context, "pleaseSelectWhatDoYouAchieve".tr);
+                      showSnackBarError(context, "pleaseSelectMotivation".tr);
                     }
                     /*  if (feelController.howDoYouIndex == -1) {
                       showSnackBarError(

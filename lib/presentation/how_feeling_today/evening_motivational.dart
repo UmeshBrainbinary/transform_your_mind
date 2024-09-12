@@ -27,7 +27,7 @@ class EveningMotivational extends StatelessWidget {
           ? ColorConstant.darkBackground
           : ColorConstant.backGround,
       appBar: CustomAppBar(
-        title: "eveningQuestions".tr,
+        title:"${"Good evening".tr}, ${PrefService.getString(PrefKey.name)}",
         action: Row(
           children: [
             InkWell(
@@ -49,13 +49,13 @@ class EveningMotivational extends StatelessWidget {
               children: [
                 Dimens.d26.spaceHeight,
 
-                Text(
-                  "motivationQuestions".tr,
-                  style: Style.nunitoBold(fontSize: 22),
-                ),
-                Dimens.d20.spaceHeight,
+                // Text(
+                //   "motivationQuestions".tr,
+                //   style: Style.nunitoBold(fontSize: 22),
+                // ),
+                //Dimens.d20.spaceHeight,
                 //___________________________________ 1. _________________________________
-                commonTextTitle("DidYouAchieve".tr, count: "1"),
+       /*         commonTextTitle("DidYouAchieve".tr, count: "1"),
 
                 Dimens.d20.spaceHeight,
                 GetBuilder<HowFeelingEveningController>(
@@ -181,11 +181,11 @@ class EveningMotivational extends StatelessWidget {
                       ),
                     );
                   },
-                ),
+                ),*/
 
                 //___________________________________ 3. _________________________________
-                Dimens.d20.spaceHeight,
-                commonTextTitle("How well did you maintain your motivation today?".tr, count: "2"),
+                //Dimens.d20.spaceHeight,
+                commonTextTitle("How well did you maintain your motivation today?".tr, count: "1"),
 
                 Dimens.d20.spaceHeight,
                 GetBuilder<HowFeelingEveningController>(
@@ -244,7 +244,7 @@ class EveningMotivational extends StatelessWidget {
 
                 //___________________________________ 4. _________________________________
                 Dimens.d20.spaceHeight,
-                commonTextTitle("What inspired you to give your best today?".tr, count: "3"),
+                commonTextTitle("What inspired you to give your best today?".tr, count: "2"),
 
                 Dimens.d20.spaceHeight,
                 GetBuilder<HowFeelingEveningController>(
@@ -302,7 +302,7 @@ class EveningMotivational extends StatelessWidget {
                 ),
                 //___________________________________ 5. _________________________________
                 Dimens.d20.spaceHeight,
-                commonTextTitle("How well did you conquer your challenge today?".tr, count: "4"),
+                commonTextTitle("How well did you conquer your challenge today?".tr, count: "3"),
 
                 Dimens.d20.spaceHeight,
                 GetBuilder<HowFeelingEveningController>(
@@ -358,82 +358,82 @@ class EveningMotivational extends StatelessWidget {
                     },
                   ),
                 ),
-                Dimens.d20.spaceHeight,
+                //Dimens.d20.spaceHeight,
                 //___________________________________ 2. _________________________________
 
                   controller.selectedOptionStressAchieve == "No"
                       ? Column(
                           children: [
-                            commonTextTitle("whatPrevented".tr, count: "5"),
-                  Dimens.d20.spaceHeight,
-                  GetBuilder<HowFeelingEveningController>(
-                    builder: (controller) => ListView.builder(
-                      padding: EdgeInsets.zero,
-                      itemCount: controller.whatPrevented.length,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        var data = controller.whatPrevented[index];
-                        return GestureDetector(
-                          onTap: () {
-                            controller.whatHelped = index;
-
-                            controller.update();
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.only(
-                                bottom: 15, left: 20, right: 20),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 13, vertical: 10),
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: controller.whatHelped == index
-                                        ? ColorConstant.themeColor
-                                        : Colors.transparent),
-                                color: themeController.isDarkMode.isTrue
-                                    ? ColorConstant.textfieldFillColor
-                                    : ColorConstant.white,
-                                borderRadius: BorderRadius.circular(8)),
-                            child: Row(
-                              children: [
-                                commonText(data["title"]),
-                                const Spacer(),
-                                controller.whatHelped == index
-                                    ? SvgPicture.asset(ImageConstant.check)
-                                    : Container(
-                                  height: 18,
-                                  width: 18,
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                          color: themeController
-                                              .isDarkMode.isTrue
-                                              ? ColorConstant.white
-                                              : ColorConstant.black,
-                                          width: 1)),
-                                )
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  Dimens.d20.spaceHeight,
-                  commonTextSubtitle("whatCanYouDo".tr),
-
-                  Dimens.d20.spaceHeight,
-                  commonTextFiled("", feelController.whatCanYouDo),
-                  Dimens.d20.spaceHeight,
-                  commonTextSubtitle("whatSupport".tr),
-
-                  Dimens.d20.spaceHeight,
-                            commonTextFiled("", feelController.sleep),
-                            Dimens.d20.spaceHeight,
+                  //           commonTextTitle("whatPrevented".tr, count: "5"),
+                  // Dimens.d20.spaceHeight,
+                  // GetBuilder<HowFeelingEveningController>(
+                  //   builder: (controller) => ListView.builder(
+                  //     padding: EdgeInsets.zero,
+                  //     itemCount: controller.whatPrevented.length,
+                  //     shrinkWrap: true,
+                  //     physics: const NeverScrollableScrollPhysics(),
+                  //     itemBuilder: (context, index) {
+                  //       var data = controller.whatPrevented[index];
+                  //       return GestureDetector(
+                  //         onTap: () {
+                  //           controller.whatHelped = index;
+                  //
+                  //           controller.update();
+                  //         },
+                  //         child: Container(
+                  //           margin: const EdgeInsets.only(
+                  //               bottom: 15, left: 20, right: 20),
+                  //           padding: const EdgeInsets.symmetric(
+                  //               horizontal: 13, vertical: 10),
+                  //           decoration: BoxDecoration(
+                  //               border: Border.all(
+                  //                   color: controller.whatHelped == index
+                  //                       ? ColorConstant.themeColor
+                  //                       : Colors.transparent),
+                  //               color: themeController.isDarkMode.isTrue
+                  //                   ? ColorConstant.textfieldFillColor
+                  //                   : ColorConstant.white,
+                  //               borderRadius: BorderRadius.circular(8)),
+                  //           child: Row(
+                  //             children: [
+                  //               commonText(data["title"]),
+                  //               const Spacer(),
+                  //               controller.whatHelped == index
+                  //                   ? SvgPicture.asset(ImageConstant.check)
+                  //                   : Container(
+                  //                 height: 18,
+                  //                 width: 18,
+                  //                 decoration: BoxDecoration(
+                  //                     shape: BoxShape.circle,
+                  //                     border: Border.all(
+                  //                         color: themeController
+                  //                             .isDarkMode.isTrue
+                  //                             ? ColorConstant.white
+                  //                             : ColorConstant.black,
+                  //                         width: 1)),
+                  //               )
+                  //             ],
+                  //           ),
+                  //         ),
+                  //       );
+                  //     },
+                  //   ),
+                  // ),
+                  // Dimens.d20.spaceHeight,
+                  // commonTextSubtitle("whatCanYouDo".tr),
+                  //
+                  // Dimens.d20.spaceHeight,
+                  // commonTextFiled("", feelController.whatCanYouDo),
+                  // Dimens.d20.spaceHeight,
+                  // commonTextSubtitle("whatSupport".tr),
+                  //
+                  // Dimens.d20.spaceHeight,
+                  //           commonTextFiled("", feelController.sleep),
+                  //           Dimens.d20.spaceHeight,
 
                 ],):
                   Column(children: [
-                  commonTextTitle("whatHelpedYou".tr, count: "5"),
+                 /* commonTextTitle("whatHelpedYou".tr, count: "5"),
 
                   Dimens.d20.spaceHeight,
                   GetBuilder<HowFeelingEveningController>(
@@ -488,18 +488,18 @@ class EveningMotivational extends StatelessWidget {
                         );
                       },
                     ),
-                  ),
+                  ),*/
 
-                  Dimens.d15.spaceHeight,
-                  commonTextSubtitle("whatParticularly".tr),
-
-                  Dimens.d20.spaceHeight,
-                  commonTextFiled("", feelController.whatParticularly),
-                  Dimens.d20.spaceHeight,
-                  commonTextSubtitle("HowYourself".tr),
-
-                  Dimens.d20.spaceHeight,
-                  commonTextFiled("", feelController.howWill),
+                  //Dimens.d15.spaceHeight,
+                  // commonTextSubtitle("whatParticularly".tr),
+                  //
+                  // Dimens.d20.spaceHeight,
+                  // commonTextFiled("", feelController.whatParticularly),
+                  // Dimens.d20.spaceHeight,
+                  // commonTextSubtitle("HowYourself".tr),
+                  //
+                  // Dimens.d20.spaceHeight,
+                  // commonTextFiled("", feelController.howWill),
                 ],),
 
 
@@ -507,7 +507,7 @@ class EveningMotivational extends StatelessWidget {
 
 
 
-                Dimens.d50.spaceHeight,
+                Dimens.d40.spaceHeight,
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 27),
                   child: Text(

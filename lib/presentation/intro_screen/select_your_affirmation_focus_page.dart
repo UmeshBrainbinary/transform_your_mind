@@ -318,11 +318,11 @@ class _SelectYourAffirmationFocusPageState
               "yourAffirmationsSelected".tr); // Set directly in English
           Get.back();
         } else {
-          Navigator.push(context, MaterialPageRoute(
-            builder: (context) {
-              return const FreeTrialPage();
-            },
-          ));
+          // Navigator.push(context, MaterialPageRoute(
+          //   builder: (context) {
+          //     return const FreeTrialPage();
+          //   },
+          // ));
         }
       } else {
         final responseBody = await response.stream.bytesToString();

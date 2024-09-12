@@ -84,7 +84,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   AffirmationModel affirmationModel = AffirmationModel();
   AffirmationAllModel affirmationAllModel = AffirmationAllModel();
   List<AffirmationDataAll>? affirmationAllData;
-bool isAudio = false;
+  bool isAudio = false;
   AffirmationCategoryModel affirmationCategoryModel = AffirmationCategoryModel();
   AffirmationDataModel affirmationDataModel = AffirmationDataModel();
   bool loader = false;
@@ -121,10 +121,16 @@ bool isAudio = false;
   }
 
   getData() async {
-    await getAffirmationYour(DateFormat('dd/MM/yyyy').format(DateTime.now()));
-    await getAffirmationYourAll();
-    await getAffirmationData();
-    await getCategoryAffirmation();
+    setState(() {
+      loader = true;
+    });
+    await getAffirmationYour(DateFormat('dd/MM/yyyy').format(DateTime.now()),isInit:true);
+    await getAffirmationYourAll(isInit:true);
+    await getAffirmationData(isInit:true);
+    await getCategoryAffirmation(isInit:true);
+    setState(() {
+      loader = false;
+    });
   }
 
   void _onAddClick(BuildContext context,{bool? record, String? des,String? id}) {
@@ -138,13 +144,13 @@ bool isAudio = false;
             isFromMyAffirmation: true,
             isEdit: false,record: record!,
             des: des,
-              id: id,
+            id: id,
           );
         },
       )).then(
-        (value) async {
+            (value) async {
           await getAffirmationYour(
-              DateFormat('dd/MM/yyyy').format(DateTime.now()));
+              DateFormat('dd/MM/yyyy').format(DateTime.now()),isInit: false);
           setState(() {});
         },
       );
@@ -154,7 +160,7 @@ bool isAudio = false;
   searchBookmarks(String query, List bookmarks) {
     return bookmarks
         .where((bookmark) =>
-            bookmark.name!.toLowerCase().contains(query.toLowerCase()))
+        bookmark.name!.toLowerCase().contains(query.toLowerCase()))
         .toList();
   }
 
@@ -180,9 +186,13 @@ bool isAudio = false;
     }
   }
 
-  getAffirmationYour(date) async {
+  getAffirmationYour(date,{required bool isInit}) async {
     setState(() {
-      loader = true;
+      if(isInit == false)
+      {
+
+        loader = true;
+      }
     });
     var headers = {
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
@@ -195,7 +205,7 @@ bool isAudio = false;
         Uri.parse(
             '${EndPoints.baseUrl}${EndPoints.getYourAffirmation}${PrefService.getString(PrefKey.userId)}&date=$date&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}'));
 
-        request.headers.addAll(headers);
+    request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
 
@@ -203,7 +213,7 @@ bool isAudio = false;
       final responseBody = await response.stream.bytesToString();
 
       affirmationModel = affirmationModelFromJson(responseBody);
-       isAudio = false;
+      isAudio = false;
       affirmationModel.data!.forEach((e){
 
         if(e.audioFile != null)
@@ -214,19 +224,22 @@ bool isAudio = false;
           });
         }
       });
-
-      loader = false;
+      if(isInit == false) {
+        loader = false;
+      }
       setState(() {});
     } else {
       affirmationModel = AffirmationModel();
       setState(() {
-        loader = false;
+        if(isInit == false) {
+          loader = false;
+        }
       });
       debugPrint(response.reasonPhrase);
     }
   }
 
-  getAffirmationYourAll({String? affirmationDate}) async {
+  getAffirmationYourAll({String? affirmationDate,required bool isInit}) async {
     setState(() {
       loader = true;
     });
@@ -236,10 +249,10 @@ bool isAudio = false;
     String url = "";
     if (affirmationDate != null) {
       url =
-          '${EndPoints.baseUrl}${EndPoints.getYourAffirmation}${PrefService.getString(PrefKey.userId)}&isDefault=false&date=$affirmationDate&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}';
+      '${EndPoints.baseUrl}${EndPoints.getYourAffirmation}${PrefService.getString(PrefKey.userId)}&isDefault=false&date=$affirmationDate&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}';
     } else {
       url =
-          '${EndPoints.baseUrl}${EndPoints.getYourAffirmation}${PrefService.getString(PrefKey.userId)}&isDefault=false&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}';
+      '${EndPoints.baseUrl}${EndPoints.getYourAffirmation}${PrefService.getString(PrefKey.userId)}&isDefault=false&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}';
     }
     var request = http.Request('GET', Uri.parse(url));
     request.headers.addAll(headers);
@@ -258,16 +271,16 @@ bool isAudio = false;
           final now = DateTime.now();
           final firstDayOfCurrentMonth = DateTime(now.year, now.month, 1);
           final lastDayOfPreviousMonth =
-              firstDayOfCurrentMonth.subtract(const Duration(days: 1));
+          firstDayOfCurrentMonth.subtract(const Duration(days: 1));
           final firstDayOfPreviousMonth = DateTime(
               lastDayOfPreviousMonth.year, lastDayOfPreviousMonth.month, 1);
 
           affirmationAllData = affirmationAllModel.data
-                  ?.where((element) =>
-                      element.createdAt != null &&
-                      element.createdAt!.isAfter(firstDayOfPreviousMonth) &&
-                      element.createdAt!.isBefore(firstDayOfCurrentMonth))
-                  .toList() ??
+              ?.where((element) =>
+          element.createdAt != null &&
+              element.createdAt!.isAfter(firstDayOfPreviousMonth) &&
+              element.createdAt!.isBefore(firstDayOfCurrentMonth))
+              .toList() ??
               [];
         }
       }
@@ -372,9 +385,11 @@ bool isAudio = false;
     });
   }
 
-  getCategoryAffirmation() async {
+  getCategoryAffirmation({required bool isInit}) async {
     setState(() {
-      loader = true;
+      if(isInit == false) {
+        loader = true;
+      }
     });
     var headers = {
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
@@ -395,23 +410,30 @@ bool isAudio = false;
       for (int i = 0; i < affirmationCategoryModel.data!.length; i++) {
         categoryList.add({"title": affirmationCategoryModel.data![i].name});
       }
-      loader = false;
-
+      if(isInit == false) {
+        loader = false;
+      }
 
     } else {
       setState(() {
-        loader = false;
+        if(isInit == false) {
+          loader = false;
+        }
       });
       debugPrint(response.reasonPhrase);
     }
     setState(() {
-      loader = false;
+      if(isInit == false) {
+        loader = false;
+      }
     });
   }
 
-  getAffirmationData() async {
+  getAffirmationData({required bool isInit}) async {
     setState(() {
-      loader = true;
+      if(isInit == false) {
+        loader = true;
+      }
     });
     var headers = {
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
@@ -426,7 +448,9 @@ bool isAudio = false;
 
     if (response.statusCode == 200) {
       setState(() {
-        loader = false;
+        if(isInit == false) {
+          loader = false;
+        }
       });
       final responseBody = await response.stream.bytesToString();
 
@@ -436,12 +460,16 @@ bool isAudio = false;
 
     } else {
       setState(() {
-        loader = false;
+        if(isInit == false) {
+          loader = false;
+        }
       });
       debugPrint(response.reasonPhrase);
     }
     setState(() {
-      loader = false;
+      if(isInit == false) {
+        loader = false;
+      }
     });
   }
 
@@ -456,15 +484,15 @@ bool isAudio = false;
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
     var request =
-        http.MultipartRequest('POST', Uri.parse(EndPoints.addAffirmation));
+    http.MultipartRequest('POST', Uri.parse(EndPoints.addAffirmation));
     request.fields.addAll({
       'created_by': PrefService.getString(PrefKey.userId),
       'description': des??"",
       'lang': PrefService.getString(PrefKey.language).isEmpty
           ? "english"
           : PrefService.getString(PrefKey.language) != "en-US"
-              ? "german"
-              : "english"
+          ? "german"
+          : "english"
     });
 
     request.headers.addAll(headers);
@@ -563,16 +591,16 @@ bool isAudio = false;
       floatingActionButton: _currentTabIndex == 1
           ? const SizedBox()
           : GestureDetector(
-              onTap: () {
-                datePicker(context);
-              },
-              child: Container(
-                height: 50,
-                width: 50,
+        onTap: () {
+          datePicker(context);
+        },
+        child: Container(
+          height: 50,
+          width: 50,
           decoration: const BoxDecoration(
               color: ColorConstant.themeColor, shape: BoxShape.circle),
           child:
-              Center(child: SvgPicture.asset(ImageConstant.calenderGratitude)),
+          Center(child: SvgPicture.asset(ImageConstant.calenderGratitude)),
         ),
       ),
       backgroundColor: themeController.isDarkMode.value
@@ -581,22 +609,22 @@ bool isAudio = false;
       appBar: CustomAppBar(
         showBack: true,
         title:
-            _currentTabIndex == 0 ? "yourAffirmation".tr : "myAffirmation".tr,
+        _currentTabIndex == 0 ? "yourAffirmation".tr : "myAffirmation".tr,
         action: (_isLoading)
             ? const Offstage()
             : Padding(
-                padding: const EdgeInsets.only(right: Dimens.d20),
-                child: GestureDetector(
-                  onTap: () {
-                    _onAddClick(context,record: false,);
-                  },
-                  child: SvgPicture.asset(
-                    ImageConstant.addTools,
-                    height: Dimens.d22,
-                    width: Dimens.d22,
-                  ),
-                ),
-              ),
+          padding: const EdgeInsets.only(right: Dimens.d20),
+          child: GestureDetector(
+            onTap: () {
+              _onAddClick(context,record: false,);
+            },
+            child: SvgPicture.asset(
+              ImageConstant.addTools,
+              height: Dimens.d22,
+              width: Dimens.d22,
+            ),
+          ),
+        ),
       ),
       body: Stack(
         children: [
@@ -635,7 +663,7 @@ bool isAudio = false;
                           GestureDetector(
                             onTap: () {
                               getAffirmationYour(DateFormat('dd/MM/yyyy')
-                                  .format(DateTime.now()));
+                                  .format(DateTime.now()),isInit: false);
                               setState(() {
                                 _currentTabIndex = 0;
                               });
@@ -649,8 +677,8 @@ bool isAudio = false;
                                       color: _currentTabIndex == 0
                                           ? ColorConstant.transparent
                                           : themeController.isDarkMode.value
-                                              ? ColorConstant.white
-                                              : ColorConstant.black,
+                                          ? ColorConstant.white
+                                          : ColorConstant.black,
                                       width: 0.5),
                                   borderRadius: BorderRadius.circular(33),
                                   color: _currentTabIndex == 0
@@ -664,8 +692,8 @@ bool isAudio = false;
                                       color: _currentTabIndex == 0
                                           ? ColorConstant.white
                                           : themeController.isDarkMode.value
-                                              ? ColorConstant.white
-                                              : ColorConstant.black),
+                                          ? ColorConstant.white
+                                          : ColorConstant.black),
                                 ),
                               ),
                             ),
@@ -676,7 +704,7 @@ bool isAudio = false;
                               setState(() {
                                 selectedCategory = ValueNotifier(null);
                                 _currentTabIndex = 1;
-                                getAffirmationData();
+                                getAffirmationData(isInit: false);
                               });
                             },
                             child: Container(
@@ -689,8 +717,8 @@ bool isAudio = false;
                                       color: _currentTabIndex == 1
                                           ? ColorConstant.transparent
                                           : themeController.isDarkMode.value
-                                              ? ColorConstant.white
-                                              : ColorConstant.black,
+                                          ? ColorConstant.white
+                                          : ColorConstant.black,
                                       width: 0.5),
                                   color: _currentTabIndex == 1
                                       ? ColorConstant.themeColor
@@ -703,8 +731,8 @@ bool isAudio = false;
                                       color: _currentTabIndex == 1
                                           ? ColorConstant.white
                                           : themeController.isDarkMode.value
-                                              ? ColorConstant.white
-                                              : ColorConstant.black),
+                                          ? ColorConstant.white
+                                          : ColorConstant.black),
                                 ),
                               ),
                             ),
@@ -749,230 +777,230 @@ bool isAudio = false;
             if ((affirmationModel.data ?? []).isNotEmpty)
               Dimens.d20.spaceHeight,
             if ((affirmationModel.data ?? []).isEmpty) loader == true
-                    ? Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: shimmerCommon(),
-                      )
-                    : Center(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 15),
-                          child: Text(
-                            "dataNotFound".tr,
-                            style: Style.gothamMedium(
-                                fontSize: 24, fontWeight: FontWeight.w700),
-                          ),
-                        ),
-                  ) else ListView.builder(
-                    itemCount: affirmationModel.data?.length ?? 0,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) {
-                              return HomeMessagePage(
-                                  motivationalMessage: affirmationModel
-                                          .data?[index].description ??
-                                      "Believe in yourself, even when doubt creeps in. Today's progress is a step towards your dreams.");
-                            },
-                          ));
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.only(bottom: Dimens.d16),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: Dimens.d11, vertical: Dimens.d11),
-                          decoration: BoxDecoration(
-                            color: themeController.isDarkMode.isTrue
-                                ? ColorConstant.textfieldFillColor
-                                : ColorConstant.white,
-                            borderRadius: Dimens.d16.radiusAll,
-                          ),
-                          child: Stack(alignment: Alignment.bottomRight,
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      affirmationModel.data![index].description
-                                          .toString(),
-                                      overflow: TextOverflow.ellipsis,
-                                      style: Style.nunRegular(
-                                          height: Dimens.d2,
-                                          fontSize: Dimens.d15,
-                                          color: themeController.isDarkMode.isTrue
-                                              ? ColorConstant.white
-                                              : Colors.black),
-                                      maxLines: 2,
-                                    ),
+                ? Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: shimmerCommon(),
+            )
+                : Center(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 15),
+                child: Text(
+                  "dataNotFound".tr,
+                  style: Style.gothamMedium(
+                      fontSize: 24, fontWeight: FontWeight.w700),
+                ),
+              ),
+            ) else ListView.builder(
+              itemCount: affirmationModel.data?.length ?? 0,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) {
+                        return HomeMessagePage(
+                            motivationalMessage: affirmationModel
+                                .data?[index].description ??
+                                "Believe in yourself, even when doubt creeps in. Today's progress is a step towards your dreams.");
+                      },
+                    ));
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: Dimens.d16),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: Dimens.d11, vertical: Dimens.d11),
+                    decoration: BoxDecoration(
+                      color: themeController.isDarkMode.isTrue
+                          ? ColorConstant.textfieldFillColor
+                          : ColorConstant.white,
+                      borderRadius: Dimens.d16.radiusAll,
+                    ),
+                    child: Stack(alignment: Alignment.bottomRight,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                affirmationModel.data![index].description
+                                    .toString(),
+                                overflow: TextOverflow.ellipsis,
+                                style: Style.nunRegular(
+                                    height: Dimens.d2,
+                                    fontSize: Dimens.d15,
+                                    color: themeController.isDarkMode.isTrue
+                                        ? ColorConstant.white
+                                        : Colors.black),
+                                maxLines: 2,
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.topRight,
+                              child: PopupMenuButton(
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10.0),
                                   ),
-                                  Align(
-                                    alignment: Alignment.topRight,
-                                    child: PopupMenuButton(
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(10.0),
-                                        ),
+                                ),
+                                color: themeController.isDarkMode.isTrue
+                                    ? const Color(0xffE8F4F8)
+                                    : ColorConstant.white,
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: SvgPicture.asset(
+                                        ImageConstant.moreVert,
+                                        color: ColorConstant.colorD9D9D9,
                                       ),
-                                      color: themeController.isDarkMode.isTrue
-                                          ? const Color(0xffE8F4F8)
-                                          : ColorConstant.white,
+                                    ),
+
+                                    affirmationModel.data?[index].audioFile == null?   GestureDetector(onTap: () {
+                                      _onAddClick(context,record: true,des:  affirmationModel.data![index].description
+                                          .toString(),id: affirmationModel
+                                          .data?[index]
+                                          .id ??
+                                          "");
+
+                                    },
+                                        child: const Icon(Icons.mic_none_rounded,color: Colors.red,)):const SizedBox()
+                                  ],
+                                ),
+                                itemBuilder: (context) {
+                                  return [
+                                    PopupMenuItem(
                                       child: Column(
                                         children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: SvgPicture.asset(
-                                              ImageConstant.moreVert,
-                                              color: ColorConstant.colorD9D9D9,
+                                          InkWell(
+                                            onTap: () {
+                                              Get.back();
+                                              Navigator.push(context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) {
+                                                      return AddAffirmationPage(
+                                                        index: index,
+                                                        id: affirmationModel
+                                                            .data?[index]
+                                                            .id ??
+                                                            "",
+                                                        isFromMyAffirmation: true,
+                                                        title: affirmationModel
+                                                            .data?[index]
+                                                            .name ??
+                                                            "",
+                                                        isEdit: true,
+                                                        des: affirmationModel
+                                                            .data?[index]
+                                                            .description ??
+                                                            "",
+                                                      );
+                                                    },
+                                                  )).then(
+                                                    (value) async {
+                                                  await getAffirmationYour(
+                                                      DateFormat('dd/MM/yyyy')
+                                                          .format(DateTime
+                                                          .now()),isInit: false);
+
+                                                  setState(() {});
+                                                },
+                                              );
+                                            },
+                                            child: Container(
+                                              height: 28,
+                                              width: 86,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                BorderRadius.circular(5),
+                                                color: ColorConstant
+                                                    .color5B93FF
+                                                    .withOpacity(0.05),
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Dimens.d5.spaceWidth,
+                                                  SvgPicture.asset(
+                                                    ImageConstant.editTools,
+                                                    color: ColorConstant
+                                                        .color5B93FF,
+                                                  ),
+                                                  Dimens.d5.spaceWidth,
+                                                  Text(
+                                                    'edit'.tr,
+                                                    style: Style.nunMedium(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                      FontWeight.w500,
+                                                      color: ColorConstant
+                                                          .color5B93FF,
+                                                    ),
+                                                  ),
+                                                  const Spacer(),
+                                                ],
+                                              ),
                                             ),
                                           ),
-
-                                          affirmationModel.data?[index].audioFile == null?   GestureDetector(onTap: () {
-                                            _onAddClick(context,record: true,des:  affirmationModel.data![index].description
-                                                .toString(),id: affirmationModel
-                                                .data?[index]
-                                                .id ??
-                                                "");
-
-                                          },
-                                              child: const Icon(Icons.mic_none_rounded,color: Colors.red,)):const SizedBox()
+                                          Dimens.d15.spaceHeight,
+                                          InkWell(
+                                            onTap: () {
+                                              Get.back();
+                                              _showAlertDialogDelete(
+                                                  context,
+                                                  index,
+                                                  affirmationModel
+                                                      .data?[index].id ??
+                                                      "");
+                                            },
+                                            child: Container(
+                                              height: 28,
+                                              width: 86,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                BorderRadius.circular(5),
+                                                color: ColorConstant
+                                                    .colorE71D36
+                                                    .withOpacity(0.05),
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Dimens.d5.spaceWidth,
+                                                  SvgPicture.asset(
+                                                    ImageConstant.delete,
+                                                    color: ColorConstant
+                                                        .colorE71D36,
+                                                  ),
+                                                  Dimens.d5.spaceWidth,
+                                                  Text(
+                                                    'delete'.tr,
+                                                    style: Style.nunMedium(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                      FontWeight.w500,
+                                                      color: ColorConstant
+                                                          .colorE71D36,
+                                                    ),
+                                                  ),
+                                                  const Spacer(),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
                                         ],
                                       ),
-                                      itemBuilder: (context) {
-                                        return [
-                                          PopupMenuItem(
-                                            child: Column(
-                                              children: [
-                                                InkWell(
-                                                  onTap: () {
-                                                    Get.back();
-                                                    Navigator.push(context,
-                                                        MaterialPageRoute(
-                                                      builder: (context) {
-                                                        return AddAffirmationPage(
-                                                          index: index,
-                                                          id: affirmationModel
-                                                                  .data?[index]
-                                                                  .id ??
-                                                              "",
-                                                          isFromMyAffirmation: true,
-                                                          title: affirmationModel
-                                                                  .data?[index]
-                                                                  .name ??
-                                                              "",
-                                                          isEdit: true,
-                                                          des: affirmationModel
-                                                                  .data?[index]
-                                                                  .description ??
-                                                              "",
-                                                        );
-                                                      },
-                                                    )).then(
-                                                      (value) async {
-                                                        await getAffirmationYour(
-                                                            DateFormat('dd/MM/yyyy')
-                                                                .format(DateTime
-                                                                    .now()));
-
-                                                        setState(() {});
-                                                      },
-                                                    );
-                                                  },
-                                                  child: Container(
-                                                    height: 28,
-                                                    width: 86,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(5),
-                                                      color: ColorConstant
-                                                          .color5B93FF
-                                                          .withOpacity(0.05),
-                                                    ),
-                                                    child: Row(
-                                                      children: [
-                                                        Dimens.d5.spaceWidth,
-                                                        SvgPicture.asset(
-                                                          ImageConstant.editTools,
-                                                          color: ColorConstant
-                                                              .color5B93FF,
-                                                        ),
-                                                        Dimens.d5.spaceWidth,
-                                                        Text(
-                                                          'edit'.tr,
-                                                          style: Style.nunMedium(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            color: ColorConstant
-                                                                .color5B93FF,
-                                                          ),
-                                                        ),
-                                                        const Spacer(),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                                Dimens.d15.spaceHeight,
-                                                InkWell(
-                                                  onTap: () {
-                                                    Get.back();
-                                                    _showAlertDialogDelete(
-                                                        context,
-                                                        index,
-                                                        affirmationModel
-                                                                .data?[index].id ??
-                                                            "");
-                                                  },
-                                                  child: Container(
-                                                    height: 28,
-                                                    width: 86,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(5),
-                                                      color: ColorConstant
-                                                          .colorE71D36
-                                                          .withOpacity(0.05),
-                                                    ),
-                                                    child: Row(
-                                                      children: [
-                                                        Dimens.d5.spaceWidth,
-                                                        SvgPicture.asset(
-                                                          ImageConstant.delete,
-                                                          color: ColorConstant
-                                                              .colorE71D36,
-                                                        ),
-                                                        Dimens.d5.spaceWidth,
-                                                        Text(
-                                                          'delete'.tr,
-                                                          style: Style.nunMedium(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            color: ColorConstant
-                                                                .colorE71D36,
-                                                          ),
-                                                        ),
-                                                        const Spacer(),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ];
-                                      },
                                     ),
-                                  ),
-                                ],
+                                  ];
+                                },
                               ),
+                            ),
+                          ],
+                        ),
 
 
-                            ],
-                          ),
+                      ],
+                    ),
 
-                          /*affirmationModel.data![index].name
+                    /*affirmationModel.data![index].name
                                   .toString()
                                   .isEmpty
                               ? Column(
@@ -1366,61 +1394,61 @@ bool isAudio = false;
                               ),
                             ],
                           ),*/
-                        ),
-                      );
-                    },
                   ),
+                );
+              },
+            ),
             if ((affirmationModel.data ?? []).isNotEmpty)
               Dimens.d10.spaceHeight,
             (affirmationModel.data ?? []).isNotEmpty
                 ? Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 30),
-                  height: Dimens.d46,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(80),
-                      color: ColorConstant.themeColor),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              margin: const EdgeInsets.symmetric(horizontal: 30),
+              height: Dimens.d46,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(80),
+                  color: ColorConstant.themeColor),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
 
-                            Text(
-                              "startPracticing".tr,
-                                    style: Style.nunitoBold(
-                                        fontSize: 16, color: ColorConstant.white),
-                            )
-                          ],
-                        ),
-                      Row(
-                       children: [
-                         isAudio?InkWell(
-                             onTap:(){
-                               Get.off(StartAudioAffirmationScreen(
-                                           id: affirmationModel.data?[0].id,
-                                           data: affirmationModel.data,
-                                         ));
-                             },
-                             child: const Icon(Icons.keyboard_voice_rounded,size: 30,color:  ColorConstant.white,)):const SizedBox(),
-                         const SizedBox(width: 10,),
-                         InkWell(
-                             onTap:(){
-                               Get.off(StartPracticeAffirmation(
-                                 id: affirmationModel.data?[0].id,
-                                 data: affirmationModel.data,
-                               ));
-                             },
-                             child: const Icon(Icons.text_fields_rounded,size: 30,color:  ColorConstant.white,)),
-                       ],
-                     ),
+                        Text(
+                          "startPracticing".tr,
+                          style: Style.nunitoBold(
+                              fontSize: 16, color: ColorConstant.white),
+                        )
                       ],
                     ),
-                  ),
-                )
+                    Row(
+                      children: [
+                        isAudio?InkWell(
+                            onTap:(){
+                              Get.off(StartAudioAffirmationScreen(
+                                id: affirmationModel.data?[0].id,
+                                data: affirmationModel.data,
+                              ));
+                            },
+                            child: const Icon(Icons.keyboard_voice_rounded,size: 30,color:  ColorConstant.white,)):const SizedBox(),
+                        const SizedBox(width: 10,),
+                        InkWell(
+                            onTap:(){
+                              Get.off(StartPracticeAffirmation(
+                                id: affirmationModel.data?[0].id,
+                                data: affirmationModel.data,
+                              ));
+                            },
+                            child: const Icon(Icons.text_fields_rounded,size: 30,color:  ColorConstant.white,)),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            )
                 : const SizedBox(),
             Dimens.d40.spaceHeight,
             //______________________________________ filter data
@@ -1433,19 +1461,19 @@ bool isAudio = false;
                     )),
                 selectedDate.isNotEmpty
                     ? GestureDetector(
-                        onTap: () async {
-                          selectedDate = "";
-                          await getAffirmationYourAll();
+                    onTap: () async {
+                      selectedDate = "";
+                      await getAffirmationYourAll(isInit: false);
 
-                          setState(() {});
-                        },
-                        child: Icon(
-                          Icons.clear,
-                          size: 25,
-                          color: themeController.isDarkMode.isTrue
-                              ? Colors.white
-                              : Colors.black,
-                        ))
+                      setState(() {});
+                    },
+                    child: Icon(
+                      Icons.clear,
+                      size: 25,
+                      color: themeController.isDarkMode.isTrue
+                          ? Colors.white
+                          : Colors.black,
+                    ))
                     : const SizedBox()
               ],
             ),
@@ -1454,55 +1482,55 @@ bool isAudio = false;
             //______________________________________ affirmation all data last month data____________________________
             (affirmationAllData ?? []).isEmpty
                 ? loader == true
-                    ? Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: shimmerCommon(),
-                      )
-                    : Center(
-                        child: Text(
-                          "dataNotFound".tr,
-                          style: Style.gothamMedium(
-                              fontSize: 24, fontWeight: FontWeight.w700),
-                        ),
-                  )
+                ? Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: shimmerCommon(),
+            )
+                : Center(
+              child: Text(
+                "dataNotFound".tr,
+                style: Style.gothamMedium(
+                    fontSize: 24, fontWeight: FontWeight.w700),
+              ),
+            )
                 : ListView.builder(
-                    itemCount: affirmationAllData?.length ?? 0,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) {
-                              return HomeMessagePage(
-                                  motivationalMessage:
-                                       affirmationAllData![index]
-                                              .description
-                                              .toString());
-                            },
-                          ));
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.only(bottom: Dimens.d16),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: Dimens.d11, vertical: Dimens.d11),
-                          decoration: BoxDecoration(
-                            color: themeController.isDarkMode.isTrue
-                                ? ColorConstant.textfieldFillColor
-                                : ColorConstant.white,
-                            borderRadius: Dimens.d16.radiusAll,
-                          ),
-                          child: Text(
-                            affirmationAllData![index].description ?? '',
-                            overflow: TextOverflow.ellipsis,
-                            style: Style.nunRegular(
-                                height: Dimens.d2,
-                                fontSize: Dimens.d15,
-                                color: themeController.isDarkMode.isTrue
-                                    ? ColorConstant.white
-                                    : Colors.black),
-                            maxLines: 2,
-                          ), /*affirmationAllData![index].name!.isEmpty?Column(
+              itemCount: affirmationAllData?.length ?? 0,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) {
+                        return HomeMessagePage(
+                            motivationalMessage:
+                            affirmationAllData![index]
+                                .description
+                                .toString());
+                      },
+                    ));
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: Dimens.d16),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: Dimens.d11, vertical: Dimens.d11),
+                    decoration: BoxDecoration(
+                      color: themeController.isDarkMode.isTrue
+                          ? ColorConstant.textfieldFillColor
+                          : ColorConstant.white,
+                      borderRadius: Dimens.d16.radiusAll,
+                    ),
+                    child: Text(
+                      affirmationAllData![index].description ?? '',
+                      overflow: TextOverflow.ellipsis,
+                      style: Style.nunRegular(
+                          height: Dimens.d2,
+                          fontSize: Dimens.d15,
+                          color: themeController.isDarkMode.isTrue
+                              ? ColorConstant.white
+                              : Colors.black),
+                      maxLines: 2,
+                    ), /*affirmationAllData![index].name!.isEmpty?Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(affirmationAllData![index].description ??
@@ -1552,10 +1580,10 @@ bool isAudio = false;
                               ),
                             ],
                           ),*/
-                        ),
-                      );
-                    },
                   ),
+                );
+              },
+            ),
 
             Dimens.d80.spaceHeight,
           ],
@@ -1598,12 +1626,12 @@ bool isAudio = false;
                       suffixIcon: searchController.text.isEmpty
                           ? const SizedBox()
                           : Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: GestureDetector(
-                                  onTap: () {
-                                    searchFocus.unfocus();
+                        padding: const EdgeInsets.all(8.0),
+                        child: GestureDetector(
+                            onTap: () {
+                              searchFocus.unfocus();
 
-                                    searchController.clear();
+                              searchController.clear();
                               setState(() {
                                 _filteredBookmarks =
                                     affirmationDataModel.data;
@@ -1629,193 +1657,193 @@ bool isAudio = false;
               padding: const EdgeInsets.only(bottom: 20.0),
               child: (_filteredBookmarks ?? []).isNotEmpty
                   ? ListView.builder(
-                      itemCount: _filteredBookmarks?.length ?? 0,
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      primary: false,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (context) {
-                                return HomeMessagePage(
-                                    motivationalMessage:   _filteredBookmarks![
-                                                index]
-                                            .description );
-                              },
-                            ));
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.only(bottom: Dimens.d16),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: Dimens.d11, vertical: Dimens.d11),
-                            decoration: BoxDecoration(
-                              color: themeController.isDarkMode.isTrue
-                                  ? ColorConstant.textfieldFillColor
-                                  : ColorConstant.white,
-                              borderRadius: Dimens.d16.radiusAll,
-                            ),
-                            child: _filteredBookmarks?[index]
-                                        ?.name
-                                        ?.toString()
-                                        .isEmpty ??
-                                    true
-                                ? Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              _filteredBookmarks![index]
-                                                      .description ??
-                                                  '',
-                                              style: Style.nunRegular(
-                                                      height: Dimens.d2,
-                                                      fontSize: Dimens.d14,
-                                                      color: themeController
-                                                              .isDarkMode.isTrue
-                                                          ? ColorConstant.white
-                                                          : Colors.black)
-                                                  .copyWith(
-                                                      wordSpacing: Dimens.d4),
-                                              maxLines: 4,
-                                            ),
-                                          ),
-                                          GestureDetector(
-                                            onTap: () async {
-                                              await addAffirmation(
-                                                  title: currentLanguage ==
-                                                              "en-US" ||
-                                                          currentLanguage == ""
-                                                      ? _filteredBookmarks![
-                                                              index]
-                                                          .name
-                                                      : _filteredBookmarks?[
-                                                              index]
-                                                          .gName,
-                                                  des: currentLanguage ==
-                                                              "en-US" ||
-                                                          currentLanguage == ""
-                                                      ? _filteredBookmarks![
-                                                              index]
-                                                          .description
-                                                      : _filteredBookmarks?[
-                                                              index]
-                                                          .gDescription);
-
-                                              setState(() {});
-                                            },
-                                            child: SvgPicture.asset(
-                                                ImageConstant.addAffirmation,
-                                                height: 20,
-                                                width: 20,
-                                                color: themeController
-                                                        .isDarkMode.isTrue
-                                                    ? ColorConstant.white
-                                                    : ColorConstant.black),
-                                          ),
-                                          Dimens.d10.spaceWidth,
-                                        ],
-                                      ),
-                                    ],
-                                  )
-                                : Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: Text(_filteredBookmarks![index].name,
-                                        style: Style.nunMedium(
-                                                height: Dimens.d1_3.h,
-                                                fontSize: Dimens.d18,
-                                                color: themeController
-                                                        .isDarkMode.isTrue
-                                                    ? ColorConstant.white
-                                                    : Colors.black)
-                                            .copyWith(wordSpacing: Dimens.d4),
-                                        maxLines: 1,
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () async {
-                                        await addAffirmation(
-                                                  title: currentLanguage ==
-                                                              "en-US" ||
-                                                          currentLanguage == ""
-                                                      ? _filteredBookmarks![
-                                                              index]
-                                                          .name
-                                                      : _filteredBookmarks?[
-                                                              index]
-                                                          .gName,
-                                                  des: currentLanguage ==
-                                                              "en-US" ||
-                                                          currentLanguage == ""
-                                                      ? _filteredBookmarks![
-                                                              index]
-                                                          .description
-                                                      : _filteredBookmarks?[
-                                                              index]
-                                                          .gDescription);
-
-                                              setState(() {});
-                                      },
-                                      child: SvgPicture.asset(
-                                          ImageConstant.addAffirmation,
-                                          height: 20,
-                                          width: 20,
-                                          color:
-                                              themeController.isDarkMode.isTrue
-                                                  ? ColorConstant.white
-                                                  : ColorConstant.black),
-                                    ),
-                                    Dimens.d10.spaceWidth,
-                                  ],
-                                ),
-                                Dimens.d10.spaceHeight,
-                                Text(
-                                  _filteredBookmarks![index].description ?? '',
+                itemCount: _filteredBookmarks?.length ?? 0,
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                primary: false,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) {
+                          return HomeMessagePage(
+                              motivationalMessage:   _filteredBookmarks![
+                              index]
+                                  .description );
+                        },
+                      ));
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: Dimens.d16),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: Dimens.d11, vertical: Dimens.d11),
+                      decoration: BoxDecoration(
+                        color: themeController.isDarkMode.isTrue
+                            ? ColorConstant.textfieldFillColor
+                            : ColorConstant.white,
+                        borderRadius: Dimens.d16.radiusAll,
+                      ),
+                      child: _filteredBookmarks?[index]
+                          ?.name
+                          ?.toString()
+                          .isEmpty ??
+                          true
+                          ? Column(
+                        crossAxisAlignment:
+                        CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment:
+                            CrossAxisAlignment.start,
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  _filteredBookmarks![index]
+                                      .description ??
+                                      '',
                                   style: Style.nunRegular(
-                                          height: Dimens.d2,
-                                          fontSize: Dimens.d11,
-                                          color:
-                                              themeController.isDarkMode.isTrue
-                                                  ? ColorConstant.white
-                                                  : Colors.black)
-                                      .copyWith(wordSpacing: Dimens.d4),
+                                      height: Dimens.d2,
+                                      fontSize: Dimens.d14,
+                                      color: themeController
+                                          .isDarkMode.isTrue
+                                          ? ColorConstant.white
+                                          : Colors.black)
+                                      .copyWith(
+                                      wordSpacing: Dimens.d4),
                                   maxLines: 4,
                                 ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    )
-                  : Center(
-                      child:    Column(
-                        crossAxisAlignment:
-                        CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(themeController.isDarkMode.isTrue
-                              ? ImageConstant.darkData
-                              : ImageConstant.noData),
-                          Text("dataNotFound".tr,style: Style.gothamMedium(
-                              fontSize: 24,fontWeight: FontWeight.w700),),
+                              ),
+                              GestureDetector(
+                                onTap: () async {
+                                  await addAffirmation(
+                                      title: currentLanguage ==
+                                          "en-US" ||
+                                          currentLanguage == ""
+                                          ? _filteredBookmarks![
+                                      index]
+                                          .name
+                                          : _filteredBookmarks?[
+                                      index]
+                                          .gName,
+                                      des: currentLanguage ==
+                                          "en-US" ||
+                                          currentLanguage == ""
+                                          ? _filteredBookmarks![
+                                      index]
+                                          .description
+                                          : _filteredBookmarks?[
+                                      index]
+                                          .gDescription);
 
+                                  setState(() {});
+                                },
+                                child: SvgPicture.asset(
+                                    ImageConstant.addAffirmation,
+                                    height: 20,
+                                    width: 20,
+                                    color: themeController
+                                        .isDarkMode.isTrue
+                                        ? ColorConstant.white
+                                        : ColorConstant.black),
+                              ),
+                              Dimens.d10.spaceWidth,
+                            ],
+                          ),
+                        ],
+                      )
+                          : Column(
+                        crossAxisAlignment:
+                        CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(_filteredBookmarks![index].name,
+                                  style: Style.nunMedium(
+                                      height: Dimens.d1_3.h,
+                                      fontSize: Dimens.d18,
+                                      color: themeController
+                                          .isDarkMode.isTrue
+                                          ? ColorConstant.white
+                                          : Colors.black)
+                                      .copyWith(wordSpacing: Dimens.d4),
+                                  maxLines: 1,
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () async {
+                                  await addAffirmation(
+                                      title: currentLanguage ==
+                                          "en-US" ||
+                                          currentLanguage == ""
+                                          ? _filteredBookmarks![
+                                      index]
+                                          .name
+                                          : _filteredBookmarks?[
+                                      index]
+                                          .gName,
+                                      des: currentLanguage ==
+                                          "en-US" ||
+                                          currentLanguage == ""
+                                          ? _filteredBookmarks![
+                                      index]
+                                          .description
+                                          : _filteredBookmarks?[
+                                      index]
+                                          .gDescription);
+
+                                  setState(() {});
+                                },
+                                child: SvgPicture.asset(
+                                    ImageConstant.addAffirmation,
+                                    height: 20,
+                                    width: 20,
+                                    color:
+                                    themeController.isDarkMode.isTrue
+                                        ? ColorConstant.white
+                                        : ColorConstant.black),
+                              ),
+                              Dimens.d10.spaceWidth,
+                            ],
+                          ),
+                          Dimens.d10.spaceHeight,
+                          Text(
+                            _filteredBookmarks![index].description ?? '',
+                            style: Style.nunRegular(
+                                height: Dimens.d2,
+                                fontSize: Dimens.d11,
+                                color:
+                                themeController.isDarkMode.isTrue
+                                    ? ColorConstant.white
+                                    : Colors.black)
+                                .copyWith(wordSpacing: Dimens.d4),
+                            maxLines: 4,
+                          ),
                         ],
                       ),
                     ),
+                  );
+                },
+              )
+                  : Center(
+                child:    Column(
+                  crossAxisAlignment:
+                  CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(themeController.isDarkMode.isTrue
+                        ? ImageConstant.darkData
+                        : ImageConstant.noData),
+                    Text("dataNotFound".tr,style: Style.gothamMedium(
+                        fontSize: 24,fontWeight: FontWeight.w700),),
+
+                  ],
+                ),
+              ),
             ),
           ],
         ),
@@ -1858,10 +1886,10 @@ bool isAudio = false;
               Dimens.d27.spaceHeight,
               Center(
                   child: SvgPicture.asset(
-                ImageConstant.deleteAffirmation,
-                height: Dimens.d96,
-                width: Dimens.d96,
-              )),
+                    ImageConstant.deleteAffirmation,
+                    height: Dimens.d96,
+                    width: Dimens.d96,
+                  )),
               Dimens.d26.spaceHeight,
               Center(
                 child: Padding(
@@ -1883,7 +1911,7 @@ bool isAudio = false;
                     height: 33,
                     width: 94,
                     contentPadding:
-                        const EdgeInsets.symmetric(horizontal: Dimens.d28),
+                    const EdgeInsets.symmetric(horizontal: Dimens.d28),
                     textStyle: Style.nunRegular(
                         fontSize: Dimens.d12, color: ColorConstant.white),
                     title: "delete".tr,
@@ -1891,7 +1919,7 @@ bool isAudio = false;
                       Get.back();
                       await deleteAffirmation(id);
                       await getAffirmationYour(
-                          DateFormat('dd/MM/yyyy').format(DateTime.now()));
+                          DateFormat('dd/MM/yyyy').format(DateTime.now()),isInit: false);
 
                       setState(() {});
                     },
@@ -1955,7 +1983,7 @@ bool isAudio = false;
                 selectedCategory.value = value;
               });
               if (selectedCategory.value["title"] == "All") {
-                await getAffirmationData();
+                await getAffirmationData(isInit: false);
               } else {
                 await getCategoryListAffirmation();
               }
@@ -1977,7 +2005,7 @@ bool isAudio = false;
                       fontSize: Dimens.d12,
                       color: Colors.white,
                       fontWeight:
-                          isSelected ? FontWeight.bold : FontWeight.w500,
+                      isSelected ? FontWeight.bold : FontWeight.w500,
                     ),
                   ),
                 ),
@@ -1994,7 +2022,7 @@ bool isAudio = false;
             child: Text(
               "selectCategory".tr,
               style:
-                  Style.nunRegular(fontSize: Dimens.d14, color: Colors.white),
+              Style.nunRegular(fontSize: Dimens.d14, color: Colors.white),
             ),
           ),
           icon: Padding(
@@ -2033,10 +2061,10 @@ bool isAudio = false;
                       color: isSelected
                           ? ColorConstant.themeColor
                           : themeController.isDarkMode.isTrue
-                              ? ColorConstant.white
-                              : ColorConstant.black,
+                          ? ColorConstant.white
+                          : ColorConstant.black,
                       fontWeight:
-                          isSelected ? FontWeight.bold : FontWeight.w500,
+                      isSelected ? FontWeight.bold : FontWeight.w500,
                     ),
                   ),
                 ),
@@ -2049,13 +2077,13 @@ bool isAudio = false;
   }
 
   datePicker(
-    context,
-  ) async {
+      context,
+      ) async {
     FocusScope.of(context).unfocus();
     picked = await showDatePicker(
       builder: (context, child) {
         TextStyle customTextStyle =
-            Style.nunMedium(fontSize: 15, color: Colors.black);
+        Style.nunMedium(fontSize: 15, color: Colors.black);
         TextStyle editedTextStyle = customTextStyle.copyWith(
             color: Colors.red); // Define the edited text style
         TextStyle selectedDateTextStyle = Style.nunitoBold(
@@ -2091,7 +2119,7 @@ bool isAudio = false;
                 ),
                 elevation: 0.0,
                 insetPadding:
-                    EdgeInsets.all(0), // Remove padding around the dialog
+                EdgeInsets.all(0), // Remove padding around the dialog
               ),
               textTheme: TextTheme(
                 bodyLarge: customTextStyle,
@@ -2125,9 +2153,10 @@ bool isAudio = false;
       setState(() {
         selectedDate = DateFormat('MMMM yyyy').format(picked!);
       });
-      await getAffirmationYourAll(affirmationDate: affirmationDate);
+      await getAffirmationYourAll(affirmationDate: affirmationDate,isInit: false);
       setState(() {});
     }
   }
 
 }
+

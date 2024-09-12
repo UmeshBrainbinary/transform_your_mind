@@ -532,7 +532,7 @@
   "isThereASpecific": "Gibt es eine bestimmte Aktivität oder ein bestimmtes Ziel, auf das Sie sich heute besonders freuen?",
   "howCanYouSpread": "Wie können Sie heute Ihre gute Laune an andere weitergeben?",
   "MorningQuestions": "Morgenfragen",
-  "doYouFeelStressed": "Fühlen Sie sich heute Morgen gestresst?",
+  "doYouFeelStressed": "Fühlst du dich gestresst heute Morgen?",
   "whatCanYouDoToMinimize": "Was können Sie heute tun, um Stress zu minimieren?",
   "ListenAudio": "Audio anhören",
   "BreathingTechnique": "Atemtechnik",
@@ -614,6 +614,7 @@
   "youCantMoreThan": "Sie können nicht mehr als 2000 Wörter eingeben",
   "pleaseSelectHowAreYouFelling": "Bitte wählen Sie aus, wie es Ihnen heute geht.",
   "pleaseSelectWhatDoYouAchieve": "Bitte wählen Sie aus, was Sie heute erreichen möchten.",
+  "pleaseSelectMotivation": "Wie motiviert sind Sie, das Beste aus dem heutigen Tag zu machen?",
   "pleaseSelectDidYouSleep": "Bitte wählen Sie Haben Sie letzte Nacht gut geschlafen?",
   "pleaseSelectDoYouFeel": "Bitte auswählen: Fühlen Sie Stress?",
   "pleaseAddHowAreYouFeeling": "Bitte fügen Sie hinzu, wie es Ihnen heute Abend geht.",
@@ -640,43 +641,43 @@
   "General tension or nervousness":"Allgemeine Anspannung oder Nervosität",
   "Something else": "Etwas anderes",
 
-  "How could you relieve this stress?": "Wie kÃ¶nntest du diesen Stress abbauen?",
+  "How could you relieve this stress?": "Wie könntest du diesen Stress abbauen?",
   "Through breathing exercises or audios": "Durch AtemÃ¼bungen oder Audios",
   "By taking a short break": "Indem ich eine kurze Pause einlege",
   "Through movement or a walk": "Durch Bewegung oder einen Spaziergang",
-  "By setting priorities and planning the day": "Indem ich PrioritÃ¤ten setze und den Tag plane",
-  "By talking to someone I trust": "Durch ein GesprÃ¤ch mit jemandem, dem ich vertraue",
+  "By setting priorities and planning the day": "Indem ich Prioritäten setze und den Tag plane",
+  "By talking to someone I trust": "Durch ein Gespräch mit jemandem, dem ich vertraue",
 
   "How motivated are you to make the most of today?": "Wie motiviert bist du, das Beste aus dem heutigen Tag zu machen?",
   "I can’t wait to get started!":"Ich kann es kaum erwarten, loszulegen!",
-  "I feel full of energy and drive.": "Ich fÃ¼hle mich voller Energie und Tatendrang.",
+  "I feel full of energy and drive.": "Ich fühle mich voller Energie und Tatendrang.",
   "I’m ready to start the day.":"Ich bin bereit, den Tag zu starten.",
   "I’m taking my time to get going.": "Ich nehme mir Zeit, um in Schwung zu kommen.",
   "I’m starting off a bit slower today.":"Ich starte heute etwas ruhiger.",
 
   "What inspires you to give your best today?": "Was inspiriert dich heute dazu, dein Bestes zu geben?",
-  "Maximizing my full potential":"Mein volles Potenzial ausschÃ¶pfen",
+  "Maximizing my full potential":"Mein volles Potenzial ausschöpfen",
   "The desire to achieve my goals": "Der Wunsch, meine Ziele zu erreichen",
-  "The pursuit of personal satisfaction":"Das Streben nach persÃ¶nlicher Zufriedenheit",
+  "The pursuit of personal satisfaction":"Das Streben nach persönlicher Zufriedenheit",
   "The goal of being better than yesterday": "Das Ziel, heute besser zu sein als gestern",
 
-  "Which challenge do you want to conquer today?": "Welche Herausforderung mÃ¶chtest du heute meistern?",
+  "Which challenge do you want to conquer today?": "Welche Herausforderung möchtest du heute meistern?",
   "An exciting task at work or school":"Eine spannende Aufgabe im Job/Ausbildung",
   "Learning or trying something new": "Etwas Neues lernen oder ausprobieren",
   "Staying calm and relaxed throughout the day":"Gelassen und entspannt durch den Tag gehen",
   "Taking a step towards an important goal": "Einen Schritt in Richtung eines wichtigen Ziels machen",
-  "Overcoming a personal boundary":"Eine persÃ¶nliche Grenze Ã¼berwinden",
+  "Overcoming a personal boundary":"Eine persönliche Grenze überwinden",
 
   "Racing thoughts": "Gedankenkarussell",
-  "Noise or external disturbances":"LÃ¤rm oder Ã¤uÃŸere StÃ¶rungen",
+  "Noise or external disturbances":"Lärm oder äußere Störungen",
   "Uncomfortable bed or sleeping position": "Unbequemes Bett oder Schlafposition",
   "Health issues":"Gesundheitliche Beschwerden",
 
-  "How are you feeling right now?": "Wie fÃ¼hlst du dich gerade?",
+  "How are you feeling right now?": "Wie fühlst du dich gerade?",
   "I’m feeling great!":"Mir geht's super!",
-  "I feel good.": "FÃ¼hle mich gut.",
+  "I feel good.": "Fühle mich gut.",
   "I’m okay.":"Es geht so.",
-  "I’m a bit tired.": "Bin etwas mÃ¼de.",
+  "I’m a bit tired.": "Bin etwas müde.",
   "I’m staying calm and focused.":"Ich bleibe ruhig und fokussiert.",
 
 
@@ -684,26 +685,26 @@
   "What helped you start your day well?": "Was hat dir geholfen, den Tag gut zu starten?",
   "A restful sleep":"Ein erholsamer Schlaf",
   "A relaxing morning routine": "Eine entspannte Morgenroutine",
-  "Time for a healthy breakfast":"Zeit fÃ¼r ein gesundes FrÃ¼hstÃ¼ck",
+  "Time for a healthy breakfast":"Zeit für ein gesundes Frühstück",
   "Positive thoughts": "Positive Gedanken",
 
-  "How did you feel throughout the day?": "Wie hast du dich den Tag Ã¼ber gefÃ¼hlt?",
-  "It was a great day!":"Es war ein groÃŸartiger Tag!",
-  "I felt good most of the time.": "Ich habe mich die meiste Zeit gut gefÃ¼hlt.",
+  "How did you feel throughout the day?": "Wie hast du dich den Tag über gefühlt?",
+  "It was a great day!":"Es war ein großartiger Tag!",
+  "I felt good most of the time.": "Ich habe mich die meiste Zeit gut gefühlt.",
   "My mood was up and down.":"Meine Stimmung war wechselhaft.",
-  "I was a bit tired, but I pushed through.": "Ich war etwas mÃ¼de, aber ich habe es durchgezogen.",
-  "I stayed calm and focused throughout the day.":"Ich habe ruhig und fokussiert den Tag Ã¼berstanden.",
+  "I was a bit tired, but I pushed through.": "Ich war etwas müde, aber ich habe es durchgezogen.",
+  "I stayed calm and focused throughout the day.":"Ich habe ruhig und fokussiert den Tag überstanden.",
 
   "What helped you have a positive day?": "Was hat dir heute geholfen, den Tag positiv zu gestalten?",
   "A restful moment or break":"Ein erholsamer Moment oder Pause",
-  "A soothing activity or routine": "Eine wohltuende AktivitÃ¤t oder Routine",
+  "A soothing activity or routine": "Eine wohltuende Aktivität oder Routine",
   "A healthy meal during the day":"Eine gesunde Mahlzeit zwischendurch",
   "Positive thoughts and self-motivation": "Positive Gedanken und Selbstmotivation",
   "Something else that helped me":"Etwas anderes, das mir geholfen hat",
 
   "How successful were you in relieving your stress today?": "Wie erfolgreich konntest du deinen Stress heute abbauen?",
-  "Very successful, I feel much more relaxed now":"Sehr erfolgreich, ich fÃ¼hle mich jetzt viel entspannter",
-  "Good, I used my stress management strategies": "Gut, ich habe meine StressbewÃ¤ltigungsstrategien genutzt",
+  "Very successful, I feel much more relaxed now":"Sehr erfolgreich, ich fühle mich jetzt viel entspannter",
+  "Good, I used my stress management strategies": "Gut, ich habe meine Stressbewältigungsstrategien genutzt",
   "Partially, it helped a little":"Teilweise, es hat etwas geholfen",
   "It was challenging, but I did my best": "Es war herausfordernd, aber ich habe mein Bestes gegeben",
   "I didn’t quite succeed, but I’l try again tomorrow":"Ich habe es nicht ganz geschafft, aber morgen versuche ich es wieder",
@@ -718,7 +719,7 @@
 
 
 
-  "What inspired you to give your best today?": "Was hat dich heute inspiriert, dein Bestes zu geben?",
+  "What inspired you to give your best today?": "Was inspiriert dich heute dazu, dein Bestes zu geben?",
   "I maximized my full potential.":"Ich habe mein volles Potenzial ausgeschöpft.",
   "I sought personal satisfaction.": "Ich habe nach persönlicher Zufriedenheit gestrebt.",
   "I created something positive.":"Ich habe etwas Positives geschaffen.",
@@ -727,7 +728,7 @@
 
 
   "How well did you conquer your challenge today?": "Wie gut hast du deine heutige Herausforderung gemeistert?",
-  "With great success and confidence":"Mit groÃŸem Erfolg und Zuversicht",
+  "With great success and confidence":"Mit großem Erfolg und Zuversicht",
   "Very well, I'm satisfied": "Sehr gut, ich bin zufrieden",
   "Well, but it was challenging":"Gut, aber es war herausfordernd",
   "It wasn't easy, but I gave my best": "Es war nicht einfach, aber ich habe mein Bestes gegeben",
@@ -782,7 +783,17 @@
   "A standout feature is the regularly updated Self-Hypnosis Audios, designed to target specific areas of personal growth. Whether you want to overcome anxiety, boost self-confidence, or conquer fears like flying, these audios use the power of self-hypnosis to help you make profound mental shifts. "
   : "Ein herausragendes Merkmal sind die regelmäßig aktualisierten Selbsthypnose-Audios, die auf bestimmte Bereiche der persönlichen Entwicklung abzielen. Ganz gleich, ob Sie Ängste überwinden, Ihr Selbstvertrauen stärken oder Ängste wie das Fliegen überwinden möchten – diese Audios nutzen die Kraft der Selbsthypnose, um Ihnen dabei zu helfen, tiefgreifende mentale Veränderungen herbeizuführen.",
   "Self-Hypnosis Audios:": "Selbsthypnose-Audios:",
-  "Extended Daily Affirmations:": "Erweiterte tägliche Affirmationen:"
+  "Extended Daily Affirmations:": "Erweiterte tägliche Affirmationen:",
+
+  "Good morning": "Guten Morgen",
+  "Good evening": "Guten Abend",
+  "What inspired": "Was hat dich heute inspiriert, dein Bestes zu geben?",
+
+
+  "Unleash your full potential with TransformYourMind!": "Entfalte dein volles Potenzial mit TransformYourMind!",
+  "Unlock all functions": "Schalte alle Funktionen frei",
+  "From affirmations and deep meditation to transformative self-hypnosis audios, your personal well-being barometer and mindfulness training."
+  : "Affirmationen und tiefgehenden Meditation bis hin zu transformierenden Selbsthypnose-Audios, deinem personlichen Wohlfuhlbarometer und Achtsamkeitstraining."
 }
 
 

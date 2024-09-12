@@ -27,7 +27,7 @@ class SleepQuestions extends StatelessWidget {
           ? ColorConstant.darkBackground
           : ColorConstant.backGround,
       appBar:  CustomAppBar(
-        title: "MorningQuestions".tr,
+        title:  "${"Good morning".tr}, ${PrefService.getString(PrefKey.name)}",
         showBack: true,
         action: Row(
           children: [
@@ -49,11 +49,11 @@ class SleepQuestions extends StatelessWidget {
               children: [
                 Dimens.d26.spaceHeight,
 
-                Text(
-                  "sleepQuestions".tr,
-                  style: Style.nunitoBold(fontSize: 22),
-                ),
-                Dimens.d20.spaceHeight,
+                // Text(
+                //   "sleepQuestions".tr,
+                //   style: Style.nunitoBold(fontSize: 22),
+                // ),
+                // Dimens.d20.spaceHeight,
                 //___________________________________ 1. _________________________________
                 commonTextTitle("didYouSleepWell".tr, count: "1"),
                 Dimens.d20.spaceHeight,
@@ -197,10 +197,10 @@ class SleepQuestions extends StatelessWidget {
                       },
                     ),
                   ),
-                  Dimens.d20.spaceHeight,
-                  // commonTextTitle("whatCanYouDoToday".tr, count: "3"),
+                 // Dimens.d20.spaceHeight,
+                  /*// commonTextTitle("whatCanYouDoToday".tr, count: "3"),
 
-                  Dimens.d30.spaceHeight,
+                 // Dimens.d30.spaceHeight,
                   commonTextSubtitle("whatMeasures".tr),
                   Dimens.d20.spaceHeight,
                   commonTextFiled("", controller.whatMeasures),
@@ -208,7 +208,7 @@ class SleepQuestions extends StatelessWidget {
                   commonTextSubtitle("whatHasHelped".tr),
                   Dimens.d20.spaceHeight,
                   commonTextFiled("", controller.whatHasHelped),
-                  Dimens.d40.spaceHeight,
+                  Dimens.d40.spaceHeight,*/
 
                 ],):Column(children: [
                   commonTextTitle("isThereSomethingHelps".tr, count: "2"),
@@ -296,15 +296,15 @@ class SleepQuestions extends StatelessWidget {
                   ),
 
 
-                  Dimens.d20.spaceHeight,
+                 /* Dimens.d20.spaceHeight,
 
                   commonTextSubtitle("canYouDescribeHelp".tr),
 
                   Dimens.d20.spaceHeight,
                   commonTextFiled("", controller.canYouDescribeHelp),
-                  Dimens.d40.spaceHeight,
+                  Dimens.d40.spaceHeight,*/
                 ],),
-
+                Dimens.d40.spaceHeight,
 
                 CommonElevatedButton(
                   title: "next".tr,
