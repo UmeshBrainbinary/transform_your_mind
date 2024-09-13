@@ -102,7 +102,7 @@ class StressQuestions extends StatelessWidget {
                           Dimens.d10.spaceWidth,
                           Text(
                             "yes".tr,
-                            style: Style.nunMedium(fontSize: 12),
+                            style: Style.nunMedium(fontSize: 14),
                           ),
                           Dimens.d40.spaceWidth,
                           GestureDetector(
@@ -140,7 +140,7 @@ class StressQuestions extends StatelessWidget {
                           Dimens.d10.spaceWidth,
                           Text(
                             "no".tr,
-                            style: Style.nunMedium(fontSize: 12),
+                            style: Style.nunMedium(fontSize: 14),
                           ),
                         ],
                       ),

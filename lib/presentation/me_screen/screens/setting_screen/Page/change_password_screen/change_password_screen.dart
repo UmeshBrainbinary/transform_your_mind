@@ -79,6 +79,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                             labelText: "currentPassword".tr,
                                             hintText:
                                                 "enterCurrentPasswordHint".tr,
+                                            hintStyle: const TextStyle(fontSize: 14),
+                                            textStyle: const TextStyle(fontSize: 14),
                                             controller: changePasswordController
                                                 .currentPController,
                                             validator: (value) {
@@ -133,6 +135,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                     return CommonTextField(
                                       labelText: "newPassword".tr,
                                       hintText: "enterNewPasswordHint".tr,
+                                      hintStyle: const TextStyle(fontSize: 14),
+                                      textStyle: const TextStyle(fontSize: 14),
                                       controller: changePasswordController
                                           .newPController,
                                       validator: (value) {
@@ -184,6 +188,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                     return CommonTextField(
                                       labelText: "confirmNewPassword".tr,
                                       hintText: "enterConfirmNewPassword".tr,
+                                      hintStyle: const TextStyle(fontSize: 14),
+                                      textStyle: const TextStyle(fontSize: 14),
                                       controller: changePasswordController
                                           .confirmPController,
                                       validator: (value) {

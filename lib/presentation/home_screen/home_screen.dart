@@ -453,7 +453,7 @@ class _HomeScreenState extends State<HomeScreen>
                                   gridDelegate:
                                       const SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisCount: 3,
-                                          childAspectRatio: 1.5,
+                                          childAspectRatio: 1.3,
                                           crossAxisSpacing: 30,
                                           mainAxisSpacing:
                                               30 // Set the aspect ratio as needed
@@ -629,8 +629,9 @@ class _HomeScreenState extends State<HomeScreen>
                                             Text(
                                               "${g.quickAccessList[index]["title"]}"
                                                   .tr,
+                                              textAlign: TextAlign.center,
                                               style: Style.montserratSemiBold(
-                                                  fontSize: 8,
+                                                  fontSize: 12,
                                                   color: themeController
                                                           .isDarkMode.isTrue
                                                       ? ColorConstant.white
@@ -850,7 +851,7 @@ class _HomeScreenState extends State<HomeScreen>
                     textAlign: TextAlign.center,
                     maxLines: 4,
                     style: Style.gothamLight(
-                        fontSize: 15, color: ColorConstant.black),
+                        fontSize: 16, color: ColorConstant.black),
                   ),
                 ),
                 Padding(
@@ -858,7 +859,7 @@ class _HomeScreenState extends State<HomeScreen>
                   child: Text(
                     "Christian D. Larson",
                     style: Style.nunRegular(
-                        fontSize: 12, color: ColorConstant.black),
+                        fontSize: 14, color: ColorConstant.black),
                   ),
                 )
               ],
@@ -1444,7 +1445,7 @@ class _HomeScreenState extends State<HomeScreen>
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               style: Style.gothamLight(
-                                fontSize: 12,
+                                fontSize: 14,
                               ),
                             ),
                           ),
@@ -1950,7 +1951,7 @@ class _HomeScreenState extends State<HomeScreen>
                 child: Text(
               "“$des”",
               style: Style.nunRegular(
-                  height: 2, fontSize: 11, fontWeight: FontWeight.w400),
+                  height: 2, fontSize: 14, fontWeight: FontWeight.w400),
             ))
           ],
         ),

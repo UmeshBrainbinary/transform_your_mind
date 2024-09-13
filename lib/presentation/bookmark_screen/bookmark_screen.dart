@@ -170,7 +170,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                                   .toString(),
                                               // "Motivational",
                                               style: Style.nunMedium(
-                                                fontSize: Dimens.d12,
+                                                fontSize: Dimens.d14,
                                               ),
                                               overflow: TextOverflow.ellipsis,
                                               maxLines: 1,

@@ -163,7 +163,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                   profileController.name?.value ??
                       "melissapeters@gmail.com",
                   style: Style.montserratBold(
-                    fontSize: Dimens.d14,
+                    fontSize: Dimens.d16,
                   ),
                 ),
                 Dimens.d2.spaceHeight,
@@ -172,7 +172,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                     profileController.mail?.value ??
                         "melissapeters@gmail.com",
                     style: Style.nunRegular(
-                      fontSize: Dimens.d11,
+                      fontSize: Dimens.d14,
                     ),
                   ),
                 ),
@@ -260,7 +260,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                               ? "Sleep"
                                               : "Stress"
                                                   "",
-                                  style: Style.nunRegular(fontSize: 10),
+                                  style: Style.nunRegular(fontSize: 12),
                                 ),
                           Dimens.d10.spaceWidth,
                         ],
@@ -312,7 +312,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                         );
                                       },
                                     ),
-                                    Dimens.d40.spaceWidth,
+                                    Dimens.d20.spaceWidth,
                                     Stack(
                                       children: [
                                         Column(
@@ -374,7 +374,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                 Text(
                                                   "completedGratitude".tr,
                                                   style: Style.nunRegular(
-                                                    fontSize: currentLanguage=="en-US"?Dimens.d9:Dimens.d8,
+                                                    fontSize: currentLanguage=="en-US"?Dimens.d12:Dimens.d10,
                                                   ),
                                                 )
                                               ],
@@ -396,7 +396,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                 Text(
                                                   "positiveMoment".tr,
                                                   style: Style.nunRegular(
-                                                    fontSize: currentLanguage=="en-US"?Dimens.d9:Dimens.d8,
+                                                    fontSize: currentLanguage=="en-US"?Dimens.d12:Dimens.d10,
                                                   ),
                                                 )
                                               ],
@@ -418,7 +418,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                 Text(
                                                   "completedAffirmations".tr,
                                                   style: Style.nunRegular(
-                                                    fontSize: currentLanguage=="en-US"?Dimens.d9:Dimens.d8,
+                                                    fontSize: currentLanguage=="en-US"?Dimens.d12:Dimens.d10,
                                                   ),
                                                 )
                                               ],
@@ -440,7 +440,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                 Text(
                                                   "goodFeel".tr,
                                                   style: Style.nunRegular(
-                                                    fontSize: currentLanguage=="en-US"?Dimens.d9:Dimens.d8,
+                                                    fontSize: currentLanguage=="en-US"?Dimens.d12:Dimens.d10,
                                                   ),
                                                 )
                                               ],
@@ -520,7 +520,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                           "${dList[index]}".tr,
                                                           style:
                                                               Style.nunRegular(
-                                                                  fontSize: 10),
+                                                                  fontSize: 12),
                                                         ),
                                                       ),
                                                     );
@@ -791,7 +791,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                         Text(
                           "logout".tr,
                           style: Style.nunMedium(
-                              fontSize: 13, color: ColorConstant.white),
+                              fontSize: 15, color: ColorConstant.white),
                         )
                       ],
                     ),

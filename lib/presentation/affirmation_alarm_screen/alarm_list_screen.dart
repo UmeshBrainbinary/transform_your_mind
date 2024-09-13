@@ -98,6 +98,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
   double currentTime = 0.0; // Current position of the audio
   double totalTime = 100.0;
 
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -151,6 +152,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                                       const Spacer(),
                                       GestureDetector(
                                         onTap: () {
+                                          controller.audioPlayer.seek(Duration.zero);
                                           _showAlertDialogPlayPause(context,
                                               index: index,
                                               mp3: controller.alarmModel
@@ -266,7 +268,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                                     controller.alarmModel.data?[index]
                                             .description ??
                                         "",
-                                    style: Style.nunRegular(fontSize: 11),
+                                    style: Style.nunRegular(fontSize: 14),
                                   )
                                 ],
                               ),
@@ -415,11 +417,16 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
       {String? title, String? des, String? mp3,int? index}) {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
-        return GetBuilder<AffirmationController>(builder: (controller) {
-          return StatefulBuilder(
+        return WillPopScope(
+          onWillPop: ()async{
+            notificationSettingController.audioPlayer.pause();
+            return true;
+          },
+          child: StatefulBuilder(
             builder: (context, setState) {
-
+              setState.call((){});
               return AlertDialog(
                 contentPadding: EdgeInsets.zero,
                 insetPadding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -447,7 +454,8 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                             const Spacer(),
                             GestureDetector(
                                 onTap: () {
-                                  controller = Get.put(AffirmationController());
+                                  notificationSettingController.audioPlayer.pause();
+
                                   Get.back();
                                   setState.call((){});
 
@@ -463,36 +471,50 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                         ),
                       ),
                       Dimens.d15.spaceHeight,
-                      Container(
-                        height: Dimens.d46,
-                        margin: const EdgeInsets.symmetric(horizontal: 20.0),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: themeController.isDarkMode.isTrue?ColorConstant.color394750:ColorConstant.white),
-                        child: Row(
-                          children: [
-                            Dimens.d10.spaceWidth,
-                            Container(
-                              height: 28,
-                              width: 28,
-                              decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: ColorConstant.themeColor),
-                              child: Center(
-                                child: GestureDetector(
+                      GetBuilder<NotificationSettingController>(
+                        id: "Slide",
+                        builder: (controller) {
+                          final currentPosition =
+                              controller.positionStream.value ??
+                                  Duration.zero;
+
+                          final duration =
+                              controller.durationStream.value ??
+                                  Duration.zero;
+                          return Container(
+                            height: Dimens.d46,
+                            margin: const EdgeInsets.symmetric(horizontal: 20.0),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: themeController.isDarkMode.isTrue?ColorConstant.color394750:ColorConstant.white),
+                            child: Row(
+                              children: [
+                                Dimens.d10.spaceWidth,
+                                GestureDetector(
                                   onTap: () async {
-                                    await controller.setUrl(
-                                        "assets/audio/audio.mp3"
-                                      //"https://media.shoorah.io/admins/shoorah_pods/audio/1682951517-7059.mp3"
-                                    );
-                                    if (controller.isPlaying.value) {
-                                      await controller
+                                    if( (notificationSettingController.alarmModel
+                                        .data?[index ?? 0].sound ?? 0) ==0){
+                                      await notificationSettingController.setUrl(
+                                          ImageConstant.bgAudio1
+                                        //"https://media.shoorah.io/admins/shoorah_pods/audio/1682951517-7059.mp3"
+                                      );
+                                    }
+                                    else
+                                    {
+                                      await notificationSettingController.setUrl(
+                                          ImageConstant.bgAudio2
+                                        //"https://media.shoorah.io/admins/shoorah_pods/audio/1682951517-7059.mp3"
+                                      );
+                                    }
+
+                                    if (notificationSettingController.isPlaying.value) {
+                                      await notificationSettingController
                                           .pause();
-                                      controller.update();
+                                      notificationSettingController.update();
                                     } else {
-                                      await controller
+                                      await notificationSettingController
                                           .play();
-                                      controller.update();
+                                      notificationSettingController.update();
 
                                     }
                                     setState((){
@@ -502,81 +524,83 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
 
                                     });
                                   },
-                                  child: SvgPicture.asset(
-                                    controller.isPlaying.value
-                                        ? ImageConstant.pauseAudio
-                                        : ImageConstant.play,
-                                    height: 10,
-                                    width: 10,
-                                    color:  themeController.isDarkMode.isTrue?Colors.white:ColorConstant.black,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            GetBuilder<AffirmationController>(builder: (controller) {
-                              final currentPosition =
-                                  controller.positionStream.value ??
-                                      Duration.zero;
-                              final duration =
-                                  controller.durationStream.value ??
-                                      Duration.zero;
-                              return   Expanded(
-                                child: SliderTheme(
-                                  data: SliderTheme.of(context).copyWith(
-                                    activeTrackColor:
-                                    ColorConstant.white.withOpacity(0.2),
-                                    inactiveTrackColor:
-                                    ColorConstant.colorADADAD,
-                                    trackHeight: 1.5,
-                                    thumbColor: ColorConstant.themeColor,
-                                    thumbShape: const RoundSliderThumbShape(
-                                      enabledThumbRadius: 8.0, // Decrease thumb height by adjusting the radius
+                                  child: Container(
+                                    height: 28,
+                                    width: 28,
+                                    decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: ColorConstant.themeColor),
+                                    child: Center(
+                                      child: SvgPicture.asset(
+                                        notificationSettingController.isPlaying.value
+                                            ? ImageConstant.pauseAudio
+                                            : ImageConstant.play,
+                                        height: 10,
+                                        width: 10,
+                                        color:  themeController.isDarkMode.isTrue?Colors.white:ColorConstant.black,
+                                      ),
                                     ),
-                                    // Customize the overlay shape and size
-                                  ),
-                                  child: Slider(
-                                    thumbColor: ColorConstant.themeColor,
-                                    min: 0,
-                                    activeColor: ColorConstant.themeColor,
-                                    onChanged: (double value) {
-                                      setState.call(() {
-                                        controller
-                                            .seekForMeditationAudio(
-                                            position: Duration(
-                                                milliseconds:
-                                                value.toInt()));
-                                      });
-                                      setState(() {});
-                                    },
-                                    value: currentPosition.inMilliseconds
-                                        .toDouble(),
-                                    max: duration.inMilliseconds.toDouble(),
                                   ),
                                 ),
-                              );
-                            },),
-                            GestureDetector(
-                                onTap: () {
-                                  setState.call(() {
-                                    soundMute = !soundMute;
-                                    if (soundMute) {
-                                      controller.audioPlayer.setVolume(0);
-                                    } else {
-                                      controller.audioPlayer.setVolume(1);
-                                    }
-                                  });
-                                },
-                                child: SvgPicture.asset(
-                                  soundMute
-                                      ? ImageConstant.soundMute
-                                      : ImageConstant.soundMax,
-                                  height: Dimens.d22,
-                                  width: Dimens.d22,
-                                  color:  themeController.isDarkMode.isTrue?Colors.white:Colors.black,
-                                )),
-                            Dimens.d10.spaceWidth,
-                          ],
-                        ),
+
+                                Expanded(
+                                  child: SliderTheme(
+                                    data: SliderTheme.of(context).copyWith(
+                                      activeTrackColor:
+                                      ColorConstant.white.withOpacity(0.2),
+                                      inactiveTrackColor:
+                                      ColorConstant.colorADADAD,
+                                      trackHeight: 1.5,
+                                      thumbColor: ColorConstant.themeColor,
+                                      thumbShape: const RoundSliderThumbShape(
+                                        enabledThumbRadius: 8.0, // Decrease thumb height by adjusting the radius
+                                      ),
+                                      // Customize the overlay shape and size
+                                    ),
+                                    child: Slider(
+                                      thumbColor: ColorConstant.themeColor,
+                                      min: 0,
+                                      activeColor: ColorConstant.themeColor,
+                                      onChanged: (double value) {
+                                        setState.call(() {
+                                          controller
+                                              .seekForMeditationAudio(
+                                              position: Duration(
+                                                  milliseconds:
+                                                  value.toInt()));
+                                        });
+                                        setState(() {});
+                                      },
+                                      value: currentPosition.inMilliseconds
+                                          .toDouble(),
+                                      max: duration.inMilliseconds.toDouble(),
+                                    ),
+                                  ),
+                                ),
+                                GestureDetector(
+                                    onTap: () {
+                                      setState.call(() {
+                                        soundMute = !soundMute;
+                                        if (soundMute) {
+                                          notificationSettingController.audioPlayer.setVolume(0);
+                                        } else {
+                                          notificationSettingController.audioPlayer.setVolume(1);
+                                        }
+                                      });
+                                    },
+                                    child: SvgPicture.asset(
+                                      soundMute
+                                          ? ImageConstant.soundMute
+                                          : ImageConstant.soundMax,
+                                      height: Dimens.d22,
+                                      width: Dimens.d22,
+                                      color:  themeController.isDarkMode.isTrue?Colors.white:Colors.black,
+                                    )),
+                                Dimens.d10.spaceWidth,
+                              ],
+                            ),
+                          );
+                        }
                       ),
                       Dimens.d10.spaceHeight,
                     ],
@@ -584,8 +608,8 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                 ),
               );
             },
-          );
-        },);
+          ),
+        );
       },
     ).whenComplete(() {
       setState(() {
@@ -694,18 +718,18 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                     Dimens.d30.spaceWidth,
                     Text(
                       "hours".tr,
-                      style: Style.nunRegular(fontSize: 12),
+                      style: Style.nunRegular(fontSize: 14),
                     ),
                     const Spacer(),
                     Text(
                       "minutes".tr,
-                      style: Style.nunRegular(fontSize: 12),
+                      style: Style.nunRegular(fontSize: 14),
                     ),
                     const Spacer(),
 
                     Text(
                       "seconds".tr,
-                      style: Style.nunRegular(fontSize: 12),
+                      style: Style.nunRegular(fontSize: 14),
                     ),
                     Dimens.d20.spaceWidth,
 
@@ -823,7 +847,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
                   padding: EdgeInsets.symmetric(horizontal: Dimens.d70.h),
                   child: CommonElevatedButton(height: 38,width: 153,
                     textStyle: Style.nunRegular(
-                        fontSize: Dimens.d14, color: ColorConstant.white),
+                        fontSize: Dimens.d16, color: ColorConstant.white),
                     title: "update".tr,
                     onTap: () async {
                     if(Platform.isIOS){

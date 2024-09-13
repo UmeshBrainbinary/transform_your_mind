@@ -43,6 +43,7 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
   double _progress = 0.0;
   int selectedTime = 3;
   bool showBottom = false;
+  bool isPro = false;
   AnimationController? _progressController;
   Animation<double>? _progressAnimation;
   @override
@@ -126,21 +127,44 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
   }*/
 
   void _startAutoScrollTimer() {
-    _autoScrollTimer?.cancel(); // Cancel any existing timer
-    _autoScrollTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      if (_currentIndex < widget.gratitudeList!.length - 1) {
-        _currentIndex++;
-        _pageController.animateToPage(
-          _currentIndex,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        );
-        _startProgressAnimation();
-      } else {
-        timer.cancel();
-        if(_progressController?.isAnimating  ?? false) { // Stop the timer
-          _onComplete();
-        }// Handle completion
+    _autoScrollTimer?.cancel();
+    _startProgressAnimation();// Cancel any existing timer
+    _autoScrollTimer = Timer.periodic( Duration(seconds: speedChange()), (timer) {
+      if(isPro) {
+        if (_currentIndex < widget.gratitudeList!.length - 1) {
+          _currentIndex++;
+          _pageController.animateToPage(
+            _currentIndex,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        } else {
+          if (_progress == 1.0) {
+            timer.cancel();
+
+
+            _onComplete(); // Handle completion
+
+          }
+          // Stop the timer
+        }
+      }
+
+      else {
+        if (_currentIndex < widget.gratitudeList!.length - 1) {
+          _currentIndex++;
+          _pageController.animateToPage(
+            _currentIndex,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        } else {
+          timer.cancel();
+
+
+          _onComplete(); // Handle completion
+
+        }
       }
     });
   }
@@ -351,6 +375,7 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
                           onTap: () {
                             setState(() {
                               showBottom = true;
+                              isPro = true;
                             });
                             _progressController?.stop();
                             sheetSound().then((v){
@@ -377,7 +402,7 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
                         Text(
                           "music".tr,
                           style: Style.gothamLight(
-                              fontSize: 10, color: Colors.white),
+                              fontSize: 12, color: Colors.white),
                         )
                       ],
                     ),
@@ -388,6 +413,7 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
                           onTap: () {
                             setState(() {
                               showBottom = true;
+                              isPro = true;
                             });
                             _progressController?.stop();
                             sheetTheme().then((v){
@@ -414,7 +440,7 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
                         Text(
                           "theme".tr,
                           style: Style.gothamLight(
-                              fontSize: 10, color: Colors.white),
+                              fontSize: 14, color: Colors.white),
                         )
                       ],
                     ),
@@ -466,7 +492,7 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
                                       Text(
                                         startC.speedList[index],
                                         style: Style.nunRegular(
-                                            fontSize: 10,
+                                            fontSize: 12,
                                             color: isChecked
                                                 ? ColorConstant.themeColor
                                                 : ColorConstant.white),
@@ -668,7 +694,7 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
                                           startC.soundList[index]["title"],
                                           textAlign: TextAlign.center,
                                           style: Style.nunRegular(
-                                              fontSize: 12,
+                                              fontSize: 14,
                                               color: ColorConstant.white),
                                         ),
                                       ],

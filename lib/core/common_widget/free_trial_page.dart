@@ -60,7 +60,7 @@ getUSer(context, greeting);
     return Scaffold(backgroundColor: themeController.isDarkMode.isTrue?ColorConstant.darkBackground:ColorConstant.white,
       body: Stack(
         children: [
-          Align(
+        /*  Align(
               alignment: Alignment.topRight,
               child: Padding(
                 padding: const EdgeInsets.only(top: Dimens.d100),
@@ -75,7 +75,7 @@ getUSer(context, greeting);
                 child: SvgPicture.asset(themeController.isDarkMode.isTrue
                     ? ImageConstant.profile2Dark
                     : ImageConstant.profile2),
-              )),
+              )),*/
           SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -84,7 +84,7 @@ getUSer(context, greeting);
                   alignment:Alignment.topCenter,
                   children: [
                     Container(
-                      child: Image.asset(ImageConstant.subImage),
+                      child: Image.asset(ImageConstant.sub,),
                     ),
                     Align(
                       alignment: Alignment.centerLeft,
@@ -106,13 +106,83 @@ getUSer(context, greeting);
                       alignment: Alignment.centerRight,
                       child: Padding(
                         padding: const EdgeInsets.only(right: 20,top: 30),
-                        child: Text(
-                          "skip".tr,
-                          style: Style.nunRegular(
-                            fontSize: Dimens.d18,
-                            color: themeController.isDarkMode.isTrue
-                                ? ColorConstant.white
-                                : ColorConstant.black,
+                        child: InkWell(
+                          onTap: () async {
+                            await PrefService.setValue(PrefKey.premium, true);
+                            await PrefService.setValue(PrefKey.subscription, true);
+                            await PrefService.setValue(
+                                PrefKey.firstTimeRegister, true);
+                            await PrefService.setValue(PrefKey.addGratitude, true);
+                            // Navigator.push(context, MaterialPageRoute(
+                            //   builder: (context) {
+                            //     return const WelcomeHomeScreen();
+                            //   },
+                            // ));
+
+
+
+                            if (getUserModel.data
+                                ?.morningMoodQuestions ??
+                                false == false &&
+                                    greeting == "goodMorning") {
+                              Get.offAll(() =>  SleepQuestions());
+                            }
+                            else if (getUserModel.data
+                                ?.morningSleepQuestions ??
+                                false == false &&
+                                    greeting == "goodMorning") {
+                              Get.offAll(() => StressQuestions());
+                            } else if (getUserModel.data
+                                ?.morningStressQuestions ??
+                                false == false &&
+                                    greeting == "goodMorning") {
+                              Get.offAll(() => const HowFeelingTodayScreen());
+                            } else if (getUserModel.data
+                                ?.morningMotivationQuestions ??
+                                false == false &&
+                                    greeting == "goodMorning") {
+                              Get.offAll(() => MotivationalQuestions());
+                            } else if (getUserModel.data
+                                ?.eveningMoodQuestions ??
+                                false == false &&
+                                    greeting == "goodEvening") {
+                              Get.offAll(() => const HowFeelingsEvening());
+                            } else if (getUserModel.data
+                                ?.eveningStressQuestions ??
+                                false == false &&
+                                    greeting == "goodEvening") {
+                              Get.offAll(() => EveningStress());
+                            } else if (getUserModel.data
+                                ?.eveningMotivationQuestions ??
+                                false == false &&
+                                    greeting == "goodEvening") {
+                              Get.offAll(() => EveningMotivational());
+                            } else {
+
+
+                              Get.offAll(() => const DashBoardScreen());
+                              /*if((PrefService.getBool(PrefKey.isFreeUser) == false && PrefService.getBool(PrefKey.isSubscribed) == false))
+                                    {
+                                      Get.offAll(() =>  SubscriptionScreen(skip: true,));
+
+                                    }
+                                    else
+                                    {
+
+                                      Get.offAll(() => const DashBoardScreen());
+                                    }*/
+                            }
+
+
+                          },
+                          child: Text(
+                            "skip".tr,
+                            style: Style.nunRegular(
+                              fontSize: Dimens.d18,
+                              color: themeController.isDarkMode.isTrue
+                                  ? ColorConstant.white
+                                  : ColorConstant.black,
+                            ),
                           ),
                         ),
                       ),
@@ -123,8 +193,8 @@ getUSer(context, greeting);
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.star,color: ColorConstant.themeColor,),
-                    const SizedBox(width: 5,),
+
+
                     Text(
                       "PREMIUM",
                       style: Style.nunitoBold(
@@ -133,6 +203,8 @@ getUSer(context, greeting);
                       ),
                       textAlign: TextAlign.center,
                     ),
+                    const SizedBox(width: 5,),
+                    Image.asset(ImageConstant.star,width: 25,height: 25,),
                   ],
                 ),
                 Dimens.d10.spaceHeight,
@@ -154,6 +226,44 @@ getUSer(context, greeting);
                   ),
                 ),
                 Dimens.d10.spaceHeight,
+                Dimens.d10.spaceHeight,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+
+
+                    Text(
+                      "PREMIUM PLUS",
+                      style: Style.nunitoBold(
+                        fontSize: Dimens.d16,
+                        color: ColorConstant.themeColor,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(width: 5,),
+                    Image.asset(ImageConstant.star,width: 25,height: 25,),
+                    Image.asset(ImageConstant.star,width: 25,height: 25,),
+                  ],
+                ),
+                Dimens.d10.spaceHeight,
+                Text(
+                  "Unlock all functions".tr,
+                  style: Style.nunitoBold(
+                    fontSize: Dimens.d28,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                Dimens.d10.spaceHeight,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 43),
+                  child: Text(
+                    "and create your best life".tr,
+                    style: Style.nunMedium(
+                        fontSize: Dimens.d18, fontWeight: FontWeight.w500),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              /*  Dimens.d10.spaceHeight,
                 Text(
                   "Unlock all functions".tr,
                   style: Style.nunitoBold(
@@ -163,16 +273,16 @@ getUSer(context, greeting);
                 ),
                 Dimens.d10.spaceHeight,
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 43),
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: Text(
                     "From affirmations and deep meditation to transformative self-hypnosis audios, your personal well-being barometer and mindfulness training.".tr,
                     style: Style.nunMedium(
                         fontSize: Dimens.d14, fontWeight: FontWeight.w500),
                     textAlign: TextAlign.center,
                   ),
-                ),
-                Dimens.d10.spaceHeight,
-            const Padding(
+                ),*/
+                Dimens.d20.spaceHeight,
+           /* const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.0),
               child: Column(
                 children: [
@@ -205,7 +315,7 @@ getUSer(context, greeting);
                   // ),
                 ],
               ),
-            ),
+            ),*/
 
                 Padding(
                   padding: const EdgeInsets.only(left: 20,right: 20,bottom: 5,top: 10),
@@ -221,18 +331,18 @@ getUSer(context, greeting);
                       padding: const EdgeInsets.all(10.0),
                       decoration: BoxDecoration(
                         color:plans[0] == true
-                            ? ColorConstant.color7C9EA7.withOpacity(0.20)
+                            ? ColorConstant.color769AA3.withOpacity(0.10)
                             : themeController.isDarkMode.isTrue
-                            ? ColorConstant.textfieldFillColor
-                            : ColorConstant.white.withOpacity(0.9),
+                            ? ColorConstant.transparent
+                            : Colors.transparent,
                         border: Border.all(
                           color: plans[0] == true
                               ? themeController.isDarkMode.isTrue
-                              ? ColorConstant.themeColor
-                              : ColorConstant.themeColor
-                              : themeController.isDarkMode.isTrue
                               ? ColorConstant.colorE3E1E1.withOpacity(0.2)
-                              : ColorConstant.colorE3E1E1,
+                              : ColorConstant.colorE3E1E1
+                              : themeController.isDarkMode.isTrue
+                              ?Colors.transparent
+                              : Colors.transparent,
                           width: 1,
                         ),
                         borderRadius: BorderRadius.circular(15),
@@ -244,20 +354,39 @@ getUSer(context, greeting);
                           Row(
                             children: [
                               plans[0]
-                                  ? SvgPicture.asset(
-                                ImageConstant.subscriptionCheck,
-                                height: Dimens.d24,
-                                width: Dimens.d24,
-                              )
-                                  : Container(
-                                height: Dimens.d24,
-                                width: Dimens.d24,
+                                  ? Container(
+                                height: Dimens.d20,
+                                width: Dimens.d20,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   border: Border.all(
                                     color: themeController.isDarkMode.isTrue
                                         ? ColorConstant.white
-                                        : ColorConstant.colorE3E1E1,
+                                        : ColorConstant.black,
+                                  ),
+                                ),
+                                alignment: Alignment.center,
+                                child: Container(
+                                  height: Dimens.d10,
+                                  width: Dimens.d10,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: themeController.isDarkMode.isTrue
+                                        ? ColorConstant.white
+                                        : ColorConstant.black,
+                                  ),
+                                ),
+
+                              )
+                                  : Container(
+                                height: Dimens.d20,
+                                width: Dimens.d20,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: themeController.isDarkMode.isTrue
+                                        ? ColorConstant.white
+                                        : ColorConstant.black,
                                   ),
                                 ),
                               ),
@@ -278,7 +407,8 @@ getUSer(context, greeting);
                                   'With selected functions'.tr,
                                   style: Style.nunRegular(
                                     fontSize: 13,
-                                    color: ColorConstant.color797777,
+                                    color: themeController.isDarkMode.isTrue
+                                        ? ColorConstant.colorBFBFBF:ColorConstant.color797777,
                                   ),
                                 ),
 
@@ -303,21 +433,21 @@ getUSer(context, greeting);
                       margin: const EdgeInsets.only(bottom: 15),
                       padding: const EdgeInsets.all(10.0),
                       decoration: BoxDecoration(
-                        color:plans[1] == true
-                            ? ColorConstant.color7C9EA7.withOpacity(0.20)
+                        color:     plans[1] == true
+                      ? ColorConstant.color769AA3.withOpacity(0.10)
+                          : themeController.isDarkMode.isTrue
+                    ? ColorConstant.transparent
+                        : Colors.transparent,
+                      border: Border.all(
+                        color: plans[1] == true
+                            ? themeController.isDarkMode.isTrue
+                            ? ColorConstant.colorE3E1E1.withOpacity(0.2)
+                            : ColorConstant.colorE3E1E1
                             : themeController.isDarkMode.isTrue
-                            ? ColorConstant.textfieldFillColor
-                            : ColorConstant.white.withOpacity(0.9),
-                        border: Border.all(
-                          color: plans[1] == true
-                              ? themeController.isDarkMode.isTrue
-                              ? ColorConstant.themeColor
-                              : ColorConstant.themeColor
-                              : themeController.isDarkMode.isTrue
-                              ? ColorConstant.colorE3E1E1.withOpacity(0.2)
-                              : ColorConstant.colorE3E1E1,
-                          width: 1,
-                        ),
+                            ?Colors.transparent
+                            : Colors.transparent,
+                        width: 1,
+                      ),
                         borderRadius: BorderRadius.circular(15),
                       ),
 
@@ -327,10 +457,29 @@ getUSer(context, greeting);
                           Row(
                             children: [
                               plans[1]
-                                  ? SvgPicture.asset(
-                                ImageConstant.subscriptionCheck,
-                                height: Dimens.d24,
-                                width: Dimens.d24,
+                                  ? Container(
+                                height: Dimens.d20,
+                                width: Dimens.d20,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: themeController.isDarkMode.isTrue
+                                        ? ColorConstant.white
+                                        : ColorConstant.black,
+                                  ),
+                                ),
+                                alignment: Alignment.center,
+                                child: Container(
+                                  height: Dimens.d10,
+                                  width: Dimens.d10,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: themeController.isDarkMode.isTrue
+                                        ? ColorConstant.white
+                                        : ColorConstant.black,
+                                  ),
+                                ),
+
                               )
                                   : Container(
                                 height: Dimens.d24,
@@ -340,7 +489,7 @@ getUSer(context, greeting);
                                   border: Border.all(
                                     color: themeController.isDarkMode.isTrue
                                         ? ColorConstant.white
-                                        : ColorConstant.colorE3E1E1,
+                                        : ColorConstant.black,
                                   ),
                                 ),
                               ),
@@ -361,7 +510,8 @@ getUSer(context, greeting);
                                   '7 days free, then CHF 5.90 / month'.tr,
                                   style: Style.nunRegular(
                                     fontSize: 13,
-                                    color: ColorConstant.color797777,
+                                    color: themeController.isDarkMode.isTrue
+                                        ? ColorConstant.colorBFBFBF:ColorConstant.color797777,
                                   ),
                                 ),
 
@@ -388,18 +538,18 @@ getUSer(context, greeting);
                       padding: const EdgeInsets.all(10.0),
                       decoration: BoxDecoration(
                         color:plans[2] == true
-                            ? ColorConstant.color7C9EA7.withOpacity(0.20)
+                            ? ColorConstant.color769AA3.withOpacity(0.10)
                             : themeController.isDarkMode.isTrue
-                            ? ColorConstant.textfieldFillColor
-                            : ColorConstant.white.withOpacity(0.9),
+                            ? ColorConstant.transparent
+                            : Colors.transparent,
                         border: Border.all(
                           color: plans[2] == true
                               ? themeController.isDarkMode.isTrue
-                              ? ColorConstant.themeColor
-                              : ColorConstant.themeColor
-                              : themeController.isDarkMode.isTrue
                               ? ColorConstant.colorE3E1E1.withOpacity(0.2)
-                              : ColorConstant.colorE3E1E1,
+                              : ColorConstant.colorE3E1E1
+                              : themeController.isDarkMode.isTrue
+                              ?Colors.transparent
+                              : Colors.transparent,
                           width: 1,
                         ),
                         borderRadius: BorderRadius.circular(15),
@@ -411,10 +561,29 @@ getUSer(context, greeting);
                           Row(
                             children: [
                               plans[2]
-                                  ? SvgPicture.asset(
-                                ImageConstant.subscriptionCheck,
-                                height: Dimens.d24,
-                                width: Dimens.d24,
+                                  ? Container(
+                                height: Dimens.d20,
+                                width: Dimens.d20,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: themeController.isDarkMode.isTrue
+                                        ? ColorConstant.white
+                                        : ColorConstant.black,
+                                  ),
+                                ),
+                                alignment: Alignment.center,
+                                child: Container(
+                                  height: Dimens.d10,
+                                  width: Dimens.d10,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: themeController.isDarkMode.isTrue
+                                        ? ColorConstant.white
+                                        : ColorConstant.black,
+                                  ),
+                                ),
+
                               )
                                   : Container(
                                 height: Dimens.d24,
@@ -424,7 +593,7 @@ getUSer(context, greeting);
                                   border: Border.all(
                                     color: themeController.isDarkMode.isTrue
                                         ? ColorConstant.white
-                                        : ColorConstant.colorE3E1E1,
+                                        : ColorConstant.black,
                                   ),
                                 ),
                               ),
@@ -445,7 +614,8 @@ getUSer(context, greeting);
                                   'CHF 59.90 / year'.tr,
                                   style: Style.nunRegular(
                                     fontSize: 13,
-                                    color: ColorConstant.color797777,
+                                    color: themeController.isDarkMode.isTrue
+                                        ? ColorConstant.colorBFBFBF:ColorConstant.color797777,
                                   ),
                                 ),
 
@@ -552,11 +722,17 @@ getUSer(context, greeting);
                 Dimens.d10.spaceHeight,
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Text(
-                    "Backed by the App Store. Can be canceled at any time.".tr,
-                    style: Style.nunMedium(
-                        fontSize: Dimens.d12, fontWeight: FontWeight.w400),
-                    textAlign: TextAlign.center,
+                  child: Row(mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(ImageConstant.alert,height: 20,width: 20),
+                      const SizedBox(width: 5,),
+                      Text(
+                        "Backed by the App Store. Can be canceled at any time.".tr,
+                        style: Style.nunMedium(
+                            fontSize: Dimens.d12, fontWeight: FontWeight.w400),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
                 ),
                 Dimens.d10.spaceHeight,
@@ -671,65 +847,74 @@ getUSer(context, greeting);
               ),
               Dimens.d6.spaceHeight,
 
-              Text(
-                "TransformYourMind - Free Version".tr,
-                style: Style.nunMedium(
-                    fontSize: Dimens.d16, fontWeight: FontWeight.w700,color: Colors.black
-                ),
-                textAlign: TextAlign.center,
-              ),
-              Dimens.d20.spaceHeight,
-              Text(
-                "The free version of TransformYourMind is the perfect introduction to fostering meaningful change in your life.".tr,
-                style: Style.nunMedium(
-                    fontSize: Dimens.d14, fontWeight: FontWeight.w400,color: Colors.black
-                ),
-                textAlign: TextAlign.center,
-              ),
-              Dimens.d10.spaceHeight,
-
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Text.rich(
-                    TextSpan(children: [
-                      TextSpan(text:  "Guided Meditations:".tr,
-                        style: Style.nunMedium(
-                            fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
-                        ),),
-                      const TextSpan(text: " "),
-                      TextSpan(text:  "Experience calming, supportive meditations designed to reduce stress and promote inner peace, helping you take the first step toward a more balanced and harmonious mind.".tr,
-                        style: Style.nunRegular(
-                          fontSize: Dimens.d14,
-                          fontWeight: FontWeight.w400,
-                            color: Colors.black
-
-
-
-                        ),),
-                    ])),
-              ),
-              Dimens.d10.spaceHeight,
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Text.rich(TextSpan(
-                    children: [
-                      TextSpan(text:  "Daily Affirmations:".tr,
-                        style: Style.nunMedium(
-                            fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
-                        ),),
-                      const TextSpan(text: " "),
-                      TextSpan(text:  "Start each day with a curated selection of powerful affirmations to cultivate a positive mindset and set the tone for success.".tr,
-                        style: Style.nunRegular(
-                          fontSize: Dimens.d14,
-                          fontWeight: FontWeight.w400,
-color: Colors.black
-
-
-                        ),),
-
-                    ]
-                ),),
-              )
+             SizedBox(
+               height: Get.height *0.4,
+               child: SingleChildScrollView(
+                 child: Column(
+                   children: [
+                     Text(
+                       "TransformYourMind - Free Version".tr,
+                       style: Style.nunMedium(
+                           fontSize: Dimens.d16, fontWeight: FontWeight.w700,color: Colors.black
+                       ),
+                       textAlign: TextAlign.center,
+                     ),
+                     Dimens.d20.spaceHeight,
+                     Text(
+                       "The free version of TransformYourMind is the perfect introduction to fostering meaningful change in your life.".tr,
+                       style: Style.nunMedium(
+                           fontSize: Dimens.d14, fontWeight: FontWeight.w400,color: Colors.black
+                       ),
+                       textAlign: TextAlign.center,
+                     ),
+                     Dimens.d10.spaceHeight,
+                 
+                     Padding(
+                       padding: const EdgeInsets.symmetric(horizontal: 20),
+                       child: Text.rich(
+                           TextSpan(children: [
+                             TextSpan(text:  "Guided Meditations:".tr,
+                               style: Style.nunMedium(
+                                   fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
+                               ),),
+                             const TextSpan(text: " "),
+                             TextSpan(text:  "Experience calming, supportive meditations designed to reduce stress and promote inner peace, helping you take the first step toward a more balanced and harmonious mind.".tr,
+                               style: Style.nunRegular(
+                                   fontSize: Dimens.d14,
+                                   fontWeight: FontWeight.w400,
+                                   color: Colors.black
+                 
+                 
+                 
+                               ),),
+                           ])),
+                     ),
+                     Dimens.d10.spaceHeight,
+                     Padding(
+                       padding: const EdgeInsets.symmetric(horizontal: 20),
+                       child: Text.rich(TextSpan(
+                           children: [
+                             TextSpan(text:  "Daily Affirmations:".tr,
+                               style: Style.nunMedium(
+                                   fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
+                               ),),
+                             const TextSpan(text: " "),
+                             TextSpan(text:  "Start each day with a curated selection of powerful affirmations to cultivate a positive mindset and set the tone for success.".tr,
+                               style: Style.nunRegular(
+                                   fontSize: Dimens.d14,
+                                   fontWeight: FontWeight.w400,
+                                   color: Colors.black
+                 
+                 
+                               ),),
+                 
+                           ]
+                       ),),
+                     )
+                   ],
+                 ),
+               ),
+             ),
 
 
             ],

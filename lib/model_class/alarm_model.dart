@@ -30,6 +30,7 @@ class AlarmData {
   int? minutes;
   int? seconds;
   String? time;
+  String? sound;
   String? audioFile;
   String? name;
   String? description;
@@ -45,6 +46,7 @@ class AlarmData {
     this.minutes,
     this.seconds,
     this.time,
+    this.sound,
     this.audioFile,
     this.name,
     this.description,
@@ -61,6 +63,7 @@ class AlarmData {
     minutes: json["minutes"],
     seconds: json["seconds"],
     time: json["time"],
+    sound: json["sound"],
     audioFile: json["audioFile"],
     name: json["name"],
     description: json["description"],
@@ -77,6 +80,7 @@ class AlarmData {
     "minutes": minutes,
     "seconds": seconds,
     "time": time,
+    "sound": sound,
     "audioFile": audioFile,
     "name": name,
     "description": description,

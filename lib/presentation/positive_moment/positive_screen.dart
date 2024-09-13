@@ -129,7 +129,8 @@ class _PositiveScreenState extends State<PositiveScreen> {
                             ColorConstant.color777575:ColorConstant.black,)),
                           ),
                           hintText: "search".tr,
-                          textStyle: Style.nunRegular(fontSize: 12),
+                          hintStyle: const TextStyle(fontSize: 14),
+                          textStyle: const TextStyle(fontSize: 14),
                           controller: searchController,
                           focusNode: searchFocusNode),
 

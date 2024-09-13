@@ -265,6 +265,9 @@ class ImageConstant {
   static String micAnimation = "$lottie/mic_animation.json";
   static String animation = "$lottie/animation.json";
   static String celebration = "$gifPath/celebration.gif";
+  static String sub = "$imagePath/sub.png";
+  static String star = "$imagePath/star.png";
+  static String alert = "$imagePath/alert.png";
 
 
 

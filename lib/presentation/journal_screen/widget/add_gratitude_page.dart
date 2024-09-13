@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http ;
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
@@ -92,7 +93,7 @@ class _AddGratitudePageState extends State<AddGratitudePage>
     var request = http.Request(
         'GET',
         Uri.parse(
-            '${EndPoints.baseUrl}get-gratitude?created_by=${PrefService.getString(PrefKey.userId)}&date=${widget.date}&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}'));
+            '${EndPoints.baseUrl}get-gratitude?created_by=${PrefService.getString(PrefKey.userId)}&date=${widget.date ?? DateFormat("dd/MM/yyyy").format(DateTime.now())}&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}'));
 
     request.headers.addAll(headers);
 
@@ -317,7 +318,7 @@ class _AddGratitudePageState extends State<AddGratitudePage>
                             style: Style.nunRegular(
                                 color: themeController.isDarkMode.value
                                     ? ColorConstant.white
-                                    : ColorConstant.black),
+                                    : ColorConstant.black,fontSize: Dimens.d16),
                           )),
                       Dimens.d20.spaceWidth,
                   ])
@@ -336,7 +337,7 @@ class _AddGratitudePageState extends State<AddGratitudePage>
                   child: Text(
                     "skip".tr,
                               style: Style.nunRegular(
-                                  fontSize: Dimens.d15,
+                                  fontSize: Dimens.d16,
                                   color: themeController.isDarkMode.value
                                       ? ColorConstant.white
                                       : ColorConstant.black),
@@ -450,6 +451,8 @@ class _AddGratitudePageState extends State<AddGratitudePage>
                             ? ColorConstant.color394750
                             : Colors.grey.withOpacity(0.3),
                         hintText: "typeGratitude".tr,
+                        hintStyle: const TextStyle(fontSize: 14),
+                        textStyle: const TextStyle(fontSize: 14),
                         maxLines: 5,
                         controller: addGratitudeText,
                         focusNode: gratitudeFocus),
@@ -552,6 +555,7 @@ class _AddGratitudePageState extends State<AddGratitudePage>
                               await getGratitude();
                               _lastText = "";
                               addGratitudeText.clear();
+                                setState((){});
 
                             }else{
                               showSnackBarError(context,"pleaseAddYourGratitude".tr);
@@ -744,7 +748,7 @@ class _AddGratitudePageState extends State<AddGratitudePage>
                       maxLines: 2,
                       style: Style.nunRegular(
                         height: 2,
-                        fontSize: 11,
+                        fontSize: 14,
                         fontWeight: FontWeight.w400,
                       ),
                     ),

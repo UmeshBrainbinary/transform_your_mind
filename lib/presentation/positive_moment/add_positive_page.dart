@@ -230,7 +230,7 @@ class _AddPositivePageState extends State<AddPositivePage>
                                 padding: const EdgeInsets.symmetric(horizontal: 8),
                                 child: Text(
                                   "addImage".tr,
-                                  style: Style.nunitoSemiBold(fontSize: 14),
+                                  style: Style.nunitoSemiBold(fontSize: 15),
                                 ),
                               ),
                               ValueListenableBuilder(
@@ -276,6 +276,8 @@ class _AddPositivePageState extends State<AddPositivePage>
                                 labelText: "title".tr,
                                 controller: titleController,
                                 focusNode: titleFocus,
+                                 hintStyle: const TextStyle(fontSize: 14),
+                                 textStyle: const TextStyle(fontSize: 14),
                                 prefixLottieIcon: ImageConstant.lottieTitle,
 
                                 validator: (value) {
@@ -293,6 +295,8 @@ class _AddPositivePageState extends State<AddPositivePage>
                                     labelText: "description".tr,
                                     controller: descController,
                                     focusNode: descFocus,
+                                    hintStyle: const TextStyle(fontSize: 14),
+                                    textStyle: const TextStyle(fontSize: 14),
                                     transform: Matrix4.translationValues(
                                         0, -108.h, 0),
                                     prefixLottieIcon:
@@ -368,9 +372,11 @@ class _AddPositivePageState extends State<AddPositivePage>
                                             }
                                           }
                                         } else {
-                                          setState(() {
-                                            imageValid = true;
-                                          });
+                                          if( imageFile.value == null ) {
+                                            setState(() {
+                                              imageValid = true;
+                                            });
+                                          }
                                         }
                                       },
                                     ),

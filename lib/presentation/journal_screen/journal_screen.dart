@@ -154,7 +154,7 @@ class _JournalScreenState extends State<JournalScreen>
                     child: Text(
                       textAlign: TextAlign.center,
                       "useSelfDevelopment".tr,
-                      style: Style.nunRegular(fontSize: 13,color:themeController.isDarkMode.isTrue?ColorConstant.colorBFBFBF: ColorConstant.color747474),
+                      style: Style.nunRegular(fontSize: 14,color:themeController.isDarkMode.isTrue?ColorConstant.colorBFBFBF: ColorConstant.color747474),
                     ),
                   ),
                   Dimens.d60.spaceHeight,

@@ -73,6 +73,8 @@ class _ContactSupportScreenState extends State<ContactSupportScreen> {
                         CommonTextField(
                             labelText: "name".tr,
                             hintText: "enterName".tr,
+                            hintStyle: const TextStyle(fontSize: 14),
+                            textStyle: const TextStyle(fontSize: 14),
                             focusNode: supportController.nameFocus,
                             controller: supportController.name,
                             validator: (value) {
@@ -86,7 +88,8 @@ class _ContactSupportScreenState extends State<ContactSupportScreen> {
                           labelText: "email".tr,
                           hintText: "enterEmail".tr,
                           focusNode: supportController.emailFocus,
-
+                          hintStyle: const TextStyle(fontSize: 14),
+                          textStyle: const TextStyle(fontSize: 14),
                           keyboardType: TextInputType.emailAddress,
                           validator: (value) {
                             if (value!.trim() == "") {
@@ -102,6 +105,8 @@ class _ContactSupportScreenState extends State<ContactSupportScreen> {
                         CommonTextField(
                             labelText: "comment".tr,
                             hintText: "enterComment".tr,
+                            hintStyle: const TextStyle(fontSize: 14),
+                            textStyle: const TextStyle(fontSize: 14),
                             controller: supportController.comment,
                             focusNode: supportController.commentFocus,
                             maxLines: 7,

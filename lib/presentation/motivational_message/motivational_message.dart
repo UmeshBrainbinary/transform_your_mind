@@ -519,7 +519,7 @@ class _MotivationalMessageScreenState extends State<MotivationalMessageScreen> {
                                 child: Text(
                                   "skip".tr,
                                   style: Style.nunitoSemiBold(
-                                      fontSize: 18, color: ColorConstant.white),
+                                      fontSize:  Dimens.d18, color: ColorConstant.white),
                                 )),
                           ],
                         )
@@ -587,7 +587,7 @@ class _MotivationalMessageScreenState extends State<MotivationalMessageScreen> {
                               Text(
                                 "music".tr,
                                 style: Style.gothamLight(
-                                    fontSize: 10, color: Colors.white),
+                                    fontSize: 14, color: Colors.white),
                               )
                             ],
                           ),
@@ -621,7 +621,7 @@ class _MotivationalMessageScreenState extends State<MotivationalMessageScreen> {
                               Text(
                                 "theme".tr,
                                 style: Style.gothamLight(
-                                    fontSize: 10, color: Colors.white),
+                                    fontSize: 14, color: Colors.white),
                               )
                             ],
                           ),
@@ -814,7 +814,7 @@ class _MotivationalMessageScreenState extends State<MotivationalMessageScreen> {
                                                   .soundList[index]["title"],
                                               textAlign: TextAlign.center,
                                               style: Style.nunRegular(
-                                                  fontSize: 12,
+                                                  fontSize: 14,
                                                   color: ColorConstant.white),
                                             ),
                                           ],

@@ -106,7 +106,7 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
                       child: Text(
                         "howManyTimesWouldYouLikeToBe".tr,
                         textAlign: TextAlign.center,
-                        style: Style.nunRegular(fontSize: Dimens.d13),
+                        style: Style.nunRegular(fontSize: Dimens.d14),
                       ),
                     ),
                   ),
@@ -144,6 +144,7 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
                                       "affirmationReminder".tr,
                                       style: Style.nunMedium().copyWith(
                                         letterSpacing: Dimens.d0_16,
+
                                       ),
                                     ),
                                   ),

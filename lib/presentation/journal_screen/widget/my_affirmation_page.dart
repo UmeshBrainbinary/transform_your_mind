@@ -1705,7 +1705,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                       '',
                                   style: Style.nunRegular(
                                       height: Dimens.d2,
-                                      fontSize: Dimens.d14,
+                                      fontSize: Dimens.d15,
                                       color: themeController
                                           .isDarkMode.isTrue
                                           ? ColorConstant.white

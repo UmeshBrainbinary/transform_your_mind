@@ -66,6 +66,7 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
   int selectedTime = 3;
   bool am = true;
   bool pm = false;
+  bool isPro = false;
   Duration selectedDuration = const Duration(hours: 0, minutes: 0, seconds: 0);
   int selectedHour = 0;
   int selectedMinute = 0;
@@ -177,20 +178,41 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
     _autoScrollTimer?.cancel();
     _startProgressAnimation();
     _autoScrollTimer = Timer.periodic( Duration(seconds: speedChange()), (timer) {
-      if (_currentIndex < widget.data!.length - 1) {
-        _currentIndex++;
-        _pageController.animateToPage(
-          _currentIndex,
-          duration:  const Duration(milliseconds:300),
-          curve: Curves.easeInOut,
-        );
+      if(isPro) {
+        if (_currentIndex < widget.data!.length - 1) {
+          _currentIndex++;
+          _pageController.animateToPage(
+            _currentIndex,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        } else {
+          if (_progress == 1.0) {
+            timer.cancel();
 
-      } else {
-        timer.cancel();
-        if(_progressController?.isAnimating  ?? false){
 
-        _onComplete(); // Handle completion
-        }// Stop the timer
+              _onComplete(); // Handle completion
+
+          }
+          // Stop the timer
+        }
+      }
+
+      else {
+        if (_currentIndex < widget.data!.length - 1) {
+          _currentIndex++;
+          _pageController.animateToPage(
+            _currentIndex,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        } else {
+          timer.cancel();
+
+
+          _onComplete(); // Handle completion
+
+        }
       }
     });
   }
@@ -236,6 +258,7 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
       "hours": selectedHour,
       "minutes": selectedMinute,
       "seconds": selectedSeconds,
+      "sound": "$index",
       "time": am == true ? "AM" : "PM",
       "affirmationId": id,
       "created_by": PrefService.getString(PrefKey.userId)
@@ -244,7 +267,7 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
 
     http.StreamedResponse response = await request.send();
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 ||response.statusCode == 201) {
       selectedSeconds = 0;
       selectedMinute = 0;
       selectedHour = 0;
@@ -548,6 +571,7 @@ int index =0;
                           onTap: () {
                             setState(() {
                               showBottom = true;
+                            isPro =true;
                             });
                             _progressController?.stop();
                             sheetSound().then((v){
@@ -574,7 +598,7 @@ int index =0;
                         Text(
                           "music".tr,
                           style: Style.gothamLight(
-                              fontSize: 10, color: Colors.white),
+                              fontSize: 12, color: Colors.white),
                         )
                       ],
                     ),
@@ -585,7 +609,9 @@ int index =0;
                           onTap: () {
                             setState(() {
                               showBottom = true;
+                            isPro =true;
                             });
+
                             _progressController?.stop();
                             sheetTheme().then((v){
                               _progressController?.forward();
@@ -611,7 +637,7 @@ int index =0;
                         Text(
                           "theme".tr,
                           style: Style.gothamLight(
-                              fontSize: 10, color: Colors.white),
+                              fontSize: 12, color: Colors.white),
                         )
                       ],
                     ),
@@ -642,6 +668,7 @@ int index =0;
                           _stopScrolling();
                               setState(() {
                                 showBottom = true;
+                          isPro =true;
                               });
                           _progressController?.stop();
                               sheetAlarm().then((v){
@@ -726,7 +753,7 @@ int index =0;
                                       Text(
                                         startC.speedList[index],
                                         style: Style.nunRegular(
-                                            fontSize: 10,
+                                            fontSize: 12,
                                             color: isChecked
                                                 ? ColorConstant.themeColor
                                                 : ColorConstant.white),
@@ -930,7 +957,7 @@ int index =0;
                                             startC.soundList[index]["title"],
                                             textAlign: TextAlign.center,
                                             style: Style.nunRegular(
-                                                fontSize: 12,
+                                                fontSize: 14,
                                                 color: ColorConstant.white),
                                           ),
                                         ],
@@ -1239,7 +1266,7 @@ int index =0;
                                           child: Text(
                                             "AM",
                                             style: Style.nunRegular(
-                                              fontSize: 12,
+                                              fontSize: 14,
                                               color: am
                                                   ? ColorConstant.white
                                                   : ColorConstant.white,
@@ -1269,7 +1296,7 @@ int index =0;
                                           child: Text(
                                             "PM",
                                             style: Style.nunRegular(
-                                              fontSize: 12,
+                                              fontSize: 14,
                                               color: pm
                                                   ? ColorConstant.white
                                                   : ColorConstant.white,
@@ -1419,7 +1446,7 @@ int index =0;
                                 EdgeInsets.symmetric(horizontal: Dimens.d70.h),
                             child: CommonElevatedButton(
                               textStyle: Style.nunRegular(
-                                fontSize: Dimens.d14,
+                                fontSize: Dimens.d16,
                                 color: ColorConstant.white,
                               ),
                               title: "save".tr,
@@ -1451,7 +1478,7 @@ int index =0;
   Widget commonTextA(title) {
     return Text(
       title,
-      style: Style.nunRegular(fontSize: 12, color: Colors.white),
+      style: Style.nunRegular(fontSize: 14, color: Colors.white),
     );
   }
 

@@ -136,7 +136,7 @@ class _DownloadedPodsScreenState extends State<DownloadedPodsScreen> {
                                                 .toString(),
                                             // "Motivational",
                                             style: Style.nunitoBold(
-                                              fontSize: Dimens.d10,
+                                              fontSize: Dimens.d12,
                                             ),
                                             overflow: TextOverflow.ellipsis,
                                             maxLines: 1,

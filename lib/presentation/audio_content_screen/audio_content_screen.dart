@@ -226,7 +226,7 @@ getData() async {
                                           audioContentController.filterList(value,
                                               audioContentController.audioData);
                                     });
-                                  },
+                                  },  hintStyle: const TextStyle(fontSize: 14),
                                   prefixIcon: Padding(
                                     padding: const EdgeInsets.all(16.0),
                                     child: SvgPicture.asset(
@@ -263,7 +263,7 @@ getData() async {
                                         ),
                                   hintText: "search".tr,
                                   textStyle:
-                                      Style.nunLight(fontSize: 12,color: ColorConstant.color7F7E7E),
+                                      Style.nunLight(fontSize: 14,color: ColorConstant.color7F7E7E),
                                   controller:
                                       audioContentController.searchController,
                                   focusNode:
@@ -385,7 +385,7 @@ getData() async {
                                                       style: Style
                                                           .nunitoBold(
                                                         fontSize:
-                                                        Dimens.d10,
+                                                        Dimens.d14,
                                                       ),
                                                       overflow: TextOverflow
                                                           .ellipsis,
@@ -593,7 +593,7 @@ getData() async {
                                                               style: Style
                                                                   .nunitoBold(
                                                                 fontSize:
-                                                                    Dimens.d10,
+                                                                    Dimens.d12,
                                                               ),
                                                               overflow: TextOverflow
                                                                   .ellipsis,

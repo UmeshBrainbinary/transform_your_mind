@@ -198,7 +198,7 @@ class _ToolsScreenState extends State<ToolsScreen>
                                             height: 26.0,
                                             textStyle:
                                                 Style.nunRegular(
-                                                    fontSize: 12.0,
+                                                    fontSize: 14.0,
                                                     color:
                                                         ColorConstant.white),
                                           ),

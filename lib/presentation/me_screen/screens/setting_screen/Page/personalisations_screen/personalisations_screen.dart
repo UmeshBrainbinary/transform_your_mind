@@ -191,7 +191,7 @@ class _PersonalizationScreenScreenState
                                             .gAuthorName??""
                                             : "Norman Vincent Peale",
                                         style: Style.nunRegular(
-                                            fontSize: 12, color: ColorConstant.white),
+                                            fontSize: 14, color: ColorConstant.white),
                                       ),
                                     )),
 

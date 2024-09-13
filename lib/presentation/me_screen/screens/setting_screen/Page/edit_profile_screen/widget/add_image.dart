@@ -110,7 +110,7 @@ class _AddImageEditWidgetState extends State<AddImageEditWidget> {
               child: CommonElevatedButton(height: 26,
                 title: "addProfileImage".tr,
                 textStyle: Style.nunMedium(
-                    fontSize: 10, color: ColorConstant.white),
+                    fontSize: 12, color: ColorConstant.white),
                 onTap: widget.onTap,
               ),
             ),

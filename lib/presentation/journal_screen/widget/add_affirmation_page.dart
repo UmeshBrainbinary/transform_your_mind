@@ -582,6 +582,8 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                                           hintText: "typeYourDescription".tr,
                                           labelText: "description".tr,
                                           controller: descController,
+                                          hintStyle: const TextStyle(fontSize: 14),
+                                          textStyle: const TextStyle(fontSize: 14),
                                           focusNode: descFocus,
                                           transform: Matrix4.translationValues(
                                               0, -108.h, 0),

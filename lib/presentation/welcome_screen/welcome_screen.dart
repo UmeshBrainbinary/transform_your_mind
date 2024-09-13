@@ -191,7 +191,7 @@ isAlreadySkip =true;
                         },
                         child: Text(
                           _showText ? "" : "skip".tr,
-                          style: Style.nunRegular(color: ColorConstant.white),
+                          style: Style.nunRegular(color: ColorConstant.white,fontSize: Dimens.d16),
                         )),
                   ),
                 ),

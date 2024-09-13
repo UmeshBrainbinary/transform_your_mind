@@ -132,6 +132,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                         ? ColorConstant.colorBFBFBF
                                         : ColorConstant.color545454),
                               ),
+                              hintStyle: const TextStyle(fontSize: 14),
+
                               suffixIcon: audioContentController
                                   .searchController.text.isEmpty
                                   ? const SizedBox()
@@ -157,7 +159,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                                   : ColorConstant.color545454)),
                                     ),
                               hintText: "search".tr,
-                              textStyle: Style.nunRegular(fontSize: 12),
+                              textStyle: Style.nunRegular(fontSize: 14),
                               controller:
                               audioContentController.searchController,
                               focusNode:
@@ -272,7 +274,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                                           style:
                                                               Style.nunMedium(
                                                             fontSize:
-                                                                Dimens.d12,
+                                                                Dimens.d14,
                                                           ),
                                                           overflow: TextOverflow
                                                               .ellipsis,

@@ -106,7 +106,7 @@ class _FaqScreenState extends State<FaqScreen> {
                                             currentLanguage == "en-US"
                                                 ? data?.question ?? ""
                                                 : data?.gQuestion ?? "",
-                                            style: Style.nunitoSemiBold(fontSize: 14),
+                                            style: Style.nunitoSemiBold(fontSize: 16),
                                             )),
                                         SvgPicture.asset(
                                           controller.faq[index]
@@ -131,7 +131,7 @@ class _FaqScreenState extends State<FaqScreen> {
                                                   ? data?.answer ?? ""
                                                   : data?.gAnswer ?? "",
                                               textAlign: TextAlign.start,
-                                          style: Style.nunRegular(fontSize: 10)
+                                          style: Style.nunRegular(fontSize: 14)
                                               .copyWith(height: 1.5),
                                         )
                                       ],

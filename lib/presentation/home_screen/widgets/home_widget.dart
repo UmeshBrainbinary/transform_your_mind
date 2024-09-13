@@ -289,7 +289,7 @@ class FeelGood extends StatelessWidget {
                       // "Motivational",
                       style: Style
                           .nunitoBold(
-                        fontSize: Dimens.d10,
+                        fontSize: Dimens.d12,
                       ),
                       overflow: TextOverflow
                           .ellipsis,

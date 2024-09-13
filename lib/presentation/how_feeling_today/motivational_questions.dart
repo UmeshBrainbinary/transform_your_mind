@@ -382,7 +382,7 @@ class MotivationalQuestions extends StatelessWidget {
                   child: Text(
                     "StartWithExercise".tr,
                     textAlign: TextAlign.center,
-                    style: Style.nunRegular(fontSize: 14),
+                    style: Style.nunRegular(fontSize: 16),
                   ),
                 ),
                 Dimens.d50.spaceHeight,

@@ -209,7 +209,7 @@ class _SelfHypnoticState extends State<SelfHypnotic> {
                                                       style:
                                                       Style.nunMedium(
                                                         fontSize:
-                                                        Dimens.d12,
+                                                        Dimens.d14,
                                                       ),
                                                       overflow: TextOverflow
                                                           .ellipsis,
@@ -368,7 +368,7 @@ class _SelfHypnoticState extends State<SelfHypnotic> {
                                                       style:
                                                       Style.nunMedium(
                                                         fontSize:
-                                                        Dimens.d12,
+                                                        Dimens.d14,
                                                       ),
                                                       overflow: TextOverflow
                                                           .ellipsis,

@@ -608,7 +608,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               child: Text(
                 "skip".tr,
                 style: Style.nunRegular(
-                  color: themeController.isDarkMode.value ? ColorConstant.white : ColorConstant.black,
+                  color: themeController.isDarkMode.value ?
+                  ColorConstant.white : ColorConstant.black,
+                    fontSize: Dimens.d16
                 ),
               ),
             ),
@@ -628,7 +630,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 "chooseSub".tr,
                 textAlign: TextAlign.center,
                 style: Style.nunRegular(
-                  fontSize: Dimens.d14,
+                  fontSize: Dimens.d16,
                 ),
               ),
             ),
@@ -640,7 +642,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 textAlign: TextAlign.center,
                 style: Style.nunMedium(
                   color: themeController.isDarkMode.isTrue ? ColorConstant.color73969FF : ColorConstant.themeColor,
-                  fontSize: Dimens.d13,
+                  fontSize: Dimens.d14,
                 ),
               ),
             ),
@@ -811,14 +813,14 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           TextSpan(
             text: "$title: ",
             style: Style.nunitoBold(
-              fontSize: 13,
+              fontSize: 14,
               color: themeController.isDarkMode.isTrue ? ColorConstant.white : ColorConstant.black,
             ),
           ),
           TextSpan(
             text: des,
             style: Style.nunMedium(
-              fontSize: 13,
+              fontSize: 14,
               color: themeController.isDarkMode.isTrue ? ColorConstant.white : ColorConstant.black,
             ),
           ),

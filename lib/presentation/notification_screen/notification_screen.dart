@@ -47,13 +47,13 @@ class NotificationScreen extends StatelessWidget {
                         children: [
                           Text(
                             data["title"],
-                            style: Style.cormorantGaramondBold(fontSize: 15),
+                            style: Style.cormorantGaramondBold(fontSize: 16),
                           ),
                           SizedBox(
                             width: Get.width - 120,
                             child: Text(
                               data["des"],
-                              style: Style.nunRegular(fontSize: 12),
+                              style: Style.nunRegular(fontSize: 14),
                             ),
                           ),
                         ],
