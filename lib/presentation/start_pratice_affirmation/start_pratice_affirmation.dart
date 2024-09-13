@@ -223,8 +223,11 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
   }
 
   void _onComplete() async {
+
     startC.player.pause();
-    Get.to(AffirmationGreatWork(theme: startC.themeList[chooseImage]));
+    if(isAlreadyBack ==false) {
+      Get.to(AffirmationGreatWork(theme: startC.themeList[chooseImage]));
+    }
   }
   int speedChange() {
     switch (startC.selectedSpeedIndex) {
@@ -299,26 +302,40 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
   }
 int index =0;
   bool showBottom = false;
+  bool isAlreadyBack = false;
   late List<AlarmSettings> alarms;
 
   void _setAlarm(id) async {
+    if(am ==true)
+    {
+
+    }
+    else{
+      selectedHour = selectedHour +12;
+    }
+
     DateTime alarmTime = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day,
         selectedHour,selectedMinute,selectedSeconds);
-    final alarmSettings = AlarmSettings(
-        id: id,
-        dateTime: alarmTime,
-        assetAudioPath:   index ==1?ImageConstant.bgAudio2:ImageConstant.bgAudio1,
-        loopAudio: true,
-        vibrate: true,
-        volume: 0.2,
-        androidFullScreenIntent: true,
-        fadeDuration: 3.0,
-        notificationTitle: 'TransformYourMind',
-        notificationBody: 'TransformYourMind Alarm ringing.....',
-        enableNotificationOnKill: Platform.isAndroid?Platform.isAndroid:Platform.isIOS);
-    await Alarm.set(
-      alarmSettings: alarmSettings,
-    );
+    if(alarmTime.isAfter(DateTime.now())) {
+      final alarmSettings = AlarmSettings(
+          id: id,
+          dateTime: alarmTime,
+          assetAudioPath: index == 1 ? ImageConstant.bgAudio2 : ImageConstant
+              .bgAudio1,
+          loopAudio: true,
+          vibrate: false,
+          volume: 0.2,
+          androidFullScreenIntent: true,
+          fadeDuration: 3.0,
+          notificationTitle: 'TransformYourMind',
+          notificationBody: 'TransformYourMind Alarm ringing.....',
+          enableNotificationOnKill: Platform.isAndroid
+              ? Platform.isAndroid
+              : Platform.isIOS);
+      await Alarm.set(
+        alarmSettings: alarmSettings,
+      );
+    }
   }
   Future<void> navigateToRingScreen(AlarmSettings alarmSettings) async {
     await Navigator.push(
@@ -406,7 +423,12 @@ int index =0;
         statusBarColor: Colors.transparent));
     return WillPopScope(onWillPop: () async{
       await startC.player.pause();
-
+      setState(() {
+      isAlreadyBack =true;
+      _progressController?.stop();
+      _progressController?.dispose();
+      _autoScrollTimer?.cancel();
+      });
       return true;
     },
       child: Scaffold(
@@ -539,8 +561,15 @@ int index =0;
                 left: 16,
                 child: GestureDetector(
                   onTap: () async {
-                    Get.back();
                     await startC.player.pause();
+                    _progressController?.stop();
+                    _progressController?.dispose();
+                    _autoScrollTimer?.cancel();
+                    setState(() {
+                      isAlreadyBack =true;
+
+                    });
+                    Get.back();
                   },
                   child: Container(
                     height: 42,

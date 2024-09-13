@@ -62,6 +62,7 @@ class NotificationService {
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
       // Handle notification tap when the app is in the background
+
     });
 
     FirebaseMessaging.instance

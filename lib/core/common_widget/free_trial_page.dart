@@ -47,6 +47,34 @@ getUSer(context, greeting);
     _lottieFWController = AnimationController(vsync: this);
   }
 
+
+ Map yearlyText = {
+    "para1(1)":"For just CHF 59.00 per year, the ",
+    "para1(2)":"Premium Plus ",
+    "para1(3)":"version gives you full access to all Premium content as well as ",
+    "para1(4)":"exclusive access to self-hypnosis audios ",
+    "para1(5)":"specifically designed to bring about profound transformations. ",
+
+   "para2(1)":"These audios can help you ",
+   "para2(2)":"overcome fears, boost your confidence ",
+   "para2(3)":"or ",
+   "para2(4)":"overcome challenges ",
+   "para2(5)":"such as ",
+   "para2(6)":"fear of flying ",
+   "para2(7)":"by using the power of self-hypnosis to release old beliefs and promote positive mental change. ",
+   "para2(8)":"With new topics added regularly, you will continually receive tools to support your personal growth and help you lead a more fulfilling and successful life.",
+ };
+  Map yearlyTextGerman = {
+    "para1(1)":"Für nur 59.00 CHF pro Jahr erhältst du in der Premium Plus-Version den vollen Zugriff auf alle Premium-Inhalte sowie den ",
+    "para1(2)":"exklusiven Zugang zu Selbsthypnose-Audios, ",
+    "para1(3)":"vdie speziell darauf ausgelegt sind, tiefgreifende Transformationen zu bewirken. ",
+
+    "para2(1)":"Diese Audios können dir helfen, Ängste zu überwinden, dein Selbstbewusstsein zu stärken oder Herausforderungen wie Flugangst zu meistern, indem sie die Kraft der Selbsthypnose nutzen, um alte Überzeugungen loszulassen und positive mentale Veränderungen zu fördern. Mit ",
+    "para2(2)":"regelmäßig neuen Themen ",
+    "para2(3)":"erhältst du kontinuierlich Tools, die dein persönliches Wachstum unterstützen und dir dabei helfen, ein erfüllteres und erfolgreicheres Leben zu führen.",
+     };
+
+
   @override
   void dispose() {
     _lottieBgController.dispose();
@@ -827,7 +855,7 @@ getUSer(context, greeting);
         height: Get.height *0.8,
         child:
         Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.only(left: 20.0,right: 20,top: 20),
           child: Column(
             children: [
               Align(
@@ -848,7 +876,7 @@ getUSer(context, greeting);
               Dimens.d6.spaceHeight,
 
              SizedBox(
-               height: Get.height *0.4,
+               height: Get.height *0.45,
                child: SingleChildScrollView(
                  child: Column(
                    children: [
@@ -861,24 +889,40 @@ getUSer(context, greeting);
                      ),
                      Dimens.d20.spaceHeight,
                      Text(
-                       "The free version of TransformYourMind is the perfect introduction to fostering meaningful change in your life.".tr,
+                       "“Change begins with a single conscious step.”".tr,
                        style: Style.nunMedium(
                            fontSize: Dimens.d14, fontWeight: FontWeight.w400,color: Colors.black
                        ),
                        textAlign: TextAlign.center,
                      ),
                      Dimens.d10.spaceHeight,
-                 
+                     Text(
+                       "The free version of TransformYourMind offers you the perfect introduction to making significant changes in your life. With a selection of powerful meditations and inspirational quotes to boost your daily motivation, you can begin to calm your mind and find your inner peace".tr,
+                       style: Style.nunMedium(
+                           fontSize: Dimens.d14, fontWeight: FontWeight.w400,color: Colors.black
+                       ),
+                       textAlign: TextAlign.center,
+                     ),
+                     Dimens.d20.spaceHeight,
                      Padding(
                        padding: const EdgeInsets.symmetric(horizontal: 20),
                        child: Text.rich(
                            TextSpan(children: [
-                             TextSpan(text:  "Guided Meditations:".tr,
+                             WidgetSpan(child: Padding(
+                               padding: const EdgeInsets.only(bottom: 4.0),
+                               child: Container(height: 6,width: 6,decoration: const BoxDecoration(
+                                 shape:  BoxShape.circle,
+                                 color: Colors.black
+                               ),),
+                             )),
+                             const WidgetSpan(child: SizedBox(width: 6)),
+
+                             TextSpan(text:  "Guided meditations:".tr,
                                style: Style.nunMedium(
                                    fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
                                ),),
                              const TextSpan(text: " "),
-                             TextSpan(text:  "Experience calming, supportive meditations designed to reduce stress and promote inner peace, helping you take the first step toward a more balanced and harmonious mind.".tr,
+                             TextSpan(text:  "Experience a selection of calming and supportive meditations to help you let go of stress and develop a sense of serenity and balance. “Give your mind the rest it deserves.”".tr,
                                style: Style.nunRegular(
                                    fontSize: Dimens.d14,
                                    fontWeight: FontWeight.w400,
@@ -894,12 +938,20 @@ getUSer(context, greeting);
                        padding: const EdgeInsets.symmetric(horizontal: 20),
                        child: Text.rich(TextSpan(
                            children: [
-                             TextSpan(text:  "Daily Affirmations:".tr,
+                             WidgetSpan(child: Padding(
+                               padding: const EdgeInsets.only(bottom: 4.0),
+                               child: Container(height: 6,width: 6,decoration: const BoxDecoration(
+                                   shape:  BoxShape.circle,
+                                   color: Colors.black
+                               ),),
+                             )),
+                             const WidgetSpan(child: SizedBox(width: 6)),
+                             TextSpan(text:  "Motivational quotes:".tr,
                                style: Style.nunMedium(
                                    fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
                                ),),
                              const TextSpan(text: " "),
-                             TextSpan(text:  "Start each day with a curated selection of powerful affirmations to cultivate a positive mindset and set the tone for success.".tr,
+                             TextSpan(text:  "Be guided daily by inspirational quotes that encourage you to think positively and start your day full of confidence. “Every day is a new chance to be the best you can be.”".tr,
                                style: Style.nunRegular(
                                    fontSize: Dimens.d14,
                                    fontWeight: FontWeight.w400,
@@ -923,6 +975,7 @@ getUSer(context, greeting);
       );
     });
   }
+
   showBottomSheetMonthly({required BuildContext context}){
     showModalBottomSheet(context: context,
         backgroundColor: Colors.white,
@@ -937,7 +990,7 @@ getUSer(context, greeting);
         height: Get.height *0.8,
         child:
         Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.only(left: 20.0,right: 20,top: 20),
           child: Column(
             children: [
               Align(
@@ -958,37 +1011,88 @@ getUSer(context, greeting);
               Dimens.d6.spaceHeight,
 
               SizedBox(
-                height: Get.height *0.4,
+                height: Get.height *0.45,
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
                       Text(
-                        "TransformYourMind - Monthly Premium Version".tr,
+                        "TransformYourMind - Premium version monthly".tr,
                         style: Style.nunMedium(
                             fontSize: Dimens.d16, fontWeight: FontWeight.w700,color: Colors.black
                         ),
                         textAlign: TextAlign.center,
                       ),
                       Dimens.d20.spaceHeight,
-                      Text(
-                        "Experience the full benefits of TransformYourMind with the Premium Version, available for just 5.90 CHF per month. Start with a 7-day free trial and discover how our advanced tools can transform your mental well-being. Designed to support long-term growth, the Premium plan helps you cultivate mindfulness, positivity, and emotional resilience.".tr,
-                        style: Style.nunMedium(
-                            fontSize: Dimens.d14, fontWeight: FontWeight.w400,color: Colors.black
+                      Text.rich(
+                          TextSpan(children: [
+                            TextSpan(text:  "Experience the full power of TransformYourMind with the Premium version - for only 5.90 CHF per month.".tr,
+                              style: Style.nunRegular(
+                                  fontSize: Dimens.d14,
+                                  fontWeight: FontWeight.w400,
+
+                                  color: Colors.black
+
+
+                              ),),
+                            const TextSpan(text: " "),
+                            TextSpan(text: "Start with a 7-day free trial!".tr,
+                              style: Style.nunMedium(
+                                  fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
+                              ),),
+                            const TextSpan(text: " "),
+                            TextSpan(text:  "This premium version is your key to a mindful, balanced and emotionally empowered life. It's designed to support your long-term growth by helping you unleash your inner strength and realize your full potential.".tr,
+                              style: Style.nunRegular(
+                                  fontSize: Dimens.d14,
+                                  fontWeight: FontWeight.w400,
+
+                                  color: Colors.black
+
+
+                              ),),
+
+
+                          ])),
+
+                      Dimens.d10.spaceHeight,
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          children: [
+                           Padding(
+                              padding: const EdgeInsets.only(bottom: 4.0),
+                              child: Container(height: 6,width: 6,decoration: const BoxDecoration(
+                                  shape:  BoxShape.circle,
+                                  color: Colors.black
+                              ),),
+                            ),
+                            SizedBox(width: 6),
+                            Text( "What to expect:".tr,
+                              style: Style.nunMedium(
+                                  fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
+                              ),),
+                          ],
                         ),
-                        textAlign: TextAlign.center,
                       ),
                       Dimens.d10.spaceHeight,
-                  
+
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Text.rich(
                             TextSpan(children: [
-                              TextSpan(text: "Gratitude Journal:".tr,
+                              WidgetSpan(child: Padding(
+                                padding: const EdgeInsets.only(bottom: 4.0),
+                                child: Container(height: 6,width: 6,decoration: const BoxDecoration(
+                                    shape:  BoxShape.circle,
+                                    color: Colors.black
+                                ),),
+                              )),
+                              const WidgetSpan(child: SizedBox(width: 6)),
+                              TextSpan(text: "Gratitude journal:".tr,
                                 style: Style.nunMedium(
                                     fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
                                 ),),
                               const TextSpan(text: " "),
-                              TextSpan(text:  "Key features include the Gratitude Journal, which allows you to document daily reflections, and Extended Daily Affirmations, giving you access to a vast library or the option to create your own. The Customizable Affirmations Alarm Clock helps you start each day with positive, personalized affirmations.".tr,
+                              TextSpan(text:  "daily reflections that promote positivity and enrich your life.".tr,
                                 style: Style.nunRegular(
                                   fontSize: Dimens.d14,
                                   fontWeight: FontWeight.w400,
@@ -1004,12 +1108,20 @@ getUSer(context, greeting);
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Text.rich(TextSpan(
                             children: [
-                              TextSpan(text:  "Mindfulness Training:".tr,
+                              WidgetSpan(child: Padding(
+                                padding: const EdgeInsets.only(bottom: 4.0),
+                                child: Container(height: 6,width: 6,decoration: const BoxDecoration(
+                                    shape:  BoxShape.circle,
+                                    color: Colors.black
+                                ),),
+                              )),
+                              const WidgetSpan(child: SizedBox(width: 6)),
+                              TextSpan(text:  "Motivational quotes:".tr,
                                 style: Style.nunMedium(
                                     fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
                                 ),),
                               const TextSpan(text: " "),
-                              TextSpan(text:  "Additionally, Mindfulness Training enables you to capture and replay positive moments, while Daily Psychological Questions promote self-awareness by tracking your emotional patterns and progress through visual charts. Together, these tools empower you to lead a more mindful, balanced, and fulfilling life.".tr,
+                              TextSpan(text:  "Daily inspiration to pursue your goals with confidence.".tr,
                                 style: Style.nunRegular(
                                   fontSize: Dimens.d14,
                                   fontWeight: FontWeight.w400,
@@ -1021,8 +1133,168 @@ getUSer(context, greeting);
                   
                             ]
                         ),),
-                      )
-                  
+                      ),
+
+
+                      Dimens.d10.spaceHeight,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Text.rich(TextSpan(
+                            children: [
+                              WidgetSpan(child: Padding(
+                                padding: const EdgeInsets.only(bottom: 4.0),
+                                child: Container(height: 6,width: 6,decoration: const BoxDecoration(
+                                    shape:  BoxShape.circle,
+                                    color: Colors.black
+                                ),),
+                              )),
+                              const WidgetSpan(child: SizedBox(width: 6)),
+                              TextSpan(text:  "Affirmations:".tr,
+                                style: Style.nunMedium(
+                                    fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
+                                ),),
+                              const TextSpan(text: " "),
+                              TextSpan(text:  "A comprehensive library of powerful affirmations that transform your mindset.".tr,
+                                style: Style.nunRegular(
+                                    fontSize: Dimens.d14,
+                                    fontWeight: FontWeight.w400,
+
+                                    color: Colors.black
+
+
+                                ),),
+
+                            ]
+                        ),),
+                      ),
+
+                      Dimens.d10.spaceHeight,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Text.rich(TextSpan(
+                            children: [
+                              WidgetSpan(child: Padding(
+                                padding: const EdgeInsets.only(bottom: 4.0),
+                                child: Container(height: 6,width: 6,decoration: const BoxDecoration(
+                                    shape:  BoxShape.circle,
+                                    color: Colors.black
+                                ),),
+                              )),
+                              const WidgetSpan(child: SizedBox(width: 6)),
+                              TextSpan(text:  "Alarm clock with meditation:".tr,
+                                style: Style.nunMedium(
+                                    fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
+                                ),),
+                              const TextSpan(text: " "),
+                              TextSpan(text:  "Start the day with a peaceful meditation for more clarity and energy.".tr,
+                                style: Style.nunRegular(
+                                    fontSize: Dimens.d14,
+                                    fontWeight: FontWeight.w400,
+
+                                    color: Colors.black
+
+
+                                ),),
+
+                            ]
+                        ),),
+                      ),
+
+                      Dimens.d10.spaceHeight,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Text.rich(TextSpan(
+                            children: [
+                              WidgetSpan(child: Padding(
+                                padding: const EdgeInsets.only(bottom: 4.0),
+                                child: Container(height: 6,width: 6,decoration: const BoxDecoration(
+                                    shape:  BoxShape.circle,
+                                    color: Colors.black
+                                ),),
+                              )),
+                              const WidgetSpan(child: SizedBox(width: 6)),
+                              TextSpan(text:  "Guided breathing technique:".tr,
+                                style: Style.nunMedium(
+                                    fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
+                                ),),
+                              const TextSpan(text: " "),
+                              TextSpan(text:  "Reduce stress and find inner peace with targeted breathing exercises.".tr,
+                                style: Style.nunRegular(
+                                    fontSize: Dimens.d14,
+                                    fontWeight: FontWeight.w400,
+
+                                    color: Colors.black
+
+
+                                ),),
+
+                            ]
+                        ),),
+                      ),
+
+                      Dimens.d10.spaceHeight,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Text.rich(TextSpan(
+                            children: [
+                              WidgetSpan(child: Padding(
+                                padding: const EdgeInsets.only(bottom: 4.0),
+                                child: Container(height: 6,width: 6,decoration: const BoxDecoration(
+                                    shape:  BoxShape.circle,
+                                    color: Colors.black
+                                ),),
+                              )),
+                              const WidgetSpan(child: SizedBox(width: 6)),
+                              TextSpan(text:  "Mindfulness training:".tr,
+                                style: Style.nunMedium(
+                                    fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
+                                ),),
+                              const TextSpan(text: " "),
+                              TextSpan(text:  "anchor positive moments and strengthen your awareness.".tr,
+                                style: Style.nunRegular(
+                                    fontSize: Dimens.d14,
+                                    fontWeight: FontWeight.w400,
+
+                                    color: Colors.black
+
+
+                                ),),
+
+                            ]
+                        ),),
+                      ),
+
+                      Dimens.d10.spaceHeight,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Text.rich(TextSpan(
+                            children: [
+                              WidgetSpan(child: Padding(
+                                padding: const EdgeInsets.only(bottom: 4.0),
+                                child: Container(height: 6,width: 6,decoration: const BoxDecoration(
+                                    shape:  BoxShape.circle,
+                                    color: Colors.black
+                                ),),
+                              )),
+                              const WidgetSpan(child: SizedBox(width: 6)),
+                              TextSpan(text:  "Daily psychological questions:".tr,
+                                style: Style.nunMedium(
+                                    fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
+                                ),),
+                              const TextSpan(text: " "),
+                              TextSpan(text:  "Recognize emotional patterns and promote your personal growth.".tr,
+                                style: Style.nunRegular(
+                                    fontSize: Dimens.d14,
+                                    fontWeight: FontWeight.w400,
+
+                                    color: Colors.black
+
+
+                                ),),
+
+                            ]
+                        ),),
+                      ),
                     ],
                   ),
                 ),
@@ -1048,7 +1320,7 @@ getUSer(context, greeting);
         height: Get.height *0.8,
         child:
         Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.only(left: 20.0,right: 20,top: 20),
           child: Column(
             children: [
               Align(
@@ -1069,70 +1341,203 @@ getUSer(context, greeting);
               Dimens.d6.spaceHeight,
 
               SizedBox(
-                height: Get.height *0.4,
+                height: Get.height *0.45,
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
                       Text(
-                        "TransformYourMind - Annually Premium Version".tr,
+                        "TransformYourMind - Premium Plus Version yearly".tr,
                         style: Style.nunMedium(
                             fontSize: Dimens.d16, fontWeight: FontWeight.w700,color: Colors.black
                         ),
                         textAlign: TextAlign.center,
                       ),
                       Dimens.d20.spaceHeight,
-                      Text(
-                        "For just 59.90 CHF per year, the Premium Version offers a wealth of advanced features designed to elevate your mental well-being. Start with a 7-day free trial to explore how TransformYourMind can enrich your life.".tr,
-                        style: Style.nunMedium(
-                            fontSize: Dimens.d14, fontWeight: FontWeight.w400,color: Colors.black
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      Dimens.d10.spaceHeight,
-                  
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Text.rich(
-                            TextSpan(children: [
-                              TextSpan(text:  "Extended Daily Affirmations:".tr,
-                                style: Style.nunMedium(
-                                    fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
-                                ),),
-                              const TextSpan(text: " "),
-                              TextSpan(text:  "Features include the Gratitude Journal to track daily reflections and Extended Daily Affirmations, providing a wide library or the option to create personalized affirmations. The Customizable Affirmations Alarm Clock sets a positive tone for your day with tailored messages.".tr,
+
+
+
+                      (PrefService.getString(PrefKey.language) =="de-DE")?
+                      Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Text.rich(
+                                TextSpan(children: [
+                                  TextSpan(text:  "${yearlyTextGerman["para1(1)"]}".tr,
+                                    style: Style.nunRegular(
+                                        fontSize: Dimens.d14,
+                                        fontWeight: FontWeight.w400,
+
+                                        color: Colors.black
+
+
+                                    ),),
+                                  TextSpan(text:  "${yearlyTextGerman["para1(2)"]}".tr,
+                                    style: Style.nunMedium(
+                                        fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
+                                    ),),
+
+                                  TextSpan(text:  "${yearlyTextGerman["para1(3)"]}".tr,
+                                    style: Style.nunRegular(
+                                        fontSize: Dimens.d14,
+                                        fontWeight: FontWeight.w400,
+
+                                        color: Colors.black
+
+
+                                    ),),
+                                ])),
+                          ),
+                          Dimens.d10.spaceHeight,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Text.rich(  TextSpan(children: [
+                              TextSpan(text:  "${yearlyTextGerman["para2(1)"]}".tr,
                                 style: Style.nunRegular(
-                                  fontSize: Dimens.d14,
-                                  fontWeight: FontWeight.w400,
+                                    fontSize: Dimens.d14,
+                                    fontWeight: FontWeight.w400,
 
                                     color: Colors.black
 
 
                                 ),),
+                              TextSpan(text:  "${yearlyTextGerman["para2(2)"]}".tr,
+                                style: Style.nunMedium(
+                                    fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
+                                ),),
+
+                              TextSpan(text:  "${yearlyTextGerman["para2(3)"]}".tr,
+                                style: Style.nunRegular(
+                                    fontSize: Dimens.d14,
+                                    fontWeight: FontWeight.w400,
+
+                                    color: Colors.black
+
+
+                                ),),
+
                             ])),
-                      ),
-                      Dimens.d10.spaceHeight,
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Text.rich(TextSpan(
-                            children: [
-                              TextSpan(text:  "Self-Hypnosis Audios:".tr,
-                                style: Style.nunMedium(
-                                    fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
-                                ),),
-                              const TextSpan(text: " "),
-                              TextSpan(text:  "A standout feature is the regularly updated Self-Hypnosis Audios, designed to target specific areas of personal growth. Whether you want to overcome anxiety, boost self-confidence, or conquer fears like flying, these audios use the power of self-hypnosis to help you make profound mental shifts. ".tr,
-                                style: Style.nunRegular(
+                          )
+                        ],
+                      )
+                          :Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Text.rich(
+                              TextSpan(children: [
+                                TextSpan(text:  "${yearlyText["para1(1)"]}".tr,
+                                  style: Style.nunRegular(
+                                      fontSize: Dimens.d14,
+                                      fontWeight: FontWeight.w400,
+
+                                      color: Colors.black
+
+
+                                  ),),
+                                TextSpan(text:  "${yearlyText["para1(2)"]}".tr,
+                                  style: Style.nunMedium(
+                                      fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
+                                  ),),
+
+                                TextSpan(text:  "${yearlyText["para1(3)"]}".tr,
+                                  style: Style.nunRegular(
+                                      fontSize: Dimens.d14,
+                                      fontWeight: FontWeight.w400,
+
+                                      color: Colors.black
+
+
+                                  ),),
+
+                                TextSpan(text:  "${yearlyText["para1(4)"]}".tr,
+                                  style: Style.nunMedium(
+                                      fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
+                                  ),),
+
+                                TextSpan(text:  "${yearlyText["para1(5)"]}".tr,
+                                  style: Style.nunRegular(
+                                      fontSize: Dimens.d14,
+                                      fontWeight: FontWeight.w400,
+
+                                      color: Colors.black
+
+
+                                  ),),
+                              ])),
+                        ),
+                        Dimens.d10.spaceHeight,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Text.rich(  TextSpan(children: [
+                            TextSpan(text:  "${yearlyText["para2(1)"]}".tr,
+                              style: Style.nunRegular(
                                   fontSize: Dimens.d14,
                                   fontWeight: FontWeight.w400,
 
-                                    color: Colors.black
+                                  color: Colors.black
 
 
-                                ),),
-                  
-                            ]
-                        ),),
-                      )
+                              ),),
+                            TextSpan(text:  "${yearlyText["para2(2)"]}".tr,
+                              style: Style.nunMedium(
+                                  fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
+                              ),),
+
+                            TextSpan(text:  "${yearlyText["para2(3)"]}".tr,
+                              style: Style.nunRegular(
+                                  fontSize: Dimens.d14,
+                                  fontWeight: FontWeight.w400,
+
+                                  color: Colors.black
+
+
+                              ),),
+
+                            TextSpan(text:  "${yearlyText["para2(4)"]}".tr,
+                              style: Style.nunMedium(
+                                  fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
+                              ),),
+
+                            TextSpan(text:  "${yearlyText["para2(5)"]}".tr,
+                              style: Style.nunRegular(
+                                  fontSize: Dimens.d14,
+                                  fontWeight: FontWeight.w400,
+
+                                  color: Colors.black
+
+
+                              ),),
+                            TextSpan(text:  "${yearlyText["para2(6)"]}".tr,
+                              style: Style.nunMedium(
+                                  fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black
+                              ),),
+
+                            TextSpan(text:  "${yearlyText["para2(7)"]}".tr,
+                              style: Style.nunRegular(
+                                  fontSize: Dimens.d14,
+                                  fontWeight: FontWeight.w400,
+
+                                  color: Colors.black
+
+
+                              ),),
+                          ])),
+                        ),
+                        Dimens.d10.spaceHeight,
+
+                        Text(
+                          "With new topics added regularly, you will continually receive tools to support your personal growth and help you lead a more fulfilling and successful life.".tr,
+                          style: Style.nunRegular(
+                              fontSize: Dimens.d14,
+                              fontWeight: FontWeight.w400,
+
+                              color: Colors.black
+
+
+                          ),),
+                      ],
+                    ),
                     ],
                   ),
                 ),

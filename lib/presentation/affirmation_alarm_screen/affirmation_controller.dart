@@ -43,7 +43,13 @@ class AffirmationController extends GetxController{
 
   @override
   void onInit() {
-    subscription ??= Alarm.ringStream.stream.listen(navigateToRingScreen);
+    subscription ??= Alarm.ringStream.stream.listen((
+     v
+        ){
+      print(v.dateTime);
+      navigateToRingScreen(v);
+    });
+
     _audioPlayer.positionStream.listen((event) {
       _position.value = event;
     });

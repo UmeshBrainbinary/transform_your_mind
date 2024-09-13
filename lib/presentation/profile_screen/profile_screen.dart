@@ -374,7 +374,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                 Text(
                                                   "completedGratitude".tr,
                                                   style: Style.nunRegular(
-                                                    fontSize: currentLanguage=="en-US"?Dimens.d12:Dimens.d10,
+                                                    fontSize: currentLanguage=="en-US"?Dimens.d12:Dimens.d9,
                                                   ),
                                                 )
                                               ],
@@ -396,7 +396,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                 Text(
                                                   "positiveMoment".tr,
                                                   style: Style.nunRegular(
-                                                    fontSize: currentLanguage=="en-US"?Dimens.d12:Dimens.d10,
+                                                    fontSize: currentLanguage=="en-US"?Dimens.d12:Dimens.d9,
                                                   ),
                                                 )
                                               ],
@@ -418,7 +418,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                 Text(
                                                   "completedAffirmations".tr,
                                                   style: Style.nunRegular(
-                                                    fontSize: currentLanguage=="en-US"?Dimens.d12:Dimens.d10,
+                                                    fontSize: currentLanguage=="en-US"?Dimens.d12:Dimens.d9,
                                                   ),
                                                 )
                                               ],
@@ -440,7 +440,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                 Text(
                                                   "goodFeel".tr,
                                                   style: Style.nunRegular(
-                                                    fontSize: currentLanguage=="en-US"?Dimens.d12:Dimens.d10,
+                                                    fontSize: currentLanguage=="en-US"?Dimens.d12:Dimens.d9,
                                                   ),
                                                 )
                                               ],

@@ -43,6 +43,7 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
   double _progress = 0.0;
   int selectedTime = 3;
   bool showBottom = false;
+  bool isAlreadyBack = false;
   bool isPro = false;
   AnimationController? _progressController;
   Animation<double>? _progressAnimation;
@@ -171,7 +172,10 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
 
   void _onComplete() async {
     await updateGratitude(widget.gratitudeList![0].id);
+    if(isAlreadyBack ==false) {
+
     Get.to(() => GreatWork(theme: startC.themeList[chooseImage]));
+    }
   }
   updateGratitude(id) async {
     var headers = {
@@ -223,6 +227,12 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
         statusBarColor: Colors.transparent));
     return WillPopScope( onWillPop: () async {
       await startC.pause();
+      setState(() {
+        isAlreadyBack =true;
+        _progressController?.stop();
+        _progressController?.dispose();
+        _autoScrollTimer?.cancel();
+      });
       return true;
     },
       child: Scaffold(
@@ -343,8 +353,14 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
                 child: GestureDetector(
                   onTap: () async {
                     await startC.pause();
-
+                    _progressController?.stop();
+                    _progressController?.dispose();
+                    _autoScrollTimer?.cancel();
+                    setState(() {
+                      isAlreadyBack =true;
+                    });
                     Get.back();
+
                   },
                   child: Container(
                     height: 42,

@@ -1138,26 +1138,37 @@ double value =  0;
 
 
   void _setAlarm(id) async {
+    if(am ==true)
+    {
+
+    }
+    else{
+      selectedHour = selectedHour +12;
+    }
     DateTime alarmTime = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day,
         selectedHour,selectedMinute,selectedSeconds);
   // File filePath =  await downloadAudioFile(widget.data![0].audioFile ?? 'assets/audio/audio.mp3');
-    final alarmSettings = AlarmSettings(
-        id: id,
-        dateTime: alarmTime,
-      //  assetAudioPath: filePath.path !=""?filePath.path: 'assets/audio/audio.mp3',
-        assetAudioPath:  index ==1?ImageConstant.bgAudio2:ImageConstant.bgAudio1,
-        loopAudio: true,
-        vibrate: true,
-        volume: 0.8,
-        androidFullScreenIntent: true,
-        fadeDuration: 3.0,
-        notificationTitle: 'TransformYourMind',
-        notificationBody: 'TransformYourMind Alarm ringing.....',
-        enableNotificationOnKill: Platform.isAndroid?Platform.isAndroid:Platform.isIOS);
-    await Alarm.set(
-      alarmSettings: alarmSettings,
-    );
-
+    if(alarmTime.isAfter(DateTime.now())) {
+      final alarmSettings = AlarmSettings(
+          id: id,
+          dateTime: alarmTime,
+          //  assetAudioPath: filePath.path !=""?filePath.path: 'assets/audio/audio.mp3',
+          assetAudioPath: index == 1 ? ImageConstant.bgAudio2 : ImageConstant
+              .bgAudio1,
+          loopAudio: true,
+          vibrate: true,
+          volume: 0.8,
+          androidFullScreenIntent: true,
+          fadeDuration: 3.0,
+          notificationTitle: 'TransformYourMind',
+          notificationBody: 'TransformYourMind Alarm ringing.....',
+          enableNotificationOnKill: Platform.isAndroid
+              ? Platform.isAndroid
+              : Platform.isIOS);
+      await Alarm.set(
+        alarmSettings: alarmSettings,
+      );
+    }
   }
 
 
