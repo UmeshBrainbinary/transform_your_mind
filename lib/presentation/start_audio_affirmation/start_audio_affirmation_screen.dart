@@ -1128,13 +1128,16 @@ double value =  0;
 
 
   void _setAlarm(id) async {
-    if(am ==true)
-    {
 
-    }
-    else{
-      selectedHour = selectedHour +12;
-    }
+      if (am == true) {
+
+      }
+      else {
+        if(selectedHour < 12) {
+          selectedHour = selectedHour + 12;
+        }
+      }
+
     DateTime alarmTime = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day,
         selectedHour,selectedMinute,selectedSeconds);
   // File filePath =  await downloadAudioFile(widget.data![0].audioFile ?? 'assets/audio/audio.mp3');

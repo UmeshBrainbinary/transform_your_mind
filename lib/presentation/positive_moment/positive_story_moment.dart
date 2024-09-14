@@ -95,7 +95,6 @@ class _PositiveStoryMomentState extends State<PositiveStoryMoment> with SingleTi
           Future.delayed(Duration(seconds: speedChange())).then(
                 (value) {
               Get.back();
-        _controller.dispose();
         positiveController.pause();
             },
           );
@@ -354,10 +353,10 @@ class _PositiveStoryMomentState extends State<PositiveStoryMoment> with SingleTi
                                   fit: BoxFit.cover,
                                 ),
                               ):Positioned.fill(
-                          child: Image.network(
+                          child:   widget.data?.length !=0?Image.network(
                             widget.data![(_currentIndexNew)].image,
                             fit: BoxFit.cover,
-                          ),
+                          ):const SizedBox(),
                         ),
                               Positioned.fill(
                                 child: FadeTransition(

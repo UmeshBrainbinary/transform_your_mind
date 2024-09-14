@@ -105,6 +105,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   }
   getUserData() async {
     await getUSer();
+    subscriptionController.plan.clear();
     List.generate(3, (index) {
       subscriptionController.plan.add(false);
     },);
@@ -204,11 +205,11 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     '${EndPoints.baseUrl}${EndPoints.updateUser}${PrefService.getString(PrefKey.userId)}'));
             request.fields.addAll({
               'isSubscribed': "true",
-              'subscriptionId':  subscriptionController.plan[2] == true?"transform_yearly": subscriptionController.plan[1] == true?"transform_monthly":"Free",
+              'subscriptionId':  subscriptionController.plan[2].toString() == "true"?"transform_yearly": subscriptionController.plan[1] == true?"transform_monthly":"Free",
               'subscriptionTitle':
-              subscriptionController.plan[2] == true?"Premium Yearly":subscriptionController.plan[1] == true?"Premium Monthly":"Free",
+              subscriptionController.plan[2].toString() == "true"?"Premium Yearly":subscriptionController.plan[1] == true?"Premium Monthly":"Free",
               'subscriptionDescription': "",
-              'price': "₣"+ subscriptionController.plan[2] == true?"49.99":subscriptionController.plan[1] == true?"6.99":"Free",
+              'price': "₣"+ subscriptionController.plan[2].toString() == "true"?"49.99":subscriptionController.plan[1] == true?"6.99":"Free",
               'rawPrice': "",
               'currencyCode': "",
               'subscriptionDate': DateTime.now().toString(),
@@ -222,6 +223,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             if (response.statusCode == 200) {
               showSnackBarSuccess(context, "Subscription set successful");
               await getUSer();
+              Get.back();
             } else {
               debugPrint(response.reasonPhrase);
             }
@@ -797,7 +799,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     _purchasePlan("1 Year");
                   }
                   debugPrint("${subscriptionController.plan}");
-                }
+               }
               },
             ),
           ),
@@ -868,10 +870,16 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
       } else {
         print("Purchase unsuccessful");
+if(Platform.isAndroid) {
 
         await api();
+}
         checkData();
-        Get.back();
+        if(Platform.isAndroid) {
+
+          Get.back();
+        }
+
       }
     } catch (e) {
       // Handle any errors
