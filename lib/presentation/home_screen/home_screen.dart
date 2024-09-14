@@ -1629,6 +1629,7 @@ class _HomeScreenState extends State<HomeScreen>
                                               return StartAudioAffirmationScreen(
                                                 id: g.todayAList?[0].id,
                                                 data: g.todayAList!,
+                                                totalDuration: g.totalDuration,
                                               );
                                             })).then(
                                               (value) {

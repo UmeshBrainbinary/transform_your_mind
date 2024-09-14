@@ -347,520 +347,540 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      backgroundColor: themeController.isDarkMode.value
-          ? ColorConstant.darkBackground
-          : ColorConstant.backGround,
-      appBar: CustomAppBar(
-        title: widget.isEdit! ? "editAffirmation".tr : widget.isFromMyAffirmation && (widget.record ?? false)? "Record affirmation":"addAffirmation".tr,
-        action: !(widget.isFromMyAffirmation)
-            ? Row(children: [
-                GestureDetector(onTap: () {}, child: Text("skip".tr)),
-                Dimens.d20.spaceWidth,
-              ])
-            : const SizedBox.shrink(),
-      ),
-      body: Stack(
-        children: [
-          Align(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: const EdgeInsets.only(top: Dimens.d100),
-                child: SvgPicture.asset(themeController.isDarkMode.isTrue
-                    ? ImageConstant.profile1Dark
-                    : ImageConstant.profile1),
-              )),
-          Align(
-              alignment: Alignment.bottomLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: Dimens.d120),
-                child: SvgPicture.asset(themeController.isDarkMode.isTrue
-                    ? ImageConstant.profile2Dark
-                    : ImageConstant.profile2),
-              )),
-          LayoutBuilder(
-            builder: (context, constraints) {
-              return Form(
-                key: _formKey,
-                child:
-                widget.record!
-                    ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+    return WillPopScope(
+      onWillPop: ()async{
+        audioPlayerVoices.stop();
+        _stopRecording();
+        return true;
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        backgroundColor: themeController.isDarkMode.value
+            ? ColorConstant.darkBackground
+            : ColorConstant.backGround,
+        appBar: CustomAppBar(
+          onTap: (){
+            audioPlayerVoices.stop();
+            _stopRecording();
+            Get.back();
+          },
+          title: widget.isEdit! ? "editAffirmation".tr : widget.isFromMyAffirmation && (widget.record ?? false)? "Record affirmation":"addAffirmation".tr,
+          action: !(widget.isFromMyAffirmation)
+              ? Row(children: [
+                  GestureDetector(onTap: () {}, child: Text("skip".tr)),
+                  Dimens.d20.spaceWidth,
+                ])
+              : const SizedBox.shrink(),
+        ),
+        body: Stack(
+          children: [
+            Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: Dimens.d100),
+                  child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                      ? ImageConstant.profile1Dark
+                      : ImageConstant.profile1),
+                )),
+            Align(
+                alignment: Alignment.bottomLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: Dimens.d120),
+                  child: SvgPicture.asset(themeController.isDarkMode.isTrue
+                      ? ImageConstant.profile2Dark
+                      : ImageConstant.profile2),
+                )),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                return Form(
+                  key: _formKey,
+                  child:
+                  widget.record!
+                      ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
 
-                  children: [
-                    (widget.record ?? false)?Padding(
-                      padding: const EdgeInsets.all(30.0),
-                      child: Text(widget.des ?? '',
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 12,
-                        textAlign: TextAlign.center,style:  Style.nunitoSemiBold(
-                          fontSize: Dimens.d20,
-                          color: themeController.isDarkMode.value
-                              ? ColorConstant.white
-                              : ColorConstant.black),),
-                    ):const SizedBox(),
+                    children: [
+                      (widget.record ?? false)?Padding(
+                        padding: const EdgeInsets.all(30.0),
+                        child: Text(widget.des ?? '',
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 12,
+                          textAlign: TextAlign.center,style:  Style.nunitoSemiBold(
+                            fontSize: Dimens.d20,
+                            color: themeController.isDarkMode.value
+                                ? ColorConstant.white
+                                : ColorConstant.black),),
+                      ):const SizedBox(),
 
-                    Row(
-                      mainAxisAlignment:MainAxisAlignment.center,
-                      children: [
-                        Column(
-                          children: [
+                      Row(
+                        mainAxisAlignment:MainAxisAlignment.center,
+                        children: [
+                          Column(
+                            children: [
 
 
-                            GestureDetector(
-                              onTap: () {
-                                if(recordFile) {
-                                  setState(() {
-                                    _stopRecording();
-
-                                    recordFile = false;
-                                  });
-                                }
-                                else
-                                  {
+                              GestureDetector(
+                                onTap: () {
+                                  if(recordFile) {
                                     setState(() {
-                                      _startRecording();
-                                      recordFile = true;
+                                      _stopRecording();
+
+                                      recordFile = false;
                                     });
                                   }
-                              },
-                              child: Container(
-                                height: 68,
-                                width: 68,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: ColorConstant.themeColor
-                                ),
-                                alignment: Alignment.center,
-                                child: recordFile ?
-                                const Icon(Icons.stop_circle_outlined, color: Colors.redAccent,size: 35,):
-                                const Icon(Icons.mic_rounded,color: Colors.white,size: 35,),
-                              ),
-                            ),
-
-                            Dimens.d10.spaceHeight,
-                            Text(recordFile ?"Stop".tr:"Record".tr,style: Style.nunRegular(
-                                fontSize: Dimens.d14,
-
-                                color: ColorConstant.black),),
-                          ],
-                        ),
-                        _recordFilePath!=null &&!recordFile?const SizedBox(width: 50,):const SizedBox(),
-                        _recordFilePath!=null && !recordFile? Column(
-                          children: [
-                            GestureDetector(
-                              onTap: () async {
-                                if (audioPlayerVoices.playing) {
-                                  play = false;
-
-                                  audioPlayerVoices.pause();
-                                } else {
-
-
-
-                                  await audioPlayerVoices.setFilePath(_recordFilePath!);
-                                  audioPlayerVoices.play();
-                                  play = true;
-
-                                }
-
-                                setState(() {
-
-                                });
-                              },
-                              child: Container(
-                                height: 68,
-                                width: 68,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: ColorConstant.themeColor
-                                ),
-                                alignment: Alignment.center,
-                                child:  Icon(play?Icons.pause:Icons.play_arrow,color: Colors.white,size: 35,),
-                              ),
-                            ),
-
-                            Dimens.d10.spaceHeight,
-                            Text("Test recording".tr,style: Style.nunRegular(
-                                fontSize: Dimens.d14,
-                                color: ColorConstant.black),),
-                          ],
-                        ):const SizedBox(),
-                      ],
-                    ),
-                    Dimens.d50.spaceHeight,
-                    _recordFilePath!=null?Row(
-                      children: [
-                        !widget.isEdit!
-                            ? const SizedBox()
-                            : Expanded(
-                          child: CommonElevatedButton(
-                            title: "cancel".tr,
-                            outLined: true,
-                            textStyle: Style.nunRegular(
-                                color: themeController
-                                    .isDarkMode.isTrue
-                                    ? Colors.white
-                                    : ColorConstant.black),
-                            onTap: () {
-                              setState(() {});
-                              Get.back();
-                            },
-                          ),
-                        ),
-                        Dimens.d20.spaceWidth,
-                        _recordFilePath!=null && !recordFile?  Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 20.0),
-                            child: CommonElevatedButton(
-                              textStyle: Style.nunRegular(
-                                  fontSize: widget.isEdit!
-                                      ? Dimens.d14
-                                      : Dimens.d20,
-                                  color: ColorConstant.white),
-                              title: widget.isEdit!
-                                  ? "update".tr
-                                  : "save".tr,
-                              onTap: () async {
-                                titleFocus.unfocus();
-                                descFocus.unfocus();
-                                if (_formKey.currentState!.validate()) {
-                                  if (widget.isEdit!) {
-                                    if (await isConnected()) {
-                                      updateAffirmation();
-                                    } else {
-                                      showSnackBarError(
-                                          context, "noInternet".tr);
+                                  else
+                                    {
+                                      setState(() {
+                                        _startRecording();
+                                        recordFile = true;
+                                      });
                                     }
-                                  } else {
-                                    if (await isConnected()) {
-                                      PrefService.setValue(
-                                          PrefKey
-                                              .firstTimeUserAffirmation,
-                                          true);
-
-                                      if(widget.isFromMyAffirmation)
-                                        {
-                                          updateAffirmation();
-                                        }
-                                      else
-                                        {
-                                      addAffirmation();
-
-                                        }
-                                    } else {
-                                      showSnackBarError(
-                                          context, "noInternet".tr);
-                                    }
-                                  }
-                                }
-                              },
-                            ),
-                          ),
-                        ):const SizedBox(),
-                      ],
-                    ):const SizedBox(),
-
-                  ],
-                )
-                    : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    !widget.record!
-                        ? Expanded(
-                            child: CustomScrollViewWidget(
-                        child: LayoutContainer(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Dimens.d20.spaceHeight,
-                                    Stack(alignment: Alignment.topRight,
-                                      children: [
-                                        CommonTextField(addSuffix: true,
-                                          hintText: "typeYourDescription".tr,
-                                          labelText: "description".tr,
-                                          controller: descController,
-                                          hintStyle: const TextStyle(fontSize: 14),
-                                          textStyle: const TextStyle(fontSize: 14),
-                                          focusNode: descFocus,
-                                          transform: Matrix4.translationValues(
-                                              0, -108.h, 0),
-                                          prefixLottieIcon:
-                                              ImageConstant.lottieDescription,
-                                          maxLines: 15,
-                                          maxLength: 2000,
-                                          validator: (value) {
-                                            if (value!.trim().isEmpty) {
-                                              return "pleaseEnterDescription".tr;
-                                            }else if (value.length > 2000) {
-                                              return "youCantMoreThan".tr;
-                                            }
-                                            return null;
-                                            },
-                                          onChanged: (value) => currentLength
-                                              .value = descController.text.length,
-                                        ),
-                                      /*  Padding(
-                                          padding: const EdgeInsets.only(top: 45,right: 20),
-                                          child: GestureDetector(
-                                              onLongPressStart: (details) async {
-                                                Vibration.vibrate(
-                                                  pattern: [80, 80, 0, 0, 0, 0, 0, 0],
-                                                  intensities: [
-                                                    20,
-                                                    20,
-                                                    0,
-                                                    0,
-                                                    0,
-                                                    0,
-                                                    0,
-                                                    0
-                                                  ],
-                                                );
-                                                setState(() {
-                                                  _isPressed = true;
-                                                });
-
-
-                                                if (!_isListening) {
-                                                  bool available =
-                                                  await _speech!.initialize(
-                                                    onStatus: (val) {
-                                                      debugPrint(
-                                                          "Status for speech recording $val");
-                                                      if (val == "done") {
-                                                        _isPressed = false;
-                                                        _isListening = false;
-                                                      } else if (val ==
-                                                          'notListening') {
-                                                        _isPressed = false;
-                                                        _isListening = false;
-                                                      }
-                                                    },
-                                                    onError: (val) {
-                                                      debugPrint(
-                                                          "Status for speech recording error $val");
-
-                                                      if (val.errorMsg ==
-                                                          "error_no_match") {
-                                                        _onLongPressEnd();
-                                                      }
-                                                    },
-                                                  );
-                                                  if (available) {
-                                                    _isListening = true;
-                                                    _startListening();
-                                                  } else {
-                                                    _isPressed = false;
-                                                    _isListening = false;
-                                                  }
-                                                }
-                                                setState(() {
-
-                                                });
-                                              },
-                                              onLongPressEnd: (details) {
-                                                _onLongPressEnd();
-                                                setState(() {
-
-
-                                                });
-                                                Vibration.vibrate(
-                                                  pattern: [80, 80, 0, 0, 0, 0, 0, 0],
-                                                  intensities: [
-                                                    20,
-                                                    20,
-                                                    0,
-                                                    0,
-                                                    0,
-                                                    0,
-                                                    0,
-                                                    0
-                                                  ],
-                                                );
-
-                                              },
-                                              child: _isListening
-                                                  ? Lottie.asset(
-                                                ImageConstant.micAnimation,
-                                                height: Dimens.d50,
-                                                width: Dimens.d50,
-                                                fit: BoxFit.fill,
-                                                repeat: true,
-                                              )
-                                                  : SvgPicture.asset(
-                                                  ImageConstant.mic)),
-                                        ),*/
-                                      ],
-                                    ),
-                              Dimens.d20.spaceHeight,
-
-                              Row(
-
-                                mainAxisAlignment:MainAxisAlignment.center,
-                                children: [
-                                  Column(
-                                    children: [
-
-
-                                      GestureDetector(
-                                        onTap: () {
-                                          if(recordFile) {
-                                            setState(() {
-                                              _stopRecording();
-
-                                              recordFile = false;
-                                            });
-                                          }
-                                          else
-                                          {
-                                            setState(() {
-                                              _startRecording();
-                                              recordFile = true;
-                                            });
-                                          }
-                                        },
-                                        child: Container(
-                                          height: 68,
-                                          width: 68,
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(20),
-                                              color: ColorConstant.themeColor
-                                          ),
-                                          alignment: Alignment.center,
-                                          child: recordFile ?
-                                          const Icon(Icons.stop_circle_outlined, color: Colors.redAccent,size: 35,):
-                                          const Icon(Icons.mic_rounded,color: Colors.white,size: 35,),
-                                        ),
-                                      ),
-
-                                      Dimens.d10.spaceHeight,
-                                      Text(recordFile ?"Stop".tr:"Record".tr,style: Style.nunRegular(
-                                          fontSize: Dimens.d14,
-
-                                          color: ColorConstant.black),),
-                                    ],
+                                },
+                                child: Container(
+                                  height: 68,
+                                  width: 68,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: ColorConstant.themeColor
                                   ),
-                                  _recordFilePath!=null &&!recordFile?const SizedBox(width: 50,):const SizedBox(),
-                                  _recordFilePath!=null && !recordFile? Column(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () async {
-                                          if (audioPlayerVoices.playing) {
-                                            play = false;
-
-                                            audioPlayerVoices.pause();
-                                          } else {
-
-
-
-                                            await audioPlayerVoices.setFilePath(_recordFilePath!);
-                                            audioPlayerVoices.play();
-                                            play = true;
-
-                                          }
-
-                                          setState(() {
-
-                                          });
-                                        },
-                                        child: Container(
-                                          height: 68,
-                                          width: 68,
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(20),
-                                              color: ColorConstant.themeColor
-                                          ),
-                                          alignment: Alignment.center,
-                                          child:  Icon(play?Icons.pause:Icons.play_arrow,color: Colors.white,size: 35,),
-                                        ),
-                                      ),
-
-                                      Dimens.d10.spaceHeight,
-                                      Text("Test recording".tr,style: Style.nunRegular(
-                                          fontSize: Dimens.d14,
-                                          color: ColorConstant.black),),
-                                    ],
-                                  ):const SizedBox(),
-                                ],
+                                  alignment: Alignment.center,
+                                  child: recordFile ?
+                                  const Icon(Icons.stop_circle_outlined, color: Colors.redAccent,size: 35,):
+                                  const Icon(Icons.mic_rounded,color: Colors.white,size: 35,),
+                                ),
                               ),
-                              Dimens.d30.h.spaceHeight,
-                              Row(
-                                children: [
-                                  !widget.isEdit!?const SizedBox():Expanded(
-                                    child: CommonElevatedButton(
-                                      title: "cancel".tr,
-                                      outLined: true,
-                                            textStyle: Style.nunRegular(
-                                                color: themeController
-                                                        .isDarkMode.isTrue
-                                                    ? Colors.white
-                                                    : ColorConstant.black),
-                                            onTap: () {
-                                        setState(() {});
-                                        Get.back();
-                                      },
-                                    ),
-                                  ),
-                                  Dimens.d20.spaceWidth,
-                                  Expanded(
-                                    child: CommonElevatedButton(
-                                      textStyle: Style.nunRegular(
-                                          fontSize: widget.isEdit!
-                                              ? Dimens.d14
-                                              : Dimens.d20,
-                                          color: ColorConstant.white),
-                                      title: widget.isEdit!
-                                          ? "update".tr
-                                          : "save".tr,
-                                      onTap: () async {
-                                        titleFocus.unfocus();
-                                        descFocus.unfocus();
-                                        if (_formKey.currentState!
-                                            .validate()) {
-                                          if (widget.isEdit!) {
-                                            if (await isConnected()) {
-                                              updateAffirmation();
-                                            } else {
-                                              showSnackBarError(
-                                                  context, "noInternet".tr);
-                                            }
-                                          } else {
-                                            if (await isConnected()) {
-                                              PrefService.setValue(
-                                                  PrefKey
-                                                      .firstTimeUserAffirmation,
-                                                  true);
 
-                                              addAffirmation();
-                                            } else {
-                                              showSnackBarError(
-                                                  context, "noInternet".tr);
-                                            }
-                                          }
-                                        }
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              Dimens.d10.spaceHeight,
+                              Text(recordFile ?"Stop".tr:"Record".tr,style: Style.nunRegular(
+                                  fontSize: Dimens.d14,
+
+                                  color: ColorConstant.black),),
                             ],
                           ),
-                        ),
+                          _recordFilePath!=null &&!recordFile?const SizedBox(width: 50,):const SizedBox(),
+                          _recordFilePath!=null && !recordFile? Column(
+                            children: [
+                              GestureDetector(
+                                onTap: () async {
+                                  if (audioPlayerVoices.playing) {
+                                    play = false;
+
+                                    audioPlayerVoices.pause();
+                                  } else {
+
+
+
+                                    await audioPlayerVoices.setFilePath(_recordFilePath!);
+                                    audioPlayerVoices.play();
+                                    play = true;
+
+                                  }
+
+                                  setState(() {
+
+                                  });
+                                },
+                                child: Container(
+                                  height: 68,
+                                  width: 68,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: ColorConstant.themeColor
+                                  ),
+                                  alignment: Alignment.center,
+                                  child:  Icon(play?Icons.pause:Icons.play_arrow,color: Colors.white,size: 35,),
+                                ),
+                              ),
+
+                              Dimens.d10.spaceHeight,
+                              Text("Test recording".tr,style: Style.nunRegular(
+                                  fontSize: Dimens.d14,
+                                  color: ColorConstant.black),),
+                            ],
+                          ):const SizedBox(),
+                        ],
                       ),
-                          )
-                        : const SizedBox(),
-                    Dimens.d10.spaceHeight,
-                    Dimens.d50.spaceHeight,
-                  ],
-                ),
-              );
-            },
-          ),
-          loader == true ? commonLoader() : const SizedBox()
-        ],
+                      Dimens.d50.spaceHeight,
+                      _recordFilePath!=null?Row(
+                        children: [
+                          !widget.isEdit!
+                              ? const SizedBox()
+                              : Expanded(
+                            child: CommonElevatedButton(
+                              title: "cancel".tr,
+                              outLined: true,
+                              textStyle: Style.nunRegular(
+                                  color: themeController
+                                      .isDarkMode.isTrue
+                                      ? Colors.white
+                                      : ColorConstant.black),
+                              onTap: () {
+                                audioPlayerVoices.stop();
+                                _stopRecording();
+                                setState(() {});
+                                Get.back();
+                              },
+                            ),
+                          ),
+                          Dimens.d20.spaceWidth,
+                          _recordFilePath!=null && !recordFile?  Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 20.0),
+                              child: CommonElevatedButton(
+                                textStyle: Style.nunRegular(
+                                    fontSize: widget.isEdit!
+                                        ? Dimens.d14
+                                        : Dimens.d20,
+                                    color: ColorConstant.white),
+                                title: widget.isEdit!
+                                    ? "update".tr
+                                    : "save".tr,
+                                onTap: () async {
+                                  audioPlayerVoices.stop();
+                                  _stopRecording();
+                                  titleFocus.unfocus();
+                                  descFocus.unfocus();
+                                  if (_formKey.currentState!.validate()) {
+                                    if (widget.isEdit!) {
+                                      if (await isConnected()) {
+                                        updateAffirmation();
+                                      } else {
+                                        showSnackBarError(
+                                            context, "noInternet".tr);
+                                      }
+                                    } else {
+                                      if (await isConnected()) {
+                                        PrefService.setValue(
+                                            PrefKey
+                                                .firstTimeUserAffirmation,
+                                            true);
+
+                                        if(widget.isFromMyAffirmation)
+                                          {
+                                            updateAffirmation();
+                                          }
+                                        else
+                                          {
+                                        addAffirmation();
+
+                                          }
+                                      } else {
+                                        showSnackBarError(
+                                            context, "noInternet".tr);
+                                      }
+                                    }
+                                  }
+                                },
+                              ),
+                            ),
+                          ):const SizedBox(),
+                        ],
+                      ):const SizedBox(),
+
+                    ],
+                  )
+                      : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      !widget.record!
+                          ? Expanded(
+                              child: CustomScrollViewWidget(
+                          child: LayoutContainer(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Dimens.d20.spaceHeight,
+                                      Stack(alignment: Alignment.topRight,
+                                        children: [
+                                          CommonTextField(addSuffix: true,
+                                            hintText: "typeYourDescription".tr,
+                                            labelText: "description".tr,
+                                            controller: descController,
+                                            hintStyle: const TextStyle(fontSize: 14),
+                                            textStyle: const TextStyle(fontSize: 14),
+                                            focusNode: descFocus,
+                                            transform: Matrix4.translationValues(
+                                                0, -108.h, 0),
+                                            prefixLottieIcon:
+                                                ImageConstant.lottieDescription,
+                                            maxLines: 15,
+                                            maxLength: 2000,
+                                            validator: (value) {
+                                              if (value!.trim().isEmpty) {
+                                                return "pleaseEnterDescription".tr;
+                                              }else if (value.length > 2000) {
+                                                return "youCantMoreThan".tr;
+                                              }
+                                              return null;
+                                              },
+                                            onChanged: (value) => currentLength
+                                                .value = descController.text.length,
+                                          ),
+                                        /*  Padding(
+                                            padding: const EdgeInsets.only(top: 45,right: 20),
+                                            child: GestureDetector(
+                                                onLongPressStart: (details) async {
+                                                  Vibration.vibrate(
+                                                    pattern: [80, 80, 0, 0, 0, 0, 0, 0],
+                                                    intensities: [
+                                                      20,
+                                                      20,
+                                                      0,
+                                                      0,
+                                                      0,
+                                                      0,
+                                                      0,
+                                                      0
+                                                    ],
+                                                  );
+                                                  setState(() {
+                                                    _isPressed = true;
+                                                  });
+
+
+                                                  if (!_isListening) {
+                                                    bool available =
+                                                    await _speech!.initialize(
+                                                      onStatus: (val) {
+                                                        debugPrint(
+                                                            "Status for speech recording $val");
+                                                        if (val == "done") {
+                                                          _isPressed = false;
+                                                          _isListening = false;
+                                                        } else if (val ==
+                                                            'notListening') {
+                                                          _isPressed = false;
+                                                          _isListening = false;
+                                                        }
+                                                      },
+                                                      onError: (val) {
+                                                        debugPrint(
+                                                            "Status for speech recording error $val");
+
+                                                        if (val.errorMsg ==
+                                                            "error_no_match") {
+                                                          _onLongPressEnd();
+                                                        }
+                                                      },
+                                                    );
+                                                    if (available) {
+                                                      _isListening = true;
+                                                      _startListening();
+                                                    } else {
+                                                      _isPressed = false;
+                                                      _isListening = false;
+                                                    }
+                                                  }
+                                                  setState(() {
+
+                                                  });
+                                                },
+                                                onLongPressEnd: (details) {
+                                                  _onLongPressEnd();
+                                                  setState(() {
+
+
+                                                  });
+                                                  Vibration.vibrate(
+                                                    pattern: [80, 80, 0, 0, 0, 0, 0, 0],
+                                                    intensities: [
+                                                      20,
+                                                      20,
+                                                      0,
+                                                      0,
+                                                      0,
+                                                      0,
+                                                      0,
+                                                      0
+                                                    ],
+                                                  );
+
+                                                },
+                                                child: _isListening
+                                                    ? Lottie.asset(
+                                                  ImageConstant.micAnimation,
+                                                  height: Dimens.d50,
+                                                  width: Dimens.d50,
+                                                  fit: BoxFit.fill,
+                                                  repeat: true,
+                                                )
+                                                    : SvgPicture.asset(
+                                                    ImageConstant.mic)),
+                                          ),*/
+                                        ],
+                                      ),
+                                Dimens.d20.spaceHeight,
+
+                                Row(
+
+                                  mainAxisAlignment:MainAxisAlignment.center,
+                                  children: [
+                                    Column(
+                                      children: [
+
+
+                                        GestureDetector(
+                                          onTap: () {
+                                            if(recordFile) {
+                                              setState(() {
+                                                _stopRecording();
+
+                                                recordFile = false;
+                                              });
+                                            }
+                                            else
+                                            {
+                                              setState(() {
+                                                _startRecording();
+                                                recordFile = true;
+                                              });
+                                            }
+                                          },
+                                          child: Container(
+                                            height: 68,
+                                            width: 68,
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(20),
+                                                color: ColorConstant.themeColor
+                                            ),
+                                            alignment: Alignment.center,
+                                            child: recordFile ?
+                                            const Icon(Icons.stop_circle_outlined, color: Colors.redAccent,size: 35,):
+                                            const Icon(Icons.mic_rounded,color: Colors.white,size: 35,),
+                                          ),
+                                        ),
+
+                                        Dimens.d10.spaceHeight,
+                                        Text(recordFile ?"Stop".tr:"Record".tr,style: Style.nunRegular(
+                                            fontSize: Dimens.d14,
+
+                                            color: ColorConstant.black),),
+                                      ],
+                                    ),
+                                    _recordFilePath!=null &&!recordFile?const SizedBox(width: 50,):const SizedBox(),
+                                    _recordFilePath!=null && !recordFile? Column(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () async {
+                                            if (audioPlayerVoices.playing) {
+                                              play = false;
+
+                                              audioPlayerVoices.pause();
+                                            } else {
+
+
+
+                                              await audioPlayerVoices.setFilePath(_recordFilePath!);
+                                              audioPlayerVoices.play();
+                                              play = true;
+
+                                            }
+
+                                            setState(() {
+
+                                            });
+                                          },
+                                          child: Container(
+                                            height: 68,
+                                            width: 68,
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(20),
+                                                color: ColorConstant.themeColor
+                                            ),
+                                            alignment: Alignment.center,
+                                            child:  Icon(play?Icons.pause:Icons.play_arrow,color: Colors.white,size: 35,),
+                                          ),
+                                        ),
+
+                                        Dimens.d10.spaceHeight,
+                                        Text("Test recording".tr,style: Style.nunRegular(
+                                            fontSize: Dimens.d14,
+                                            color: ColorConstant.black),),
+                                      ],
+                                    ):const SizedBox(),
+                                  ],
+                                ),
+                                Dimens.d30.h.spaceHeight,
+                                Row(
+                                  children: [
+                                    !widget.isEdit!?const SizedBox():Expanded(
+                                      child: CommonElevatedButton(
+                                        title: "cancel".tr,
+                                        outLined: true,
+                                              textStyle: Style.nunRegular(
+                                                  color: themeController
+                                                          .isDarkMode.isTrue
+                                                      ? Colors.white
+                                                      : ColorConstant.black),
+                                              onTap: () {
+                                                audioPlayerVoices.stop();
+                                                _stopRecording();
+                                          setState(() {});
+                                          Get.back();
+                                        },
+                                      ),
+                                    ),
+                                    Dimens.d20.spaceWidth,
+                                    Expanded(
+                                      child: CommonElevatedButton(
+                                        textStyle: Style.nunRegular(
+                                            fontSize: widget.isEdit!
+                                                ? Dimens.d14
+                                                : Dimens.d20,
+                                            color: ColorConstant.white),
+                                        title: widget.isEdit!
+                                            ? "update".tr
+                                            : "save".tr,
+                                        onTap: () async {
+                                          audioPlayerVoices.stop();
+                                          _stopRecording();
+                                          titleFocus.unfocus();
+                                          descFocus.unfocus();
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            if (widget.isEdit!) {
+                                              if (await isConnected()) {
+                                                updateAffirmation();
+                                              } else {
+                                                showSnackBarError(
+                                                    context, "noInternet".tr);
+                                              }
+                                            } else {
+                                              if (await isConnected()) {
+                                                PrefService.setValue(
+                                                    PrefKey
+                                                        .firstTimeUserAffirmation,
+                                                    true);
+
+                                                addAffirmation();
+                                              } else {
+                                                showSnackBarError(
+                                                    context, "noInternet".tr);
+                                              }
+                                            }
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                            )
+                          : const SizedBox(),
+                      Dimens.d10.spaceHeight,
+                      Dimens.d50.spaceHeight,
+                    ],
+                  ),
+                );
+              },
+            ),
+            loader == true ? commonLoader() : const SizedBox()
+          ],
+        ),
       ),
     );
   }

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:transform_your_mind/core/service/notification_service.dart';
@@ -63,7 +64,7 @@ Future<void> main() async {
   tz.initializeTimeZones();
 
 
-
+  InAppPurchase.instance.restorePurchases();
   var detroit = tz.getLocation('Asia/Kolkata');
   tz.setLocalLocation(detroit);
   await PrefService.init();

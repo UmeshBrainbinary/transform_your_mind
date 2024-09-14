@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -301,6 +302,8 @@ class HomeController extends GetxController {
     update(["home"]);
   }
 bool isAudio = false;
+  List<Future<void>> futures = [];
+  Duration totalDuration = Duration.zero;
   getTodayAffirmation() async {
     affirmationCheckList = [];
     update(["home"]);
@@ -335,9 +338,40 @@ bool isAudio = false;
 
           }
       });
+totalDuration =Duration.zero;
+      todayAList!.forEach((e) async {
+
+        if(e.audioFile != null)
+        {
+
+          isAudio =true;
 
 
+          futures.add(Future<void>(() async {
+            // Await before creating and setting the AudioPlayer
+            final audioPlayer = await AudioPlayer();
+            final duration = await audioPlayer.setUrl(Uri.parse(e.audioFile!).toString()).then((_) {
+              return audioPlayer.duration;  // Fetch duration after setting the URL
+            });
 
+            if (duration != null) {
+              totalDuration += duration;
+              print(totalDuration.toString() +"{{{{{{{{{{{{{");// Add the audio source to the playlist
+            }
+          }).catchError((e) {
+            if (e is SocketException) {
+              print('Network issue while accessing: $e');
+            } else {
+              print('Error fetching duration for: $e');
+            }
+          }));
+
+
+        }
+
+
+      });
+      await Future.wait(futures);
       update(["home"]);
     } else {
       debugPrint(response.reasonPhrase);

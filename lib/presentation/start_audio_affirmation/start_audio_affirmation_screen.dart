@@ -45,7 +45,8 @@ class StartAudioAffirmationScreen extends StatefulWidget {
   List<AffirmationData>? data;
   String? id;
   String? alarmId;
-  StartAudioAffirmationScreen({super.key, this.id, this.data, this.alarmId});
+  Duration? totalDuration;
+  StartAudioAffirmationScreen({super.key, this.id, this.data, this.alarmId, this.totalDuration});
 
   @override
   State<StartAudioAffirmationScreen> createState() =>
@@ -189,6 +190,13 @@ startC.loader.value =true;
     if(path.audioFile != null) {
       try {
         source = AudioSource.uri(Uri.parse(path.audioFile!));
+      /*  if(source != null) {
+          final duration = await audioPlayerVoices.setAudioSource(source!);
+          if (duration != null) {
+            totalDuration += duration;
+          }
+        }*/
+        list.add(source!);
       }
       catch(e){
         print(e);
@@ -197,13 +205,7 @@ startC.loader.value =true;
     try {
       // Preload the audio source
 
-      if(source != null) {
-        final duration = await audioPlayerVoices.setAudioSource(source!);
-        if (duration != null) {
-          totalDuration += duration;
-        }
-      }
-      list.add(source!);
+
 
     } catch (e) {
       print('Error loading audio: $e');
@@ -211,10 +213,11 @@ startC.loader.value =true;
     }
   }
 
-  myPlayList = ConcatenatingAudioSource(children: list);
+  myPlayList = ConcatenatingAudioSource(children: list,);
 
   // Set the playlist in the player
-  await audioPlayerVoices.setAudioSource(myPlayList,initialIndex: 0);
+     (await audioPlayerVoices.setAudioSource(myPlayList,initialIndex: 0,  preload: true,))!;
+
   setState(() {
     startC.play = true;
     startC.loader.value =false;
@@ -227,24 +230,11 @@ startC.loader.value =true;
 
 
   bool showBottom = false;
-  Duration totalDuration = Duration.zero;
+
 
   Duration currentPosition = Duration.zero;
   late List<AlarmSettings> alarms;
-  Future<void> loadAndCalculateDurations() async {
-    totalDuration = Duration.zero;
 
-    for (var item in audioPlayerVoices.sequence!) {
-      // Load the item and wait for the duration to be available
-      final duration = await _getDuration(item);
-
-      if (duration != null) {
-        totalDuration += duration;
-      }
-    }
-
-    setState(() {});
-  }
 double value =  0;
   Future<Duration?> _getDuration(AudioSource item) async {
     // Load the item into the player temporarily to get its duration
@@ -264,7 +254,7 @@ double value =  0;
 
     currentPosition = cumulativeDuration + currentItemPosition;
     if(currentPosition.inSeconds !=0) {
-      value = (currentPosition.inSeconds / totalDuration.inSeconds) * 100;
+      value = (currentPosition.inSeconds / widget.totalDuration!.inSeconds) * 100;
     }
     setState(() {});
   }
@@ -430,7 +420,7 @@ double value =  0;
                       ]),
                        InkWell(
                           onTap: () async {
-                            if(totalDuration != Duration.zero){
+                            if(widget.totalDuration != Duration.zero){
                             if (startC.play) {
                               setState(()  {
                                 startC.play = false;

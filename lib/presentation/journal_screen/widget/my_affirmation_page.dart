@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/layout_container.dart';
 import 'package:transform_your_mind/core/common_widget/shimmer_widget.dart';
@@ -186,6 +187,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
     }
   }
 
+  Duration totalDuration = Duration.zero;
   getAffirmationYour(date,{required bool isInit}) async {
     setState(() {
       if(isInit == false)
@@ -214,16 +216,42 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
 
       affirmationModel = affirmationModelFromJson(responseBody);
       isAudio = false;
-      affirmationModel.data!.forEach((e){
+      totalDuration =Duration.zero;
+      affirmationModel.data!.forEach((e) async {
 
         if(e.audioFile != null)
         {
-          isAudio =true;
-          setState(() {
 
-          });
+          isAudio =true;
+
+
+          futures.add(Future<void>(() async {
+            // Await before creating and setting the AudioPlayer
+            final audioPlayer = await AudioPlayer();
+            final duration = await audioPlayer.setUrl(Uri.parse(e.audioFile!).toString()).then((_) {
+              return audioPlayer.duration!;  // Fetch duration after setting the URL
+            });
+
+            if (duration != null) {
+              totalDuration += duration;
+              print(totalDuration.toString() +"{{{{{{{{{{{{{");// Add the audio source to the playlist
+            }
+          }).catchError((e) {
+            if (e is SocketException) {
+              print('Network issue while accessing: $e');
+            } else {
+              print('Error fetching duration for: $e');
+            }
+          }));
+
+
         }
+        setState(() {
+
+        });
+
       });
+      await Future.wait(futures);
       if(isInit == false) {
         loader = false;
       }
@@ -238,6 +266,8 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
       debugPrint(response.reasonPhrase);
     }
   }
+
+  List<Future<void>> futures = [];
 
   getAffirmationYourAll({String? affirmationDate,required bool isInit}) async {
     setState(() {
@@ -1428,9 +1458,11 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                       children: [
                         isAudio?InkWell(
                             onTap:(){
+                              print(totalDuration);
                               Get.off(StartAudioAffirmationScreen(
                                 id: affirmationModel.data?[0].id,
                                 data: affirmationModel.data,
+                                totalDuration: totalDuration,
                               ));
                             },
                             child: const Icon(Icons.keyboard_voice_rounded,size: 30,color:  ColorConstant.white,)):const SizedBox(),
