@@ -279,7 +279,8 @@ class HowFeelingsController extends GetxController{
               ? null
               : whatHasHelped.text.trim(),
         };
-      } else if (setting == "stress") {
+      }
+      else if (setting == "stress") {
         moodData = {
           "type": "stress",
           "feelingStressed"
@@ -344,7 +345,8 @@ class HowFeelingsController extends GetxController{
           "morningHabit": whatRelaxation.text.trim(),
           "stayStressFree": howCanYouYourSelf.text.trim()
         };
-      } else {
+      }
+      else {
         moodData = {
           "type": "motivation",
           "created_by": PrefService.getString(PrefKey.userId),

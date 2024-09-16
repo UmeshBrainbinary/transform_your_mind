@@ -325,7 +325,7 @@ int index =0;
           assetAudioPath: index == 1 ? ImageConstant.bgAudio2 : ImageConstant
               .bgAudio1,
           loopAudio: true,
-          vibrate: false,
+          vibrate: true,
           volume: 0.2,
           androidFullScreenIntent: true,
           fadeDuration: 3.0,

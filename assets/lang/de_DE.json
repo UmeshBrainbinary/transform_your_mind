@@ -796,7 +796,20 @@
   "TransformYourMind - Free Version": "TransformYourMind - Free Version",
   "“Change begins with a single conscious step.”": "„Veränderung beginnt mit einem einzigen bewussten Schritt.“",
   "The free version of TransformYourMind offers you the perfect introduction to making significant changes in your life. With a selection of powerful meditations and inspirational quotes to boost your daily motivation, you can begin to calm your mind and find your inner peace"
-  : "Die kostenlose Version von TransformYourMind bietet dir den perfekten Einstieg, um bedeutende Veränderungen in deinem Leben zu ermöglichen. Mit einer Auswahl an kraftvollen Meditationen und inspirierenden Zitaten, die deine tägliche Motivation steigern, kannst du beginnen, deinen Geist zu beruhigen und deinen inneren Frieden zu finden."
+  : "Die kostenlose Version von TransformYourMind bietet dir den perfekten Einstieg, um bedeutende Veränderungen in deinem Leben zu ermöglichen. Mit einer Auswahl an kraftvollen Meditationen und inspirierenden Zitaten, die deine tägliche Motivation steigern, kannst du beginnen, deinen Geist zu beruhigen und deinen inneren Frieden zu finden.",
+
+  "What helped you sleep well the most?": "Was hat dir am meisten geholfen, gut zu schlafen?",
+  "A quiet environment": "Eine ruhige Umgebung",
+  "A relaxing evening routine": "Eine entspannende Abendroutine",
+  "A comfortable bed": "Ein bequemes Bett",
+  "Sufficient physical activity during the day": "Ausreichend körperliche Aktivität während des Tages",
+  "how long did you sleep last night?": "2. Wie lange hast du letzte Nacht geschlafen? (please replace the old 2. Question)",
+  "Less than 5 hours": "Weniger als 5 Stunden",
+  "5-6 hours": "5-6 Stunden",
+  "6-7 hours": "6-7 Stunden",
+  "7-8 hours": "7-8 Stunden",
+  "More than 8 hours": "Mehr als 8 Stunden"
+
 }
 
 

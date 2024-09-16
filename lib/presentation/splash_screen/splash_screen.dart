@@ -136,16 +136,16 @@ Future.delayed(const Duration(seconds: 1)).then((value) {
         Future.delayed(
           const Duration(seconds: 3),
               () async {
-
-            PrefService.getBool(PrefKey.isLoginOrRegister) == true
-                ? getUserModel.data?.welcomeScreen == false
-                ? Get.offAll(const WelcomeHomeScreen())
-                : setScreens()
-                : PrefService.getBool(PrefKey.introSkip) == true
-                ? Get.offAllNamed(AppRoutes.loginScreen)
-                : Get.offAll(const PersonalizationScreenScreen(
-              intro: true,
-            ));
+Get.offAll(()=>SleepQuestions());
+            // PrefService.getBool(PrefKey.isLoginOrRegister) == true
+            //     ? getUserModel.data?.welcomeScreen == false
+            //     ? Get.offAll(const WelcomeHomeScreen())
+            //     : setScreens()
+            //     : PrefService.getBool(PrefKey.introSkip) == true
+            //     ? Get.offAllNamed(AppRoutes.loginScreen)
+            //     : Get.offAll(const PersonalizationScreenScreen(
+            //   intro: true,
+            // ));
 
           },
         );

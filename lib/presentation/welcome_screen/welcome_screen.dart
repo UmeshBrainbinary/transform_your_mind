@@ -123,7 +123,7 @@ class _WelcomeScreenState extends State<WelcomeHomeScreen>
           await updateApi(context,pKey: "welcomeScreen");
 
           if(isAlreadySkip == false) {
-            Future.delayed(const Duration(seconds: 30)).then((value) {
+            Future.delayed(const Duration(seconds: 10)).then((value) {
               return Get.offAll(MotivationalMessageScreen(
                 skip: true,
                 date: DateFormat('d MMMM yyyy').format(DateTime.now()),
