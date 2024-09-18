@@ -245,6 +245,7 @@ class ImageConstant {
   static String chooseLanguages = "$imagePath/choose_langauge.png";
   static String homeBack = "$imagePath/home_back.png";
   static String splashBack = "$imagePath/share_background.png";
+  static String logoSplashNew = "$iconPath/logoTransform.png";
   static String logoSplash = "$iconPath/logo_splash.png";
   static String logoSplashRemoved = "$iconPath/logo_splash_removed.png";
   static String chooseBackEn = "$imagePath/choose_background_en.png";

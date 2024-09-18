@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:transform_your_mind/core/app_export.dart';
 import 'package:transform_your_mind/core/common_widget/free_trial_page.dart';
@@ -244,7 +245,7 @@ Future.delayed(const Duration(seconds: 1)).then((value) {
           children: [
             Dimens.d88.spaceHeight,
             Image.asset(
-              ImageConstant.logoSplash,
+              ImageConstant.logoSplashNew,
               height: Dimens.d180,
               width: Dimens.d180,
             ),

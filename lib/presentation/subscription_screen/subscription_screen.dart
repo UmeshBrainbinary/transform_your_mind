@@ -30,7 +30,6 @@ import 'package:transform_your_mind/presentation/how_feeling_today/motivational_
 import 'package:transform_your_mind/presentation/how_feeling_today/sleep_questions.dart';
 import 'package:transform_your_mind/presentation/how_feeling_today/stress_questions.dart';
 import 'package:transform_your_mind/presentation/subscription_screen/subscription_controller.dart';
-import 'package:transform_your_mind/presentation/welcome_screen/welcome_screen.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
@@ -785,8 +784,14 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           Dimens.d30.spaceHeight,
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30.0),
-            child: CommonElevatedButton(
-              title: "purchase".tr,
+            child: valueChecked
+                ? CommonElevatedButton(
+                    title: "cancelSub".tr,
+                    buttonColor: ColorConstant.themeColor,
+                    onTap: () async {},
+                  )
+                : CommonElevatedButton(
+                    title: "purchase".tr,
               buttonColor:
               valueChecked ? Colors.grey : ColorConstant.themeColor,
               onTap: () async {

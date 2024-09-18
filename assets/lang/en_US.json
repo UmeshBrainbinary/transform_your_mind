@@ -322,6 +322,7 @@
       "alreadyRated": "You have already rated this pod",
       "selectPlan": "Select plan",
       "purchase": "Purchase",
+      "cancelSub": "cancel subscription",
       "startPracticing": "Start practicing",
       "dataNotFound": "Not found",
       "addPositiveMoments": "Add positive moments",
@@ -809,7 +810,18 @@
   "5-6 hours": "5-6 hours",
   "6-7 hours": "6-7 hours",
   "7-8 hours": "7-8 hours",
-  "More than 8 hours": "More than 8 hours"
+  "More than 8 hours": "More than 8 hours",
+
+  "gratitudeMessageAffirmation": "Affirmation Message\n\n",
+  "gratitudeIsAPowerfulAffirmation": "Affirmations are powerful tools that positively influence your thinking. If you regularly repeat positive sentences, you reprogram your subconscious and change your self-image. Your thoughts create your reality.\n\n",
+  "exampleAffirmation": "• Example: ",
+  "iAmGratefulAffirmation": "“I am strong, confident and ready for whatever life brings me.”\n\n",
+
+  "gratitudeMessage": "Gratitude Message\n\n",
+  "gratitudeIsAPowerful": "Gratitude is a powerful tool to transform your life. Feel gratitude for what you want as if it were already there.\n\n",
+  "example": "• Example: ",
+  "iAmGrateful": "I am grateful for my health, which strengthens me every day.\n\n",
+  "practiceGratitude": "• Practice gratitude daily and attract positive change.\n\n"
 }
 
 

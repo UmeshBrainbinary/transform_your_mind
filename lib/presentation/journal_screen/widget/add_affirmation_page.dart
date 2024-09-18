@@ -712,7 +712,7 @@ class _AddAffirmationPageState extends State<AddAffirmationPage>
                                       ),
                                 Dimens.d20.spaceHeight,
 
-                                Row(
+                                PrefService.getString(PrefKey.language)=="de-DE"?const SizedBox():Row(
 
                                   mainAxisAlignment:MainAxisAlignment.center,
                                   children: [

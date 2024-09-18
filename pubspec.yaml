@@ -94,6 +94,7 @@ dependencies:
   record: ^5.1.2
   syncfusion_flutter_gauges:
   googleapis_auth: ^1.6.0
+  tutorial_coach_mark: ^1.2.11
 
 
 dev_dependencies:

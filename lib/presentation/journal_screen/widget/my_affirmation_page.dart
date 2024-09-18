@@ -37,6 +37,7 @@ import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 import 'package:transform_your_mind/widgets/divider.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import 'package:voice_message_package/voice_message_package.dart';
 
 class MyAffirmationPage extends StatefulWidget {
@@ -110,6 +111,12 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
     lastMonthName = DateFormat('MMMM yyyy').format(lastMonth);
     checkInternet();
     debugPrint("currentLanguage get $currentLanguage");
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 1000), () {
+        initTargets();
+        showTutorial(context);
+      });
+    });
     super.initState();
   }
 
@@ -548,6 +555,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   }
 
 
+  GlobalKey _addToolsKey = GlobalKey();
 
   updateAffirmationLike({String? id, bool? isLiked}) async {
     setState(() {
@@ -611,9 +619,65 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
       debugPrint(response.reasonPhrase);
     }
   }
+  List<TargetFocus> targets = [];
 
   VoiceController? voiceController;
+  void initTargets() {
+    targets.add(
+      TargetFocus(
+        identify: "Add Tools Icon",
+        keyTarget: _addToolsKey,
+        alignSkip: Alignment.bottomRight,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom, // Adjust based on your preference
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RichText(
 
+                  text:  TextSpan(
+                    text: "gratitudeMessageAffirmation".tr,
+                    style: const TextStyle(fontSize: 26, color:  Colors.white, fontWeight: FontWeight.w900,
+                      fontFamily: "Nunito-Regular",), // Highlighted text
+                    children:  <TextSpan>[
+                      const TextSpan(
+                        text: '1. ',
+                        style: TextStyle(fontSize: 20, color:  Colors.white,      fontFamily: "Nunito-Regular",), // Highlighted text
+                      ),
+                      TextSpan(
+                        text: "gratitudeIsAPowerfulAffirmation".tr,
+                        style: const TextStyle(fontSize: 20, color:  Colors.white,      fontFamily: "Nunito-Regular",), // Highlighted text
+                      ),
+                      TextSpan(
+                        text: 'example'.tr,
+                        style: const TextStyle(fontSize: 20, color:  Colors.white,      fontFamily: "Nunito-Regular",), // Highlighted text
+                      ),
+                      TextSpan(
+                        text: 'iAmGratefulAffirmation'.tr,
+                        style: const TextStyle(fontSize: 20, color:  Colors.white,      fontFamily: "Nunito-Regular",), // Highlighted text
+                      ),
+
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void showTutorial(BuildContext context) {
+    TutorialCoachMark(
+      targets: targets,
+      colorShadow: Colors.black,
+      textSkip: "SKIP",
+      paddingFocus: 10,
+      opacityShadow: 0.8,
+    ).show(context: context);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -644,10 +708,13 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
             ? const Offstage()
             : Padding(
           padding: const EdgeInsets.only(right: Dimens.d20),
-          child: GestureDetector(
+          child:   GestureDetector(
+            key: _addToolsKey,
             onTap: () {
               _onAddClick(context,record: false,);
-            },
+
+            },// Assign the global key here
+
             child: SvgPicture.asset(
               ImageConstant.addTools,
               height: Dimens.d22,

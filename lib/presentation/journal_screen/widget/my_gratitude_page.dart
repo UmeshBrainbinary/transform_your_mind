@@ -26,6 +26,7 @@ import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 
 class MyGratitudePage extends StatefulWidget {
@@ -44,26 +45,17 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
   TextEditingController dateController = TextEditingController();
   List categoryList = [];
   DateTime todayDate = DateTime.now();
+  GlobalKey addToolsKey = GlobalKey();
 
 
   ThemeController themeController = Get.find<ThemeController>();
   bool select = false;
   ValueNotifier selectedCategory = ValueNotifier(null);
+  List<TargetFocus> targets = [];
 
   DateTime now = DateTime.now();
   String lastMonthName = "";
   bool loader = false;
-  @override
-  void initState() {
-    setGetApi();
-    DateTime lastMonth = DateTime(now.year, now.month - 1, 1);
-    lastMonthName = DateFormat('MMMM yyyy').format(lastMonth);
-
-    _setGreetingBasedOnTime();
-    getGratitude(DateFormat('dd/MM/yyyy').format(now));
-    getGratitudeAll();
-    super.initState();
-  }
 
   HomeController homeController = Get.find<HomeController>();
   GratitudeModel gratitudeModel = GratitudeModel();
@@ -112,10 +104,10 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
     String url = "";
     if (dateGratitude != null) {
       url =
-          '${EndPoints.baseUrl}get-gratitude?created_by=${PrefService.getString(PrefKey.userId)}&date=$dateGratitude&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}';
+      '${EndPoints.baseUrl}get-gratitude?created_by=${PrefService.getString(PrefKey.userId)}&date=$dateGratitude&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}';
     } else {
       url =
-          '${EndPoints.baseUrl}get-gratitude?created_by=${PrefService.getString(PrefKey.userId)}&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}';
+      '${EndPoints.baseUrl}get-gratitude?created_by=${PrefService.getString(PrefKey.userId)}&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}';
     }
     var request = http.Request('GET', Uri.parse(url));
 
@@ -133,16 +125,16 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
         final now = DateTime.now();
         final firstDayOfCurrentMonth = DateTime(now.year, now.month, 1);
         final lastDayOfPreviousMonth =
-            firstDayOfCurrentMonth.subtract(const Duration(days: 1));
+        firstDayOfCurrentMonth.subtract(const Duration(days: 1));
         final firstDayOfPreviousMonth = DateTime(
             lastDayOfPreviousMonth.year, lastDayOfPreviousMonth.month, 1);
 
         lastMonthData = gratitudeAllData.data
-                ?.where((element) =>
-                    element.createdAt != null &&
-                    element.createdAt!.isAfter(firstDayOfPreviousMonth) &&
-                    element.createdAt!.isBefore(firstDayOfCurrentMonth))
-                .toList() ??
+            ?.where((element) =>
+        element.createdAt != null &&
+            element.createdAt!.isAfter(firstDayOfPreviousMonth) &&
+            element.createdAt!.isBefore(firstDayOfCurrentMonth))
+            .toList() ??
             [];
         /* final now = DateTime.now();
         final lastMonth = now.subtract(const Duration(days: 30));
@@ -217,9 +209,9 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
         final responseBody = await response.stream.bytesToString();
 
         getUserModel = getUserModelFromJson(responseBody);
-      setState(() {
+        setState(() {
 
-      });
+        });
 
       } else {
         debugPrint(response.reasonPhrase);
@@ -229,6 +221,87 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
     }
     setState(() {});
   }
+
+  @override
+  void initState() {
+    setGetApi();
+    DateTime lastMonth = DateTime(now.year, now.month - 1, 1);
+    lastMonthName = DateFormat('MMMM yyyy').format(lastMonth);
+
+    _setGreetingBasedOnTime();
+    getGratitude(DateFormat('dd/MM/yyyy').format(now));
+    getGratitudeAll();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 1000), () {
+        initTargets();
+        showTutorial(context);
+      });
+    });
+
+    super.initState();
+  }
+
+
+
+    void initTargets() {
+      targets.add(
+        TargetFocus(
+          identify: "Add Tools Icon",
+          keyTarget: addToolsKey,
+          alignSkip: Alignment.bottomRight,
+          contents: [
+            TargetContent(
+              align: ContentAlign.bottom, // Adjust based on your preference
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RichText(
+
+                    text:  TextSpan(
+                      text: "gratitudeMessage".tr,
+                      style: const TextStyle(fontSize: 26, color:  Colors.white, fontWeight: FontWeight.w900,
+                        fontFamily: "Nunito-Regular",), // Highlighted text
+                      children:  <TextSpan>[
+                        const TextSpan(
+                          text: '1. ',
+                          style: TextStyle(fontSize: 20, color:  Colors.white,      fontFamily: "Nunito-Regular",), // Highlighted text
+                        ),
+                        TextSpan(
+                          text: "gratitudeIsAPowerful".tr,
+                          style: const TextStyle(fontSize: 20, color:  Colors.white,      fontFamily: "Nunito-Regular",), // Highlighted text
+                        ),
+                        TextSpan(
+                          text: 'example'.tr,
+                          style: const TextStyle(fontSize: 20, color:  Colors.white,      fontFamily: "Nunito-Regular",), // Highlighted text
+                        ),
+                        TextSpan(
+                          text: 'iAmGrateful'.tr,
+                          style: const TextStyle(fontSize: 20, color:  Colors.white,      fontFamily: "Nunito-Regular",), // Highlighted text
+                        ),
+                        TextSpan(
+                          text: 'practiceGratitude'.tr,
+                          style: const TextStyle(fontSize: 20, color:  Colors.white,      fontFamily: "Nunito-Regular",), // Highlighted text
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    void showTutorial(BuildContext context) {
+      TutorialCoachMark(
+        targets: targets,
+        colorShadow: Colors.black,
+        textSkip: "SKIP",
+        paddingFocus: 10,
+        opacityShadow: 0.8,
+      ).show(context: context);
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -264,11 +337,14 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                 showBack: true,
                 action: Padding(
                   padding: const EdgeInsets.only(right: Dimens.d20),
-                  child: GestureDetector(
+                  child:
+                  GestureDetector(
+                    key: addToolsKey,
                     onTap: () {
                       selectedCategory = ValueNotifier(null);
                       _onAddClick(context);
-                    },
+                    },// Assign the global key here
+
                     child: SvgPicture.asset(
                       ImageConstant.addTools,
                       height: Dimens.d22,
@@ -294,7 +370,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                           Text(
                             "${"welcome".tr}, ${capitalizeFirstLetter(PrefService.getString(PrefKey.name).toString())}",
                             textAlign: TextAlign.center,
-                            style: Style.nunRegular(fontSize: 26),
+                            style: Style.nunRegular(fontSize: 26,),
                           ),
                           Text(
                             DateFormat('d MMMM yyyy').format(todayDate),
@@ -723,7 +799,6 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
       );
     }
   }
-
 
 
   datePicker(context,) async {
