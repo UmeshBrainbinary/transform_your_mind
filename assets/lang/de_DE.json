@@ -83,7 +83,7 @@
   "10timeInADay" : "10 Mal am Tag",
   "startPracticing": "Starte deine Mindset-Routine",
 
-  "typeGratitude": "Schreibe deine Dankbarkeit auf oder sprich sie ein",
+  "typeGratitude": "Hier kannst du deine Dankbarkeit eintippen",
   "add": "hinzufügen",
   "selectReminderDuration": "Erinnerungsdauer festlegen",
   "selectNumberOfTimesYouWantReminder": "Anzahl der Erinnerungen festlegen",
@@ -128,7 +128,7 @@
   "noDownloadYet" : "Noch keine Downloads",
   "welcomeToJournal": "Willkommen im Journal",
   "gratitude": "Dankbarkeit",
-  "affirmation": "Bejahung",
+  "affirmation": "Affirmationen wählen",
   "dailyJournal": "Tagesjournal",
   "home": "Startseite",
   "transformRituals": "Transformative Routine",
@@ -147,9 +147,9 @@
   "addMoreRitualsToDailyRoutine": "Mehr zur täglichen Routine hinzufügen",
   "myBadges": "Meine Erfolge",
   "goodMorning": "Guten Morgen",
-  "goodAfternoon": "Hallo Nachmittag",
+  "goodAfternoon": "Schönen Nachmittag",
   "goodEvening": "Guten Abend",
-  "goodNight": "Gute Nacht und entspanne!",
+  "goodNight": "Gute Nacht",
   "yourRecommendations": "Unsere Empfehlungen für dich",
   "refreshDailyRecommendations": "Tägliche Empfehlungen aktualisieren",
   "todayCleanse": "Dein täglicher Reset",
@@ -168,7 +168,7 @@
   "intoText": "In Text",
   "selfDevelopment": "Persönliche Wachstum",
   "startToday": "Starte jetzt!",
-  "listenGrow": "Hör zu und entfalte dein Potenzial",
+  "listenGrow": "Hör zu und entfalte\ndein Potenzial",
   "beginToday": "Starte heute!",
   "welcomeToTools": "Willkommen bei deinen Tools",
   "addCleanse": "Reset hinzufügen",
@@ -180,7 +180,7 @@
   "exploreTransformRituals": "Entdecke deine Transformations-Routine",
   "selectCategory": "Kategorie auswählen",
   "affirmationData": "Affirmationsdaten",
-  "skip": "Überspringen",
+  "skip": "Skip",
   "emptyDescription": "Bitte Beschreibung eingeben",
   "emptyTitle": "Bitte Titel eingeben",
   "addGratitude": "Dankbarkeit hinzufügen",
@@ -199,8 +199,8 @@
   "loadFailedRetry": "Fehler beim Laden! Nochmals versuchen!",
   "releaseToLoadMore": "Freigeben, um mehr zu laden!",
   "noMoreData": "Keine weiteren Daten!",
-  "yourAffirmation": "Deine Affirmation",
-  "addYourAffirmation": "Affirmation hinzufügen",
+  "yourAffirmation": "Deine Affirmationen",
+  "addYourAffirmation": "Affirmation aufnehmen",
   "affirmationHeader": "Affirmations-Kopfzeile",
   "transformYourMindAffirmation": "TransformYourMind Affirmation",
   "enterYourOwnAffirmation": "Eigene Affirmation eingeben",
@@ -209,7 +209,7 @@
   "selectMoreFocusToFindNewRituals": "Mehr Fokus wählen, um neue Routine zu finden",
   "today": "Heute",
   "searchGratitudeHere": "Hier nach Dankbarkeit suchen",
-  "myGratitude": "Meine Dankbarkeit",
+  "myGratitude": "Mein Dankbarkeits-Journal",
   "myFolders": "Meine Ordner",
   "yourSelectedRitualHasBeenDelete": "Deine ausgewählte Routine wurde gelöscht",
   "done": "Fertig",
@@ -287,7 +287,7 @@
   "Bookmark": "Lesezeichen",
   "Favourite": "Favorit",
 
-  "alarmSet": "Alarm erfolgreich erstellt!",
+  "alarmSet": "Weckruf erfolgreich erstellt!",
   "alarmAlreadySet": "Alarm bereits für diese Affirmation gesetzt.",
   "motivationalMessages": "Motivationsnachrichten",
   "hours": "Stunden",
@@ -308,7 +308,7 @@
 
   "pleaseEnterTitle": "Das Titelfeld ist erforderlich.",
   "pleaseEnterDescription": "Das Beschreibungsfeld ist erforderlich.",
-  "today'sAffirmation": "Heutige Affirmation",
+  "today'sAffirmation": "Deine heutige Affirmation",
   "successfullyGratitude": "Fügen Sie Ihre Dankbarkeit erfolgreich hinzu",
   "affirmationSuccessfully": "Die Affirmation wurde erfolgreich aktualisiert.",
   "editGratitude": "Bearbeiten Sie Dankbarkeit",
@@ -387,7 +387,7 @@
   "4sec": "4 Sek",
   "sound": "Ton",
   "default": "Standard",
-  "AudioList": "Meine Audios",
+  "AudioList": "Meine Wohlfühl-Audios",
   "Downloads": "Downloads",
   "Whoops": "Hoppla",
   "selectYourFocus": "Fokus auswählen",
@@ -453,7 +453,7 @@
   "voucherForOnlineShop": "Einmaliger Gutschein von 50 € für den Online-Shop für Transformations-Audios bei Abschluss eines Jahresabonnements",
   "addTodayGratitude": "Füge die heutige Dankbarkeit hinzu",
   "10Things": "Ich bin glücklich und dankbar für...",
-  "todayAffirmation": "Die heutige Bestätigung",
+  "todayAffirmation": "Deine heutigen Affirmationen",
   "pressHold": "Drücke und halte",
   "startYourFirstGratitude": "Beginne mit deiner ersten Dankbarkeit",
   "youCanAdd10": "Du kannst heute nur 10 Dankbarkeiten hinzufügen",
@@ -535,7 +535,7 @@
   "isThereASpecific": "Gibt es eine bestimmte Aktivität oder ein Ziel, auf das du dich heute besonders freust?",
   "howCanYouSpread": "Wie können Sie heute Ihre gute Laune an andere weitergeben?",
   "MorningQuestions": "Morgenfragen",
-  "doYouFeelStressed": "Fühlst du dich gestresst heute Morgen?",
+  "doYouFeelStressed": "Fühlst du dich heute Morgen gestresst?",
   "whatCanYouDoToMinimize": "Was kannst du tun, um den Stress heute zu minimieren?",
   "ListenAudio": "Audio anhören",
   "BreathingTechnique": "Atemtechnik",
@@ -633,25 +633,25 @@
   "pleaseAddPositiveMoment": "Bitte füge deine positiven Momente hinzu",
   "youCanNotSet": "Du kannst das aktuelle Passwort nicht als neues Passwort verwenden.",
 
-  "StartWithExercise": "Also lass uns mit einer kleinen Übung beginnen: Atmen - dann genieße deine tägliche Routine, um dein bestes Leben zu führen",
+  "StartWithExercise": "Lass`uns mit einer kleinen Atemübung beginnen – dann geniesse deine tägliche Routine, um dein bestes Leben zu kreieren",
   "Record": "Aufnehmen",
   "Stop": "Stopp",
   "Test recording": "Testaufnahme",
-  "Record affirmation": "Affirmation aufnehmen",
+  "Record affirmation": "„Bestätigung aufzeichnen“",
 
   "What is causing your stress this morning?": "Was verursacht deinen Stress heute Morgen?",
   "An upcoming task or deadline": "Eine bevorstehende Aufgabe oder Deadline",
   "Personal obligations":"Persönliche Verpflichtungen",
-  "Health concerns": "Gesundheitliche Probleme",
+  "Health concerns": "Gesundheitliche Beschwerden",
   "General tension or nervousness":"Allgemeine Anspannung oder Nervosität",
   "Something else": "Etwas anderes",
 
   "How could you relieve this stress?": "Wie könntest du diesen Stress abbauen?",
-  "Through breathing exercises or audios": "Durch AtemÃ¼bungen oder Audios",
-  "By taking a short break": "Indem du eine kurze Pause machst",
+  "Through breathing exercises or audios": "Durch Atemtechnik oder Audio",
+  "By taking a short break": "Indem ich eine kurze Pause mache",
   "Through movement or a walk": "Durch Bewegung oder einen Spaziergang",
-  "By setting priorities and planning the day": "Indem du Prioritäten setzt und den Tag planst",
-  "By talking to someone I trust": "Indem du mit jemandem sprichst, dem du vertraust",
+  "By setting priorities and planning the day": "Indem ich Prioritäten setze und den Tag plane",
+  "By talking to someone I trust": "Indem ich mit jemandem spreche, dem ich vertraue",
 
   "How motivated are you to make the most of today?": "Wie motiviert bist du, das Beste aus dem Tag zu machen?",
   "I can’t wait to get started!":"Ich kann es kaum erwarten, loszulegen!",
@@ -673,15 +673,15 @@
   "Taking a step towards an important goal": "Einen Schritt in Richtung eines wichtigen Ziels machen",
   "Overcoming a personal boundary":"Eine persönliche Grenze überwinden",
 
-  "Racing thoughts": "Rennende Gedanken",
+  "Racing thoughts": "Gedankenkarussell",
   "Noise or external disturbances":"Lärm oder äußere Störungen",
   "Uncomfortable bed or sleeping position": "Unbequemes Bett oder Schlafposition",
   "Health issues":"Gesundheitliche Probleme",
 
   "How are you feeling right now?": "Wie fühlst du dich gerade?",
-  "I’m feeling great!":"Ich fühle mich großartig!",
-  "I feel good.": "Ich fühle mich gut.",
-  "I’m okay.":"Es geht mir okay.",
+  "I’m feeling great!":"Mir geht`s super!",
+  "I feel good.": "Fühle mich gut.",
+  "I’m okay.":"Es geht so.",
   "I’m a bit tired.": "Ich bin etwas müde.",
   "I’m staying calm and focused.":"Ich bleibe ruhig und fokussiert.",
 
@@ -689,7 +689,7 @@
 
   "What helped you start your day well?": "Was hat dir geholfen, deinen Tag gut zu beginnen?",
   "A restful sleep":"Erholsamer Schlaf",
-  "A relaxing morning routine": "Eine entspannende Morgenroutine",
+  "A relaxing morning routine": "Eine entspannte Morgenroutine",
   "Time for a healthy breakfast":"Zeit für ein gesundes Frühstück",
   "Positive thoughts": "Positive Gedanken",
 
@@ -724,7 +724,7 @@
 
 
 
-  "What inspired you to give your best today?": "Was hat dich heute inspiriert, dein Bestes zu geben?",
+  "What inspired you to give your best today?": "Was hat dich dein Bestes zu geben?",
   "I maximized my full potential.":"Ich habe mein volles Potenzial ausgeschöpft.",
   "I sought personal satisfaction.": "Ich habe nach persönlicher Zufriedenheit gestrebt.",
   "I created something positive.":"Ich habe etwas Positives geschaffen.",
@@ -762,7 +762,7 @@
 
   "Good morning": "Guten Morgen",
   "Good evening": "Guten Abend",
-  "What inspired": "Was hat dich heute inspiriert, dein Bestes zu geben?",
+  "What inspired": "Was inspiriert dich heute, dein Bestes zu geben?",
 
 
   "Unleash your full potential with TransformYourMind!": "Entfalte dein volles Potenzial mit TransformYourMind!",
@@ -808,7 +808,7 @@
   "A relaxing evening routine": "Eine entspannende Abendroutine",
   "A comfortable bed": "Ein bequemes Bett",
   "Sufficient physical activity during the day": "Ausreichend körperliche Aktivität während des Tages",
-  "how long did you sleep last night?": "2. Wie lange hast du letzte Nacht geschlafen? (please replace the old 2. Question)",
+  "how long did you sleep last night?": "Wie lange hast du letzte Nacht geschlafen?",
   "Less than 5 hours": "Weniger als 5 Stunden",
   "5-6 hours": "5-6 Stunden",
   "6-7 hours": "6-7 Stunden",
@@ -816,7 +816,7 @@
   "More than 8 hours": "Mehr als 8 Stunden",
   "cancelSub": "Abo kündigen",
 
-  "gratitudeMessageAffirmation": "Bestätigungsnachricht\n\n",
+  "gratitudeMessageAffirmation": "Affirmationen einfügen\n\n",
   "gratitudeIsAPowerfulAffirmation": "Affirmationen sind kraftvolle Werkzeuge, die dein Denken positiv beeinflussen. Wenn du regelmäßig positive Sätze wiederholst, programmierst du dein Unterbewusstsein neu und veränderst dein Selbstbild. Deine Gedanken schaffen deine Realität.\n\n\n",
   "exampleAffirmation": "• Beispiel: ",
   "iAmGratefulAffirmation": "“Ich bin stark, selbstbewusst und bereit für alles, was das Leben mir bringt.”\n\n",
@@ -825,73 +825,19 @@
   "gratitudeIsAPowerful": "Dankbarkeit ist ein kraftvolles Tool, um dein Leben zu transformieren. Fühle Dankbarkeit für das, was du dir wünschst, als wäre es schon da.\n\n",
   "example": "• Beispiel: ",
   "iAmGrateful": "Ich bin dankbar für meine Gesundheit, die mich täglich stärkt.\n\n",
-  "practiceGratitude": "• So kannst du jeden Tag bewusst Dankbarkeit praktizieren und positive Veränderungen anziehen.\n\n"
+  "practiceGratitude": "• So kannst du jeden Tag bewusst Dankbarkeit praktizieren und positive Veränderungen anziehen.\n\n",
+
+  "Feel your gratitude": "Spüre deine Dankbarkeit",
+  "Feel your affirmation": "Spüren Sie Ihre Bestätigung",
+  "updateSubscription": "Abonnement aktualisieren",
+  "Still empty here": "Noch leer hier",
+
+  "Alram is ringing": "Dein sanfter Weckruf in den Tag.....",
+  "WouldYouLikeMoreG": "Möchtest du weitere Dankbarkeiten hinzufügen?",
+  "SelectAffirmation": "Affirmationen wählen",
+  "Thank you for subscribing": "Vielen Dank für Ihr Abonnement!",
+  "YourTransactionSuccess": "Ihre Transaktion war erfolgreich und Ihr Abonnementplan ist jetzt aktiv.",
+
+  "Secured by the App Store. Can be canceled at any time": "Gesichert durch den App Store. Jederzeit \nkündbar."
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

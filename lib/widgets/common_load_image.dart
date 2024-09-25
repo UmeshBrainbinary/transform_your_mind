@@ -157,3 +157,108 @@ class PlaceHolderCNI extends StatelessWidget {
     );
   }
 }
+class CommonLoadImageNow extends StatelessWidget {
+  final String url;
+  final double width;
+  final double height;
+  final double borderRadius;
+  final bool isRounded;
+  final BorderRadius? customBorderRadius;
+  final String imagePath;
+  String? pName;
+  int? indexP;
+  VoidCallback? onTap;
+
+  CommonLoadImageNow({super.key,
+    required this.url,
+    this.imagePath = "",
+    required this.width,
+    required this.height,
+    this.borderRadius = 0.0,
+    this.isRounded = false,
+    this.customBorderRadius,
+    this.pName,
+    this.indexP,
+    this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return imagePath.isNotEmpty
+        ? Stack(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0, left: 8),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(Dimens.d16),
+            child: Image.file(
+              File(imagePath),
+              height: height,
+              width: width,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        Positioned(
+          left: 0,
+          top: 0,
+          child: InkWell(
+            onTap: onTap,
+            child: const CircleAvatar(
+              backgroundColor: ColorConstant.themeColor,
+              radius: 12,
+              child: Icon(
+                Icons.close,
+                color: Colors.white,
+                size: 18,
+              ),
+            ),
+          ),
+        )
+      ],
+    )
+        : url.isNotEmpty
+        ? CachedNetworkImage(
+      height: height,
+      width: width,
+      imageUrl: url,
+      imageBuilder: (context, imageProvider) => Container(
+        decoration: BoxDecoration(
+          shape: isRounded ? BoxShape.circle : BoxShape.rectangle,
+          borderRadius: isRounded
+              ? null
+              : customBorderRadius ??
+              BorderRadius.circular(
+                borderRadius,
+              ),
+          image: DecorationImage(
+            image: imageProvider,
+            fit: BoxFit.fill,
+          ),
+        ),
+      ),
+      placeholder: (context, url) => PlaceHolderCNI(
+        width: width,
+        height: height,
+        isRounded: isRounded,
+        borderRadius: borderRadius,
+        customBorderRadius: customBorderRadius,
+      ),
+      errorWidget: (context, url, error) => PlaceHolderCNI(
+        width: width,
+        height: height,
+        isShowLoader: false,
+        isRounded: isRounded,
+        borderRadius: borderRadius,
+        customBorderRadius: customBorderRadius,
+      ),
+    )
+        : PlaceHolderCNI(
+      width: width,
+      height: height,
+      isShowLoader: false,
+      isRounded: isRounded,
+      borderRadius: borderRadius,
+      customBorderRadius: customBorderRadius,
+    );
+  }
+}

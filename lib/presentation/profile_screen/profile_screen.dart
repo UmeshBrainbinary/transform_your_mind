@@ -685,7 +685,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                         yValueMapper: (MoodData mood, _) =>
                                             mood.value,
                                         name: 'Mood',
-                                        width: 1,
+                                        width: 3,
                                         dataLabelSettings: const DataLabelSettings(
                                         isVisible: false),
                                   )

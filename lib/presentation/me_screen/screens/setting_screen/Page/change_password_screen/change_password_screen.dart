@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
@@ -9,9 +10,12 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/core/utils/validation_functions.dart';
+import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_controller.dart';
+import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_screen.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/change_password_screen/change_password_controller.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
+import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
@@ -38,7 +42,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     changePasswordController.confirmPController = TextEditingController();
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
     //statusBarSet(themeController);
@@ -276,7 +279,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         ),
                       ),
                     ),
-                    //commonGradiantContainer(color: AppColors.backgroundWhite, h: 20)
                   ],
                 );
               },
@@ -286,7 +288,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             () => changePasswordController.loader.isTrue
                 ? commonLoader()
                 : const SizedBox(),
-          )
+          ),
+
+
         ],
       ),
     );

@@ -27,19 +27,18 @@ import 'package:transform_your_mind/presentation/affirmation_alarm_screen/affirm
 import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_controller.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_screen.dart';
 import 'package:transform_your_mind/presentation/breath_screen/breath_screen.dart';
+import 'package:transform_your_mind/presentation/dash_board_screen/dash_board_controller.dart';
 import 'package:transform_your_mind/presentation/home_screen/home_controller.dart';
 import 'package:transform_your_mind/presentation/home_screen/home_message_page.dart';
 import 'package:transform_your_mind/presentation/home_screen/widgets/home_widget.dart';
-import 'package:transform_your_mind/presentation/how_feeling_today/how_feeling_today_screen.dart';
-import 'package:transform_your_mind/presentation/how_feeling_today/how_feelings_evening.dart';
 import 'package:transform_your_mind/presentation/intro_screen/select_your_affirmation_focus_page.dart';
-import 'package:transform_your_mind/presentation/journal_screen/widget/add_affirmation_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_gratitude_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/my_affirmation_page.dart';
 import 'package:transform_your_mind/presentation/motivational_message/motivation_screen.dart';
 import 'package:transform_your_mind/presentation/motivational_message/motivational_controller.dart';
 import 'package:transform_your_mind/presentation/positive_moment/positive_controller.dart';
 import 'package:transform_your_mind/presentation/positive_moment/positive_screen.dart';
+import 'package:transform_your_mind/presentation/search_screen/search_screen.dart';
 import 'package:transform_your_mind/presentation/start_audio_affirmation/start_audio_affirmation_screen.dart';
 import 'package:transform_your_mind/presentation/start_practcing_screen/start_pratice_controller.dart';
 import 'package:transform_your_mind/presentation/start_practcing_screen/start_pratice_screen.dart';
@@ -77,7 +76,13 @@ class _HomeScreenState extends State<HomeScreen>
       Get.put(MotivationalController());
   @override
   void initState() {
+    if (PrefService.getString(PrefKey.language) == "") {
+      setState(() {
+        currentLanguage = "en-US";
+      });
+    }
     _setGreetingBasedOnTime();
+    g.getPodApi();
     _lottieBgController = AnimationController(vsync: this);
     scrollController.addListener(() {
       double showOffset = 10.0;
@@ -130,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen>
     await g.getUSer();
     getGratitude();
     g.getMotivationalMessage();
-    g.getPodApi();
+
     g.getSelfHypnoticApi();
     g.getBookMarkedList();
     g.getTodayAffirmation();
@@ -273,10 +278,33 @@ class _HomeScreenState extends State<HomeScreen>
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: Dimens.d20),
-                                child: Text(
-                                  "meditations".tr,
-                                  textAlign: TextAlign.center,
-                                  style: Style.nunitoBold(fontSize: Dimens.d22),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "meditations".tr,
+                                      textAlign: TextAlign.center,
+                                      style: Style.nunitoBold(fontSize: Dimens.d22),
+                                    ),
+                                    const Spacer(),
+                                    GestureDetector(onTap: () {
+                                      var dash = Get.find<DashBoardController>();
+                                      dash.onItemTapped(3);
+                                      setState(() {
+
+                                      });
+
+                                    },
+                                      child: Text(
+                                        "seeAll".tr,
+                                        style: Style.gothamLight(
+                                            color:
+                                            ColorConstant.color5A7681,
+                                            fontSize: 12),
+                                      ),
+                                    ),
+                                    Dimens.d4.spaceWidth,
+                                    SvgPicture.asset(ImageConstant.seeAll)
+                                  ],
                                 ),
                               ),
                               Dimens.d20.spaceHeight,
@@ -417,7 +445,7 @@ class _HomeScreenState extends State<HomeScreen>
                               Dimens.d30.spaceHeight,
                               //___________________________________________ recommendation _____________________
 
-                              Padding(
+                              if((controller.getPersonalDataModel.data ?? []).isNotEmpty)Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: Dimens.d20),
                                 child: Text(
@@ -428,9 +456,9 @@ class _HomeScreenState extends State<HomeScreen>
                                   ),
                                 ),
                               ),
-                              Dimens.d30.spaceHeight,
-                              recommendation(),
-                              Dimens.d30.spaceHeight,
+                              if((controller.getPersonalDataModel.data ?? []).isNotEmpty)Dimens.d30.spaceHeight,
+                              if((controller.getPersonalDataModel.data ?? []).isNotEmpty)recommendation(),
+                              if((controller.getPersonalDataModel.data ?? []).isNotEmpty)Dimens.d30.spaceHeight,
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: Dimens.d20),
@@ -631,7 +659,7 @@ class _HomeScreenState extends State<HomeScreen>
                                                   .tr,
                                               textAlign: TextAlign.center,
                                               style: Style.montserratSemiBold(
-                                                  fontSize: 12,
+                                                  fontSize: 10,
                                                   color: themeController
                                                           .isDarkMode.isTrue
                                                       ? ColorConstant.white
@@ -854,14 +882,14 @@ class _HomeScreenState extends State<HomeScreen>
                         fontSize: 16, color: ColorConstant.black),
                   ),
                 ),
-                Padding(
+           /*     Padding(
                   padding: const EdgeInsets.only(top: 110, left: 200),
                   child: Text(
-                    "Christian D. Larson",
+                    "${g.getUserModel.data?.}",
                     style: Style.nunRegular(
                         fontSize: 14, color: ColorConstant.black),
                   ),
-                )
+                )*/
               ],
             ),
           ),
@@ -877,7 +905,7 @@ class _HomeScreenState extends State<HomeScreen>
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: List.generate(controller.audioData.length ?? 0, (index) {
+            children: List.generate(controller.audioData.take(5).toList().length, (index) {
               return GestureDetector(
                   onTap: () {
                     if (!controller.audioData[index].isPaid!) {
@@ -1599,7 +1627,7 @@ class _HomeScreenState extends State<HomeScreen>
                       ),
                       Dimens.d20.spaceHeight,
                       Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 30),
+                        margin:  EdgeInsets.symmetric(horizontal:currentLanguage=="en-US"?30:10),
                         height: Dimens.d46,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(80),
@@ -1610,11 +1638,9 @@ class _HomeScreenState extends State<HomeScreen>
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              // Image.asset(ImageConstant.playGratitude,
-                              //     height: 20, width: 20),
-                              // Dimens.d8.spaceWidth,
+
                               Text(
-                                "startPracticing".tr,
+                                "Feel your affirmation".tr,
                                 style: Style.nunRegular(
                                     fontSize: 16, color: ColorConstant.white),
                               ),
@@ -1786,7 +1812,7 @@ class _HomeScreenState extends State<HomeScreen>
                             return AddGratitudePage(
                               isFromMyGratitude: true,
                               registerUser: false,
-                              categoryListAll: [],
+                              categoryListAll: const [],
                               previous: false,
                               edit: false,
                             );
@@ -1873,7 +1899,7 @@ class _HomeScreenState extends State<HomeScreen>
                                   height: 20, width: 20),
                               Dimens.d8.spaceWidth,
                               Text(
-                                "startPracticing".tr,
+                                "Feel your gratitude".tr,
                                 style: Style.nunRegular(
                                     fontSize: 16, color: ColorConstant.white),
                               )
@@ -1903,7 +1929,7 @@ class _HomeScreenState extends State<HomeScreen>
               categoryList: gratitudeList,
               previous: false,
               isFromMyGratitude: true,
-              categoryListAll: [],
+              categoryListAll: const [],
               registerUser: false,
               edit: true,
             );

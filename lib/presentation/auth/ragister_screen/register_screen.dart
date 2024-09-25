@@ -415,8 +415,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       builder: (context, child) {
         TextStyle customTextStyle = Style.nunMedium(fontSize: 15,color: Colors.black);
         TextStyle editedTextStyle = customTextStyle.copyWith(color: Colors.red); // Define the edited text style
-        TextStyle selectedDateTextStyle = Style.nunitoBold(fontSize: 15,color: themeController.isDarkMode.isTrue?Colors.white:
-        Colors.black); // Define the style for the selected date
+   // Define the style for the selected date
 
         return Theme(
           data: ThemeData.light().copyWith(focusColor: ColorConstant.themeColor,

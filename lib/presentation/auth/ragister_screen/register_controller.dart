@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -64,6 +65,7 @@ class RegisterController extends GetxController {
   CommonModel commonModel = CommonModel();
   RegisterModel registerModel = RegisterModel();
   registerApi(BuildContext context, ValueNotifier<XFile?> path) async {
+    final fcmToken = await FirebaseMessaging.instance.getToken();
     var headers = {
       'Content-Type': 'application/json',
 
@@ -83,6 +85,7 @@ class RegisterController extends GetxController {
           ? "3"
           : "0",
       "user_type": "2",
+      "deviceToken":fcmToken
     });
 
     request.headers.addAll(headers);

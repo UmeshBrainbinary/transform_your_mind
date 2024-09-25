@@ -25,17 +25,11 @@ class DashBoardScreen extends StatefulWidget {
 
 class _DashBoardScreenState extends State<DashBoardScreen> {
   DashBoardController dashBoardController = Get.put(DashBoardController());
+
   ThemeController themeController = Get.put(ThemeController());
-  int _selectedIndex = 0;
+
   AffirmationController affirmationController =
       Get.put(AffirmationController());
-  void _onItemTapped(int index) {
-    if(index != 2) {
-      setState(() {
-        _selectedIndex = index;
-      });
-    }
-  }
 
 
 
@@ -58,7 +52,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     return WillPopScope(
       onWillPop: () async {
         exit(0);
-        return false;
       },
       child: Scaffold(
         backgroundColor: themeController.isDarkMode.isTrue
@@ -93,360 +86,371 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
           ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        bottomNavigationBar: Platform.isIOS
-            ? Container(
-                decoration: BoxDecoration(
-                  color: themeController.isDarkMode.value
-                      ? ColorConstant.color29363E
-                      : ColorConstant.white,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
-            boxShadow: [
-              BoxShadow(
-                      color: themeController.isDarkMode.value
-                          ? Colors.transparent
-                          : ColorConstant.themeColor.withOpacity(0.5),
-                      blurRadius: Dimens.d28,
-                offset: const Offset(1, 1),
-                      spreadRadius: 0,
-                    ),
-            ],
-          ),
-          child: BottomNavigationBar(
-            elevation: 0.0,
-            backgroundColor: Colors.transparent,
-            items: [
-              BottomNavigationBarItem(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: SvgPicture.asset(
-                          themeController.isDarkMode.isTrue
-                              ? ImageConstant.darkHomeDeselected
-                              : ImageConstant.homeUnSelected,
-                          height: Dimens.d20,
-                          width: Dimens.d20,
-                        ),
+          bottomNavigationBar: GetBuilder<DashBoardController>(
+            builder: (controller) {
+              return Platform.isIOS
+                  ? Container(
+                      decoration: BoxDecoration(
+                        color: themeController.isDarkMode.value
+                            ? ColorConstant.color29363E
+                            : ColorConstant.white,
+                        borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(30)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: themeController.isDarkMode.value
+                                ? Colors.transparent
+                                : ColorConstant.themeColor.withOpacity(0.5),
+                            blurRadius: Dimens.d28,
+                            offset: const Offset(1, 1),
+                            spreadRadius: 0,
+                          ),
+                        ],
                       ),
-                label: 'home'.tr,
-                      activeIcon: Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: SvgPicture.asset(
-                          themeController.isDarkMode.isTrue
-                              ? ImageConstant.darkHomeSelected
-                              : ImageConstant.homeSelected,
-                          height: Dimens.d20,
-                          width: Dimens.d20,
+                      child: BottomNavigationBar(
+                        elevation: 0.0,
+                        backgroundColor: Colors.transparent,
+                        items: [
+                          BottomNavigationBarItem(
+                            icon: Padding(
+                              padding: const EdgeInsets.only(bottom: 6),
+                              child: SvgPicture.asset(
+                                themeController.isDarkMode.isTrue
+                                    ? ImageConstant.darkHomeDeselected
+                                    : ImageConstant.homeUnSelected,
+                                height: Dimens.d20,
+                                width: Dimens.d20,
+                              ),
+                            ),
+                            label: 'home'.tr,
+                            activeIcon: Padding(
+                              padding: const EdgeInsets.only(bottom: 6),
+                              child: SvgPicture.asset(
+                                themeController.isDarkMode.isTrue
+                                    ? ImageConstant.darkHomeSelected
+                                    : ImageConstant.homeSelected,
+                                height: Dimens.d20,
+                                width: Dimens.d20,
+                              ),
+                            ),
+                          ),
+                          BottomNavigationBarItem(
+                            icon: Padding(
+                              padding: const EdgeInsets.only(bottom: 6),
+                              child: SvgPicture.asset(
+                                themeController.isDarkMode.isTrue
+                                    ? ImageConstant.darkToolDeSelected
+                                    : ImageConstant.toolsUnSelected,
+                                height: Dimens.d20,
+                                width: Dimens.d20,
+                              ),
+                            ),
+                            label: 'tools'.tr,
+                            activeIcon: Padding(
+                              padding: const EdgeInsets.only(bottom: 6),
+                              child: SvgPicture.asset(
+                                themeController.isDarkMode.isTrue
+                                    ? ImageConstant.darkToolSelected
+                                    : ImageConstant.toolsSelected,
+                                height: Dimens.d20,
+                                width: Dimens.d20,
+                              ),
+                            ),
+                          ),
+                          BottomNavigationBarItem(
+                            icon: Visibility(
+                              visible: false,
+                              maintainState: true,
+                              maintainSize: true,
+                              maintainAnimation: true,
+                              child: SvgPicture.asset(
+                                ImageConstant.toolsUnSelected,
+                                height: Dimens.d20,
+                                width: Dimens.d20,
+                              ),
+                            ),
+                            label: ''.tr,
+                            activeIcon: Visibility(
+                              visible: false,
+                              maintainState: true,
+                              maintainSize: true,
+                              maintainAnimation: true,
+                              child: SvgPicture.asset(
+                                ImageConstant.toolsSelected,
+                                height: Dimens.d20,
+                                width: Dimens.d20,
+                              ),
+                            ),
+                          ),
+                          BottomNavigationBarItem(
+                            icon: Padding(
+                              padding: const EdgeInsets.only(bottom: 6),
+                              child: SvgPicture.asset(
+                                themeController.isDarkMode.isTrue
+                                    ? ImageConstant.darkExploreDeselected
+                                    : ImageConstant.exploreDeSelected,
+                                height: Dimens.d20,
+                                width: Dimens.d20,
+                              ),
+                            ),
+                            label: 'audioContent'.tr,
+                            activeIcon: Padding(
+                              padding: const EdgeInsets.only(bottom: 6),
+                              child: SvgPicture.asset(
+                                themeController.isDarkMode.isTrue
+                                    ? ImageConstant.darkExploreSelected
+                                    : ImageConstant.exploreSelected,
+                                height: Dimens.d20,
+                                width: Dimens.d20,
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          ),
+                          BottomNavigationBarItem(
+                            icon: Padding(
+                              padding: const EdgeInsets.only(bottom: 6),
+                              child: SvgPicture.asset(
+                                themeController.isDarkMode.isTrue
+                                    ? ImageConstant.darkMeDeselected
+                                    : ImageConstant.meSelected,
+                                height: Dimens.d20,
+                                width: Dimens.d20,
+                              ),
+                            ),
+                            label: 'me'.tr,
+                            activeIcon: Padding(
+                              padding: const EdgeInsets.only(bottom: 6),
+                              child: SvgPicture.asset(
+                                themeController.isDarkMode.isTrue
+                                    ? ImageConstant.darkMeSelected
+                                    : ImageConstant.profileIcon,
+                                height: Dimens.d20,
+                                width: Dimens.d20,
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          ),
+                        ],
+                        currentIndex: controller.selectedIndex,
+                        selectedIconTheme:
+                            const IconThemeData(color: Colors.black),
+                        unselectedIconTheme:
+                            const IconThemeData(color: Colors.black),
+                        selectedItemColor: Colors.black,
+                        unselectedItemColor: Colors.grey,
+                        selectedFontSize: Dimens.d12,
+                        unselectedFontSize: Dimens.d12,
+                        selectedLabelStyle: Style.montserratSemiBold(
+                          color: themeController.isDarkMode.isTrue
+                              ? ColorConstant.white
+                              : ColorConstant.black,
+                          fontSize: Dimens.d10,
                         ),
-                      ),
-              ),
-              BottomNavigationBarItem(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: SvgPicture.asset(
-                          themeController.isDarkMode.isTrue
-                              ? ImageConstant.darkToolDeSelected
-                              : ImageConstant.toolsUnSelected,
-                          height: Dimens.d20,
-                          width: Dimens.d20,
+                        showUnselectedLabels: true,
+                        unselectedLabelStyle: Style.nunRegular(
+                          color: themeController.isDarkMode.isTrue
+                              ? ColorConstant.white
+                              : ColorConstant.black,
+                          fontSize: Dimens.d10,
                         ),
+                        onTap: (v) {
+                          if (v != 2) {
+                            controller.onItemTapped(v);
+                          }
+                        },
+                        showSelectedLabels: true,
+                        useLegacyColorScheme: false,
+                        type: BottomNavigationBarType.fixed,
                       ),
-                label: 'tools'.tr,
-                      activeIcon: Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: SvgPicture.asset(
-                          themeController.isDarkMode.isTrue
-                              ? ImageConstant.darkToolSelected
-                              : ImageConstant.toolsSelected,
-                          height: Dimens.d20,
-                          width: Dimens.d20,
+                    )
+                  : Container(
+                      height: 64,
+                      decoration: BoxDecoration(
+                        color: themeController.isDarkMode.value
+                            ? ColorConstant.color29363E
+                            : ColorConstant.white,
+                        borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(30)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: themeController.isDarkMode.value
+                                ? Colors.transparent
+                                : ColorConstant.themeColor.withOpacity(0.5),
+                            blurRadius: Dimens.d28,
+                            offset: const Offset(1, 1),
+                            spreadRadius: 0,
+                          ),
+                        ],
+                      ),
+                      child: BottomNavigationBar(
+                        elevation: 0.0,
+                        backgroundColor: Colors.transparent,
+                        items: [
+                          BottomNavigationBarItem(
+                            icon: Padding(
+                              padding: const EdgeInsets.only(bottom: 6),
+                              child: SvgPicture.asset(
+                                themeController.isDarkMode.isTrue
+                                    ? ImageConstant.darkHomeDeselected
+                                    : ImageConstant.homeUnSelected,
+                                height: Dimens.d20,
+                                width: Dimens.d20,
+                              ),
+                            ),
+                            label: 'home'.tr,
+                            activeIcon: Padding(
+                              padding: const EdgeInsets.only(bottom: 6),
+                              child: SvgPicture.asset(
+                                themeController.isDarkMode.isTrue
+                                    ? ImageConstant.darkHomeSelected
+                                    : ImageConstant.homeSelected,
+                                height: Dimens.d20,
+                                width: Dimens.d20,
+                              ),
+                            ),
+                          ),
+                          BottomNavigationBarItem(
+                            icon: Padding(
+                              padding: const EdgeInsets.only(bottom: 6),
+                              child: SvgPicture.asset(
+                                themeController.isDarkMode.isTrue
+                                    ? ImageConstant.darkToolDeSelected
+                                    : ImageConstant.toolsUnSelected,
+                                height: Dimens.d20,
+                                width: Dimens.d20,
+                              ),
+                            ),
+                            label: 'Tools',
+                            activeIcon: Padding(
+                              padding: const EdgeInsets.only(bottom: 6),
+                              child: SvgPicture.asset(
+                                themeController.isDarkMode.isTrue
+                                    ? ImageConstant.darkToolSelected
+                                    : ImageConstant.toolsSelected,
+                                height: Dimens.d20,
+                                width: Dimens.d20,
+                              ),
+                            ),
+                          ),
+                          BottomNavigationBarItem(
+                            icon: Visibility(
+                              visible: false,
+                              maintainState: true,
+                              maintainSize: true,
+                              maintainAnimation: true,
+                              child: SvgPicture.asset(
+                                ImageConstant.toolsUnSelected,
+                                height: Dimens.d20,
+                                width: Dimens.d20,
+                              ),
+                            ),
+                            label: ''.tr,
+                            activeIcon: Visibility(
+                              visible: false,
+                              maintainState: true,
+                              maintainSize: true,
+                              maintainAnimation: true,
+                              child: SvgPicture.asset(
+                                ImageConstant.toolsSelected,
+                                height: Dimens.d20,
+                                width: Dimens.d20,
+                              ),
+                            ),
+                          ),
+                          BottomNavigationBarItem(
+                            icon: Padding(
+                              padding: const EdgeInsets.only(bottom: 6),
+                              child: SvgPicture.asset(
+                                themeController.isDarkMode.isTrue
+                                    ? ImageConstant.darkExploreDeselected
+                                    : ImageConstant.exploreDeSelected,
+                                height: Dimens.d20,
+                                width: Dimens.d20,
+                              ),
+                            ),
+                            label: 'audioContent'.tr,
+                            activeIcon: Padding(
+                              padding: const EdgeInsets.only(bottom: 6),
+                              child: SvgPicture.asset(
+                                themeController.isDarkMode.isTrue
+                                    ? ImageConstant.darkExploreSelected
+                                    : ImageConstant.exploreSelected,
+                                height: Dimens.d20,
+                                width: Dimens.d20,
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          ),
+                          BottomNavigationBarItem(
+                            icon: Padding(
+                              padding: const EdgeInsets.only(bottom: 6),
+                              child: SvgPicture.asset(
+                                themeController.isDarkMode.isTrue
+                                    ? ImageConstant.darkMeDeselected
+                                    : ImageConstant.meSelected,
+                                height: Dimens.d20,
+                                width: Dimens.d20,
+                              ),
+                            ),
+                            label: 'me'.tr,
+                            activeIcon: Padding(
+                              padding: const EdgeInsets.only(bottom: 6),
+                              child: SvgPicture.asset(
+                                themeController.isDarkMode.isTrue
+                                    ? ImageConstant.darkMeSelected
+                                    : ImageConstant.profileIcon,
+                                height: Dimens.d20,
+                                width: Dimens.d20,
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          ),
+                        ],
+                        currentIndex: controller.selectedIndex,
+                        selectedIconTheme:
+                            const IconThemeData(color: Colors.black),
+                        unselectedIconTheme:
+                            const IconThemeData(color: Colors.black),
+                        selectedItemColor: Colors.black,
+                        unselectedItemColor: Colors.grey,
+                        selectedFontSize: Dimens.d12,
+                        unselectedFontSize: Dimens.d12,
+                        selectedLabelStyle: Style.montserratSemiBold(
+                          color: themeController.isDarkMode.isTrue
+                              ? ColorConstant.white
+                              : ColorConstant.black,
+                          fontSize: Dimens.d10,
                         ),
-                      ),
-              ),
-              BottomNavigationBarItem(
-                icon: Visibility(
-                  visible: false,
-                  maintainState: true,
-                  maintainSize: true,
-                  maintainAnimation: true,
-                  child: SvgPicture.asset(
-                    ImageConstant.toolsUnSelected,
-                    height: Dimens.d20,
-                    width: Dimens.d20,
-                  ),
-                ),
-                label: ''.tr,
-                activeIcon: Visibility(
-                  visible: false,
-                  maintainState: true,
-                  maintainSize: true,
-                  maintainAnimation: true,
-                  child: SvgPicture.asset(
-                    ImageConstant.toolsSelected,
-                    height: Dimens.d20,
-                    width: Dimens.d20,
-                  ),
-                ),
-              ),
-              BottomNavigationBarItem(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: SvgPicture.asset(
-                          themeController.isDarkMode.isTrue
-                              ? ImageConstant.darkExploreDeselected
-                              : ImageConstant.exploreDeSelected,
-                          height: Dimens.d20,
-                          width: Dimens.d20,
+                        showUnselectedLabels: true,
+                        unselectedLabelStyle: Style.nunRegular(
+                          color: themeController.isDarkMode.isTrue
+                              ? ColorConstant.white
+                              : ColorConstant.black,
+                          fontSize: Dimens.d10,
                         ),
+                        onTap: (v) {
+                          if (v != 2) {
+                            controller.onItemTapped(v);
+                          }
+                        },
+                        showSelectedLabels: true,
+                        useLegacyColorScheme: false,
+                        type: BottomNavigationBarType.fixed,
                       ),
-                label: 'audioContent'.tr,
-                      activeIcon: Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: SvgPicture.asset(
-                          themeController.isDarkMode.isTrue
-                              ? ImageConstant.darkExploreSelected
-                              : ImageConstant.exploreSelected,
-                          height: Dimens.d20,
-                          width: Dimens.d20,
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-              ),
-              BottomNavigationBarItem(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: SvgPicture.asset(
-                          themeController.isDarkMode.isTrue
-                              ? ImageConstant.darkMeDeselected
-                              : ImageConstant.meSelected,
-                          height: Dimens.d20,
-                          width: Dimens.d20,
-                        ),
-                      ),
-                label: 'me'.tr,
-                      activeIcon: Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: SvgPicture.asset(
-                          themeController.isDarkMode.isTrue
-                              ? ImageConstant.darkMeSelected
-                              : ImageConstant.profileIcon,
-                          height: Dimens.d20,
-                          width: Dimens.d20,
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-              ),
-            ],
-            currentIndex: _selectedIndex,
-            selectedIconTheme: const IconThemeData(color: Colors.black),
-            unselectedIconTheme: const IconThemeData(color: Colors.black),
-            selectedItemColor: Colors.black,
-            unselectedItemColor: Colors.grey,
-            selectedFontSize: Dimens.d12,
-            unselectedFontSize: Dimens.d12,
-            selectedLabelStyle: Style.montserratSemiBold(
-              color: themeController.isDarkMode.isTrue
-                  ? ColorConstant.white
-                  : ColorConstant.black,
-              fontSize: Dimens.d10,
-            ),
-            showUnselectedLabels: true,
-                  unselectedLabelStyle: Style.nunRegular(
-                    color: themeController.isDarkMode.isTrue
-                        ? ColorConstant.white
-                        : ColorConstant.black,
-                    fontSize: Dimens.d10,
-                  ),
-                  onTap: (v) {
-                    if (v != 2) {
-                      _onItemTapped(v);
-                    }
-                  },
-                  showSelectedLabels: true,
-                  useLegacyColorScheme: false,
-                  type: BottomNavigationBarType.fixed,
-                ),
-              )
-            : Container(
-                height: 64,
-                decoration: BoxDecoration(
-                  color: themeController.isDarkMode.value
-                      ? ColorConstant.color29363E
-                      : ColorConstant.white,
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(30)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: themeController.isDarkMode.value
-                          ? Colors.transparent
-                          : ColorConstant.themeColor.withOpacity(0.5),
-                      blurRadius: Dimens.d28,
-                      offset: const Offset(1, 1),
-                      spreadRadius: 0,
-                    ),
-                  ],
-                ),
-                child: BottomNavigationBar(
-                  elevation: 0.0,
-                  backgroundColor: Colors.transparent,
-                  items: [
-                    BottomNavigationBarItem(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: SvgPicture.asset(
-                          themeController.isDarkMode.isTrue
-                              ? ImageConstant.darkHomeDeselected
-                              : ImageConstant.homeUnSelected,
-                          height: Dimens.d20,
-                          width: Dimens.d20,
-                        ),
-                      ),
-                      label: 'home'.tr,
-                      activeIcon: Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: SvgPicture.asset(
-                          themeController.isDarkMode.isTrue
-                              ? ImageConstant.darkHomeSelected
-                              : ImageConstant.homeSelected,
-                          height: Dimens.d20,
-                          width: Dimens.d20,
-                        ),
-                      ),
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: SvgPicture.asset(
-                          themeController.isDarkMode.isTrue
-                              ? ImageConstant.darkToolDeSelected
-                              : ImageConstant.toolsUnSelected,
-                          height: Dimens.d20,
-                          width: Dimens.d20,
-                        ),
-                      ),
-                      label: 'Tools',
-                      activeIcon: Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: SvgPicture.asset(
-                          themeController.isDarkMode.isTrue
-                              ? ImageConstant.darkToolSelected
-                              : ImageConstant.toolsSelected,
-                          height: Dimens.d20,
-                          width: Dimens.d20,
-                        ),
-                      ),
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Visibility(
-                        visible: false,
-                        maintainState: true,
-                        maintainSize: true,
-                        maintainAnimation: true,
-                        child: SvgPicture.asset(
-                          ImageConstant.toolsUnSelected,
-                          height: Dimens.d20,
-                          width: Dimens.d20,
-                        ),
-                      ),
-                      label: ''.tr,
-                      activeIcon: Visibility(
-                        visible: false,
-                        maintainState: true,
-                        maintainSize: true,
-                        maintainAnimation: true,
-                        child: SvgPicture.asset(
-                          ImageConstant.toolsSelected,
-                          height: Dimens.d20,
-                          width: Dimens.d20,
-                        ),
-                      ),
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: SvgPicture.asset(
-                          themeController.isDarkMode.isTrue
-                              ? ImageConstant.darkExploreDeselected
-                              : ImageConstant.exploreDeSelected,
-                          height: Dimens.d20,
-                          width: Dimens.d20,
-                        ),
-                      ),
-                      label: 'audioContent'.tr,
-                      activeIcon: Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: SvgPicture.asset(
-                          themeController.isDarkMode.isTrue
-                              ? ImageConstant.darkExploreSelected
-                              : ImageConstant.exploreSelected,
-                          height: Dimens.d20,
-                          width: Dimens.d20,
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: SvgPicture.asset(
-                          themeController.isDarkMode.isTrue
-                              ? ImageConstant.darkMeDeselected
-                              : ImageConstant.meSelected,
-                          height: Dimens.d20,
-                          width: Dimens.d20,
-                        ),
-                      ),
-                      label: 'me'.tr,
-                      activeIcon: Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: SvgPicture.asset(
-                          themeController.isDarkMode.isTrue
-                              ? ImageConstant.darkMeSelected
-                              : ImageConstant.profileIcon,
-                          height: Dimens.d20,
-                          width: Dimens.d20,
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                    ),
-                  ],
-                  currentIndex: _selectedIndex,
-                  selectedIconTheme: const IconThemeData(color: Colors.black),
-                  unselectedIconTheme: const IconThemeData(color: Colors.black),
-                  selectedItemColor: Colors.black,
-                  unselectedItemColor: Colors.grey,
-                  selectedFontSize: Dimens.d12,
-                  unselectedFontSize: Dimens.d12,
-                  selectedLabelStyle: Style.montserratSemiBold(
-                    color: themeController.isDarkMode.isTrue
-                        ? ColorConstant.white
-                        : ColorConstant.black,
-                    fontSize: Dimens.d10,
-                  ),
-                  showUnselectedLabels: true,
-                  unselectedLabelStyle: Style.nunRegular(
-                    color: themeController.isDarkMode.isTrue
-                  ? ColorConstant.white
-                  : ColorConstant.black,
-              fontSize: Dimens.d10,
-            ),
-            onTap: (v){
-              if(v !=2)
-                {
-                  _onItemTapped(v);
-                }
+                    );
             },
-            showSelectedLabels: true,
-            useLegacyColorScheme: false,
-            type: BottomNavigationBarType.fixed,
           ),
-        ),
-        body: Column(
-          children: [
-            Expanded(
-              child: pages[_selectedIndex],
-            ),
-          ],
-        ),
-      ),
+          body: GetBuilder<DashBoardController>(
+            builder: (controller) {
+              return Column(
+                children: [
+                  Expanded(
+                    child: pages[controller.selectedIndex],
+                  ),
+                ],
+              );
+            },
+          )),
     );
   }
 }

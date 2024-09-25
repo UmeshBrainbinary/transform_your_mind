@@ -284,9 +284,8 @@ class FeelGood extends StatelessWidget {
                   SizedBox(
                     width: 72,
                     child: Text(
-                      dataList?.name
-                          .toString()??"",
-                      // "Motivational",
+                        currentLanguage=="en-US"? dataList?.name??"":dataList?.gName??"",
+
                       style: Style
                           .nunitoBold(
                         fontSize: Dimens.d12,
@@ -329,7 +328,7 @@ class FeelGood extends StatelessWidget {
               ),
               Dimens.d7.spaceHeight,
               Text(
-               dataList?.description??"",
+                currentLanguage=="en-US"? dataList?.description??"":dataList?.gDescription??"",
                 maxLines: Dimens.d2.toInt(),
                 style: Style.nunMedium(
                     fontSize: Dimens.d14),

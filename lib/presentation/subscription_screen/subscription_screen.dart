@@ -10,6 +10,7 @@ import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
 import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:transform_your_mind/core/common_widget/custom_screen_loader.dart';
 import 'package:transform_your_mind/core/common_widget/snack_bar.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
@@ -18,6 +19,7 @@ import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
+import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/main.dart';
 import 'package:transform_your_mind/model_class/get_user_model.dart';
@@ -32,7 +34,7 @@ import 'package:transform_your_mind/presentation/how_feeling_today/stress_questi
 import 'package:transform_your_mind/presentation/subscription_screen/subscription_controller.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
-import 'package:transform_your_mind/widgets/custom_appbar.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 final bool _kAutoConsume = Platform.isIOS || true;
 
@@ -61,22 +63,23 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   ThemeController themeController = Get.find<ThemeController>();
   final InAppPurchase _inAppPurchase = InAppPurchase.instance;
   late StreamSubscription<List<PurchaseDetails>> _subscription;
-  List<String> _notFoundIds = <String>[];
   List<ProductDetails> _products = <ProductDetails>[];
   List<PurchaseDetails> _purchases = <PurchaseDetails>[];
-  List<String> _consumables = <String>[];
-  bool _isAvailable = false;
-  bool _purchasePending = false;
-  bool _loading = true;
-  String? _queryProductError;
-  DateTime now = DateTime.now(); // Current date and time
+  bool loader = false;
+  DateTime now = DateTime.now();
   DateTime? futureDate;
   bool valueChecked = false;
   String greeting = "";
+  String currentLanguage = PrefService.getString(PrefKey.language);
+
   @override
   void initState() {
     super.initState();
-
+    if (PrefService.getString(PrefKey.language) == "") {
+      setState(() {
+        currentLanguage = "en-US";
+      });
+    }
     _setGreetingBasedOnTime();
     getUserData();
 
@@ -105,18 +108,18 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   getUserData() async {
     await getUSer();
     subscriptionController.plan.clear();
-    List.generate(3, (index) {
+    List.generate(2, (index) {
       subscriptionController.plan.add(false);
     },);
     if(getUserModel.data!.isSubscribed==true){
       if (getUserModel.data!.subscriptionId == "transform_yearly") {
         setState(() {
-          subscriptionController.plan[2] = true.obs;
+          subscriptionController.plan[1] = true.obs;
         });
       } else if (getUserModel.data!.subscriptionId ==
           "transform_monthly") {
         setState(() {
-          subscriptionController.plan[1] = true.obs;
+          subscriptionController.plan[0] = true.obs;
         });
       }
       else
@@ -129,12 +132,12 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     else
     {
       setState(() {
-        subscriptionController.plan[0] = true.obs;
+
       });
     }
 
     for (int i = 0; i < subscriptionController.plan.length; i++) {
-      if (subscriptionController.plan[1] == true || subscriptionController.plan[2] == true) {
+      if (subscriptionController.plan[0] == true || subscriptionController.plan[1] == true) {
         setState(() {
           valueChecked = true;
         });
@@ -161,107 +164,149 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
   Future<void> consume(String id) async {
     await ConsumableStore.consume(id);
-    final List<String> consumables = await ConsumableStore.load();
     setState(() {
-      _consumables = consumables;
     });
   }
 
   void showPendingUI() {
     setState(() {
-      _purchasePending = true;
     });
   }
 
   void handleError(IAPError error) {
     setState(() {
-      _purchasePending = false;
     });
   }
 
   Future<void> _listenToPurchaseUpdated(
       List<PurchaseDetails> purchaseDetailsList) async {
-    final ProductDetailsResponse productDetailResponse =
-    await _inAppPurchase.queryProductDetails(_kProductIds.toSet());
     for (final PurchaseDetails purchaseDetails in purchaseDetailsList) {
-      if (purchaseDetails.status == PurchaseStatus.pending) {
+      if (purchaseDetails.status == PurchaseStatus.canceled) {
+        // Subscription canceled
+        print("Subscription has been canceled");
+        setState(() {
+          subscriptionController.plan.clear();
+        });
+        await updateUser(context);
+        await getUSer();
+      } else if (purchaseDetails.status == PurchaseStatus.pending) {
         showPendingUI();
-      } else {
-        if (purchaseDetails.status == PurchaseStatus.error) {
-          handleError(purchaseDetails.error!);
-        }
-        else if (purchaseDetails.status == PurchaseStatus.purchased ||
-            purchaseDetails.status == PurchaseStatus.restored) {
+      } else if (purchaseDetails.status == PurchaseStatus.error) {
+        // Handle errors
+        showSnackBarError(context, purchaseDetails.error!.message);
+        handleError(purchaseDetails.error!);
+      } else if (purchaseDetails.status == PurchaseStatus.purchased ||
+          purchaseDetails.status == PurchaseStatus.restored) {
+        // Successfully purchased or restored
+        final bool valid = await _verifyPurchase(purchaseDetails);
+
+        if (valid) {
+          if (!valueChecked) {
+            try {
+              setState(() {
+                loader = true;
+              });
+              var headers = {
+                'Authorization':
+                    'Bearer ${PrefService.getString(PrefKey.token)}'
+              };
+
+              var request = http.MultipartRequest(
+                  'POST',
+                  Uri.parse(
+                      '${EndPoints.baseUrl}${EndPoints.updateUser}${PrefService.getString(PrefKey.userId)}'));
+
+              request.fields.addAll({
+                'isSubscribed': "true",
+                'subscriptionId':
+                    subscriptionController.plan[1].toString() == "true"
+                        ? "transform_yearly"
+                        : subscriptionController.plan[0] == true
+                            ? "transform_monthly"
+                            : "Free",
+                'subscriptionTitle':
+                    subscriptionController.plan[1].toString() == "true"
+                        ? "Premium Yearly"
+                        : subscriptionController.plan[0] == true
+                            ? "Premium Monthly"
+                            : "Free",
+                'subscriptionDescription': "",
+                'price': "₣${subscriptionController.plan[1]}" == "true"
+                    ? "49.99"
+                    : subscriptionController.plan[0] == true
+                        ? "6.99"
+                        : "Free",
+                'rawPrice': "",
+                'currencyCode': "",
+                'subscriptionDate': DateTime.now().toString(),
+                'expiryDate': "",
+              });
+
+              request.headers.addAll(headers);
+
+              http.StreamedResponse response = await request.send();
+
+              if (response.statusCode == 200) {
+                setState(() {
+                  loader = false;
+                });
+                await getUSer();
+                _showAlertDialog(context);
+              } else {
+                setState(() {
+                  loader = false;
+                });
+                debugPrint(response.reasonPhrase);
+              }
+            } catch (e) {
+              setState(() {
+                loader = false;
+              });
+              debugPrint(e.toString());
+            }
+          }
+          setState(() {
+            loader = false;
+          });
+          // Call API after successful verification
           debugPrint("purchase details =========+++++$purchaseDetails");
 
-          try {
-            var headers = {
-              'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
-            };
-            var request = http.MultipartRequest(
-                'POST',
-                Uri.parse(
-                    '${EndPoints.baseUrl}${EndPoints.updateUser}${PrefService.getString(PrefKey.userId)}'));
-            request.fields.addAll({
-              'isSubscribed': "true",
-              'subscriptionId':  subscriptionController.plan[2].toString() == "true"?"transform_yearly": subscriptionController.plan[1] == true?"transform_monthly":"Free",
-              'subscriptionTitle':
-              subscriptionController.plan[2].toString() == "true"?"Premium Yearly":subscriptionController.plan[1] == true?"Premium Monthly":"Free",
-              'subscriptionDescription': "",
-              'price': "₣"+ subscriptionController.plan[2].toString() == "true"?"49.99":subscriptionController.plan[1] == true?"6.99":"Free",
-              'rawPrice': "",
-              'currencyCode': "",
-              'subscriptionDate': DateTime.now().toString(),
-              'expiryDate': "",
-            });
-
-            request.headers.addAll(headers);
-
-            http.StreamedResponse response = await request.send();
-
-            if (response.statusCode == 200) {
-              showSnackBarSuccess(context, "Subscription set successful");
-              await getUSer();
-              Get.back();
-            } else {
-              debugPrint(response.reasonPhrase);
-            }
-          } catch (e) {
-            debugPrint(e.toString());
-          }
-          final bool valid = await _verifyPurchase(purchaseDetails);
-          if (valid) {
-            unawaited(deliverProduct(purchaseDetails));
-          } else {
-            _handleInvalidPurchase(purchaseDetails);
-            return;
-          }
+          // Deliver the product
+          unawaited(deliverProduct(purchaseDetails));
+        } else {
+          _handleInvalidPurchase(purchaseDetails);
+          return;
         }
-        if (Platform.isAndroid) {
-          if (!_kAutoConsume && purchaseDetails.productID == _kConsumableId) {
-            final InAppPurchaseAndroidPlatformAddition androidAddition =
-            _inAppPurchase.getPlatformAddition<
-                InAppPurchaseAndroidPlatformAddition>();
-            await androidAddition.consumePurchase(purchaseDetails);
-          }
+      }
+
+      // Handle Android-specific consumption for consumable items
+      if (Platform.isAndroid) {
+        if (!_kAutoConsume && purchaseDetails.productID == _kConsumableId) {
+          final InAppPurchaseAndroidPlatformAddition androidAddition =
+              _inAppPurchase
+                  .getPlatformAddition<InAppPurchaseAndroidPlatformAddition>();
+          await androidAddition.consumePurchase(purchaseDetails);
         }
-        if (purchaseDetails.pendingCompletePurchase) {
-          await _inAppPurchase.completePurchase(purchaseDetails);
-        }
+      }
+
+      // Complete pending purchases
+      if (purchaseDetails.pendingCompletePurchase) {
+        await _inAppPurchase.completePurchase(purchaseDetails);
       }
     }
   }
 
   void _handleInvalidPurchase(PurchaseDetails purchaseDetails) {
-    print("when user get purchase status ${purchaseDetails.status}");
-    print("when user get purchase error ${purchaseDetails.error}");
-    print(
+    debugPrint("when user get purchase status ${purchaseDetails.status}");
+    debugPrint("when user get purchase error ${purchaseDetails.error}");
+    debugPrint(
         "when user get purchase pendingCompletePurchase ${purchaseDetails.pendingCompletePurchase}");
-    print("when user get purchase productID ${purchaseDetails.productID}");
-    print("when user get purchase purchaseID ${purchaseDetails.purchaseID}");
-    print(
+    debugPrint("when user get purchase productID ${purchaseDetails.productID}");
+    debugPrint(
+        "when user get purchase purchaseID ${purchaseDetails.purchaseID}");
+    debugPrint(
         "when user get purchase transactionDate ${purchaseDetails.transactionDate}");
-    print(
+    debugPrint(
         "when user get purchase verificationData ${purchaseDetails.verificationData}");
     // handle invalid purchase here if  _verifyPurchase` failed.
   }
@@ -272,21 +317,17 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     // IMPORTANT!! Always verify purchase details before delivering the product.
     if (purchaseDetails.productID == _kConsumableId) {
       await ConsumableStore.save(purchaseDetails.purchaseID!);
-      final List<String> consumables = await ConsumableStore.load();
       setState(() {
-        _purchasePending = false;
-        _consumables = consumables;
       });
     } else {
       setState(() {
         _purchases.add(purchaseDetails);
-        _purchasePending = false;
       });
     }
   }
 
   Future<bool> _verifyPurchase(PurchaseDetails purchaseDetails) {
-    print("after verify purchase details ======++++ $purchaseDetails");
+    debugPrint("after verify purchase details ======++++ $purchaseDetails");
     // IMPORTANT!! Always verify a purchase before delivering the product.
     // For the purpose of an example, we directly return true.
     return Future<bool>.value(true);
@@ -296,13 +337,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     final bool isAvailable = await _inAppPurchase.isAvailable();
     if (!isAvailable) {
       setState(() {
-        _isAvailable = isAvailable;
         _products = <ProductDetails>[];
         _purchases = <PurchaseDetails>[];
-        _notFoundIds = <String>[];
-        _consumables = <String>[];
-        _purchasePending = false;
-        _loading = false;
       });
       return;
     }
@@ -328,50 +364,33 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
     print("plans checking ${ subscriptionController.plan}");
     setState(() {
-      _queryProductError = productDetailResponse.error?.message;
-      _isAvailable = isAvailable;
       _products = productDetailResponse.productDetails;
       _purchases = <PurchaseDetails>[];
-      _notFoundIds = productDetailResponse.notFoundIDs;
-      _consumables = <String>[];
-      _purchasePending = false;
-      _loading = false;
     });
 
 
     if (productDetailResponse.productDetails.isEmpty) {
       setState(() {
-        _queryProductError = null;
-        _isAvailable = isAvailable;
         _products = productDetailResponse.productDetails;
         _purchases = <PurchaseDetails>[];
-        _notFoundIds = productDetailResponse.notFoundIDs;
-        _consumables = <String>[];
-        _purchasePending = false;
-        _loading = false;
       });
       return;
     }
 
     final List<String> consumables = await ConsumableStore.load();
     setState(() {
-      _isAvailable = isAvailable;
       _products = productDetailResponse.productDetails;
-      _notFoundIds = productDetailResponse.notFoundIDs;
-      _consumables = consumables;
-      _purchasePending = false;
-      _loading = false;
     });
     print("consumable list $consumables");
     if(getUserModel.data!.isSubscribed==true){
       if (getUserModel.data!.subscriptionId == "transform_yearly") {
         setState(() {
-          subscriptionController.plan[2] = true.obs;
+          subscriptionController.plan[1] = true.obs;
         });
       } else if (getUserModel.data!.subscriptionId ==
           "transform_monthly") {
         setState(() {
-          subscriptionController.plan[1] = true.obs;
+          subscriptionController.plan[0] = true.obs;
         });
       }
       else
@@ -383,7 +402,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     }
 
     for (int i = 0; i < subscriptionController.plan.length; i++) {
-      if (subscriptionController.plan[1] == true || subscriptionController.plan[2] == true) {
+      if (subscriptionController.plan[0] == true || subscriptionController.plan[1] == true) {
         setState(() {
           valueChecked = true;
         });
@@ -394,13 +413,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     final bool isAvailable = await _inAppPurchase.isAvailable();
     if (!isAvailable) {
       setState(() {
-        _isAvailable = isAvailable;
         _products = <ProductDetails>[];
         _purchases = <PurchaseDetails>[];
-        _notFoundIds = <String>[];
-        _consumables = <String>[];
-        _purchasePending = false;
-        _loading = false;
       });
       return;
     }
@@ -420,51 +434,34 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
     print("plans checking ${ subscriptionController.plan}");
     setState(() {
-      _queryProductError = productDetailResponse.error?.message;
-      _isAvailable = isAvailable;
       _products = productDetailResponse.productDetails;
       _purchases = <PurchaseDetails>[];
-      _notFoundIds = productDetailResponse.notFoundIDs;
-      _consumables = <String>[];
-      _purchasePending = false;
-      _loading = false;
     });
 
 
     if (productDetailResponse.productDetails.isEmpty) {
       setState(() {
-        _queryProductError = null;
-        _isAvailable = isAvailable;
         _products = productDetailResponse.productDetails;
         _purchases = <PurchaseDetails>[];
-        _notFoundIds = productDetailResponse.notFoundIDs;
-        _consumables = <String>[];
-        _purchasePending = false;
-        _loading = false;
       });
       return;
     }
 
     final List<String> consumables = await ConsumableStore.load();
     setState(() {
-      _isAvailable = isAvailable;
       _products = productDetailResponse.productDetails;
-      _notFoundIds = productDetailResponse.notFoundIDs;
-      _consumables = consumables;
-      _purchasePending = false;
-      _loading = false;
     });
     print("consumable list $consumables");
     print("productDetailResponse details To save in api $productDetailResponse");
     if(getUserModel.data!.isSubscribed==true){
       if (getUserModel.data!.subscriptionId == "transform_yearly") {
         setState(() {
-          subscriptionController.plan[2] = true.obs;
+          subscriptionController.plan[1] = true.obs;
         });
       } else if (getUserModel.data!.subscriptionId ==
           "transform_monthly") {
         setState(() {
-          subscriptionController.plan[1] = true.obs;
+          subscriptionController.plan[0] = true.obs;
         });
       }
       else
@@ -524,134 +521,266 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     return Scaffold(
       backgroundColor: themeController.isDarkMode.value
           ? ColorConstant.darkBackground
-          : ColorConstant.backGround,
-      appBar: CustomAppBar(
-        centerTitle: true,
-        leading: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: GestureDetector(
-            onTap: () {
-              Get.back();
-            },
-            child: SvgPicture.asset(
-              ImageConstant.close,
-              color: themeController.isDarkMode.isTrue ? ColorConstant.colorA49F9F : ColorConstant.hintText,
+          : ColorConstant.white,
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 25,),
+                Stack(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    Container(
+                      height: 300,
+                      width: Get.width,
+                      color: const Color(0xffF6FBF5),
+                    ),
+                    Image.asset(
+                      ImageConstant.sub,
+                      height: 300,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: Row(
+                        children: [
+                          Dimens.d20.spaceWidth,
+                          GestureDetector(
+                            onTap: () {
+                              Get.back();
+                            },
+                            child: SvgPicture.asset(
+                              ImageConstant.close,
+                              height: 22,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const Spacer(),
+                          widget.skip!
+                              ? GestureDetector(
+                                  onTap: () async {
+                                    await PrefService.setValue(
+                                        PrefKey.subscription, true);
+                                    await PrefService.setValue(
+                                        PrefKey.firstTimeRegister, true);
+                                    await PrefService.setValue(
+                                        PrefKey.addGratitude, true);
+                                    /* Navigator.push(context, MaterialPageRoute(
+                                                builder: (context) {
+                                                  return const WelcomeHomeScreen();
+                                                },
+                                              ));*/
+                                    if (getUserModel
+                                            .data?.morningMoodQuestions ??
+                                        false == false &&
+                                            greeting == "goodMorning") {
+                                      Get.offAll(() => SleepQuestions());
+                                    } else if (getUserModel
+                                            .data?.morningSleepQuestions ??
+                                        false == false &&
+                                            greeting == "goodMorning") {
+                                      Get.offAll(() => StressQuestions());
+                                    } else if (getUserModel
+                                            .data?.morningStressQuestions ??
+                                        false == false &&
+                                            greeting == "goodMorning") {
+                                      Get.offAll(() =>
+                                          const HowFeelingTodayScreen());
+                                    } else if (getUserModel.data
+                                            ?.morningMotivationQuestions ??
+                                        false == false &&
+                                            greeting == "goodMorning") {
+                                      Get.offAll(
+                                          () => MotivationalQuestions());
+                                    } else if (getUserModel
+                                            .data?.eveningMoodQuestions ??
+                                        false == false &&
+                                            greeting == "goodEvening") {
+                                      Get.offAll(
+                                          () => const HowFeelingsEvening());
+                                    } else if (getUserModel
+                                            .data?.eveningStressQuestions ??
+                                        false == false &&
+                                            greeting == "goodEvening") {
+                                      Get.offAll(() => EveningStress());
+                                    } else if (getUserModel.data
+                                            ?.eveningMotivationQuestions ??
+                                        false == false &&
+                                            greeting == "goodEvening") {
+                                      Get.offAll(() => EveningMotivational());
+                                    } else {
+                                      Get.offAll(
+                                          () => const DashBoardScreen());
+                                    }
+                            },
+                            child: Text(
+                              "skip".tr,
+                              style: Style.nunRegular(
+                                  color: ColorConstant.black,
+                                  fontSize: Dimens.d16),
+                            ),
+                          )
+                              : const SizedBox(),
+                          Dimens.d20.spaceWidth,
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                Dimens.d10.spaceHeight,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "PREMIUM",
+                      style: Style.nunitoBold(
+                        fontSize: Dimens.d16,
+                        color: ColorConstant.themeColor,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    Image.asset(
+                      ImageConstant.star,
+                      width: 25,
+                      height: 25,
+                    ),
+                  ],
+                ),
+                Dimens.d10.spaceHeight,
+                Text(
+                  "Try it for free".tr,
+                  style: Style.nunitoBold(
+                    fontSize: Dimens.d28,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                Dimens.d10.spaceHeight,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 43),
+                  child: Text(
+                    "Unleash your full potential with TransformYourMind!".tr,
+                    style: Style.nunMedium(
+                        fontSize: Dimens.d14, fontWeight: FontWeight.w500),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Dimens.d10.spaceHeight,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "PREMIUM PLUS",
+                      style: Style.nunitoBold(
+                        fontSize: Dimens.d16,
+                        color: ColorConstant.themeColor,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    Image.asset(
+                      ImageConstant.star,
+                      width: 25,
+                      height: 25,
+                    ),
+                    Image.asset(
+                      ImageConstant.star,
+                      width: 25,
+                      height: 25,
+                    ),
+                  ],
+                ),
+                Dimens.d10.spaceHeight,
+                Text(
+                  "Unlock all functions".tr,
+                  style: Style.nunitoBold(
+                    fontSize: Dimens.d28,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                Dimens.d10.spaceHeight,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 35),
+                  child: currentLanguage == "en-US" ? Text(
+                    '''Unlock advanced features with a subscription and enhance your experience.
+                      Enjoy exclusive tools like pods and gratitude journal ,self hypnosis,
+                      Subscribe now to access even more features!''',
+                    style: Style.nunMedium(
+                        fontSize: Dimens.d18, fontWeight: FontWeight.w500),
+                    textAlign: TextAlign.center,
+                  ) : Text(
+                    "Affirmationen und tiefgehenden Meditation bis hin zu transformierenden Selbsthypnose-Audios, deinem personlichen Wohlfuhlbarometer und Achtsamkeitstraining.",
+                    style: Style.nunMedium(
+                        fontSize: Dimens.d14, fontWeight: FontWeight.w500),
+                    textAlign: TextAlign.center,),
+                ),
+
+                Dimens.d20.spaceHeight,
+                selectPlan()
+              ],
             ),
           ),
-        ),
-        title: "subscriptions".tr,
-        showBack: false,
-        action: widget.skip!
-            ? Row(
-          children: [
-            GestureDetector(
-              onTap: () async {
-                await PrefService.setValue(PrefKey.subscription, true);
-                await PrefService.setValue(PrefKey.firstTimeRegister, true);
-                await PrefService.setValue(PrefKey.addGratitude, true);
-                /* Navigator.push(context, MaterialPageRoute(
-                  builder: (context) {
-                    return const WelcomeHomeScreen();
-                  },
-                ));*/
-                if (getUserModel.data
-                    ?.morningMoodQuestions ??
-                    false == false &&
-                        greeting == "goodMorning") {
-                  Get.offAll(() =>  SleepQuestions());
-                }
-                else if (getUserModel.data
-                    ?.morningSleepQuestions ??
-                    false == false &&
-                        greeting == "goodMorning") {
-                  Get.offAll(() => StressQuestions());
-                } else if (getUserModel.data
-                    ?.morningStressQuestions ??
-                    false == false &&
-                        greeting == "goodMorning") {
-                  Get.offAll(() => const HowFeelingTodayScreen());
-                } else if (getUserModel.data
-                    ?.morningMotivationQuestions ??
-                    false == false &&
-                        greeting == "goodMorning") {
-                  Get.offAll(() => MotivationalQuestions());
-                } else if (getUserModel.data
-                    ?.eveningMoodQuestions ??
-                    false == false &&
-                        greeting == "goodEvening") {
-                  Get.offAll(() => const HowFeelingsEvening());
-                } else if (getUserModel.data
-                    ?.eveningStressQuestions ??
-                    false == false &&
-                        greeting == "goodEvening") {
-                  Get.offAll(() => EveningStress());
-                } else if (getUserModel.data
-                    ?.eveningMotivationQuestions ??
-                    false == false &&
-                        greeting == "goodEvening") {
-                  Get.offAll(() => EveningMotivational());
-                } else {
-
-
-                  Get.offAll(() => const DashBoardScreen());
-                  /*if((PrefService.getBool(PrefKey.isFreeUser) == false && PrefService.getBool(PrefKey.isSubscribed) == false))
-                                    {
-                                      Get.offAll(() =>  SubscriptionScreen(skip: true,));
-
-                                    }
-                                    else
-                                    {
-
-                                      Get.offAll(() => const DashBoardScreen());
-                                    }*/
-                }
-              },
-              child: Text(
-                "skip".tr,
-                style: Style.nunRegular(
-                  color: themeController.isDarkMode.value ?
-                  ColorConstant.white : ColorConstant.black,
-                    fontSize: Dimens.d16
-                ),
-              ),
-            ),
-            Dimens.d20.spaceWidth,
-          ],
-        )
-            : const SizedBox(),
+          if (loader == true) commonLoader() else
+            const SizedBox()
+        ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Dimens.d22.spaceHeight,
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Dimens.d50),
-              child: Text(
-                "chooseSub".tr,
-                textAlign: TextAlign.center,
-                style: Style.nunRegular(
-                  fontSize: Dimens.d16,
-                ),
-              ),
+    );
+  }
+
+  void _showAlertDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          //backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(11.0), // Set border radius
+          ),
+          actions: <Widget>[
+            Dimens.d27.spaceHeight,
+            Center(
+                child: SvgPicture.asset(
+                  ImageConstant.passwordCheck,
+                  height: Dimens.d100,
+                  width: Dimens.d100,
+                )),
+            Dimens.d8.spaceHeight,
+            Center(
+              child: Text("Thank you for subscribing".tr,
+                  textAlign: TextAlign.center,
+                  style: Style.nunMedium(
+                    fontSize: Dimens.d22,
+                    fontWeight: FontWeight.w400,
+                  )),
             ),
-            Dimens.d20.spaceHeight,
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Dimens.d45),
+            Dimens.d7.spaceHeight,
+            Center(
               child: Text(
-                "subscribeNow".tr,
-                textAlign: TextAlign.center,
-                style: Style.nunMedium(
-                  color: themeController.isDarkMode.isTrue ? ColorConstant.color73969FF : ColorConstant.themeColor,
-                  fontSize: Dimens.d14,
-                ),
-              ),
+                  textAlign: TextAlign.center,
+                  "YourTransactionSuccess".tr,
+                  style: Style.nunRegular(
+                    fontSize: Dimens.d12,
+                    fontWeight: FontWeight.w400,
+                  )),
             ),
-            Dimens.d20.spaceHeight,
-            selectPlan()
+            Dimens.d31.spaceHeight,
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: Dimens.d70.h),
+              child: CommonElevatedButton(
+                title: "ok".tr,
+                onTap: () {
+                  Get.back();
+                },
+              ),
+            )
           ],
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -661,23 +790,23 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "selectPlan".tr,
-            textAlign: TextAlign.center,
-            style: Style.nunitoBold(
-              fontSize: Dimens.d16,
-            ),
-          ),
-          Dimens.d20.spaceHeight,
           Obx(
-                () => subscriptionController.plan.length !=0?
-            ListView.builder(
-              itemCount: subscriptionController.selectPlan.length,
-              shrinkWrap: true,
+            () => subscriptionController.plan.isNotEmpty
+                ? ListView.builder(
+                    itemCount: currentLanguage == "en-US"
+                        ? subscriptionController.selectPlan.length
+                        : subscriptionController.selectPlanG.length,
+                    shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
-                var data = subscriptionController.selectPlan[index];
-                return GestureDetector(
+                      var data;
+
+                      if (currentLanguage == "en-US") {
+                        data = subscriptionController.selectPlan[index];
+                      } else {
+                        data = subscriptionController.selectPlanG[index];
+                      }
+                      return GestureDetector(
                   onTap: () {
                     setState(() {
                       for (int i = 0; i < subscriptionController.plan.length; i++) {
@@ -690,20 +819,21 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     padding: const EdgeInsets.all(10.0),
                     decoration: BoxDecoration(
                       color: subscriptionController.plan[index] == true
-                          ? ColorConstant.color7C9EA7.withOpacity(0.20)
-                          : themeController.isDarkMode.isTrue
-                          ? ColorConstant.textfieldFillColor
-                          : ColorConstant.white.withOpacity(0.9),
-                      border: Border.all(
-                        color: subscriptionController.plan[index] == true
+                                ? ColorConstant.color7C9EA7.withOpacity(0.10)
+                                : themeController.isDarkMode.isTrue
+                                    ? ColorConstant.transparent
+                                    : Colors.transparent,
+                            border: Border.all(
+                              color: subscriptionController.plan[index] == true
                             ? themeController.isDarkMode.isTrue
-                            ? ColorConstant.themeColor
-                            : ColorConstant.themeColor
-                            : themeController.isDarkMode.isTrue
-                            ? ColorConstant.colorE3E1E1.withOpacity(0.2)
-                            : ColorConstant.colorE3E1E1,
-                        width: 1,
-                      ),
+                                      ? ColorConstant.white
+                                      : ColorConstant.themeColor
+                                          .withOpacity(0.10)
+                                  : themeController.isDarkMode.isTrue
+                                      ? ColorConstant.transparent
+                                      : Colors.transparent,
+                              width: 1,
+                            ),
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: Column(
@@ -713,11 +843,15 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                           children: [
                             subscriptionController.plan[index] == true
                                 ? SvgPicture.asset(
-                              ImageConstant.subscriptionCheck,
-                              height: Dimens.d24,
-                              width: Dimens.d24,
-                            )
-                                : Container(
+                                          ImageConstant.checkSubSub,
+                                          height: Dimens.d24,
+                                          width: Dimens.d24,
+                                          color:
+                                              themeController.isDarkMode.isTrue
+                                                  ? ColorConstant.white
+                                                  : ColorConstant.black,
+                                        )
+                                      : Container(
                               height: Dimens.d24,
                               width: Dimens.d24,
                               decoration: BoxDecoration(
@@ -725,32 +859,32 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                                 border: Border.all(
                                   color: themeController.isDarkMode.isTrue
                                       ? ColorConstant.white
-                                      : ColorConstant.colorE3E1E1,
-                                ),
-                              ),
+                                                  : ColorConstant.black,
+                                            ),
+                                          ),
                             ),
                             Dimens.d10.spaceWidth,
                             Text(
                               data["plan"],
-                              style: Style.montserratBold(fontSize: 14),
-                            ),
-                          ],
+                                    style: Style.nunitoBold(fontSize: 16),
+                                  ),
+                                ],
                         ),
                         Dimens.d5.spaceHeight,
-                        data["plan"] == "Free"
-                            ? const SizedBox()
-                            : Padding(
-                          padding: const EdgeInsets.only(left: 35),
-                          child: Column(
+                              Padding(
+                                padding: const EdgeInsets.only(left: 35),
+                                child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 data["des"],
                                 style: Style.nunRegular(
                                   fontSize: 13,
-                                  color: ColorConstant.color797777,
-                                ),
-                              ),
+                                        color: themeController.isDarkMode.isTrue
+                                            ? ColorConstant.colorBFBFBF
+                                            : ColorConstant.color525252,
+                                      ),
+                                    ),
                               index == 1
                                   ? Text(
                                 data["free"],
@@ -770,25 +904,16 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               },
             ):const SizedBox(),
           ),
-          Dimens.d20.spaceHeight,
-          Text(
-            "additionalInformation".tr,
-            style: Style.nunitoBold(fontSize: 18),
-          ),
-          Dimens.d20.spaceHeight,
-          information("7dayFreeTrial".tr, "forNew".tr),
-          Dimens.d10.spaceHeight,
-          information("FamilyPlan".tr, "allowsUp".tr),
-          Dimens.d10.spaceHeight,
-          information("studentDiscount".tr, "20Pre".tr),
-          Dimens.d30.spaceHeight,
+          Dimens.d40.spaceHeight,
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30.0),
             child: valueChecked
                 ? CommonElevatedButton(
                     title: "cancelSub".tr,
                     buttonColor: ColorConstant.themeColor,
-                    onTap: () async {},
+                    onTap: () async {
+                      showCancelSubscriptionDialog(context);
+                    },
                   )
                 : CommonElevatedButton(
                     title: "purchase".tr,
@@ -798,14 +923,39 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
 
                 if (!valueChecked) {
-                  if (subscriptionController.plan[1] == true) {
+                  if (subscriptionController.plan[0] == true) {
                     _purchasePlan("1 Month");
-                  } else if (subscriptionController.plan[2] == true) {
+                  } else if (subscriptionController.plan[1] == true) {
                     _purchasePlan("1 Year");
                   }
                   debugPrint("${subscriptionController.plan}");
                }
               },
+            ),
+          ),
+          Dimens.d15.spaceHeight,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SvgPicture.asset(
+                  ImageConstant.secure,
+                  color: themeController.isDarkMode.isTrue
+                      ? ColorConstant.white
+                      : ColorConstant.black,
+                ),
+                Dimens.d10.spaceWidth,
+                Text(
+                  "Secured by the App Store. Can be canceled at any time".tr,
+                  style: Style.nunRegular(
+                    fontSize: 12,
+                    color: themeController.isDarkMode.isTrue
+                        ? ColorConstant.white
+                        : ColorConstant.black,
+                  ),
+                ),
+              ],
             ),
           ),
           Dimens.d30.spaceHeight,
@@ -875,42 +1025,127 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
       } else {
         print("Purchase unsuccessful");
-if(Platform.isAndroid) {
+/*if(Platform.isAndroid) {
 
         await api();
-}
+}*/
         checkData();
-        if(Platform.isAndroid) {
+        /*     if(Platform.isAndroid) {
 
           Get.back();
-        }
-
+        }*/
       }
     } catch (e) {
       // Handle any errors
-      print("Error purchasing plan: $e");
+      showSnackBarError(context, "Error purchasing plan: $e");
     }
   }
-  api() async {
+
+  Future<void> _updatePlan(String plan) async {
+    try {
+      // Logic for updating the plan
+      String productId;
+      if (plan == "1 Month") {
+        productId = _kSilverSubscriptionId;
+      } else if (plan == "1 Year") {
+        productId = _kGoldSubscriptionId;
+      } else {
+        throw Exception("Invalid plan selected");
+      }
+
+      ProductDetails? selectedProduct = _products.firstWhereOrNull(
+        (product) => product.id == productId,
+      );
+
+      if (selectedProduct == null) {
+        print("Product not found");
+        return;
+      }
+
+      // Simulate plan update (this could involve sending an API request, etc.)
+      print("Updating plan to: $plan");
+
+      // After successful update
+      checkData();
+    } catch (e) {
+      showSnackBarError(context, "Error updating plan: $e");
+    }
+  }
+
+  Future<void> showCancelSubscriptionDialog(BuildContext context) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Cancel Subscription',
+            style: Style.nunRegular(
+                color: themeController.isDarkMode.value
+                    ? ColorConstant.white
+                    : ColorConstant.black,
+                fontSize: Dimens.d16),
+          ),
+          content: Text(
+            'Are you sure you want to cancel your subscription?',
+            style: Style.nunRegular(
+                color: themeController.isDarkMode.value
+                    ? ColorConstant.white
+                    : ColorConstant.black,
+                fontSize: Dimens.d16),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                'Yes',
+                style: Style.nunRegular(
+                    color: themeController.isDarkMode.value
+                        ? ColorConstant.white
+                        : ColorConstant.black,
+                    fontSize: Dimens.d16),
+              ),
+              onPressed: () {
+                if (Platform.isIOS) {
+                  openAppleSubscriptions();
+                } else {
+                  openGooglePlaySubscriptions();
+                }
+              },
+            ),
+            TextButton(
+              child: Text(
+                'No',
+                style: Style.nunRegular(
+                    color: themeController.isDarkMode.value
+                        ? ColorConstant.white
+                        : ColorConstant.black,
+                    fontSize: Dimens.d16),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    ).then(
+      (value) async {
+        await checkData();
+      },
+    );
+  }
+
+  updateUser(BuildContext context) async {
     try {
       var headers = {
         'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
       };
+
       var request = http.MultipartRequest(
           'POST',
           Uri.parse(
               '${EndPoints.baseUrl}${EndPoints.updateUser}${PrefService.getString(PrefKey.userId)}'));
       request.fields.addAll({
-        'isSubscribed': "true",
-        'subscriptionId':  subscriptionController.plan[2].toString() == true.toString()?"transform_yearly":subscriptionController.plan[1] == true?"transform_monthly":"Free",
-        'subscriptionTitle':
-        subscriptionController.plan[2].toString() == true.toString()?"Premium Yearly":subscriptionController.plan[1] == true?"Premium Monthly":"Free",
-        'subscriptionDescription': "",
-        'price': "₣"+ subscriptionController.plan[2].toString() == true.toString()?"49.99":subscriptionController.plan[1] == true?"6.99":"Free",
-        'rawPrice': "",
-        'currencyCode': "",
-        'subscriptionDate': DateTime.now().toString(),
-        'expiryDate': "",
+        'isSubscribed': "false",
       });
 
       request.headers.addAll(headers);
@@ -918,13 +1153,33 @@ if(Platform.isAndroid) {
       http.StreamedResponse response = await request.send();
 
       if (response.statusCode == 200) {
-        showSnackBarSuccess(context, "Subscription set successful");
-        await getUSer();
+        await PrefService.setValue(PrefKey.focuses, true);
+      //  showSnackBarSuccess(context, "cancel subscription successfully");
+
+        Get.back();
       } else {
         debugPrint(response.reasonPhrase);
       }
     } catch (e) {
       debugPrint(e.toString());
+    }
+  }
+
+  void openGooglePlaySubscriptions() async {
+    const url = 'https://play.google.com/store/account/subscriptions';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  void openAppleSubscriptions() async {
+    const url = 'https://apps.apple.com/account/subscriptions';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
     }
   }
 }

@@ -79,6 +79,7 @@ class ColorConstant {
   static const color29363E = Color(0XFF29363E);
   static const color2E2EFF = Color(0XFF2E2EFF);
   static const color008000 = Color(0XFF008000);
+  static const color525252 = Color(0XFF525252);
 
   static const textWhiteBackGround = Color.fromRGBO(229, 234, 249, 1);
   static const textDarkBlue = Color.fromRGBO(49, 59, 107, 1);

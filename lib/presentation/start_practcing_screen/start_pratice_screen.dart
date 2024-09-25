@@ -435,7 +435,7 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
                             sheetTheme().then((v){
                               _progressController?.forward();
 
-                            });;
+                            });
                           },
                           child: Container(
                             height: 42,
@@ -761,7 +761,8 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
                         },
                       ),
                     ),
-                    Dimens.d20.spaceHeight,
+                    Dimens.d15.spaceHeight,
+
                     Row(
                       children: <Widget>[
                         SvgPicture.asset(
@@ -797,6 +798,8 @@ class _StartPracticeScreenState extends State<StartPracticeScreen>
                         ),
                       ],
                     ),
+                    Dimens.d15.spaceHeight,
+
                   ],
                 ),
               ),

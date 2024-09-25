@@ -63,10 +63,9 @@ class _StartAudioAffirmationScreenState
   CommonModel commonModel = CommonModel();
 
   int chooseImage = 0;
-  final PageController _pageController = PageController();
   int _currentIndex = 0;
   int likeIndex = 0;
-  double _progress = 0.0;
+
   int selectedTime = 3;
   bool am = true;
   bool pm = false;
@@ -76,13 +75,11 @@ class _StartAudioAffirmationScreenState
   int selectedSeconds = 0;
   int index = 0;
   List<bool> like = [];
-  bool _isScrolling = true;
+
   AffirmationController affirmationController =
       Get.put(AffirmationController());
   bool likeAnimation = false;
-  AnimationController? _progressController;
-  Animation<double>? _progressAnimation;
-  Timer? _autoScrollTimer;
+
    AudioPlayer audioPlayerVoices = AudioPlayer( handleInterruptions: false,
     androidApplyAudioAttributes: false,
     handleAudioSessionActivation: false,);
@@ -706,7 +703,7 @@ double value =  0;
                                     if (startC.soundMute) {
                                       startC.player.setVolume(0);
                                     } else {
-                                      startC.player.setVolume(1);
+                                      startC.player.setVolume(0.16);
                                     }
                                   },
                                   child: Column(
@@ -1266,7 +1263,7 @@ double value =  0;
 
   setBackSounds() async {
     startC.soundMute = false;
-    startC.player.setVolume(1);
+    startC.player.setVolume(0.16);
     await startC.player.setAsset(startC.soundList[1]["audio"]);
     await startC.player.setLoopMode(LoopMode.one);
     await startC.player.play();
@@ -1434,7 +1431,7 @@ double value =  0;
                           },
                         ),
                       ),
-                      Dimens.d20.spaceHeight,
+                      Dimens.d15.spaceHeight,
                       Row(
                         children: <Widget>[
                           SvgPicture.asset(
@@ -1469,6 +1466,8 @@ double value =  0;
                           ),
                         ],
                       ),
+                      Dimens.d15.spaceHeight,
+
                     ],
                   ),
                 ),

@@ -27,7 +27,7 @@ class EveningMotivational extends StatelessWidget {
           ? ColorConstant.darkBackground
           : ColorConstant.backGround,
       appBar: CustomAppBar(
-        title:"${"Good evening".tr}, ${PrefService.getString(PrefKey.name)}",
+        title:"${"goodEvening".tr}, ${PrefService.getString(PrefKey.name)}",
         action: Row(
           children: [
             InkWell(
@@ -362,7 +362,7 @@ class EveningMotivational extends StatelessWidget {
                 //___________________________________ 2. _________________________________
 
                   controller.selectedOptionStressAchieve == "No"
-                      ? Column(
+                      ? const Column(
                           children: [
                   //           commonTextTitle("whatPrevented".tr, count: "5"),
                   // Dimens.d20.spaceHeight,
@@ -432,7 +432,7 @@ class EveningMotivational extends StatelessWidget {
                   //           Dimens.d20.spaceHeight,
 
                 ],):
-                  Column(children: [
+                  const Column(children: [
                  /* commonTextTitle("whatHelpedYou".tr, count: "5"),
 
                   Dimens.d20.spaceHeight,

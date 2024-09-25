@@ -32,11 +32,6 @@ class ChangePasswordController extends GetxController {
   ValueNotifier<bool> securePass2 = ValueNotifier(true);
   ValueNotifier<bool> securePass3 = ValueNotifier(true);
 
-  @override
-  void onInit() {
-
-    super.onInit();
-  }
   RxBool loader = false.obs;
   ResetPassword resetPassword =ResetPassword();
 

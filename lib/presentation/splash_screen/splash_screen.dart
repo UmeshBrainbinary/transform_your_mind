@@ -245,7 +245,7 @@ Future.delayed(const Duration(seconds: 1)).then((value) {
           children: [
             Dimens.d88.spaceHeight,
             Image.asset(
-              ImageConstant.logoSplashNew,
+              ImageConstant.transformNLogo,
               height: Dimens.d180,
               width: Dimens.d180,
             ),

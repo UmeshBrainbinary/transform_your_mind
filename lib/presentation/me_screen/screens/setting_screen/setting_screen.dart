@@ -8,6 +8,8 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_controller.dart';
+import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_screen.dart';
 import 'package:transform_your_mind/presentation/bookmark_screen/bookmark_screen.dart';
 import 'package:transform_your_mind/presentation/breath_screen/breath_screen.dart';
 import 'package:transform_your_mind/presentation/downloaded_pods_screen/downloaded_pods_screen.dart';
@@ -18,6 +20,7 @@ import 'package:transform_your_mind/presentation/me_screen/screens/setting_scree
 import 'package:transform_your_mind/presentation/support_screen/support_screen.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
+import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -36,6 +39,7 @@ class _SettingScreenState extends State<SettingScreen> {
   void initState() {
     super.initState();
   }
+  final audioPlayerController = Get.find<NowPlayingController>();
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +139,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                 } else if (index == 6) {
                                   Navigator.push(context, MaterialPageRoute(
                                     builder: (context) {
-                                      return const SupportScreen();
+                                      return  SupportScreen();
                                     },
                                   ));
                                 } else if (index == 7) {
@@ -180,7 +184,157 @@ class _SettingScreenState extends State<SettingScreen> {
                 Dimens.d30.spaceHeight,
               ],
             ),
-          )
+          ),
+          Obx(() {
+            if (!audioPlayerController.isVisible.value) {
+              return const SizedBox.shrink();
+            }
+
+            final currentPosition =
+                audioPlayerController.positionStream.value ??
+                    Duration.zero;
+            final duration =
+                audioPlayerController.durationStream.value ??
+                    Duration.zero;
+            final isPlaying = audioPlayerController.isPlaying.value;
+
+            return GestureDetector(
+              onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(
+                        Dimens.d24,
+                      ),
+                    ),
+                  ),
+                  builder: (BuildContext context) {
+                    return NowPlayingScreen(
+                      audioData: audioDataStore!,
+                    );
+                  },
+                );
+              },
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  height: 72,
+                  width: Get.width,
+                  padding: const EdgeInsets.only(
+                      top: 8.0, left: 8, right: 8),
+                  margin: const EdgeInsets.symmetric(
+                      horizontal: 10, vertical: 50),
+                  decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [
+                          ColorConstant.colorB9CCD0,
+                          ColorConstant.color86A6AE,
+                          ColorConstant.color86A6AE,
+                        ], // Your gradient colors
+                        begin: Alignment.bottomLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      color: ColorConstant.themeColor,
+                      borderRadius: BorderRadius.circular(6)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          CommonLoadImage(
+                              borderRadius: 6.0,
+                              url: audioDataStore!.image!,
+                              width: 47,
+                              height: 47),
+                          Dimens.d12.spaceWidth,
+                          GestureDetector(
+                              onTap: () async {
+                                if (isPlaying) {
+                                  await audioPlayerController
+                                      .pause();
+                                } else {
+                                  await audioPlayerController
+                                      .play();
+                                }
+                              },
+                              child: SvgPicture.asset(
+                                isPlaying
+                                    ? ImageConstant.pause
+                                    : ImageConstant.play,
+                                height: 17,
+                                width: 17,
+                              )),
+                          Dimens.d10.spaceWidth,
+                          Expanded(
+                            child: Text(
+                              audioDataStore!.name!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Style.nunRegular(
+                                  fontSize: 12,
+                                  color: ColorConstant.white),
+                            ),
+                          ),
+                          Dimens.d10.spaceWidth,
+                          GestureDetector(
+                              onTap: () async {
+                                await audioPlayerController.reset();
+                              },
+                              child: SvgPicture.asset(
+                                ImageConstant.closePlayer,
+                                color: ColorConstant.white,
+                                height: 24,
+                                width: 24,
+                              )),
+                          Dimens.d10.spaceWidth,
+                        ],
+                      ),
+                      Dimens.d8.spaceHeight,
+                      SliderTheme(
+                        data: SliderTheme.of(context).copyWith(
+                          activeTrackColor:
+                          ColorConstant.white.withOpacity(0.2),
+                          inactiveTrackColor:
+                          ColorConstant.color6E949D,
+                          trackHeight: 1.5,
+                          thumbColor: ColorConstant.transparent,
+                          thumbShape: SliderComponentShape.noThumb,
+                          overlayColor: ColorConstant.backGround
+                              .withAlpha(32),
+                          overlayShape: const RoundSliderOverlayShape(
+                              overlayRadius:
+                              16.0), // Customize the overlay shape and size
+                        ),
+                        child: SizedBox(
+                          height: 2,
+                          child: Slider(
+                            thumbColor: Colors.transparent,
+                            activeColor: ColorConstant.backGround,
+                            value: currentPosition.inMilliseconds
+                                .toDouble(),
+                            max: duration.inMilliseconds.toDouble(),
+                            onChanged: (value) {
+                              audioPlayerController
+                                  .seekForMeditationAudio(
+                                  position: Duration(
+                                      milliseconds:
+                                      value.toInt()));
+                            },
+                          ),
+                        ),
+                      ),
+                      Dimens.d5.spaceHeight,
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }),
+
+
         ],
       ),
     );

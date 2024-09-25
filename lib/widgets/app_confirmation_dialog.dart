@@ -76,9 +76,9 @@ Future<void> showAppConfirmationDialog({
           GestureDetector(onTap: () {
             Get.back();
           },
-            child: Container(            height: 33,width: 93,
+            child: Container(            height: 33,
 
-              padding: const EdgeInsets.symmetric(horizontal: 36),
+              padding: const EdgeInsets.symmetric(horizontal: 30),
               decoration: BoxDecoration(
                   color:themeController.isDarkMode.isTrue?Colors.transparent: ColorConstant.white,
                   border: Border.all(color: themeController.isDarkMode.isTrue?ColorConstant.themeColor:ColorConstant.black,width: 0.5),

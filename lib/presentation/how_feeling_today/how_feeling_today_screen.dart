@@ -34,7 +34,7 @@ class _HowFeelingTodayScreenState extends State<HowFeelingTodayScreen> {
           ? ColorConstant.darkBackground
           : ColorConstant.backGround,
       appBar: CustomAppBar(
-        title:  "${"Good morning".tr}, ${PrefService.getString(PrefKey.name)}",
+        title:  "${"goodMorning".tr}, ${PrefService.getString(PrefKey.name)}",
         action: Row(
           children: [
             InkWell(

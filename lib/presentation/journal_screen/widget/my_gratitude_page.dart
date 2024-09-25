@@ -19,12 +19,15 @@ import 'package:transform_your_mind/model_class/common_model.dart';
 import 'package:transform_your_mind/model_class/get_user_model.dart';
 import 'package:transform_your_mind/model_class/gratitude_all_data.dart';
 import 'package:transform_your_mind/model_class/gratitude_model.dart';
+import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_controller.dart';
+import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_screen.dart';
 import 'package:transform_your_mind/presentation/home_screen/home_controller.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_gratitude_page.dart';
 import 'package:transform_your_mind/presentation/start_practcing_screen/start_pratice_screen.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
+import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
@@ -47,7 +50,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
   DateTime todayDate = DateTime.now();
   GlobalKey addToolsKey = GlobalKey();
 
-
+  final audioPlayerController = Get.find<NowPlayingController>();
   ThemeController themeController = Get.find<ThemeController>();
   bool select = false;
   ValueNotifier selectedCategory = ValueNotifier(null);
@@ -248,46 +251,59 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
         TargetFocus(
           identify: "Add Tools Icon",
           keyTarget: addToolsKey,
-          alignSkip: Alignment.bottomRight,
+          alignSkip: Alignment.bottomRight,color: const Color(0xff1C272D),
           contents: [
             TargetContent(
               align: ContentAlign.bottom, // Adjust based on your preference
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  RichText(
-
-                    text:  TextSpan(
-                      text: "gratitudeMessage".tr,
-                      style: const TextStyle(fontSize: 26, color:  Colors.white, fontWeight: FontWeight.w900,
-                        fontFamily: "Nunito-Regular",), // Highlighted text
-                      children:  <TextSpan>[
-                        const TextSpan(
-                          text: '1. ',
-                          style: TextStyle(fontSize: 20, color:  Colors.white,      fontFamily: "Nunito-Regular",), // Highlighted text
-                        ),
-                        TextSpan(
-                          text: "gratitudeIsAPowerful".tr,
-                          style: const TextStyle(fontSize: 20, color:  Colors.white,      fontFamily: "Nunito-Regular",), // Highlighted text
-                        ),
-                        TextSpan(
-                          text: 'example'.tr,
-                          style: const TextStyle(fontSize: 20, color:  Colors.white,      fontFamily: "Nunito-Regular",), // Highlighted text
-                        ),
-                        TextSpan(
-                          text: 'iAmGrateful'.tr,
-                          style: const TextStyle(fontSize: 20, color:  Colors.white,      fontFamily: "Nunito-Regular",), // Highlighted text
-                        ),
-                        TextSpan(
-                          text: 'practiceGratitude'.tr,
-                          style: const TextStyle(fontSize: 20, color:  Colors.white,      fontFamily: "Nunito-Regular",), // Highlighted text
-                        ),
-                      ],
-                    ),
+            child: Container(
+              padding: const EdgeInsets.all(17),
+              decoration: BoxDecoration(
+                  color: const Color(0xff678B94),
+                  borderRadius: BorderRadius.circular(14),),
+              child: RichText(
+                text: TextSpan(
+                    text: "gratitudeMessage".tr,
+                    style: const TextStyle(fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w900,
+                      fontFamily: "Nunito-Regular",), // Highlighted text
+                    children: <TextSpan>[
+                      const TextSpan(
+                        text: '1. ',
+                        style: TextStyle(fontSize: 14,
+                          color: Colors.white,
+                          fontFamily: "Nunito-Regular",), // Highlighted text
+                      ),
+                      TextSpan(
+                        text: "gratitudeIsAPowerful".tr,
+                        style: const TextStyle(fontSize: 14,
+                          color: Colors.white,
+                          fontFamily: "Nunito-Regular",), // Highlighted text
+                      ),
+                      TextSpan(
+                        text: 'example'.tr,
+                        style: const TextStyle(fontSize: 14,
+                          color: Colors.white,
+                          fontFamily: "Nunito-Regular",), // Highlighted text
+                      ),
+                      TextSpan(
+                        text: 'iAmGrateful'.tr,
+                        style: const TextStyle(fontSize: 14,
+                          color: Colors.white,
+                          fontFamily: "Nunito-Regular",), // Highlighted text
+                      ),
+                      TextSpan(
+                        text: 'practiceGratitude'.tr,
+                        style: const TextStyle(fontSize: 14,
+                          color: Colors.white,
+                          fontFamily: "Nunito-Regular",), // Highlighted text
+                      ),
+                    ],
                   ),
-                ],
+                ),
+
               ),
-            ),
+          ),
           ],
         ),
       );
@@ -360,193 +376,363 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                   }
                 },
               ),
-                  body: SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Dimens.d10.spaceHeight,
-                          Text(
-                            "${"welcome".tr}, ${capitalizeFirstLetter(PrefService.getString(PrefKey.name).toString())}",
-                            textAlign: TextAlign.center,
-                            style: Style.nunRegular(fontSize: 26,),
-                          ),
-                          Text(
-                            DateFormat('d MMMM yyyy').format(todayDate),
-                            style: Style.nunRegular(fontSize: 12),
-                          ),
-                          Dimens.d15.spaceHeight,
-                          Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              Image.asset(
-                                ImageConstant.gratitudeContainer,
-                                height: Dimens.d150,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 20),
-                                child: Text(
-                                    homeController.getUserModel.data
-                                            ?.motivationalMessage ??
-                                        "“Calm mind brings inner strength and self-confidence, so that's very important for good health” ",
-                                    textAlign: TextAlign.center,
-                                  maxLines: 4,
+                    body: Stack(
+                      children: [
+                        SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Dimens.d10.spaceHeight,
+                                Text(
+                                  "${"welcome".tr}, ${capitalizeFirstLetter(PrefService.getString(PrefKey.name).toString())}",
+                                  textAlign: TextAlign.center,
                                   style: Style.nunRegular(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500,
-                                      color: ColorConstant.black),
+                                    fontSize: 26,
+                                  ),
+                                ),
+                                Text(
+                                  DateFormat('d MMMM yyyy').format(todayDate),
+                                  style: Style.nunRegular(fontSize: 12),
+                                ),
+                                Dimens.d15.spaceHeight,
+                                Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Image.asset(
+                                      ImageConstant.gratitudeContainer,
+                                      height: Dimens.d150,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20),
+                                      child: Text(
+                                        homeController.getUserModel.data
+                                                ?.motivationalMessage ??
+                                            "“Calm mind brings inner strength and self-confidence, so that's very important for good health” ",
+                                        textAlign: TextAlign.center,
+                                        maxLines: 4,
+                                        style: Style.nunRegular(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w500,
+                                            color: ColorConstant.black),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Dimens.d35.spaceHeight,
+                                commonText("today'sGratitude".tr),
+                                if ((gratitudeModel.data ?? []).isEmpty)
+                                  loader == true
+                                      ? Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 10),
+                                          child: shimmerCommon(),
+                                        )
+                                      : Center(
+                                          child: Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 10),
+                                            child: Text(
+                                              "dataNotFound".tr,
+                                              style: Style.gothamMedium(
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.w700),
+                                            ),
+                                          ),
+                                        ),
+                                Dimens.d20.spaceHeight,
+                                (gratitudeModel.data ?? []).isNotEmpty
+                                    ? ListView.builder(
+                                        padding: EdgeInsets.zero,
+                                        itemCount: 1,
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemBuilder: (context, index) {
+                                          return Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 20.0),
+                                            child: commonContainer(
+                                                gratitudeList:
+                                                    gratitudeModel.data,
+                                                des: gratitudeModel
+                                                        .data?[0].description ??
+                                                    "",
+                                                date:
+                                                    "${gratitudeModel.data![0].createdAt?.day ?? ""}",
+                                                day: DateFormat('EEE')
+                                                    .format(gratitudeModel
+                                                        .data![0].createdAt!)
+                                                    .toUpperCase()),
+                                          );
+                                        },
+                                      )
+                                    : const SizedBox(),
+                                Dimens.d10.spaceHeight,
+                                (gratitudeModel.data ?? []).isNotEmpty
+                                    ? GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) {
+                                      return StartPracticeScreen(
+                                        gratitudeList: gratitudeModel.data,
+                                      );
+                                    },
+                                  ));
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  height: Dimens.d46,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(80),
+                                      color: ColorConstant.themeColor),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(ImageConstant.playGratitude,
+                                          height: 20, width: 20),
+                                      Dimens.d8.spaceWidth,
+                                      Text(
+                                        "startPracticing".tr,
+                                        style: Style.nunRegular(
+                                            fontSize: 16,
+                                            color: ColorConstant.white),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               )
+                                  : const SizedBox(),
+                              (gratitudeModel.data ?? []).isEmpty
+                                  ? const SizedBox()
+                                  : Dimens.d30.spaceHeight,
+                              Row(
+                                children: [
+                                  commonText(
+                                    selectedDate.isNotEmpty
+                                        ? selectedDate
+                                        : lastMonthName,
+                                  ),
+                                  const Spacer(),
+                                  selectedDate.isEmpty
+                                      ? const SizedBox()
+                                      : GestureDetector(
+                                      onTap: () async {
+                                        dateGratitude =
+                                            DateFormat('dd/MM/yyyy')
+                                                .format(now);
+                                        await getGratitudeAll();
+                                        selectedDate = "";
+                                        setState(() {});
+                                      },
+                                      child: Icon(
+                                        Icons.clear,
+                                        color:
+                                        themeController.isDarkMode.isTrue
+                                            ? Colors.white
+                                            : Colors.black,
+                                      ))
+                                ],
+                              ),
+                              Dimens.d30.spaceHeight,
+                              lastMonthData.isNotEmpty
+                                  ? ListView.builder(
+                                padding: EdgeInsets.zero,
+                                itemCount: lastMonthData.length,
+                                shrinkWrap: true,
+                                physics:
+                                const NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding:
+                                    const EdgeInsets.only(bottom: 20.0),
+                                    child: commonContainerAllData(
+                                        dateForList:
+                                        lastMonthData[index].createdAt,
+                                        gratitudeList: lastMonthData,
+                                        des: lastMonthData[index]
+                                            .description ??
+                                            "",
+                                        date:
+                                        "${lastMonthData[index].createdAt
+                                            ?.day ?? ""}",
+                                        day: DateFormat('EEE')
+                                            .format(lastMonthData[index]
+                                            .createdAt!)
+                                            .toUpperCase()),
+                                  );
+                                },
+                              )
+                                  : loader == true
+                                  ? shimmerCommon()
+                                  : Center(
+                                child: Text(
+                                  "dataNotFound".tr,
+                                  style: Style.gothamMedium(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                              ),
+                              Dimens.d50.spaceHeight,
                             ],
                           ),
-                       Dimens.d35.spaceHeight,
-                            commonText("today'sGratitude".tr),
-                            if ((gratitudeModel.data ?? []).isEmpty)
-                              loader == true
-                                  ?  Padding(
-                                    padding: const EdgeInsets.only(top: 10),
-                                    child:  shimmerCommon(),
-                                  )
-                                  : Center(
-                                      child:   Padding(
-                                        padding: const EdgeInsets.only(top: 10),
-                                        child: Text("dataNotFound".tr,style: Style.gothamMedium(
-                                            fontSize: 24,fontWeight: FontWeight.w700),),
-                                      ),
-                              ),
-                          Dimens.d20.spaceHeight,
-                          (gratitudeModel.data ?? []).isNotEmpty
-                                ? ListView.builder(
-                                    padding: EdgeInsets.zero,
-                                  itemCount: 1,
-                                  shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 20.0),
-                                child: commonContainer(
-                                          gratitudeList: gratitudeModel.data,
-                                          des:
-                                              gratitudeModel.data?[0].description ??
-                                                  "",
-                                            date:
-                                                "${gratitudeModel.data![0].createdAt?.day ?? ""}",
-                                            day: DateFormat('EEE')
-                                              .format(gratitudeModel
-                                                  .data![0].createdAt!)
-                                              .toUpperCase()),
-                                    );
-                            },
-                                )
-                              : const SizedBox(),
-                          Dimens.d10.spaceHeight,
-                          (gratitudeModel.data ?? []).isNotEmpty
-                                ? GestureDetector(
-                                    onTap: () {
+                        ),
+                      ),
+                      Obx(() {
+                        if (!audioPlayerController.isVisible.value) {
+                          return const SizedBox.shrink();
+                        }
 
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) {
-                                            return StartPracticeScreen(
-                                              gratitudeList: gratitudeModel.data,
-                                            );
-                                          },
-                              ));
-                            },
+                        final currentPosition =
+                            audioPlayerController.positionStream.value ??
+                                Duration.zero;
+                        final duration =
+                            audioPlayerController.durationStream.value ??
+                                Duration.zero;
+                        final isPlaying = audioPlayerController.isPlaying.value;
+
+                        return GestureDetector(
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(
+                                    Dimens.d24,
+                                  ),
+                                ),
+                              ),
+                              builder: (BuildContext context) {
+                                return NowPlayingScreen(
+                                  audioData: audioDataStore!,
+                                );
+                              },
+                            );
+                          },
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
                             child: Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 30),
-                              height: Dimens.d46,
+                              height: 72,
+                              width: Get.width,
+                              padding: const EdgeInsets.only(
+                                  top: 8.0, left: 8, right: 8),
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 50),
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(80),
-                                  color: ColorConstant.themeColor),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      ColorConstant.colorB9CCD0,
+                                      ColorConstant.color86A6AE,
+                                      ColorConstant.color86A6AE,
+                                    ], // Your gradient colors
+                                    begin: Alignment.bottomLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  color: ColorConstant.themeColor,
+                                  borderRadius: BorderRadius.circular(6)),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Image.asset(ImageConstant.playGratitude,
-                                      height: 20, width: 20),
-                                  Dimens.d8.spaceWidth,
-                                  Text(
-                                    "startPracticing".tr,
-                                              style: Style.nunRegular(
-                                                  fontSize: 16, color: ColorConstant.white),
-                                  )
+                                  Row(
+                                    children: [
+                                      CommonLoadImage(
+                                          borderRadius: 6.0,
+                                          url: audioDataStore!.image!,
+                                          width: 47,
+                                          height: 47),
+                                      Dimens.d12.spaceWidth,
+                                      GestureDetector(
+                                          onTap: () async {
+                                            if (isPlaying) {
+                                              await audioPlayerController
+                                                  .pause();
+                                            } else {
+                                              await audioPlayerController
+                                                  .play();
+                                            }
+                                          },
+                                          child: SvgPicture.asset(
+                                            isPlaying
+                                                ? ImageConstant.pause
+                                                : ImageConstant.play,
+                                            height: 17,
+                                            width: 17,
+                                          )),
+                                      Dimens.d10.spaceWidth,
+                                      Expanded(
+                                        child: Text(
+                                          audioDataStore!.name!,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: Style.nunRegular(
+                                              fontSize: 12,
+                                              color: ColorConstant.white),
+                                        ),
+                                      ),
+                                      Dimens.d10.spaceWidth,
+                                      GestureDetector(
+                                          onTap: () async {
+                                            await audioPlayerController.reset();
+                                          },
+                                          child: SvgPicture.asset(
+                                            ImageConstant.closePlayer,
+                                            color: ColorConstant.white,
+                                            height: 24,
+                                            width: 24,
+                                          )),
+                                      Dimens.d10.spaceWidth,
+                                    ],
+                                  ),
+                                  Dimens.d8.spaceHeight,
+                                  SliderTheme(
+                                    data: SliderTheme.of(context).copyWith(
+                                      activeTrackColor:
+                                      ColorConstant.white.withOpacity(0.2),
+                                      inactiveTrackColor:
+                                      ColorConstant.color6E949D,
+                                      trackHeight: 1.5,
+                                      thumbColor: ColorConstant.transparent,
+                                      thumbShape: SliderComponentShape.noThumb,
+                                      overlayColor: ColorConstant.backGround
+                                          .withAlpha(32),
+                                      overlayShape: const RoundSliderOverlayShape(
+                                          overlayRadius:
+                                          16.0), // Customize the overlay shape and size
+                                    ),
+                                    child: SizedBox(
+                                      height: 2,
+                                      child: Slider(
+                                        thumbColor: Colors.transparent,
+                                        activeColor: ColorConstant.backGround,
+                                        value: currentPosition.inMilliseconds
+                                            .toDouble(),
+                                        max: duration.inMilliseconds.toDouble(),
+                                        onChanged: (value) {
+                                          audioPlayerController
+                                              .seekForMeditationAudio(
+                                              position: Duration(
+                                                  milliseconds:
+                                                  value.toInt()));
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  Dimens.d5.spaceHeight,
                                 ],
                               ),
                             ),
-                                    )
-                                : const SizedBox(),
-                          (gratitudeModel.data ?? []).isEmpty?const SizedBox(): Dimens.d30.spaceHeight,
-                            Row(
-                              children: [
-                                commonText(
-                                  selectedDate.isNotEmpty
-                                      ? selectedDate
-                                      : lastMonthName,
-                                ),
-                                const Spacer(),
-                                selectedDate.isEmpty
-                                    ? const SizedBox()
-                                    : GestureDetector(
-                                        onTap: () async {
-                                          dateGratitude =
-                                              DateFormat('dd/MM/yyyy')
-                                                  .format(now);
-                                          await getGratitudeAll();
-                                          selectedDate = "";
-                                          setState(() {});
-                                        },
-                                        child: Icon(
-                                          Icons.clear,
-                                          color:
-                                              themeController.isDarkMode.isTrue
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                        ))
-                              ],
-                            ),
-                            Dimens.d30.spaceHeight,
-                            lastMonthData.isNotEmpty
-                                ? ListView.builder(
-                                    padding: EdgeInsets.zero,
-                                    itemCount: lastMonthData.length,
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemBuilder: (context, index) {
-                                      return Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 20.0),
-                                        child: commonContainerAllData(
-                                            dateForList:
-                                                lastMonthData[index].createdAt,
-                                            gratitudeList: lastMonthData,
-                                            des: lastMonthData[index]
-                                                    .description ??
-                                                "",
-                                            date:
-                                                "${lastMonthData[index].createdAt?.day ?? ""}",
-                                            day: DateFormat('EEE')
-                                                .format(lastMonthData[index]
-                                                    .createdAt!)
-                                                .toUpperCase()),
-                                      );
-                                    },
-                                  )
-                                : loader == true
-                                    ? shimmerCommon()
-                                    : Center(
-                                        child:  Text(
-                                          "dataNotFound".tr,
-                                          style: Style.gothamMedium(
-                                              fontSize: 24,
-                                              fontWeight: FontWeight.w700),
-                                        ),
-                                      ),
-                            Dimens.d50.spaceHeight,
-                          ],
-                      ),
-                    ),
+                          ),
+                        );
+                      }),
+
+                    ],
                   )
 
 
@@ -575,36 +761,193 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
                       }
                     },
                   ),
-                  body: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  body: Stack(
                     children: [
-                      Center(
-                        child: Text(
-                          DateFormat('d MMMM yyyy').format(todayDate),
-                          style: Style.gothamLight(
-                              fontSize: 12, color: ColorConstant.white),
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Center(
+                            child: Text(
+                              DateFormat('d MMMM yyyy').format(todayDate),
+                              style: Style.gothamLight(
+                                  fontSize: 12, color: ColorConstant.white),
+                            ),
+                          ),
+                          Dimens.d12.spaceHeight,
+                          Text(
+                            "${greeting.tr}, ${capitalizeFirstLetter(PrefService.getString(PrefKey.name).toString())}!",
+                            textAlign: TextAlign.center,
+                            style: Style.nunRegular(
+                                fontSize: 26, color: ColorConstant.white),
+                          ),
+                          Dimens.d27.spaceHeight,
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal:
+                                    PrefService.getString(PrefKey.language) ==
+                                            "en-US"
+                                        ? 22
+                                        : 10),
+                            child: CommonElevatedButton(
+                              textStyle: Style.gothamLight(
+                                  fontSize: 16, color: ColorConstant.white),
+                              title: "WouldYouLikeMoreG".tr,
+                              onTap: () {
+                                _onAddClick(context);
+                              },
+                            ),
+                          )
+                        ],
                       ),
-                      Dimens.d12.spaceHeight,
-                      Text(
-                        "${greeting.tr}, ${capitalizeFirstLetter(PrefService.getString(PrefKey.name).toString())}!",
-                        textAlign: TextAlign.center,
-                        style: Style.nunRegular(
-                            fontSize: 26, color: ColorConstant.white),
-                      ),
-                      Dimens.d27.spaceHeight,
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 50),
-                        child: CommonElevatedButton(
-                          textStyle: Style.gothamLight(
-                              fontSize: 16, color: ColorConstant.white),
-                          title: "startYourFirstGratitude".tr,
+                      Obx(() {
+                        if (!audioPlayerController.isVisible.value) {
+                          return const SizedBox.shrink();
+                        }
+
+                        final currentPosition =
+                            audioPlayerController.positionStream.value ??
+                                Duration.zero;
+                        final duration =
+                            audioPlayerController.durationStream.value ??
+                                Duration.zero;
+                        final isPlaying = audioPlayerController.isPlaying.value;
+
+                        return GestureDetector(
                           onTap: () {
-                            _onAddClick(context);
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(
+                                    Dimens.d24,
+                                  ),
+                                ),
+                              ),
+                              builder: (BuildContext context) {
+                                return NowPlayingScreen(
+                                  audioData: audioDataStore!,
+                                );
+                              },
+                            );
                           },
-                        ),
-                      )
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Container(
+                              height: 72,
+                              width: Get.width,
+                              padding: const EdgeInsets.only(
+                                  top: 8.0, left: 8, right: 8),
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 50),
+                              decoration: BoxDecoration(
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      ColorConstant.colorB9CCD0,
+                                      ColorConstant.color86A6AE,
+                                      ColorConstant.color86A6AE,
+                                    ], // Your gradient colors
+                                    begin: Alignment.bottomLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  color: ColorConstant.themeColor,
+                                  borderRadius: BorderRadius.circular(6)),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      CommonLoadImage(
+                                          borderRadius: 6.0,
+                                          url: audioDataStore!.image!,
+                                          width: 47,
+                                          height: 47),
+                                      Dimens.d12.spaceWidth,
+                                      GestureDetector(
+                                          onTap: () async {
+                                            if (isPlaying) {
+                                              await audioPlayerController
+                                                  .pause();
+                                            } else {
+                                              await audioPlayerController
+                                                  .play();
+                                            }
+                                          },
+                                          child: SvgPicture.asset(
+                                            isPlaying
+                                                ? ImageConstant.pause
+                                                : ImageConstant.play,
+                                            height: 17,
+                                            width: 17,
+                                          )),
+                                      Dimens.d10.spaceWidth,
+                                      Expanded(
+                                        child: Text(
+                                          audioDataStore!.name!,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: Style.nunRegular(
+                                              fontSize: 12,
+                                              color: ColorConstant.white),
+                                        ),
+                                      ),
+                                      Dimens.d10.spaceWidth,
+                                      GestureDetector(
+                                          onTap: () async {
+                                            await audioPlayerController.reset();
+                                          },
+                                          child: SvgPicture.asset(
+                                            ImageConstant.closePlayer,
+                                            color: ColorConstant.white,
+                                            height: 24,
+                                            width: 24,
+                                          )),
+                                      Dimens.d10.spaceWidth,
+                                    ],
+                                  ),
+                                  Dimens.d8.spaceHeight,
+                                  SliderTheme(
+                                    data: SliderTheme.of(context).copyWith(
+                                      activeTrackColor:
+                                          ColorConstant.white.withOpacity(0.2),
+                                      inactiveTrackColor:
+                                          ColorConstant.color6E949D,
+                                      trackHeight: 1.5,
+                                      thumbColor: ColorConstant.transparent,
+                                      thumbShape: SliderComponentShape.noThumb,
+                                      overlayColor: ColorConstant.backGround
+                                          .withAlpha(32),
+                                      overlayShape: const RoundSliderOverlayShape(
+                                          overlayRadius:
+                                              16.0), // Customize the overlay shape and size
+                                    ),
+                                    child: SizedBox(
+                                      height: 2,
+                                      child: Slider(
+                                        thumbColor: Colors.transparent,
+                                        activeColor: ColorConstant.backGround,
+                                        value: currentPosition.inMilliseconds
+                                            .toDouble(),
+                                        max: duration.inMilliseconds.toDouble(),
+                                        onChanged: (value) {
+                                          audioPlayerController
+                                              .seekForMeditationAudio(
+                                                  position: Duration(
+                                                      milliseconds:
+                                                          value.toInt()));
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  Dimens.d5.spaceHeight,
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
                     ],
                   ),
                 ),
@@ -766,7 +1109,7 @@ class _MyGratitudePageState extends State<MyGratitudePage> {
   }
 
   Future<void> _onAddClick(BuildContext context) async {
-    final subscriptionStatus = "SUBSCRIBED";
+    const subscriptionStatus = "SUBSCRIBED";
 
     /// to check if item counts are not more then the config count in case of no subscription
     if (!(subscriptionStatus == "SUBSCRIBED" ||

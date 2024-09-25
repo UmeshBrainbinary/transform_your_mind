@@ -38,7 +38,7 @@ class _HowFeelingsEveningState extends State<HowFeelingsEvening> {
         ColorConstant.darkBackground
             :ColorConstant.backGround,
         appBar:  CustomAppBar(
-          title:  "${"Good evening".tr}, ${PrefService.getString(PrefKey.name)}", action: Row(
+          title:  "${"goodEvening".tr}, ${PrefService.getString(PrefKey.name)}", action: Row(
           children: [
             InkWell(
                 onTap: (){

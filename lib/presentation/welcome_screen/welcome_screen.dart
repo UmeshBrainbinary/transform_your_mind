@@ -7,7 +7,6 @@ import 'package:transform_your_mind/core/common_api/common_api.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
-import 'package:transform_your_mind/core/utils/end_points.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
@@ -123,7 +122,7 @@ class _WelcomeScreenState extends State<WelcomeHomeScreen>
           await updateApi(context,pKey: "welcomeScreen");
 
           if(isAlreadySkip == false) {
-            Future.delayed(const Duration(seconds: 10)).then((value) {
+            Future.delayed(const Duration(seconds: 7)).then((value) {
               return Get.offAll(MotivationalMessageScreen(
                 skip: true,
                 date: DateFormat('d MMMM yyyy').format(DateTime.now()),
@@ -177,10 +176,9 @@ bool isAlreadySkip = false;
                           await welcomeHomeController.pause();
                           await welcomeHomeController.audioPlayer.stop();
                           await updateApi(context,pKey: "welcomeScreen");
-setState(() {
-isAlreadySkip =true;
-
-});
+                          setState(() {
+                            isAlreadySkip =true;
+                          });
                           Get.offAll(MotivationalMessageScreen(
                             skip: true,
                             date: DateFormat('d MMMM yyyy')

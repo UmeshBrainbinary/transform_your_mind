@@ -28,4 +28,5 @@ class PrefKey{
   static const String isFreeUser = "isFreeUser";
   static const String isSubscribed = "isSubscribed";
   static const String subId = "subId";
+  static const String fcmToken = "fcmToken";
 }

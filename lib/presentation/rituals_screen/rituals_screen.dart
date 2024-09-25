@@ -79,7 +79,6 @@ class _RitualsPageState extends State<RitualsPage>
   FocusNode searchFocusNode = FocusNode();
 
   List userDraftRitualsList = [];
-  List? _filteredBookmarks;
   int perPageCount = 100;
   bool ratingView = false;
   int initialRating = 0;
@@ -548,8 +547,6 @@ class _RitualsPageState extends State<RitualsPage>
                         textInputAction: TextInputAction.done,
                         onChanged: (value) {
                           setState(() {
-                            _filteredBookmarks =
-                                searchBookmarks(value, quickAccessList);
                           });
                         },
                       ),

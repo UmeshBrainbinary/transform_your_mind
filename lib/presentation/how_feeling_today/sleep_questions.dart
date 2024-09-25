@@ -27,8 +27,8 @@ class SleepQuestions extends StatelessWidget {
           ? ColorConstant.darkBackground
           : ColorConstant.backGround,
       appBar:  CustomAppBar(
-        title:  "${"Good morning".tr}, ${PrefService.getString(PrefKey.name)}",
-        showBack: true,
+        title:  "${"goodMorning".tr}, ${PrefService.getString(PrefKey.name)}",
+        showBack: false,
         action: Row(
           children: [
             InkWell(
@@ -210,11 +210,122 @@ class SleepQuestions extends StatelessWidget {
                   commonTextFiled("", controller.whatHasHelped),
                   Dimens.d40.spaceHeight,*/
 
-                ],):Column(children: [
-                  commonTextTitle("isThereSomethingHelps".tr, count: "2"),
+                ],):
+                Column(children: [
+                  commonTextTitle("What helped you sleep well the most?".tr, count: "2"),
 
                   Dimens.d20.spaceHeight,
                   GetBuilder<HowFeelingsController>(
+                    builder: (controller) => ListView.builder(
+                      padding: EdgeInsets.zero,
+                      itemCount: controller.didYouSleepWell.length,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        var data = controller.didYouSleepWell[index];
+                        return GestureDetector(
+                          onTap: () {
+                            controller.howDoYouSleepWell = index;
+
+                            controller.update();
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.only(
+                                bottom: 15, left: 20, right: 20),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 13, vertical: 10),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: controller.howDoYouSleepWell == index
+                                        ? ColorConstant.themeColor
+                                        : Colors.transparent),
+                                color: themeController.isDarkMode.isTrue
+                                    ? ColorConstant.textfieldFillColor
+                                    : ColorConstant.white,
+                                borderRadius: BorderRadius.circular(8)),
+                            child: Row(
+                              children: [
+                                commonText(data["title"]),
+                                const Spacer(),
+                                controller.howDoYouSleepWell == index
+                                    ? SvgPicture.asset(ImageConstant.check)
+                                    : Container(
+                                  height: 18,
+                                  width: 18,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                          color: themeController
+                                              .isDarkMode.isTrue
+                                              ? ColorConstant.white
+                                              : ColorConstant.black,
+                                          width: 1)),
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  Dimens.d20.spaceHeight,
+                  commonTextTitle("how long did you sleep last night?".tr, count: "3"),
+
+                  Dimens.d20.spaceHeight,
+                  GetBuilder<HowFeelingsController>(
+                    builder: (controller) => ListView.builder(
+                      padding: EdgeInsets.zero,
+                      itemCount: controller.howLongDidYouSleep.length,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        var data = controller.howLongDidYouSleep[index];
+                        return GestureDetector(
+                          onTap: () {
+                            controller.howDidYouLong = index;
+
+                            controller.update();
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.only(
+                                bottom: 15, left: 20, right: 20),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 13, vertical: 10),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: controller.howDidYouLong == index
+                                        ? ColorConstant.themeColor
+                                        : Colors.transparent),
+                                color: themeController.isDarkMode.isTrue
+                                    ? ColorConstant.textfieldFillColor
+                                    : ColorConstant.white,
+                                borderRadius: BorderRadius.circular(8)),
+                            child: Row(
+                              children: [
+                                commonText(data["title"]),
+                                const Spacer(),
+                                controller.howDidYouLong == index
+                                    ? SvgPicture.asset(ImageConstant.check)
+                                    : Container(
+                                  height: 18,
+                                  width: 18,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                          color: themeController
+                                              .isDarkMode.isTrue
+                                              ? ColorConstant.white
+                                              : ColorConstant.black,
+                                          width: 1)),
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                   /*    GetBuilder<HowFeelingsController>(
                     builder: (controller) {
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -293,7 +404,7 @@ class SleepQuestions extends StatelessWidget {
                         ),
                       );
                     },
-                  ),
+                  ),*/
 
 
                  /* Dimens.d20.spaceHeight,

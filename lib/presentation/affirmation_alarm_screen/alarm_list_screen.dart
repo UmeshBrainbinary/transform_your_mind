@@ -19,10 +19,13 @@ import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/size_utils.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/affirmation_alarm_screen/affirmation_controller.dart';
+import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_controller.dart';
+import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_screen.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/audio_list.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/notification_setting_screen/notification_setting_controller.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
+import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 class AlarmListScreen extends StatefulWidget {
@@ -98,7 +101,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
   double currentTime = 0.0; // Current position of the audio
   double totalTime = 100.0;
 
-
+final audioPlayerController = Get.find<NowPlayingController>();
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -111,190 +114,343 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
             title: "Alarm".tr,
             showBack: true,
           ),
-            body: GetBuilder<NotificationSettingController>(
-              id: "update",
-              builder: (controller) {
-                return  (controller.alarmModel.data??[]).isNotEmpty
-                    ? SingleChildScrollView(
-                        child: ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: controller.alarmModel.data?.length ?? 0,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 20.0, vertical: 10),
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                  color: themeController.isDarkMode.isTrue
-                                      ? ColorConstant.textfieldFillColor
-                                      : Colors.white,
-                                  borderRadius: BorderRadius.circular(15)),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
+            body: Stack(
+              children: [
+                GetBuilder<NotificationSettingController>(
+                  id: "update",
+                  builder: (controller) {
+                    return  (controller.alarmModel.data??[]).isNotEmpty
+                        ? SingleChildScrollView(
+                            child: ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: controller.alarmModel.data?.length ?? 0,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 20.0, vertical: 10),
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                      color: themeController.isDarkMode.isTrue
+                                          ? ColorConstant.textfieldFillColor
+                                          : Colors.white,
+                                      borderRadius: BorderRadius.circular(15)),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        "${controller.alarmModel.data?[index].hours}:${controller.alarmModel.data?[index].minutes} ",
-                                        style: Style.nunRegular(
-                                          fontSize: 30,
-                                        ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "${controller.alarmModel.data?[index].hours}:${controller.alarmModel.data?[index].minutes} ",
+                                            style: Style.nunRegular(
+                                              fontSize: 30,
+                                            ),
+                                          ),
+                                          Text(
+                                            controller
+                                                    .alarmModel.data?[index].time ??
+                                                "",
+                                            style: Style.nunRegular(
+                                              fontSize: 22,
+                                            ),
+                                          ),
+                                          const Spacer(),
+                                          GestureDetector(
+                                            onTap: () {
+                                              controller.audioPlayer.seek(Duration.zero);
+                                              _showAlertDialogPlayPause(context,
+                                                  index: index,
+                                                  mp3: controller.alarmModel
+                                                          .data?[index].audioFile ??
+                                                      "",
+                                                  title: controller.alarmModel
+                                                          .data?[index].name ??
+                                                      "",
+                                                  des: controller
+                                                          .alarmModel
+                                                          .data?[index]
+                                                          .description ??
+                                                      "");
+                                            },
+                                            child: SvgPicture.asset(
+                                              ImageConstant.playAffirmation,
+                                              height: 18,
+                                              width: 18,
+                                              color:
+                                                  themeController.isDarkMode.isTrue
+                                                      ? ColorConstant.white
+                                                      : Colors.black,
+                                            ),
+                                          ),
+                                          Dimens.d10.spaceWidth,
+                                          GestureDetector(
+                                            onTap: () {
+                                              selectedHour = controller.alarmModel
+                                                  .data![index].hours ??
+                                                  0;
+                                              selectedMinute = controller
+                                                  .alarmModel
+                                                  .data![index]
+                                                  .minutes ??
+                                                  0;
+                                              selectedSeconds = controller
+                                                  .alarmModel
+                                                  .data![index]
+                                                  .seconds ??
+                                                  0;
+                                              if (controller.alarmModel
+                                                  .data![index].time ==
+                                                  "AM") {
+                                                am = true;
+                                                pm = false;
+                                              } else {
+                                                pm = true;
+                                                am = false;
+                                              }
+                                              setState(() {
+                                                debugPrint("selectedSeconds $selectedSeconds");
+                                                debugPrint("selectedMinute $selectedMinute");
+                                                debugPrint("selectedHour $selectedHour");
+
+
+                                              });
+                                              setState.call(() {
+
+
+                                              });
+                                              _showAlertDialog(context, controller
+                                                  .alarmModel.data![index].id
+                                                /*
+                                                  title: "",
+
+                                                  id: controller
+                                                      .alarmModel.data![index].id,
+                                                  second: selectedSeconds*/);
+                                            },
+                                            child: SvgPicture.asset(
+                                              ImageConstant.editTools,
+                                              height: 18,
+                                              width: 18,
+                                              color:
+                                                  themeController.isDarkMode.isTrue
+                                                      ? ColorConstant.white
+                                                      : Colors.black,
+                                            ),
+                                          ),
+                                          Dimens.d10.spaceWidth,
+                                          GestureDetector(
+                                            onTap: () {
+                                              _showAlertDialogDelete(
+                                                  context,
+                                                  index,
+                                                  true,
+                                                  controller
+                                                      .alarmModel.data?[index].id);
+                                            },
+                                            child: SvgPicture.asset(
+                                              ImageConstant.delete,
+                                              height: 18,
+                                              width: 18,
+                                              color:
+                                                  themeController.isDarkMode.isTrue
+                                                      ? ColorConstant.white
+                                                      : Colors.black,
+                                            ),
+                                          ),
+                                          Dimens.d10.spaceWidth,
+                                        ],
                                       ),
                                       Text(
-                                        controller
-                                                .alarmModel.data?[index].time ??
+                                        controller.alarmModel.data?[index].name ??
                                             "",
                                         style: Style.nunRegular(
-                                          fontSize: 22,
+                                          fontSize: 18,
                                         ),
                                       ),
-                                      const Spacer(),
-                                      GestureDetector(
-                                        onTap: () {
-                                          controller.audioPlayer.seek(Duration.zero);
-                                          _showAlertDialogPlayPause(context,
-                                              index: index,
-                                              mp3: controller.alarmModel
-                                                      .data?[index].audioFile ??
-                                                  "",
-                                              title: controller.alarmModel
-                                                      .data?[index].name ??
-                                                  "",
-                                              des: controller
-                                                      .alarmModel
-                                                      .data?[index]
-                                                      .description ??
-                                                  "");
-                                        },
-                                        child: SvgPicture.asset(
-                                          ImageConstant.playAffirmation,
-                                          height: 18,
-                                          width: 18,
-                                          color:
-                                              themeController.isDarkMode.isTrue
-                                                  ? ColorConstant.white
-                                                  : Colors.black,
-                                        ),
-                                      ),
-                                      Dimens.d10.spaceWidth,
-                                      GestureDetector(
-                                        onTap: () {
-                                          selectedHour = controller.alarmModel
-                                              .data![index].hours ??
-                                              0;
-                                          selectedMinute = controller
-                                              .alarmModel
-                                              .data![index]
-                                              .minutes ??
-                                              0;
-                                          selectedSeconds = controller
-                                              .alarmModel
-                                              .data![index]
-                                              .seconds ??
-                                              0;
-                                          if (controller.alarmModel
-                                              .data![index].time ==
-                                              "AM") {
-                                            am = true;
-                                            pm = false;
-                                          } else {
-                                            pm = true;
-                                            am = false;
-                                          }
-                                          setState(() {
-                                            debugPrint("selectedSeconds $selectedSeconds");
-                                            debugPrint("selectedMinute $selectedMinute");
-                                            debugPrint("selectedHour $selectedHour");
-
-
-                                          });
-                                          setState.call(() {
-
-
-                                          });
-                                          _showAlertDialog(context, controller
-                                              .alarmModel.data![index].id
-                                            /*
-                                              title: "",
-
-                                              id: controller
-                                                  .alarmModel.data![index].id,
-                                              second: selectedSeconds*/);
-                                        },
-                                        child: SvgPicture.asset(
-                                          ImageConstant.editTools,
-                                          height: 18,
-                                          width: 18,
-                                          color:
-                                              themeController.isDarkMode.isTrue
-                                                  ? ColorConstant.white
-                                                  : Colors.black,
-                                        ),
-                                      ),
-                                      Dimens.d10.spaceWidth,
-                                      GestureDetector(
-                                        onTap: () {
-                                          _showAlertDialogDelete(
-                                              context,
-                                              index,
-                                              true,
-                                              controller
-                                                  .alarmModel.data?[index].id);
-                                        },
-                                        child: SvgPicture.asset(
-                                          ImageConstant.delete,
-                                          height: 18,
-                                          width: 18,
-                                          color:
-                                              themeController.isDarkMode.isTrue
-                                                  ? ColorConstant.white
-                                                  : Colors.black,
-                                        ),
-                                      ),
-                                      Dimens.d10.spaceWidth,
+                                      Dimens.d10.spaceHeight,
+                                      Text(
+                                        maxLines: 2,
+                                        controller.alarmModel.data?[index]
+                                                .description ??
+                                            "",
+                                        style: Style.nunRegular(fontSize: 14),
+                                      )
                                     ],
                                   ),
+                                );
+                              },
+                            ),
+                          )
+                        : Center(
+                            child: SizedBox(
+                              height: Get.height - 400,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    themeController.isDarkMode.isTrue?ImageConstant.darkData:ImageConstant
+                                        .noData,height: 158,width: 200,),
                                   Text(
-                                    controller.alarmModel.data?[index].name ??
-                                        "",
-                                    style: Style.nunRegular(
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                  Dimens.d10.spaceHeight,
-                                  Text(
-                                    maxLines: 2,
-                                    controller.alarmModel.data?[index]
-                                            .description ??
-                                        "",
-                                    style: Style.nunRegular(fontSize: 14),
+                                    "dataNotFound".tr,
+                                    style: Style.montserratBold(fontSize: 24),
                                   )
                                 ],
                               ),
-                            );
-                          },
-                        ),
-                      )
-                    : Center(
-                        child: SizedBox(
-                          height: Get.height - 400,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                themeController.isDarkMode.isTrue?ImageConstant.darkData:ImageConstant
-                                    .noData,height: 158,width: 200,),
-                              Text(
-                                "dataNotFound".tr,
-                                style: Style.montserratBold(fontSize: 24),
-                              )
-                            ],
+                            ),
+                          );
+                  },
+                ),
+                Obx(() {
+                  if (!audioPlayerController.isVisible.value) {
+                    return const SizedBox.shrink();
+                  }
+
+                  final currentPosition =
+                      audioPlayerController.positionStream.value ??
+                          Duration.zero;
+                  final duration =
+                      audioPlayerController.durationStream.value ??
+                          Duration.zero;
+                  final isPlaying = audioPlayerController.isPlaying.value;
+
+                  return GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(
+                              Dimens.d24,
+                            ),
                           ),
                         ),
+                        builder: (BuildContext context) {
+                          return NowPlayingScreen(
+                            audioData: audioDataStore!,
+                          );
+                        },
                       );
-              },
+                    },
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        height: 72,
+                        width: Get.width,
+                        padding: const EdgeInsets.only(
+                            top: 8.0, left: 8, right: 8),
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 50),
+                        decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [
+                                ColorConstant.colorB9CCD0,
+                                ColorConstant.color86A6AE,
+                                ColorConstant.color86A6AE,
+                              ], // Your gradient colors
+                              begin: Alignment.bottomLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            color: ColorConstant.themeColor,
+                            borderRadius: BorderRadius.circular(6)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                CommonLoadImage(
+                                    borderRadius: 6.0,
+                                    url: audioDataStore!.image!,
+                                    width: 47,
+                                    height: 47),
+                                Dimens.d12.spaceWidth,
+                                GestureDetector(
+                                    onTap: () async {
+                                      if (isPlaying) {
+                                        await audioPlayerController
+                                            .pause();
+                                      } else {
+                                        await audioPlayerController
+                                            .play();
+                                      }
+                                    },
+                                    child: SvgPicture.asset(
+                                      isPlaying
+                                          ? ImageConstant.pause
+                                          : ImageConstant.play,
+                                      height: 17,
+                                      width: 17,
+                                    )),
+                                Dimens.d10.spaceWidth,
+                                Expanded(
+                                  child: Text(
+                                    audioDataStore!.name!,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Style.nunRegular(
+                                        fontSize: 12,
+                                        color: ColorConstant.white),
+                                  ),
+                                ),
+                                Dimens.d10.spaceWidth,
+                                GestureDetector(
+                                    onTap: () async {
+                                      await audioPlayerController.reset();
+                                    },
+                                    child: SvgPicture.asset(
+                                      ImageConstant.closePlayer,
+                                      color: ColorConstant.white,
+                                      height: 24,
+                                      width: 24,
+                                    )),
+                                Dimens.d10.spaceWidth,
+                              ],
+                            ),
+                            Dimens.d8.spaceHeight,
+                            SliderTheme(
+                              data: SliderTheme.of(context).copyWith(
+                                activeTrackColor:
+                                ColorConstant.white.withOpacity(0.2),
+                                inactiveTrackColor:
+                                ColorConstant.color6E949D,
+                                trackHeight: 1.5,
+                                thumbColor: ColorConstant.transparent,
+                                thumbShape: SliderComponentShape.noThumb,
+                                overlayColor: ColorConstant.backGround
+                                    .withAlpha(32),
+                                overlayShape: const RoundSliderOverlayShape(
+                                    overlayRadius:
+                                    16.0), // Customize the overlay shape and size
+                              ),
+                              child: SizedBox(
+                                height: 2,
+                                child: Slider(
+                                  thumbColor: Colors.transparent,
+                                  activeColor: ColorConstant.backGround,
+                                  value: currentPosition.inMilliseconds
+                                      .toDouble(),
+                                  max: duration.inMilliseconds.toDouble(),
+                                  onChanged: (value) {
+                                    audioPlayerController
+                                        .seekForMeditationAudio(
+                                        position: Duration(
+                                            milliseconds:
+                                            value.toInt()));
+                                  },
+                                ),
+                              ),
+                            ),
+                            Dimens.d5.spaceHeight,
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+
+              ],
             )),
         GetBuilder<NotificationSettingController>(
           id: "update",

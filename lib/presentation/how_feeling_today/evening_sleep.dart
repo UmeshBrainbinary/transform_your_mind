@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:transform_your_mind/core/service/pref_service.dart';
@@ -11,8 +10,6 @@ import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/how_feeling_today/evening_motivational.dart';
 import 'package:transform_your_mind/presentation/how_feeling_today/how_feeling_evening_controller.dart';
-import 'package:transform_your_mind/presentation/how_feeling_today/how_feelings_controller.dart';
-import 'package:transform_your_mind/presentation/how_feeling_today/motivational_questions.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';

@@ -230,13 +230,15 @@ class _GreatWorkState extends State<GreatWork> {
                       Dimens.d20.spaceHeight,
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 30),
-                        child: Text(
-                          "YouCompleted".tr,
-                          textAlign: TextAlign.center,
-                          style: Style.gothamLight(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 17,
-                              color: ColorConstant.white),
+                        child: SizedBox(width: Get.width-50,
+                          child: Text(
+                            "YouCompleted".tr,
+                            textAlign: TextAlign.center,
+                            style: Style.gothamLight(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 17,
+                                color: ColorConstant.white),
+                          ),
                         ),
                       ),
                       Dimens.d50.spaceHeight,
@@ -395,7 +397,7 @@ class _GreatWorkState extends State<GreatWork> {
 
   Path _starPath(Size size) {
     final path = Path();
-    final points = 5; // Number of points on the star
+    const points = 5; // Number of points on the star
     final radius = size.width / 2;
     final center = Offset(size.width / 2, size.height / 2);
 

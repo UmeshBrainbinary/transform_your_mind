@@ -77,7 +77,7 @@ class _PositiveStoryMomentState extends State<PositiveStoryMoment> with SingleTi
   }
 
   init() async {
-   await Future.delayed(Duration(seconds: 5),(){
+   await Future.delayed(const Duration(seconds: 5),(){
      _startAnimation();
    });
   }
@@ -384,8 +384,7 @@ class _PositiveStoryMomentState extends State<PositiveStoryMoment> with SingleTi
           padding:
           const EdgeInsets.all(10),
           child: Text(
-              "“${widget.data![(_currentIndexNew )].description}”" ??
-                  "",
+              "“${widget.data![(_currentIndexNew )].description}”",
               textAlign: TextAlign.center,
               maxLines: 18,
               style: Style.gothamLight(
@@ -624,7 +623,7 @@ class _PositiveStoryMomentState extends State<PositiveStoryMoment> with SingleTi
                         },
                       ),
                     ),
-                    Dimens.d20.spaceHeight,
+                    Dimens.d15.spaceHeight,
                     Row(
                       children: <Widget>[
                         SvgPicture.asset(
@@ -659,6 +658,8 @@ class _PositiveStoryMomentState extends State<PositiveStoryMoment> with SingleTi
                         ),
                       ],
                     ),
+                    Dimens.d15.spaceHeight,
+
                   ],
                 ),
               ),

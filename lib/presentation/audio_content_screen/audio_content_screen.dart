@@ -56,6 +56,11 @@ class _AudioContentScreenState extends State<AudioContentScreen>
 
   @override
   void initState() {
+    if (PrefService.getString(PrefKey.language) == "") {
+      setState(() {
+        currentLanguage = "en-US";
+      });
+    }
     audioContentController.searchController.clear();
     _lottieBgController = AnimationController(vsync: this);
 
@@ -165,6 +170,7 @@ getData() async {
           ),
           body: Stack(
             children: [
+
               Align(
                 alignment: const Alignment(1, 0),
                 child: SvgPicture.asset(
@@ -181,7 +187,7 @@ getData() async {
                       constraints:
                           BoxConstraints(minHeight: constraint.maxHeight),
                       child: IntrinsicHeight(
-                        child: Column(
+                        child: Column(crossAxisAlignment:CrossAxisAlignment.start,
                           children: [
                             Dimens.d40.h.spaceHeight,
                             Row(
@@ -206,7 +212,35 @@ getData() async {
                                 ),
                               ],
                             ),
-                            Dimens.d30.h.spaceHeight,
+                            Dimens.d20.h.spaceHeight,
+                    /*        Text("Categories",style: Style.nunRegular(
+                                fontSize:
+                                20,),),
+                            GetBuilder<AudioContentController>(builder: (controller) {
+                              return Wrap(
+                                spacing: 8.0, // Horizontal space between items
+                                children: controller.categories.map((category) {
+                                  final isSelected = controller.selectedCategories.contains(category);
+                                  return GestureDetector(
+                                    onTap: () {
+                                      controller.toggleCategorySelection(category); // Toggle selection
+                                    },
+                                    child: Chip(padding: EdgeInsets.zero,
+                                      label: Text(category),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16.0), // Adjust this value to increase border radius
+                                      ),
+                                      backgroundColor: isSelected ? Colors.green : ColorConstant.themeColor, // Change color when selected
+                                      labelStyle: Style.nunRegular(
+                                          fontSize:
+                                          12,
+                                          color: Colors
+                                              .white),
+                                    ),
+                                  );
+                                }).toList(),
+                              );
+                            }),*/
                             Container(
                               decoration: BoxDecoration(
                                 boxShadow: [
@@ -382,8 +416,7 @@ getData() async {
                                                           .name
                                                           .toString(),
                                                       // "Motivational",
-                                                      style: Style
-                                                          .nunitoBold(
+                                                      style:   Style.nunMedium(
                                                         fontSize:
                                                         Dimens.d14,
                                                       ),
@@ -509,7 +542,6 @@ getData() async {
                                                      },
                                                    ));
                                                  }
-
                                               },
                                               child: Stack(alignment: Alignment.topRight,
                                                 children: [

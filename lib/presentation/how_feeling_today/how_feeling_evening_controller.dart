@@ -68,158 +68,158 @@ class HowFeelingEveningController extends GetxController {
   // ].obs;
 
   RxList howDoYouFeelList = [
-    {"title": "A. ${"It was a great day!".tr}", "check": false},
-    {"title": "B. ${"I felt good most of the time.".tr}", "check": false},
-    {"title": "C. ${"My mood was up and down.".tr}", "check": false},
+    {"title": "It was a great day!".tr, "check": false},
+    {"title": "I felt good most of the time.".tr, "check": false},
+    {"title": "My mood was up and down.".tr, "check": false},
     {
-      "title": "D. ${"I was a bit tired, but I pushed through.".tr}",
+      "title": "I was a bit tired, but I pushed through.".tr,
       "check": false
     },
     {
-      "title": "E. ${"I stayed calm and focused throughout the day.".tr}",
+      "title": "I stayed calm and focused throughout the day.".tr,
       "check": false
     },
   ].obs;
   RxList whatHelpedPositive = [
-    {"title": "A. ${"A restful moment or break".tr}", "check": false},
-    {"title": "B. ${"A soothing activity or routine".tr}", "check": false},
-    {"title": "C. ${"A healthy meal during the day".tr}", "check": false},
+    {"title": "A restful moment or break".tr, "check": false},
+    {"title": "A soothing activity or routine".tr, "check": false},
+    {"title": "A healthy meal during the day".tr, "check": false},
     {
-      "title": "D. ${"Positive thoughts and self-motivation".tr}",
+      "title": "Positive thoughts and self-motivation".tr,
       "check": false
     },
-    {"title": "E. ${"Something else that helped me".tr}", "check": false},
+    {"title": "Something else that helped me".tr, "check": false},
   ].obs;
   RxList whatHelpedYou = [
-    {"title": "A. ${"Planning".tr}", "check": false},
-    {"title": "B. ${"support".tr}", "check": false},
-    {"title": "C. ${"Motivation".tr}", "check": false},
-    {"title": "D. ${"Other".tr}", "check": false},
+    {"title": "Planning".tr, "check": false},
+    {"title": "support".tr, "check": false},
+    {"title": "Motivation".tr, "check": false},
+    {"title": "Other".tr, "check": false},
   ].obs;
 
   RxList maintain = [
-    {"title": "A. ${"I fully utilized my motivation.".tr}", "check": false},
+    {"title": "I fully utilized my motivation.".tr, "check": false},
     {
-      "title": "B. ${"I was motivated, but there were ups and downs.".tr}",
+      "title": "I was motivated, but there were ups and downs.".tr,
       "check": false
     },
     {
-      "title": "C. ${"It was challenging, but I kept going.".tr}",
+      "title": "It was challenging, but I kept going.".tr,
       "check": false
     },
     {
-      "title": "D. ${"I stayed motivated, even though it wasn't easy.".tr}",
+      "title": "I stayed motivated, even though it wasn't easy.".tr,
       "check": false
     },
     {
-      "title": "E. ${"It was a calm day, but I gave it my best.".tr}",
+      "title": "It was a calm day, but I gave it my best.".tr,
       "check": false
     },
   ].obs;
 
   RxList inspired = [
-    {"title": "A. ${"I maximized my full potential.".tr}", "check": false},
-    {"title": "B. ${"I sought personal satisfaction.".tr}", "check": false},
-    {"title": "C. ${"I created something positive.".tr}", "check": false},
-    {"title": "D. ${"I tried to make a difference.".tr}", "check": false},
+    {"title": "I maximized my full potential.".tr, "check": false},
+    {"title": "I sought personal satisfaction.".tr, "check": false},
+    {"title": "I created something positive.".tr, "check": false},
+    {"title": "I tried to make a difference.".tr, "check": false},
     {
-      "title": "E. ${"I aimed to be better than yesterday.".tr}",
+      "title": "I aimed to be better than yesterday.".tr,
       "check": false
     },
   ].obs;
   RxList concure = [
-    {"title": "A. ${"With great success and confidence".tr}", "check": false},
-    {"title": "B. ${"Very well, I'm satisfied".tr}", "check": false},
-    {"title": "C. ${"Well, but it was challenging".tr}", "check": false},
-    {"title": "D. ${"It wasn't easy, but I gave my best".tr}", "check": false},
-    {"title": "E. ${"I gained valuable experience".tr}", "check": false},
+    {"title": "With great success and confidence".tr, "check": false},
+    {"title": "Very well, I'm satisfied".tr, "check": false},
+    {"title": "Well, but it was challenging".tr, "check": false},
+    {"title": "It wasn't easy, but I gave my best".tr, "check": false},
+    {"title": "I gained valuable experience".tr, "check": false},
   ].obs;
 
   RxList whatPrevented = [
-    {"title": "A. ${"LackTime".tr}", "check": false},
-    {"title": "B. ${"UnexpectedEvents".tr}", "check": false},
-    {"title": "C. ${"LackMotivation".tr}", "check": false},
-    {"title": "D. ${"NoEnergy".tr}", "check": false},
-    {"title": "E. ${"Other".tr}", "check": false},
+    {"title": "LackTime".tr, "check": false},
+    {"title": "UnexpectedEvents".tr, "check": false},
+    {"title": "LackMotivation".tr, "check": false},
+    {"title": "NoEnergy".tr, "check": false},
+    {"title": "Other".tr, "check": false},
   ].obs;
 
   RxList whatCanYouToday = [
-    {"title": "A. ${"planPositiveActivities".tr}", "check": false},
-    {"title": "B. ${"TakeBreaks".tr}", "check": false},
-    {"title": "C. ${"TalkSomeone".tr}", "check": false},
-    {"title": "D. ${"Other".tr}", "check": false},
+    {"title": "planPositiveActivities".tr, "check": false},
+    {"title": "TakeBreaks".tr, "check": false},
+    {"title": "TalkSomeone".tr, "check": false},
+    {"title": "Other".tr, "check": false},
   ].obs;
 
   RxList whatCanDoMinimize = [
-    {"title": "A. ${"Work".tr}", "check": false},
-    {"title": "B. ${"family".tr}", "check": false},
-    {"title": "C. ${"Relationship".tr}", "check": false},
-    {"title": "D. ${"Health".tr}", "check": false},
-    {"title": "E. ${"Finances".tr}", "check": false},
-    {"title": "F. ${"Other".tr}", "check": false},
+    {"title": "Work".tr, "check": false},
+    {"title": "family".tr, "check": false},
+    {"title": "Relationship".tr, "check": false},
+    {"title": "Health".tr, "check": false},
+    {"title": "Finances".tr, "check": false},
+    {"title": "Other".tr, "check": false},
   ].obs;
 
   RxList success = [
     {
-      "title": "A. ${"Very successful, I feel much more relaxed now".tr}",
+      "title": "Very successful, I feel much more relaxed now".tr,
       "check": false
     },
     {
-      "title": "B. ${"Good, I used my stress management strategies".tr}",
+      "title": "Good, I used my stress management strategies".tr,
       "check": false
     },
-    {"title": "C. ${"Partially, it helped a little".tr}", "check": false},
+    {"title": "Partially, it helped a little".tr, "check": false},
     {
-      "title": "D. ${"It was challenging, but I did my best".tr}",
+      "title": "It was challenging, but I did my best".tr,
       "check": false
     },
     {
-      "title": "E. ${"I didn’t quite succeed, but I’l try again tomorrow".tr}",
+      "title": "I didn’t quite succeed, but I’l try again tomorrow".tr,
       "check": false
     },
   ].obs;
 
   RxList whatHelpsYouStart = [
-    {"title": "A. ${"StructuredPlan".tr}", "check": false},
-    {"title": "B. ${"relaxationTechniques".tr}", "check": false},
-    {"title": "C. ${"positiveMindset".tr}", "check": false},
-    {"title": "D. ${"Other".tr}", "check": false},
+    {"title": "StructuredPlan".tr, "check": false},
+    {"title": "relaxationTechniques".tr, "check": false},
+    {"title": "positiveMindset".tr, "check": false},
+    {"title": "Other".tr, "check": false},
   ].obs;
   RxList howDidYuRespond = [
-    {"title": "A. ${"Well".tr}", "check": false},
-    {"title": "B. ${"Moderately".tr}", "check": false},
-    {"title": "C. ${"Poorly".tr}", "check": false},
+    {"title": "Well".tr, "check": false},
+    {"title": "Moderately".tr, "check": false},
+    {"title": "Poorly".tr, "check": false},
   ].obs;
 
   RxList feelPhysicallyList = [
-    {"title": "A. ${"Work".tr}", "check": false},
-    {"title": "B. ${"Family".tr}", "check": false},
-    {"title": "C. ${"Relationship".tr}", "check": false},
-    {"title": "D. ${"Health".tr}", "check": false},
-    {"title": "E. ${"Finances".tr}", "check": false},
-    {"title": "F. ${"Other".tr}", "check": false},
+    {"title": "Work".tr, "check": false},
+    {"title": "Family".tr, "check": false},
+    {"title": "Relationship".tr, "check": false},
+    {"title": "Health".tr, "check": false},
+    {"title": "Finances".tr, "check": false},
+    {"title": "Other".tr, "check": false},
   ].obs;
 
   RxList whatDoYouWant = [
-    {"title": "A. ${"AGoal".tr}", "check": false},
-    {"title": "B. ${"AWorkGoal".tr}", "check": false},
-    {"title": "C. ${"LearnSkill".tr}", "check": false},
-    {"title": "D. ${"other".tr}", "check": false},
+    {"title": "AGoal".tr, "check": false},
+    {"title": "AWorkGoal".tr, "check": false},
+    {"title": "LearnSkill".tr, "check": false},
+    {"title": "other".tr, "check": false},
   ].obs;
 
   RxList whatNegatively = [
-    {"title": "A. ${"Worries".tr}", "check": false},
-    {"title": "B. ${"Noise".tr}", "check": false},
-    {"title": "C. ${"uncomfortableBed".tr}", "check": false},
-    {"title": "D. ${"Health".tr}", "check": false},
-    {"title": "E. ${"other".tr}", "check": false},
+    {"title": "Worries".tr, "check": false},
+    {"title": "Noise".tr, "check": false},
+    {"title": "uncomfortableBed".tr, "check": false},
+    {"title": "Health".tr, "check": false},
+    {"title": "other".tr, "check": false},
   ].obs;
 
   RxList whatStepCanYou = [
-    {"title": "A. ${"planning".tr}", "check": false},
-    {"title": "B. ${"seekingHelp".tr}", "check": false},
-    {"title": "C. ${"timeManagement".tr}", "check": false},
-    {"title": "D. ${"other".tr}", "check": false},
+    {"title": "planning".tr, "check": false},
+    {"title": "seekingHelp".tr, "check": false},
+    {"title": "timeManagement".tr, "check": false},
+    {"title": "other".tr, "check": false},
   ].obs;
 
   setQuestions(setting, BuildContext context) async {

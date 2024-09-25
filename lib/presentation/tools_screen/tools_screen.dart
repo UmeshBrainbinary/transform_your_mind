@@ -2,10 +2,12 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:transform_your_mind/core/service/pref_service.dart';
 import 'package:transform_your_mind/core/utils/color_constant.dart';
 import 'package:transform_your_mind/core/utils/dimensions.dart';
 import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
+import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_controller.dart';
 import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_screen.dart';
@@ -44,9 +46,15 @@ class _ToolsScreenState extends State<ToolsScreen>
     },
   ];
   final audioPlayerController = Get.find<NowPlayingController>();
+  String currentLanguage = PrefService.getString(PrefKey.language);
+
   @override
   void initState() {
-
+    if (PrefService.getString(PrefKey.language) == "") {
+      setState(() {
+        currentLanguage = "en-US";
+      });
+    }
 
     setState(() {
 
@@ -195,7 +203,7 @@ class _ToolsScreenState extends State<ToolsScreen>
                                                 },));*/
                                               }
                                             },
-                                            height: 26.0,
+                                            height: currentLanguage=="en-US"?26.0:50,
                                             textStyle:
                                                 Style.nunRegular(
                                                     fontSize: 14.0,

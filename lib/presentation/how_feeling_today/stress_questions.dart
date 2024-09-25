@@ -29,7 +29,7 @@ class StressQuestions extends StatelessWidget {
           ? ColorConstant.darkBackground
           : ColorConstant.backGround,
       appBar: CustomAppBar(
-        title: "${"Good morning".tr}, ${PrefService.getString(PrefKey.name)}",
+        title: "${"goodMorning".tr}, ${PrefService.getString(PrefKey.name)}",
         action: Row(
           children: [
             InkWell(
@@ -149,129 +149,6 @@ class StressQuestions extends StatelessWidget {
                 ),
 
                 Dimens.d30.spaceHeight,
-
-                //___________________________________ 2. _________________________________
-
-           /*     controller.selectedOptionStress == "No"?  commonTextTitle(
-                   "whatHelpsYouStart".tr,
-                    count: "2"):const SizedBox(),
-
-                controller.selectedOptionStress == "No"?  Dimens.d20.spaceHeight:const SizedBox(),
-                controller.selectedOptionStress == "No"?   GetBuilder<HowFeelingsController>(
-                  builder: (controller) => ListView.builder(
-                    padding: EdgeInsets.zero,
-                    itemCount:  controller.whatHelpsYouStart.length,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      var data =controller.whatHelpsYouStart[index];
-                      return GestureDetector(
-                        onTap: () {
-                          controller.whatHelpedStress = index;
-                          controller.update();
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.only(
-                              bottom: 15, left: 20, right: 20),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 13, vertical: 10),
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: controller.whatHelpedStress == index
-                                      ? ColorConstant.themeColor
-                                      : Colors.transparent),
-                              color: themeController.isDarkMode.isTrue
-                                  ? ColorConstant.textfieldFillColor
-                                  : ColorConstant.white,
-                              borderRadius: BorderRadius.circular(8)),
-                          child: Row(
-                            children: [
-                              commonText(data["title"]),
-                              const Spacer(),
-                              controller.whatHelpedStress == index
-                                  ? SvgPicture.asset(ImageConstant.check)
-                                  : Container(
-                                      height: 18,
-                                      width: 18,
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                              color: themeController
-                                                      .isDarkMode.isTrue
-                                                  ? ColorConstant.white
-                                                  : ColorConstant.black,
-                                              width: 1)),
-                                    )
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ):const SizedBox(),
-            controller.selectedOptionStress == "No"? Dimens.d15.spaceHeight:const SizedBox(),*/
-
-                //___________________________________ 2. _________________________________
-
-          /*      controller.selectedOptionStress == "Yes"?  commonTextTitle(
-                    "whatCanYouDoToMinimize".tr,
-                    count: "2"): const SizedBox(),
-
-                  controller.selectedOptionStress == "Yes"? Dimens.d20.spaceHeight: const SizedBox(),
-                 controller.selectedOptionStress == "Yes"?  GetBuilder<HowFeelingsController>(
-                  builder: (controller) => ListView.builder(
-                    padding: EdgeInsets.zero,
-                    itemCount: controller.whatCanDoMinimize.length,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      var data = controller.whatCanDoMinimize[index];
-                      return GestureDetector(
-                        onTap: () {
-                          controller.whatHelpedStress = index;
-                          controller.update();
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.only(
-                              bottom: 15, left: 20, right: 20),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 13, vertical: 10),
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: controller.whatHelpedStress == index
-                                      ? ColorConstant.themeColor
-                                      : Colors.transparent),
-                              color: themeController.isDarkMode.isTrue
-                                  ? ColorConstant.textfieldFillColor
-                                  : ColorConstant.white,
-                              borderRadius: BorderRadius.circular(8)),
-                          child: Row(
-                            children: [
-                              commonText(data["title"]),
-                              const Spacer(),
-                              controller.whatHelpedStress == index
-                                  ? SvgPicture.asset(ImageConstant.check)
-                                  : Container(
-                                      height: 18,
-                                      width: 18,
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                              color: themeController
-                                                      .isDarkMode.isTrue
-                                                  ? ColorConstant.white
-                                                  : ColorConstant.black,
-                                              width: 1)),
-                                    )
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ): const SizedBox(),
-                 controller.selectedOptionStress == "Yes"?  Dimens.d15.spaceHeight: const SizedBox(),
-*/
 
 
 /// ---- 1-----

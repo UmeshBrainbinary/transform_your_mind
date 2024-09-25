@@ -72,11 +72,9 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
   int selectedMinute = 0;
   int selectedSeconds = 0;
   List<bool> like = [];
-  bool _isScrolling = true;
   AffirmationController affirmationController = Get.put(AffirmationController());
   bool likeAnimation = false;
   AnimationController? _progressController;
-  Animation<double>? _progressAnimation;
   Timer? _autoScrollTimer;
 
   @override
@@ -97,7 +95,6 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
       });
     });
 
-    _progressAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(_progressController!);
     _startAutoScrollTimer();
     VolumeController().listener((volume) {
     });
@@ -124,14 +121,12 @@ class _StartPracticeAffirmationState extends State<StartPracticeAffirmation>
   }
   void _startScrolling() {
     setState(() {
-      _isScrolling = true;
     });
     _startAutoScrollTimer();
   }
 
   void _stopScrolling() {
     setState(() {
-      _isScrolling = false;
     });
   }
   @override
@@ -1040,7 +1035,8 @@ int index =0;
                           },
                         ),
                       ),
-                      Dimens.d20.spaceHeight,
+                      Dimens.d15.spaceHeight,
+
                       Row(
                         children: <Widget>[
                           SvgPicture.asset(
@@ -1075,6 +1071,9 @@ int index =0;
                           ),
                         ],
                       ),
+                      Dimens.d15.spaceHeight,
+
+
                     ],
                   ),
                 ),

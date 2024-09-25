@@ -16,10 +16,13 @@ import 'package:transform_your_mind/core/utils/extension_utils.dart';
 import 'package:transform_your_mind/core/utils/image_constant.dart';
 import 'package:transform_your_mind/core/utils/prefKeys.dart';
 import 'package:transform_your_mind/core/utils/style.dart';
+import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_controller.dart';
+import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_screen.dart';
 import 'package:transform_your_mind/presentation/me_screen/screens/setting_screen/Page/personalisations_screen/personalisations_controller.dart';
 import 'package:transform_your_mind/routes/app_routes.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
+import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 
 class PersonalizationScreenScreen extends StatefulWidget {
@@ -101,7 +104,6 @@ class _PersonalizationScreenScreenState
       debugPrint(e.toString());
     }
   }
-
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -136,213 +138,219 @@ class _PersonalizationScreenScreenState
                     title: "chooseLanguage".tr,
                     showBack: widget.intro! ? false : true,
                   ),
-                  body: SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 20, right: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          height > 820
-                              ? Dimens.d180.spaceHeight
-                              : Platform.isIOS
-                                  ? Dimens.d135.spaceHeight
-                                  : Dimens.d100.spaceHeight,
-                        Container(
-                          decoration:BoxDecoration(
-            image :DecorationImage(
-            image :AssetImage(ImageConstant.box),
-              fit: BoxFit.fill
-            )
-            ),
-                          alignment:Alignment.center,
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Dimens.d20.spaceHeight,
-                                Text(
-                                  checkInternetCheck
-                                      ? currentLanguage == 'en-US' ||
-                                      currentLanguage == ""
-                                      ? controller
-                                      .getScreenModel.data?.first.quote??""
-                                      : controller
-                                      .getScreenModel.data?.first.gQuote??""
-                                      : "".tr,
-                                  textAlign: TextAlign.center,
-                                  style: Style.nunitoSemiBold(
-                                      fontSize: 24, color: ColorConstant.white),
-                                ),
-                                Dimens.d40.spaceHeight,
-                                Align(
-                                    alignment: Alignment.topRight,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 30),
-                                      child: Text(
-                                        checkInternetCheck
-                                            ? currentLanguage == 'en-US' ||
-                                            currentLanguage == ""
-                                            ? controller.getScreenModel.data
-                                            ?.first.authorName ??
-                                            "":controller.getScreenModel.data?.first
-                                            .gAuthorName??""
-                                            : "Norman Vincent Peale",
-                                        style: Style.nunRegular(
-                                            fontSize: 14, color: ColorConstant.white),
-                                      ),
-                                    )),
+                  body: Stack(
+                    children: [
+                      SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 20, right: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              height > 820
+                                  ? Dimens.d180.spaceHeight
+                                  : Platform.isIOS
+                                      ? Dimens.d135.spaceHeight
+                                      : Dimens.d100.spaceHeight,
+                            Container(
+                              decoration:BoxDecoration(
+                                  image :DecorationImage(
+                                  image :AssetImage(ImageConstant.box),
+                                    fit: BoxFit.fill
+                                  )
+                                  ),
+                              alignment:Alignment.center,
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Dimens.d20.spaceHeight,
+                                    Text(
+                                      checkInternetCheck
+                                          ? currentLanguage == 'en-US' ||
+                                          currentLanguage == ""
+                                          ? controller
+                                          .getScreenModel.data?.first.quote??""
+                                          : controller
+                                          .getScreenModel.data?.first.gQuote??""
+                                          : "".tr,
+                                      textAlign: TextAlign.center,
+                                      style: Style.nunitoSemiBold(
+                                          fontSize: 24, color: ColorConstant.white),
+                                    ),
+                                    Dimens.d40.spaceHeight,
+                                    Align(
+                                        alignment: Alignment.topRight,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(right: 30),
+                                          child: Text(
+                                            checkInternetCheck
+                                                ? currentLanguage == 'en-US' ||
+                                                currentLanguage == ""
+                                                ? controller.getScreenModel.data
+                                                ?.first.authorName ??
+                                                "":controller.getScreenModel.data?.first
+                                                .gAuthorName??""
+                                                : "Norman Vincent Peale",
+                                            style: Style.nunRegular(
+                                                fontSize: 14, color: ColorConstant.white),
+                                          ),
+                                        )),
 
-                              ],
+                                  ],
+                                ),
+                              ),
                             ),
+                              Dimens.d100.spaceHeight,
+                              Obx(
+                                () => GestureDetector(
+                                  onTap: () async {
+                                    personalizationController.english.value = true;
+                                    personalizationController.german.value = false;
+                                    Locale newLocale;
+                                    newLocale = const Locale('en', 'US');
+
+                                    Get.updateLocale(newLocale);
+                                        await PrefService.setValue(
+                                            PrefKey.language,
+                                            newLocale.toLanguageTag());
+                                        setState(() {
+                                          currentLanguage =
+                                              PrefService.getString(
+                                                  PrefKey.language);
+                                        });
+
+                                    await updateUser(context);
+                                  },
+                                      child: Container(
+                                        height: 46,
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 17),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 22),
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(80),
+                                            color: themeController.isDarkMode.isTrue
+                                                ? ColorConstant.textfieldFillColor
+                                                : ColorConstant.white),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment
+                                              .spaceBetween,
+                                          children: [
+                                            Text(
+                                              "English",
+                                              style: Style.nunRegular(
+                                                  fontSize: Dimens.d16,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                            personalizationController.english.isTrue
+                                                ? SvgPicture.asset(
+                                              ImageConstant.select,
+                                              height: 16,
+                                              width: 16,
+                                            )
+                                                : SvgPicture.asset(
+                                              ImageConstant.unSelect,
+                                              height: 16,
+                                              width: 16,
+                                              color: themeController.isDarkMode
+                                                  .isTrue
+                                                  ? ColorConstant.white
+                                                  : Colors.black,
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                              ),
+                              Dimens.d25.spaceHeight,
+                              Obx(
+                                    () =>
+                                    GestureDetector(
+                                      onTap: () async {
+                                        personalizationController.german.value =
+                                        true;
+                                        personalizationController.english.value =
+                                        false;
+
+                                    Locale newLocale;
+
+                                    newLocale = const Locale('de', 'DE');
+
+                                    Get.updateLocale(newLocale);
+
+                                    await PrefService.setValue(
+                                            PrefKey.language,
+                                            newLocale.toLanguageTag());
+                                        setState(() {
+                                          currentLanguage =
+                                              PrefService.getString(
+                                                  PrefKey.language);
+                                        });
+                                    await updateUser(context);
+                                  },
+                                      child: Container(
+                                        height: 46,
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 17),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 22),
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(80),
+                                            color: themeController.isDarkMode.isTrue
+                                                ? ColorConstant.textfieldFillColor
+                                                : ColorConstant.white),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment
+                                              .spaceBetween,
+                                          children: [
+                                            Text(
+                                              "German",
+                                              style: Style.nunRegular(
+                                                  fontSize: Dimens.d16,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                            personalizationController.german.isTrue
+                                                ? SvgPicture.asset(
+                                              ImageConstant.select,
+                                              height: 16,
+                                              width: 16,
+                                            )
+                                                : SvgPicture.asset(
+                                              ImageConstant.unSelect,
+                                              height: 16,
+                                              width: 16,
+                                              color: themeController.isDarkMode
+                                                  .isTrue
+                                                  ? ColorConstant.white
+                                                  : Colors.black,
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                              ),
+                              Dimens.d70.spaceHeight,
+                              widget.intro!
+                                  ? Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              child: CommonElevatedButton(
+                                title: "continue".tr,
+                                onTap: () {
+                                  Get.toNamed(AppRoutes.introScreen);
+                                },
+                              ),
+                            )
+                                  : const SizedBox()
+                            ],
                           ),
                         ),
-                          Dimens.d100.spaceHeight,
-                          Obx(
-                            () => GestureDetector(
-                              onTap: () async {
-                                personalizationController.english.value = true;
-                                personalizationController.german.value = false;
-                                Locale newLocale;
-                                newLocale = const Locale('en', 'US');
-
-                                Get.updateLocale(newLocale);
-                                    await PrefService.setValue(
-                                        PrefKey.language,
-                                        newLocale.toLanguageTag());
-                                    setState(() {
-                                      currentLanguage =
-                                          PrefService.getString(
-                                              PrefKey.language);
-                                    });
-
-                                await updateUser(context);
-                              },
-                                  child: Container(
-                                    height: 46,
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 17),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 22),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(80),
-                                        color: themeController.isDarkMode.isTrue
-                                            ? ColorConstant.textfieldFillColor
-                                            : ColorConstant.white),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .spaceBetween,
-                                      children: [
-                                        Text(
-                                          "English",
-                                          style: Style.nunRegular(
-                                              fontSize: Dimens.d16,
-                                              fontWeight: FontWeight.w500),
-                                        ),
-                                        personalizationController.english.isTrue
-                                            ? SvgPicture.asset(
-                                          ImageConstant.select,
-                                          height: 16,
-                                          width: 16,
-                                        )
-                                            : SvgPicture.asset(
-                                          ImageConstant.unSelect,
-                                          height: 16,
-                                          width: 16,
-                                          color: themeController.isDarkMode
-                                              .isTrue
-                                              ? ColorConstant.white
-                                              : Colors.black,
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                          ),
-                          Dimens.d25.spaceHeight,
-                          Obx(
-                                () =>
-                                GestureDetector(
-                                  onTap: () async {
-                                    personalizationController.german.value =
-                                    true;
-                                    personalizationController.english.value =
-                                    false;
-
-                                Locale newLocale;
-
-                                newLocale = const Locale('de', 'DE');
-
-                                Get.updateLocale(newLocale);
-
-                                await PrefService.setValue(
-                                        PrefKey.language,
-                                        newLocale.toLanguageTag());
-                                    setState(() {
-                                      currentLanguage =
-                                          PrefService.getString(
-                                              PrefKey.language);
-                                    });
-                                await updateUser(context);
-                              },
-                                  child: Container(
-                                    height: 46,
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 17),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 22),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(80),
-                                        color: themeController.isDarkMode.isTrue
-                                            ? ColorConstant.textfieldFillColor
-                                            : ColorConstant.white),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .spaceBetween,
-                                      children: [
-                                        Text(
-                                          "German",
-                                          style: Style.nunRegular(
-                                              fontSize: Dimens.d16,
-                                              fontWeight: FontWeight.w500),
-                                        ),
-                                        personalizationController.german.isTrue
-                                            ? SvgPicture.asset(
-                                          ImageConstant.select,
-                                          height: 16,
-                                          width: 16,
-                                        )
-                                            : SvgPicture.asset(
-                                          ImageConstant.unSelect,
-                                          height: 16,
-                                          width: 16,
-                                          color: themeController.isDarkMode
-                                              .isTrue
-                                              ? ColorConstant.white
-                                              : Colors.black,
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                          ),
-                          Dimens.d70.spaceHeight,
-                          widget.intro!
-                              ? Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: CommonElevatedButton(
-                            title: "continue".tr,
-                            onTap: () {
-                              Get.toNamed(AppRoutes.introScreen);
-                            },
-                          ),
-                        )
-                              : const SizedBox()
-                        ],
                       ),
-                    ),
+
+
+                    ],
                   ),
                 ),
               ],

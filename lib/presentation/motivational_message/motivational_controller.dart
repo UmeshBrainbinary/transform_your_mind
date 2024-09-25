@@ -136,31 +136,7 @@ class MotivationalController extends GetxController {
     {"title": "None", "audio": ""},
     {"title": "Rk","audio":ImageConstant.bgAudio1},
     {"title": "Mk","audio":ImageConstant.bgAudio2},
-    // {
-    //   "title": "Rk",
-    //   "audio":
-    //       "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3"
-    // },
-    // {
-    //   "title": "Mk",
-    //   "audio":
-    //       "https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/theme_01.mp3"
-    // },
-    // {
-    //   "title": "Fk",
-    //   "audio":
-    //       "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3"
-    // },
-    // {
-    //   "title": "Gk",
-    //   "audio":
-    //       "https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/theme_01.mp3"
-    // },
-    // {
-    //   "title": "Yk",
-    //   "audio":
-    //       "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3"
-    // },
+
   ];
 
   List<String> themeList = [
@@ -171,18 +147,14 @@ class MotivationalController extends GetxController {
     ImageConstant.image5,
     ImageConstant.image6,
     ImageConstant.image7,
-    // "https://i.pinimg.com/736x/45/ce/29/45ce2986d79fc7cd05014bd522a88834.jpg",
-    // "https://images.unsplash.com/photo-1547483238-2cbf881a559f?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXw1MDI3OTF8fGVufDB8fHx8fA%3D%3D",
-    // "https://w0.peakpx.com/wallpaper/233/89/HD-wallpaper-blue-sky-beautiful-clouds-life-love-nature-stars-sunset.jpg",
-    // "https://1.bp.blogspot.com/-4iulinQP-Bo/YOBwMdwSlII/AAAAAAAAQmk/wfv9P_KGa7MKzC-7MEc7TGHhqD6jg0mtgCLcBGAsYHQ/s0/V1-SIMPLE-LANDSCAPE-HD.png"
   ];
 
   ///___________________ audio service Common File ________-
-  final AudioPlayer _audioPlayer = AudioPlayer();
-  final Rx<Duration?> _position = Duration.zero.obs;
-  final Rx<Duration?> _duration = Duration.zero.obs;
-  final RxBool _isPlaying = false.obs;
-  final RxBool _isVisible = false.obs;
+   AudioPlayer _audioPlayer = AudioPlayer();
+   Rx<Duration?> _position = Duration.zero.obs;
+   Rx<Duration?> _duration = Duration.zero.obs;
+   RxBool _isPlaying = false.obs;
+   RxBool _isVisible = false.obs;
 
   AudioPlayer get audioPlayer => _audioPlayer;
 
@@ -194,15 +166,7 @@ class MotivationalController extends GetxController {
 
   RxBool get isVisible => _isVisible;
 
-  Future<void> setUrl(String url,
-      {String? name,
-      String? expertName,
-      String? description,
-      String? img}) async {
-    update();
 
-    await _audioPlayer.setAsset(url);
-  }
 
   Future<void> play() async {
     _isVisible.value = true;
@@ -212,5 +176,7 @@ class MotivationalController extends GetxController {
 
   Future<void> pause() async {
     await _audioPlayer.pause();
+    update();
+
   }
 }

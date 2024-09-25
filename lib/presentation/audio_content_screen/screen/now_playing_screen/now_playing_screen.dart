@@ -66,6 +66,11 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
   //____________________________________ playing controller ___________________________//
   @override
   void initState() {
+    if (PrefService.getString(PrefKey.language) == "") {
+      setState(() {
+        currentLanguage = "en-US";
+      });
+    }
     super.initState();
 
     setUrlPlaying();
@@ -201,7 +206,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen>
                 /// background image
                 Align(
                   alignment: Alignment.bottomCenter,
-                  child: CommonLoadImage(
+                  child: CommonLoadImageNow(
                     url: widget.audioData?.image ?? '',
                     height: Get.height,
                     width: Get.width,

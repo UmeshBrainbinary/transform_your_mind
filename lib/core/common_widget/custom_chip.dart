@@ -41,7 +41,7 @@ class _CustomChipState extends State<CustomChip> {
       child: AnimatedContainer(
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(Dimens.d80)),
-          gradient:themeController.isDarkMode.isTrue?LinearGradient(
+          gradient:themeController.isDarkMode.isTrue?const LinearGradient(
             begin: Alignment.bottomLeft,
             end: Alignment.topRight,
             colors: [

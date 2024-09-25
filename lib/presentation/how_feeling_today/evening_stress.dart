@@ -30,7 +30,7 @@ class EveningStress extends StatelessWidget {
           ? ColorConstant.darkBackground
           : ColorConstant.backGround,
       appBar: CustomAppBar(
-        title: "${"Good evening".tr}, ${PrefService.getString(PrefKey.name)}",
+        title: "${"goodEvening".tr}, ${PrefService.getString(PrefKey.name)}",
         action: Row(
           children: [
             InkWell(

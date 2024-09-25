@@ -128,6 +128,7 @@
   "welcomeToJournal": "Welcome To Journal",
   "gratitude": "Gratitude",
   "affirmation": "Affirmation",
+  "SelectAffirmation": "Select Affirmation",
   "dailyJournal": "Daily Journal",
   "home": "Home",
   "transformRituals": "Transform Rituals",
@@ -321,8 +322,8 @@
       "ratingsAdded": "The rating has been added successfully.",
       "alreadyRated": "You have already rated this pod",
       "selectPlan": "Select plan",
-      "purchase": "Purchase",
-      "cancelSub": "cancel subscription",
+      "purchase": "Start your well-being week",
+  "cancelSub": "Cancel subscription",
       "startPracticing": "Start practicing",
       "dataNotFound": "Not found",
       "addPositiveMoments": "Add positive moments",
@@ -344,7 +345,7 @@
       "AlarmSuccessfully": "Alarm updated successfully",
       "positiveUpdated": "Positive moment updated successfully",
       "areYouSureDeleteAlarm": "Are you sure you want to delete this alarm?",
-      "alarmSet": "Alarm created successfully!",
+      "alarmSet": "Wake-up call created successfully!",
       "alarmAlreadySet": "Alarm already set on this affirmation.",
       "discountsSub": "We are giving discounts based on the plan user has selected. 3 days free trial available on every plan. you can cancel your subscription at any time.",
       "subscribeNow": "Subscribe now and receive a 3-day free trial to access all the features of TransformYourMind",
@@ -627,7 +628,7 @@
     "youCanNotSet": "You cannot set the current password as the new password.",
     "pleaseAddPositiveMoment": "Please add your positive moments",
   "StartWithExercise": "So, let`s start with a little exercise: Breath - then enjoy your daily routine to transform to your best life",
-"Record": "Record",
+  "Record": "Start Recording",
   "Stop": "Stop",
   "Test recording": "Test recording",
   "Record affirmation": "Record affirmation",
@@ -821,59 +822,15 @@
   "gratitudeIsAPowerful": "Gratitude is a powerful tool to transform your life. Feel gratitude for what you want as if it were already there.\n\n",
   "example": "• Example: ",
   "iAmGrateful": "I am grateful for my health, which strengthens me every day.\n\n",
-  "practiceGratitude": "• Practice gratitude daily and attract positive change.\n\n"
+  "practiceGratitude": "• Practice gratitude daily and attract positive change.\n\n",
+  "Feel your gratitude": "Feel your gratitude",
+  "Feel your affirmation": "Feel your affirmation",
+  "updateSubscription": "Update Subscription",
+  "Still empty here": "Still empty here",
+  "Alram is ringing": "“Your gentle wake-up call into the day...”",
+  "WouldYouLikeMoreG": "Would you like to add more gratitudes?",
+  "Thank you for subscribing": "Thank you for subscribing!",
+  "YourTransactionSuccess": "Your transaction was successful and your subscription plan is active now.",
+
+  "Secured by the App Store. Can be canceled at any time": "Secured by the App Store. Can be canceled \nat any time."
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

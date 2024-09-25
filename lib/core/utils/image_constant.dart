@@ -206,6 +206,7 @@ class ImageConstant {
   static String downArrowSetting = "$iconPath/down_arrow_setting.svg";
   static String filterPositive = "$iconPath/filter_positive_moment.svg";
   static String subscriptionCheck = "$iconPath/subscription_check.svg";
+  static String checkSubSub= "$iconPath/checkSubScription.svg";
   static String noData = "$iconPath/search_dark.svg";
   static String darkData = "$iconPath/search_dark.svg";
   static String breathPause = "$iconPath/breath_pause.svg";
@@ -245,6 +246,7 @@ class ImageConstant {
   static String chooseLanguages = "$imagePath/choose_langauge.png";
   static String homeBack = "$imagePath/home_back.png";
   static String splashBack = "$imagePath/share_background.png";
+  static String transformNLogo = "$iconPath/transformNLogo.png";
   static String logoSplashNew = "$iconPath/logoTransform.png";
   static String logoSplash = "$iconPath/logo_splash.png";
   static String logoSplashRemoved = "$iconPath/logo_splash_removed.png";
@@ -269,6 +271,7 @@ class ImageConstant {
   static String sub = "$imagePath/sub.png";
   static String star = "$imagePath/star.png";
   static String alert = "$imagePath/alert.png";
+  static String secure = "$iconPath/secure.svg";
 
 
 

@@ -81,7 +81,7 @@ class _LoginPreviewViewState extends State<LoginPreviewView> {
                       decoration: BoxDecoration(
                         color: ColorConstant.themeColor,
                           borderRadius: BorderRadius.circular(2)),
-                      child: Center(child: Icon(Icons.check,color: Colors.white, size: 15,)),
+                      child: const Center(child: Icon(Icons.check,color: Colors.white, size: 15,)),
                     ):Container(
                       height: 18,
                       width: 18,

@@ -22,7 +22,25 @@ class AudioContentController extends GetxController {
     checkInternet();
     super.onInit();
   }
-
+   List<String> categories = [
+  "Technology",
+  "Health",
+  "Sports",
+  "Education",
+  "Entertainment",
+  "Food",
+  "Travel",
+  "Science"
+  ];
+  List<String> selectedCategories = [];
+  void toggleCategorySelection(String category) {
+    if (selectedCategories.contains(category)) {
+      selectedCategories.remove(category);
+    } else {
+      selectedCategories.add(category);
+    }
+    update(); // Notifies GetBuilder to update the UI
+  }
   checkInternet() async {
     if (await isConnected()) {
       getPodsData();
@@ -114,8 +132,9 @@ class AudioContentController extends GetxController {
       loader.value = false;
       debugPrint(e.toString());
     }
-    update(['update']);
     update();
+    update(['update']);
+
   }
 
   Future<void> getRate() async {

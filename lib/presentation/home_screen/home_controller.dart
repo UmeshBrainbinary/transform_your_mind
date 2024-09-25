@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -78,7 +79,7 @@ class HomeController extends GetxController {
 
         getPodsModel = getPodsModelFromJson(responseBody);
         audioData.value = getPodsModel.data ?? [];
-        for(int i = 0;i<audioData.length;i++){
+        for(int i = 0;i< audioData.length && i < 5;i++){
           await _audioPlayer.setUrl(audioData[i].audioFile!);
           final duration = await _audioPlayer.load();
           audioListDuration.add(duration);
@@ -103,6 +104,7 @@ class HomeController extends GetxController {
     loader.value = false;
 
     update();
+    update(["update"]);
     update(["home"]);
 
   }
@@ -128,7 +130,7 @@ class HomeController extends GetxController {
 
         selfHypnoticModel = selfHypnoticModelFromJson(responseBody);
         audioDataSelfHypnotic.value = selfHypnoticModel.data ?? [];
-        for(int i = 0;i<audioDataSelfHypnotic.length;i++){
+        for(int i = 0;i<audioDataSelfHypnotic.length&& i < 5;i++){
           await _audioPlayer.setUrl(audioDataSelfHypnotic[i].audioFile!);
           final duration = await _audioPlayer.load();
           audioListDurationSelf.add(duration);
@@ -294,6 +296,7 @@ class HomeController extends GetxController {
           print(e);
         }
       }
+      update();
       update(["home"]);
     } else {
       debugPrint(response.reasonPhrase);
@@ -349,20 +352,20 @@ totalDuration =Duration.zero;
 
           futures.add(Future<void>(() async {
             // Await before creating and setting the AudioPlayer
-            final audioPlayer = await AudioPlayer();
+            final audioPlayer = AudioPlayer();
             final duration = await audioPlayer.setUrl(Uri.parse(e.audioFile!).toString()).then((_) {
               return audioPlayer.duration;  // Fetch duration after setting the URL
             });
 
             if (duration != null) {
               totalDuration += duration;
-              print(totalDuration.toString() +"{{{{{{{{{{{{{");// Add the audio source to the playlist
+              debugPrint("$totalDuration{{{{{{{{{{{{{");// Add the audio source to the playlist
             }
           }).catchError((e) {
             if (e is SocketException) {
-              print('Network issue while accessing: $e');
+              debugPrint('Network issue while accessing: $e');
             } else {
-              print('Error fetching duration for: $e');
+              debugPrint('Error fetching duration for: $e');
             }
           }));
 

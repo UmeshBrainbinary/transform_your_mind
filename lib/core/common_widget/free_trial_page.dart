@@ -111,9 +111,7 @@ getUSer(context, greeting);
                 Stack(
                   alignment:Alignment.topCenter,
                   children: [
-                    Container(
-                      child: Image.asset(ImageConstant.sub,),
-                    ),
+                    Image.asset(ImageConstant.sub,),
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Padding(
@@ -1065,7 +1063,7 @@ getUSer(context, greeting);
                                   color: Colors.black
                               ),),
                             ),
-                            SizedBox(width: 6),
+                            const SizedBox(width: 6),
                             Text( "What to expect:".tr,
                               style: Style.nunMedium(
                                   fontSize: Dimens.d14, fontWeight: FontWeight.w700,color: Colors.black

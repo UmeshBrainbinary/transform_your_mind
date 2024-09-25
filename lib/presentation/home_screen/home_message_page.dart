@@ -31,7 +31,6 @@ class HomeMessagePage extends StatefulWidget {
 }
 
 class _HomeMessagePageState extends State<HomeMessagePage> {
-  bool _isBookmarked = false;
   ScreenshotController screenshotController = ScreenshotController();
   ThemeController themeController = Get.find<ThemeController>();
   @override

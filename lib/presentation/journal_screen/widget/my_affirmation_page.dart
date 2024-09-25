@@ -27,6 +27,8 @@ import 'package:transform_your_mind/model_class/affirmation_list_all.dart';
 import 'package:transform_your_mind/model_class/affirmation_model.dart';
 import 'package:transform_your_mind/model_class/alarm_model.dart';
 import 'package:transform_your_mind/model_class/common_model.dart';
+import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_controller.dart';
+import 'package:transform_your_mind/presentation/audio_content_screen/screen/now_playing_screen/now_playing_screen.dart';
 import 'package:transform_your_mind/presentation/home_screen/home_message_page.dart';
 import 'package:transform_your_mind/presentation/journal_screen/journal_controller.dart';
 import 'package:transform_your_mind/presentation/journal_screen/widget/add_affirmation_page.dart';
@@ -34,6 +36,7 @@ import 'package:transform_your_mind/presentation/start_audio_affirmation/start_a
 import 'package:transform_your_mind/presentation/start_pratice_affirmation/start_pratice_affirmation.dart';
 import 'package:transform_your_mind/theme/theme_controller.dart';
 import 'package:transform_your_mind/widgets/common_elevated_button.dart';
+import 'package:transform_your_mind/widgets/common_load_image.dart';
 import 'package:transform_your_mind/widgets/common_text_field.dart';
 import 'package:transform_your_mind/widgets/custom_appbar.dart';
 import 'package:transform_your_mind/widgets/divider.dart';
@@ -106,7 +109,11 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
 
   @override
   void initState() {
-    currentLanguage = PrefService.getString(PrefKey.language);
+    if (PrefService.getString(PrefKey.language) == "") {
+      setState(() {
+        currentLanguage = "en-US";
+      });
+    }
     DateTime lastMonth = DateTime(now.year, now.month - 1, 1);
     lastMonthName = DateFormat('MMMM yyyy').format(lastMonth);
     checkInternet();
@@ -234,15 +241,12 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
 
           futures.add(Future<void>(() async {
             // Await before creating and setting the AudioPlayer
-            final audioPlayer = await AudioPlayer();
+            final audioPlayer = AudioPlayer();
             final duration = await audioPlayer.setUrl(Uri.parse(e.audioFile!).toString()).then((_) {
               return audioPlayer.duration!;  // Fetch duration after setting the URL
             });
 
-            if (duration != null) {
-              totalDuration += duration;
-              print(totalDuration.toString() +"{{{{{{{{{{{{{");// Add the audio source to the playlist
-            }
+            totalDuration += duration;
           }).catchError((e) {
             if (e is SocketException) {
               print('Network issue while accessing: $e');
@@ -386,6 +390,8 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   }
 
   getCategoryListAffirmation() async {
+    _filteredBookmarks = [];
+
     setState(() {
       loader = true;
     });
@@ -395,7 +401,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
     var request = http.Request(
         'GET',
         Uri.parse(
-            '${EndPoints.baseUrl}${EndPoints.categoryAffirmation}${selectedCategory.value["title"]}&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"} '));
+            '${EndPoints.baseUrl}${EndPoints.categoryAffirmation}${selectedCategory.value["title"]}&lang=${PrefService.getString(PrefKey.language).isEmpty ? "english" : PrefService.getString(PrefKey.language) != "en-US" ? "german" : "english"}'));
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
@@ -445,7 +451,11 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
       affirmationCategoryModel = affirmationCategoryModelFromJson(responseBody);
       categoryList.add({"title": "All"});
       for (int i = 0; i < affirmationCategoryModel.data!.length; i++) {
-        categoryList.add({"title": affirmationCategoryModel.data![i].name});
+        if (currentLanguage == "en-US") {
+          categoryList.add({"title": affirmationCategoryModel.data![i].name});
+        } else {
+          categoryList.add({"title": affirmationCategoryModel.data![i].gName});
+        }
       }
       if(isInit == false) {
         loader = false;
@@ -467,6 +477,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
   }
 
   getAffirmationData({required bool isInit}) async {
+    _filteredBookmarks = [];
     setState(() {
       if(isInit == false) {
         loader = true;
@@ -628,37 +639,61 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
         identify: "Add Tools Icon",
         keyTarget: _addToolsKey,
         alignSkip: Alignment.bottomRight,
+        color: const Color(0xff1C272D),
         contents: [
           TargetContent(
             align: ContentAlign.bottom, // Adjust based on your preference
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                RichText(
-
-                  text:  TextSpan(
-                    text: "gratitudeMessageAffirmation".tr,
-                    style: const TextStyle(fontSize: 26, color:  Colors.white, fontWeight: FontWeight.w900,
-                      fontFamily: "Nunito-Regular",), // Highlighted text
-                    children:  <TextSpan>[
-                      const TextSpan(
-                        text: '1. ',
-                        style: TextStyle(fontSize: 20, color:  Colors.white,      fontFamily: "Nunito-Regular",), // Highlighted text
-                      ),
-                      TextSpan(
-                        text: "gratitudeIsAPowerfulAffirmation".tr,
-                        style: const TextStyle(fontSize: 20, color:  Colors.white,      fontFamily: "Nunito-Regular",), // Highlighted text
-                      ),
-                      TextSpan(
-                        text: 'example'.tr,
-                        style: const TextStyle(fontSize: 20, color:  Colors.white,      fontFamily: "Nunito-Regular",), // Highlighted text
-                      ),
-                      TextSpan(
-                        text: 'iAmGratefulAffirmation'.tr,
-                        style: const TextStyle(fontSize: 20, color:  Colors.white,      fontFamily: "Nunito-Regular",), // Highlighted text
-                      ),
-
-                    ],
+                Container(
+                  padding: const EdgeInsets.all(17),
+                  decoration: BoxDecoration(
+                      color: Color(0xff678B94),
+                      borderRadius: BorderRadius.circular(14)),
+                  child: RichText(
+                    text: TextSpan(
+                      text: "gratitudeMessageAffirmation".tr,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w900,
+                        fontFamily: "Nunito-Regular",
+                      ), // Highlighted text
+                      children: <TextSpan>[
+                        const TextSpan(
+                          text: '1. ',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontFamily: "Nunito-Regular",
+                          ), // Highlighted text
+                        ),
+                        TextSpan(
+                          text: "gratitudeIsAPowerfulAffirmation".tr,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontFamily: "Nunito-Regular",
+                          ), // Highlighted text
+                        ),
+                        TextSpan(
+                          text: 'example'.tr,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontFamily: "Nunito-Regular",
+                          ), // Highlighted text
+                        ),
+                        TextSpan(
+                          text: 'iAmGratefulAffirmation'.tr,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontFamily: "Nunito-Regular",
+                          ), // Highlighted text
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -678,6 +713,8 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
       opacityShadow: 0.8,
     ).show(context: context);
   }
+
+  final audioPlayerController = Get.find<NowPlayingController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -783,9 +820,11 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                       : ColorConstant.transparent),
                               child: Center(
                                 child: Text(
-                                  "addYourAffirmation".tr,
+                                  "yourAffirmation".tr,
                                   style: Style.nunRegular(
-                                      fontSize: Dimens.d14,
+                                      fontSize: currentLanguage == "en-US"
+                                          ? Dimens.d14
+                                          : Dimens.d12,
                                       color: _currentTabIndex == 0
                                           ? ColorConstant.white
                                           : themeController.isDarkMode.value
@@ -806,7 +845,7 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                             },
                             child: Container(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: Dimens.d40),
+                                  horizontal: Dimens.d20),
                               height: Dimens.d38,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(33),
@@ -822,9 +861,11 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                       : ColorConstant.transparent),
                               child: Center(
                                 child: Text(
-                                  "affirmation".tr,
+                                  "SelectAffirmation".tr,
                                   style: Style.nunRegular(
-                                      fontSize: Dimens.d14,
+                                      fontSize: currentLanguage == "en-US"
+                                          ? Dimens.d14
+                                          : Dimens.d11,
                                       color: _currentTabIndex == 1
                                           ? ColorConstant.white
                                           : themeController.isDarkMode.value
@@ -846,7 +887,144 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
               ],
             ),
           ),
-          loader == true ? commonLoader() : const SizedBox()
+          loader == true ? commonLoader() : const SizedBox(),
+          Obx(() {
+            if (!audioPlayerController.isVisible.value) {
+              return const SizedBox.shrink();
+            }
+
+            final currentPosition =
+                audioPlayerController.positionStream.value ?? Duration.zero;
+            final duration =
+                audioPlayerController.durationStream.value ?? Duration.zero;
+            final isPlaying = audioPlayerController.isPlaying.value;
+
+            return GestureDetector(
+              onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(
+                        Dimens.d24,
+                      ),
+                    ),
+                  ),
+                  builder: (BuildContext context) {
+                    return NowPlayingScreen(
+                      audioData: audioDataStore!,
+                    );
+                  },
+                );
+              },
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  height: 72,
+                  width: Get.width,
+                  padding: const EdgeInsets.only(top: 8.0, left: 8, right: 8),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 50),
+                  decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [
+                          ColorConstant.colorB9CCD0,
+                          ColorConstant.color86A6AE,
+                          ColorConstant.color86A6AE,
+                        ], // Your gradient colors
+                        begin: Alignment.bottomLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      color: ColorConstant.themeColor,
+                      borderRadius: BorderRadius.circular(6)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          CommonLoadImage(
+                              borderRadius: 6.0,
+                              url: audioDataStore!.image!,
+                              width: 47,
+                              height: 47),
+                          Dimens.d12.spaceWidth,
+                          GestureDetector(
+                              onTap: () async {
+                                if (isPlaying) {
+                                  await audioPlayerController.pause();
+                                } else {
+                                  await audioPlayerController.play();
+                                }
+                              },
+                              child: SvgPicture.asset(
+                                isPlaying
+                                    ? ImageConstant.pause
+                                    : ImageConstant.play,
+                                height: 17,
+                                width: 17,
+                              )),
+                          Dimens.d10.spaceWidth,
+                          Expanded(
+                            child: Text(
+                              audioDataStore!.name!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Style.nunRegular(
+                                  fontSize: 12, color: ColorConstant.white),
+                            ),
+                          ),
+                          Dimens.d10.spaceWidth,
+                          GestureDetector(
+                              onTap: () async {
+                                await audioPlayerController.reset();
+                              },
+                              child: SvgPicture.asset(
+                                ImageConstant.closePlayer,
+                                color: ColorConstant.white,
+                                height: 24,
+                                width: 24,
+                              )),
+                          Dimens.d10.spaceWidth,
+                        ],
+                      ),
+                      Dimens.d8.spaceHeight,
+                      SliderTheme(
+                        data: SliderTheme.of(context).copyWith(
+                          activeTrackColor:
+                              ColorConstant.white.withOpacity(0.2),
+                          inactiveTrackColor: ColorConstant.color6E949D,
+                          trackHeight: 1.5,
+                          thumbColor: ColorConstant.transparent,
+                          thumbShape: SliderComponentShape.noThumb,
+                          overlayColor: ColorConstant.backGround.withAlpha(32),
+                          overlayShape: const RoundSliderOverlayShape(
+                              overlayRadius:
+                                  16.0), // Customize the overlay shape and size
+                        ),
+                        child: SizedBox(
+                          height: 2,
+                          child: Slider(
+                            thumbColor: Colors.transparent,
+                            activeColor: ColorConstant.backGround,
+                            value: currentPosition.inMilliseconds.toDouble(),
+                            max: duration.inMilliseconds.toDouble(),
+                            onChanged: (value) {
+                              audioPlayerController.seekForMeditationAudio(
+                                  position:
+                                      Duration(milliseconds: value.toInt()));
+                            },
+                          ),
+                        ),
+                      ),
+                      Dimens.d5.spaceHeight,
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }),
         ],
       ),
     );
@@ -882,10 +1060,10 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
               child: Padding(
                 padding: const EdgeInsets.only(top: 15),
                 child: Text(
-                  "dataNotFound".tr,
-                  style: Style.gothamMedium(
-                      fontSize: 24, fontWeight: FontWeight.w700),
-                ),
+                          "Still empty here".tr,
+                          style: Style.gothamMedium(
+                              fontSize: 24, fontWeight: FontWeight.w700),
+                        ),
               ),
             ) else ListView.builder(
               itemCount: affirmationModel.data?.length ?? 0,
@@ -1587,10 +1765,10 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
             )
                 : Center(
               child: Text(
-                "dataNotFound".tr,
-                style: Style.gothamMedium(
-                    fontSize: 24, fontWeight: FontWeight.w700),
-              ),
+                          "Still empty here".tr,
+                          style: Style.gothamMedium(
+                              fontSize: 24, fontWeight: FontWeight.w700),
+                        ),
             )
                 : ListView.builder(
               itemCount: affirmationAllData?.length ?? 0,
@@ -1798,9 +1976,10 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                             MainAxisAlignment.spaceBetween,
                             children: [
                               Expanded(
-                                child: Text(
-                                  _filteredBookmarks![index]
-                                      .description ??
+                                            child: currentLanguage == "en-US"
+                                                ? Text(
+                                                    _filteredBookmarks![index]
+                                                            .description ??
                                       '',
                                   style: Style.nunRegular(
                                       height: Dimens.d2,
@@ -1812,7 +1991,25 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                                       .copyWith(
                                       wordSpacing: Dimens.d4),
                                   maxLines: 4,
-                                ),
+                                                  )
+                                                : Text(
+                                                    _filteredBookmarks![index]
+                                                        .gDescription,
+                                                    style: Style.nunRegular(
+                                                            height: Dimens.d2,
+                                                            fontSize:
+                                                                Dimens.d15,
+                                                            color: themeController
+                                                                    .isDarkMode
+                                                                    .isTrue
+                                                                ? ColorConstant
+                                                                    .white
+                                                                : Colors.black)
+                                                        .copyWith(
+                                                            wordSpacing:
+                                                                Dimens.d4),
+                                                    maxLines: 4,
+                                                  ),
                               ),
                               GestureDetector(
                                 onTap: () async {
@@ -1911,9 +2108,14 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                           ),
                           Dimens.d10.spaceHeight,
                           Text(
-                            _filteredBookmarks![index].description ?? '',
-                            style: Style.nunRegular(
-                                height: Dimens.d2,
+                                        currentLanguage == "en-US"
+                                            ? _filteredBookmarks![index]
+                                                    .description ??
+                                                ''
+                                            : _filteredBookmarks![index]
+                                                .gDescription,
+                                        style: Style.nunRegular(
+                                                height: Dimens.d2,
                                 fontSize: Dimens.d11,
                                 color:
                                 themeController.isDarkMode.isTrue
@@ -1937,11 +2139,13 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
                     SvgPicture.asset(themeController.isDarkMode.isTrue
                         ? ImageConstant.darkData
                         : ImageConstant.noData),
-                    Text("dataNotFound".tr,style: Style.gothamMedium(
-                        fontSize: 24,fontWeight: FontWeight.w700),),
-
-                  ],
-                ),
+                          Text(
+                            "Still empty here".tr,
+                            style: Style.gothamMedium(
+                                fontSize: 24, fontWeight: FontWeight.w700),
+                          ),
+                        ],
+                      ),
               ),
             ),
           ],
@@ -2185,11 +2389,6 @@ class _MyAffirmationPageState extends State<MyAffirmationPage>
         Style.nunMedium(fontSize: 15, color: Colors.black);
         TextStyle editedTextStyle = customTextStyle.copyWith(
             color: Colors.red); // Define the edited text style
-        TextStyle selectedDateTextStyle = Style.nunitoBold(
-            fontSize: 15,
-            color: themeController.isDarkMode.isTrue
-                ? Colors.white
-                : Colors.black); // Define the style for the selected date
 
         return Theme(
           data: ThemeData.light().copyWith(
