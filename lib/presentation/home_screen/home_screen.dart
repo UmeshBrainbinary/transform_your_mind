@@ -39,6 +39,7 @@ import 'package:transform_your_mind/presentation/motivational_message/motivation
 import 'package:transform_your_mind/presentation/positive_moment/positive_controller.dart';
 import 'package:transform_your_mind/presentation/positive_moment/positive_screen.dart';
 import 'package:transform_your_mind/presentation/search_screen/search_screen.dart';
+import 'package:transform_your_mind/presentation/self_hypnotic/self_hypnotic.dart';
 import 'package:transform_your_mind/presentation/start_audio_affirmation/start_audio_affirmation_screen.dart';
 import 'package:transform_your_mind/presentation/start_practcing_screen/start_pratice_controller.dart';
 import 'package:transform_your_mind/presentation/start_practcing_screen/start_pratice_screen.dart';
@@ -441,6 +442,124 @@ class _HomeScreenState extends State<HomeScreen>
                                         },
                                       ),
                                     ),
+
+                              (g.selfHypnoticModel.data??[]).isEmpty?const SizedBox():Dimens.d30.spaceHeight,
+                              //___________________________________________ selfhypnosis _____________________
+
+
+                              (g.selfHypnoticModel.data??[]).isEmpty?const SizedBox():Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: Dimens.d20),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "selfHypnotic".tr,
+                                      textAlign: TextAlign.center,
+                                      style: Style.nunitoBold(fontSize: Dimens.d22),
+                                    ),
+                                    const Spacer(),
+                                    GestureDetector(onTap: () {
+                                      Get.to(()=>const SelfHypnotic());
+
+                                    },
+                                      child: Text(
+                                        "seeAll".tr,
+                                        style: Style.gothamLight(
+                                            color:
+                                            ColorConstant.color5A7681,
+                                            fontSize: 12),
+                                      ),
+                                    ),
+                                    Dimens.d4.spaceWidth,
+                                    SvgPicture.asset(ImageConstant.seeAll)
+                                  ],
+                                ),
+                              ),
+                              (g.selfHypnoticModel.data??[]).isEmpty?const SizedBox(): Dimens.d20.spaceHeight,
+                              (g.selfHypnoticModel.data??[]).isEmpty?const SizedBox():selfHypnotic(),
+                              (g.selfHypnoticModel.data??[]).isEmpty? const SizedBox()
+                                  : Dimens.d40.spaceHeight,
+                              (g.selfHypnoticModel.data??[]).isEmpty?const SizedBox()
+                                  : Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: Dimens.d20),
+                                child: Row(children: [
+                                  Text(
+                                    "positiveMomentH".tr,
+                                    textAlign: TextAlign.center,
+                                    style: Style.nunitoBold(
+                                        fontSize: Dimens.d22),
+                                  ),
+                                  const Spacer(),
+                                  GestureDetector(
+                                      onTap: () {
+
+                                        if (PrefService.getBool(
+                                            PrefKey.isSubscribed) ==
+                                            false) {
+                                          Navigator.push(context,
+                                              MaterialPageRoute(
+                                                builder: (context) {
+                                                  return SubscriptionScreen(
+                                                    skip: false,
+                                                  );
+                                                },
+                                              ));
+                                        }
+                                        else {
+                                          Navigator.push(context,
+                                              MaterialPageRoute(
+                                                builder: (context) {
+                                                  return const PositiveScreen();
+                                                },
+                                              )).then(
+                                                (value) {
+                                              if (themeController
+                                                  .isDarkMode.isTrue) {
+                                                SystemChrome
+                                                    .setSystemUIOverlayStyle(
+                                                    const SystemUiOverlayStyle(
+                                                      statusBarBrightness:
+                                                      Brightness.dark,
+                                                      statusBarIconBrightness:
+                                                      Brightness.light,
+                                                    ));
+                                              } else {
+                                                SystemChrome
+                                                    .setSystemUIOverlayStyle(
+                                                    const SystemUiOverlayStyle(
+                                                      statusBarBrightness:
+                                                      Brightness.light,
+                                                      statusBarIconBrightness:
+                                                      Brightness.dark,
+                                                    ));
+                                              }
+                                              Future.delayed(const Duration(
+                                                  seconds: 1))
+                                                  .then(
+                                                    (value) {
+                                                  setState(() {});
+                                                },
+                                              );
+                                            },
+                                          );
+                                        }
+
+                                      },
+                                      child: Text(
+                                        "seeAll".tr,
+                                        style: Style.gothamLight(
+                                            color:
+                                            ColorConstant.color5A7681,
+                                            fontSize: 12),
+                                      )),
+                                  Dimens.d4.spaceWidth,
+                                  SvgPicture.asset(ImageConstant.seeAll)
+                                ]),
+                              ),
+                              (g.selfHypnoticModel.data??[]).isEmpty?
+                                   const SizedBox()
+                                  : Dimens.d24.spaceHeight,
 
                               Dimens.d30.spaceHeight,
                               //___________________________________________ recommendation _____________________

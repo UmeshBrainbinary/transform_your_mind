@@ -363,7 +363,7 @@ final audioPlayerController = Get.find<NowPlayingController>();
             _stopRecording();
             Get.back();
           },
-          title: widget.isEdit! ? "editAffirmation".tr : widget.isFromMyAffirmation && (widget.record ?? false)? "Record affirmation":"addAffirmation".tr,
+          title: widget.isEdit! ? "editAffirmation".tr : widget.isFromMyAffirmation && (widget.record ?? false)? "Record affirmation".tr:"addAffirmation".tr,
           action: !(widget.isFromMyAffirmation)
               ? Row(children: [
                   GestureDetector(onTap: () {}, child: Text("skip".tr)),

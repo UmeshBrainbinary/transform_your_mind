@@ -61,6 +61,8 @@ class _AudioContentScreenState extends State<AudioContentScreen>
         currentLanguage = "en-US";
       });
     }
+    audioContentController.checkInternet();
+
     audioContentController.searchController.clear();
     _lottieBgController = AnimationController(vsync: this);
 

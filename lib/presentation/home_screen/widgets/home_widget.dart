@@ -405,8 +405,8 @@ class SelfHypnoticScreen extends StatelessWidget {
                   SizedBox(
                     width: 72,
                     child: Text(
-                      dataList?.name
-                          .toString()??"",
+                        currentLanguage=="en-US"? dataList?.name
+                          .toString()??"":dataList?.gName??"",
                       // "Motivational",
                       style: Style
                           .nunitoBold(
@@ -450,7 +450,7 @@ class SelfHypnoticScreen extends StatelessWidget {
               ),
               Dimens.d7.spaceHeight,
               Text(
-               dataList?.description??"",
+                currentLanguage=="en-US"?  dataList!.description.toString():dataList?.gDescription??"",
                 maxLines: Dimens.d2.toInt(),
                 style: Style.nunMedium(
                     fontSize: Dimens.d14),

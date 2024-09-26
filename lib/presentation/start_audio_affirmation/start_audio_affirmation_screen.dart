@@ -46,7 +46,9 @@ class StartAudioAffirmationScreen extends StatefulWidget {
   String? id;
   String? alarmId;
   Duration? totalDuration;
-  StartAudioAffirmationScreen({super.key, this.id, this.data, this.alarmId, this.totalDuration});
+
+  StartAudioAffirmationScreen(
+      {super.key, this.id, this.data, this.alarmId, this.totalDuration});
 
   @override
   State<StartAudioAffirmationScreen> createState() =>
@@ -80,48 +82,39 @@ class _StartAudioAffirmationScreenState
       Get.put(AffirmationController());
   bool likeAnimation = false;
 
-   AudioPlayer audioPlayerVoices = AudioPlayer( handleInterruptions: false,
+  AudioPlayer audioPlayerVoices = AudioPlayer(
+    handleInterruptions: false,
     androidApplyAudioAttributes: false,
-    handleAudioSessionActivation: false,);
+    handleAudioSessionActivation: false,
+  );
 
   @override
   void initState() {
     super.initState();
 
-
-  init();
+    init();
     audioPlayerVoices.processingStateStream.listen((state) async {
       if (state == ProcessingState.completed) {
         setState(() {
-          value =0;
+          value = 0;
           startC.play = false;
         });
         await audioPlayerVoices.pause();
 
-        await audioPlayerVoices.setAudioSource(myPlayList,initialIndex: 0);
+        await audioPlayerVoices.setAudioSource(myPlayList, initialIndex: 0);
 
         setState(() {
           startC.play = true;
         });
         await audioPlayerVoices.play();
 
-
-        setState(() {
-
-        });
-print("#### Done #####");
-
+        setState(() {});
+        print("#### Done #####");
       }
-
-
     });
     audioPlayerVoices.positionStream.listen((position) {
       updateCurrentPosition();
-
     });
-
-
-
   }
 
 /*void _startProgress() {
@@ -164,75 +157,70 @@ print("#### Done #####");
         like.add(widget.data?[i].isLiked ?? false);
       }
     }
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   AudioSource? source;
-List<AudioSource> list = [];
-late ConcatenatingAudioSource myPlayList ;
+  List<AudioSource> list = [];
+  late ConcatenatingAudioSource myPlayList;
+
   init() async {
-     getLikeData();
+    getLikeData();
     audioPlayerVoices = AudioPlayer();
     setBackSounds();
 
-
-startC.loader.value =true;
-
+    startC.loader.value = true;
 
     final session = await AudioSession.instance;
     await session.configure(const AudioSessionConfiguration.speech());
-  for (AffirmationData path in widget.data!) {
-    if(path.audioFile != null) {
-      try {
-        source = AudioSource.uri(Uri.parse(path.audioFile!));
-      /*  if(source != null) {
+    for (AffirmationData path in widget.data!) {
+      if (path.audioFile != null) {
+        try {
+          source = AudioSource.uri(Uri.parse(path.audioFile!));
+          /*  if(source != null) {
           final duration = await audioPlayerVoices.setAudioSource(source!);
           if (duration != null) {
             totalDuration += duration;
           }
         }*/
-        list.add(source!);
+          list.add(source!);
+        } catch (e) {
+          print(e);
+        }
       }
-      catch(e){
-        print(e);
+      try {
+        // Preload the audio source
+      } catch (e) {
+        print('Error loading audio: $e');
       }
     }
-    try {
-      // Preload the audio source
 
+    myPlayList = ConcatenatingAudioSource(
+      children: list,
+    );
 
+    // Set the playlist in the player
+    (await audioPlayerVoices.setAudioSource(
+      myPlayList,
+      initialIndex: 0,
+      preload: true,
+    ))!;
 
-    } catch (e) {
-      print('Error loading audio: $e');
+    setState(() {
+      startC.play = true;
+      startC.loader.value = false;
+    });
 
-    }
+    await audioPlayerVoices.play();
   }
-
-  myPlayList = ConcatenatingAudioSource(children: list,);
-
-  // Set the playlist in the player
-     (await audioPlayerVoices.setAudioSource(myPlayList,initialIndex: 0,  preload: true,))!;
-
-  setState(() {
-    startC.play = true;
-    startC.loader.value =false;
-  });
-
-  await audioPlayerVoices.play();
-
-
-  }
-
 
   bool showBottom = false;
-
 
   Duration currentPosition = Duration.zero;
   late List<AlarmSettings> alarms;
 
-double value =  0;
+  double value = 0;
+
   Future<Duration?> _getDuration(AudioSource item) async {
     // Load the item into the player temporarily to get its duration
     await audioPlayerVoices.setAudioSource(item);
@@ -250,11 +238,13 @@ double value =  0;
     }
 
     currentPosition = cumulativeDuration + currentItemPosition;
-    if(currentPosition.inSeconds !=0) {
-      value = (currentPosition.inSeconds / widget.totalDuration!.inSeconds) * 100;
+    if (currentPosition.inSeconds != 0) {
+      value =
+          (currentPosition.inSeconds / widget.totalDuration!.inSeconds) * 100;
     }
     setState(() {});
   }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -264,7 +254,7 @@ double value =  0;
     return WillPopScope(
       onWillPop: () async {
         await startC.player.pause();
-       await audioPlayerVoices.stop();
+        await audioPlayerVoices.stop();
         return true;
       },
       child: Scaffold(
@@ -350,8 +340,6 @@ double value =  0;
 
                   //_________________________________ close button  _______________________
 
-
-
                   Stack(
                     alignment: Alignment.center,
                     children: [
@@ -370,19 +358,19 @@ double value =  0;
                             color: Colors.white,
                             thicknessUnit: GaugeSizeUnit.factor,
                           ),
-                          pointers:  <GaugePointer>[
+                          pointers: <GaugePointer>[
                             RangePointer(
                               value: value,
                               cornerStyle: CornerStyle.bothCurve,
                               width: 0.02,
                               sizeUnit: GaugeSizeUnit.factor,
                               enableAnimation: true,
-                              color: value ==0?Colors.white:ColorConstant.themeColor,
-                              animationDuration:1500,
+                              color: value == 0
+                                  ? Colors.white
+                                  : ColorConstant.themeColor,
+                              animationDuration: 1500,
                               animationType: AnimationType.ease,
-
                             ),
-
                           ],
                           annotations: <GaugeAnnotation>[
                             GaugeAnnotation(
@@ -393,8 +381,6 @@ double value =  0;
                                   shape: BoxShape.circle,
                                   border: Border.all(color: Colors.white)),
                               alignment: Alignment.center,
-
-
                             )),
                             // GaugeAnnotation(
                             //     widget: Container(
@@ -415,37 +401,33 @@ double value =  0;
                           ],
                         )
                       ]),
-                       InkWell(
+                      InkWell(
                           onTap: () async {
-                            if(widget.totalDuration != Duration.zero){
-                            if (startC.play) {
-                              setState(()  {
-                                startC.play = false;
-                              });
+                            if (widget.totalDuration != Duration.zero) {
+                              if (startC.play) {
+                                setState(() {
+                                  startC.play = false;
+                                });
                                 await audioPlayerVoices.stop();
-                            } else {
-                              setState(()  {
-                                startC.play = true;
-                              });
-                              try {
-                                await audioPlayerVoices.play();
-                              }catch(e){
-                                debugPrint(e.toString());
+                              } else {
+                                setState(() {
+                                  startC.play = true;
+                                });
+                                try {
+                                  await audioPlayerVoices.play();
+                                } catch (e) {
+                                  debugPrint(e.toString());
+                                }
                               }
-                            }
                             }
                           },
                           child: Container(
                             height: 80,
                             width: 80,
                             alignment: Alignment.center,
-                            decoration:  const BoxDecoration(
+                            decoration: const BoxDecoration(
                               shape: BoxShape.circle,
                               color: Colors.white,
-
-
-
-
                             ),
                             child: Icon(
                               (startC.play)
@@ -455,8 +437,6 @@ double value =  0;
                               color: ColorConstant.themeColor,
                             ),
                           )),
-
-
                     ],
                   ),
                   //_________________________________ Skip Method  _______________________
@@ -478,10 +458,10 @@ double value =  0;
                             color: ColorConstant.white),
                         child: const Center(
                             child: Icon(
-                              Icons.arrow_back_ios,
-                              color: Colors.black,
-                              size: 20,
-                            )),
+                          Icons.arrow_back_ios,
+                          color: Colors.black,
+                          size: 20,
+                        )),
                       ),
                     ),
                   ),
@@ -506,7 +486,8 @@ double value =  0;
                                 width: 42,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(9),
-                                    color: ColorConstant.white.withOpacity(0.15)),
+                                    color:
+                                        ColorConstant.white.withOpacity(0.15)),
                                 child: Center(
                                   child: SvgPicture.asset(
                                     ImageConstant.music,
@@ -539,7 +520,8 @@ double value =  0;
                                 width: 42,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(9),
-                                    color: ColorConstant.white.withOpacity(0.15)),
+                                    color:
+                                        ColorConstant.white.withOpacity(0.15)),
                                 child: Center(
                                   child: Image.asset(
                                     ImageConstant.themeChange,
@@ -565,62 +547,72 @@ double value =  0;
                   showBottom
                       ? const SizedBox()
                       : Positioned(
-                      bottom: Dimens.d246,
-                      left: MediaQuery.of(context).size.width / 3.2,
-                      child: Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              Share.share(widget.data![_currentIndex].description.toString());
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: SvgPicture.asset(ImageConstant.share,
-                                  color: ColorConstant.white, height: 22, width: 22),
-                            ),
-                          ),
-                          Dimens.d40.spaceWidth,
-                          GestureDetector(
-                            onTap: () {
-                             // _stopScrolling();
-                              setState(() {
-                                showBottom = true;
-                              });
-                              sheetAlarm();
-                            },
-                            child: SvgPicture.asset(ImageConstant.alarm,
-                                color: ColorConstant.white, height: 20, width: 20),
-                          ),
-                          Dimens.d40.spaceWidth,
-                          GestureDetector(
-                            onTap: () async {
-                              like[likeIndex] = !like[likeIndex];
+                          bottom: Dimens.d246,
+                          left: MediaQuery.of(context).size.width / 3.2,
+                          child: Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Share.share(widget
+                                      .data![_currentIndex].description
+                                      .toString());
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(2.0),
+                                  child: SvgPicture.asset(ImageConstant.share,
+                                      color: ColorConstant.white,
+                                      height: 22,
+                                      width: 22),
+                                ),
+                              ),
+                              Dimens.d40.spaceWidth,
+                              GestureDetector(
+                                onTap: () {
+                                  // _stopScrolling();
+                                  setState(() {
+                                    showBottom = true;
+                                  });
+                                  sheetAlarm();
+                                },
+                                child: SvgPicture.asset(ImageConstant.alarm,
+                                    color: ColorConstant.white,
+                                    height: 20,
+                                    width: 20),
+                              ),
+                              Dimens.d40.spaceWidth,
+                              GestureDetector(
+                                onTap: () async {
+                                  like[likeIndex] = !like[likeIndex];
 
-                              await updateAffirmationLike(
-                                  isLiked: like[likeIndex],
-                                  id: widget.data![likeIndex].id);
+                                  await updateAffirmationLike(
+                                      isLiked: like[likeIndex],
+                                      id: widget.data![likeIndex].id);
 
-                              setState(() {
-                                likeAnimation = like[likeIndex];
-                                Future.delayed(const Duration(seconds: 2)).then(
+                                  setState(() {
+                                    likeAnimation = like[likeIndex];
+                                    Future.delayed(const Duration(seconds: 2))
+                                        .then(
                                       (value) {
-                                    setState(() {
-                                      likeAnimation = false;
-                                    });
-                                  },);
-                              });
-                            },
-                            child:  SvgPicture.asset(
-                              like[likeIndex]?ImageConstant.likeRedTools:ImageConstant.likeTools,
-                              color: like[likeIndex]?ColorConstant.deleteRed:ColorConstant.white,
-                              height: 20,
-                              width: 20,
-                            ),
-                          )
-
-                        ],
-                      )),
-
+                                        setState(() {
+                                          likeAnimation = false;
+                                        });
+                                      },
+                                    );
+                                  });
+                                },
+                                child: SvgPicture.asset(
+                                  like[likeIndex]
+                                      ? ImageConstant.likeRedTools
+                                      : ImageConstant.likeTools,
+                                  color: like[likeIndex]
+                                      ? ColorConstant.deleteRed
+                                      : ColorConstant.white,
+                                  height: 20,
+                                  width: 20,
+                                ),
+                              )
+                            ],
+                          )),
 
                   startC.setSpeed.isTrue
                       ? Positioned(
@@ -645,8 +637,9 @@ double value =  0;
                                     onTap: () {
                                       setState(() {
                                         startC.setSelectedSpeedIndex(index);
-                                         speedChange();
-                              audioPlayerVoices.setSpeed(speedChange().toDouble()/10);
+                                        speedChange();
+                                        audioPlayerVoices.setSpeed(
+                                            speedChange().toDouble() / 10);
                                       });
                                     },
                                     child: Padding(
@@ -707,7 +700,8 @@ double value =  0;
                                     }
                                   },
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       SvgPicture.asset(
                                         startC.soundMute
@@ -734,7 +728,8 @@ double value =  0;
                                     });
                                   },
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       commonTextTitle("auto".tr),
                                       Dimens.d6.spaceHeight,
@@ -757,14 +752,13 @@ double value =  0;
               ),
             ),
             Obx(
-                  () => startC.loader.isTrue ? commonLoader() : const SizedBox(),
+              () => startC.loader.isTrue ? commonLoader() : const SizedBox(),
             ),
           ],
         ),
       ),
     );
   }
-
 
   Future sheetAlarm() {
     return showModalBottomSheet(
@@ -776,7 +770,8 @@ double value =  0;
           builder: (context, setState) {
             return Stack(
               children: [
-                Positioned(top: 600,
+                Positioned(
+                  top: 600,
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
                     child: Container(),
@@ -853,7 +848,7 @@ double value =  0;
                                                 ? ColorConstant.themeColor
                                                 : ColorConstant.transparent,
                                             borderRadius:
-                                            BorderRadius.circular(17),
+                                                BorderRadius.circular(17),
                                           ),
                                           child: Center(
                                             child: Text(
@@ -883,7 +878,7 @@ double value =  0;
                                                 ? ColorConstant.themeColor
                                                 : ColorConstant.transparent,
                                             borderRadius:
-                                            BorderRadius.circular(17),
+                                                BorderRadius.circular(17),
                                           ),
                                           child: Center(
                                             child: Text(
@@ -905,25 +900,24 @@ double value =  0;
                             ),
                             Dimens.d10.spaceHeight,
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 70),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 70),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-
                                   commonTextA("hours".tr),
                                   commonTextA("minutes".tr),
                                   commonTextA("seconds".tr),
-
-
                                 ],
                               ),
                             ),
                             Dimens.d10.spaceHeight,
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 70),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 70),
                               child: Row(
                                 children: [
-
                                   NumberPicker(
                                     infiniteLoop: true,
                                     zeroPad: true,
@@ -992,7 +986,8 @@ double value =  0;
                             ),
                             GestureDetector(
                               onTap: () async {
-                              index =  await Navigator.push(context, MaterialPageRoute(
+                                index = await Navigator.push(context,
+                                    MaterialPageRoute(
                                   builder: (context) {
                                     return const AudioList();
                                   },
@@ -1000,7 +995,7 @@ double value =  0;
                               },
                               child: Container(
                                 margin:
-                                const EdgeInsets.symmetric(horizontal: 40),
+                                    const EdgeInsets.symmetric(horizontal: 40),
                                 height: Dimens.d51,
                                 width: Get.width,
                                 decoration: BoxDecoration(
@@ -1013,7 +1008,8 @@ double value =  0;
                                     Dimens.d14.spaceWidth,
                                     Text(
                                       "sound".tr,
-                                      style: Style.nunRegular(fontSize: 14,color: Colors.black),
+                                      style: Style.nunRegular(
+                                          fontSize: 14, color: Colors.black),
                                     ),
                                     const Spacer(),
                                     Text(
@@ -1034,8 +1030,8 @@ double value =  0;
                             ),
                             Dimens.d20.spaceHeight,
                             Padding(
-                              padding:
-                              EdgeInsets.symmetric(horizontal: Dimens.d70.h),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: Dimens.d70.h),
                               child: CommonElevatedButton(
                                 textStyle: Style.nunRegular(
                                   fontSize: Dimens.d14,
@@ -1043,7 +1039,8 @@ double value =  0;
                                 ),
                                 title: "save".tr,
                                 onTap: () async {
-                                  _setAlarm(widget.data?[_currentIndex].alarmId??1);
+                                  _setAlarm(
+                                      widget.data?[_currentIndex].alarmId ?? 1);
                                   await createAlarm(widget.id);
                                 },
                               ),
@@ -1060,15 +1057,13 @@ double value =  0;
         );
       },
     ).whenComplete(() {
-     // _startScrolling();
+      // _startScrolling();
 
       setState(() {
         showBottom = false;
       });
     });
   }
-
-
 
   createAlarm(id) async {
     setState(() {
@@ -1091,7 +1086,7 @@ double value =  0;
 
     http.StreamedResponse response = await request.send();
 
-    if (response.statusCode == 200 ) {
+    if (response.statusCode == 200) {
       selectedSeconds = 0;
       selectedMinute = 0;
       selectedHour = 0;
@@ -1118,49 +1113,44 @@ double value =  0;
       debugPrint(response.reasonPhrase);
     }
     setState(() {
-      startC.loader.value= false;
+      startC.loader.value = false;
     });
   }
 
-
-
   void _setAlarm(id) async {
-
-      if (am == true) {
-
+    if (am == true) {
+    } else {
+      if (selectedHour < 12) {
+        selectedHour = selectedHour + 12;
       }
-      else {
-        if(selectedHour < 12) {
-          selectedHour = selectedHour + 12;
-        }
-      }
+    }
 
-    DateTime alarmTime = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day,
-        selectedHour,selectedMinute,selectedSeconds);
-  // File filePath =  await downloadAudioFile(widget.data![0].audioFile ?? 'assets/audio/audio.mp3');
-    if(alarmTime.isAfter(DateTime.now())) {
+    DateTime alarmTime = DateTime(DateTime.now().year, DateTime.now().month,
+        DateTime.now().day, selectedHour, selectedMinute, selectedSeconds);
+    // File filePath =  await downloadAudioFile(widget.data![0].audioFile ?? 'assets/audio/audio.mp3');
+    if (alarmTime.isAfter(DateTime.now())) {
       final alarmSettings = AlarmSettings(
           id: id,
           dateTime: alarmTime,
           //  assetAudioPath: filePath.path !=""?filePath.path: 'assets/audio/audio.mp3',
-          assetAudioPath: index == 1 ? ImageConstant.bgAudio2 : ImageConstant
-              .bgAudio1,
+          assetAudioPath:
+              index == 1 ? ImageConstant.bgAudio2 : ImageConstant.bgAudio1,
           loopAudio: true,
           vibrate: true,
           volume: 0.8,
           androidFullScreenIntent: true,
           fadeDuration: 3.0,
           notificationTitle: 'TransformYourMind',
-          notificationBody: 'TransformYourMind Alarm ringing.....',
-          enableNotificationOnKill: Platform.isAndroid
-              ? Platform.isAndroid
-              : Platform.isIOS);
+          notificationBody: PrefService.getString(PrefKey.language) == "en-US" ||  PrefService.getString(PrefKey.language) == ""
+              ? 'TransformYourMind Alarm ringing.....'
+              : "Dein sanfter Weckruf in den Tag.....",
+          enableNotificationOnKill:
+              Platform.isAndroid ? Platform.isAndroid : Platform.isIOS);
       await Alarm.set(
         alarmSettings: alarmSettings,
       );
     }
   }
-
 
   Future<File> downloadAudioFile(String url) async {
     // Get the download path
@@ -1177,12 +1167,13 @@ double value =  0;
       final file = File(filePath);
       await file.writeAsBytes(response.bodyBytes);
       print('Audio file downloaded and saved to $filePath');
-   return file;
+      return file;
     } else {
       print('Failed to download audio file');
       return File("");
     }
   }
+
   Future<void> navigateToRingScreen(AlarmSettings alarmSettings) async {
     await Navigator.push(
       context,
@@ -1193,12 +1184,14 @@ double value =  0;
     );
     loadAlarms();
   }
+
   void loadAlarms() {
     setState(() {
       alarms = Alarm.getAlarms();
       alarms.sort((a, b) => a.dateTime.isBefore(b.dateTime) ? 0 : 1);
     });
   }
+
   Future<void> checkAndroidNotificationPermission() async {
     final status = await Permission.notification.status;
     if (status.isDenied) {
@@ -1209,6 +1202,7 @@ double value =  0;
       );
     }
   }
+
   Future<void> checkAndroidScheduleExactAlarmPermission() async {
     final status = await Permission.scheduleExactAlarm.status;
     if (kDebugMode) {
@@ -1235,10 +1229,8 @@ double value =  0;
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ${PrefService.getString(PrefKey.token)}'
     };
-    var request = http.MultipartRequest(
-        'POST',
-        Uri.parse(
-            '${EndPoints.baseUrl}${EndPoints.updateAffirmation}$id'));
+    var request = http.MultipartRequest('POST',
+        Uri.parse('${EndPoints.baseUrl}${EndPoints.updateAffirmation}$id'));
 
     request.fields.addAll({'isLiked': "$isLiked"});
     request.headers.addAll(headers);
@@ -1467,7 +1459,6 @@ double value =  0;
                         ],
                       ),
                       Dimens.d15.spaceHeight,
-
                     ],
                   ),
                 ),
@@ -1628,7 +1619,6 @@ double value =  0;
         return 8;
     }
   }
-
 
   @override
   void dispose() {

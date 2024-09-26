@@ -19,7 +19,6 @@ class AudioContentController extends GetxController {
 
   @override
   void onInit() {
-    checkInternet();
     super.onInit();
   }
    List<String> categories = [
